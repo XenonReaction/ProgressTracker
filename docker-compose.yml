@@ -1,0 +1,17 @@
+# Local development database. Start with: docker compose up -d
+# Credentials are local-only; replace them before deploying anywhere.
+services:
+  postgres:
+    image: postgres:18
+    container_name: progression-tracker-db
+    environment:
+      POSTGRES_DB: progressiontracker
+      POSTGRES_USER: progressiontracker
+      POSTGRES_PASSWORD: progressiontracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+volumes:
+  postgres-data:
