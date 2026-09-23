@@ -1,0 +1,418 @@
+{
+  "treeId": "mongodb-fullstack",
+  "order": 35,
+  "title": "MongoDB Full-Stack Developer",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from no document-database experience to professional MongoDB application development, covering BSON, CRUD, document modeling, aggregation, indexes, transactions, security, application integration, and production fundamentals for a full-stack developer.",
+  "version": "1.0",
+  "estimatedMonths": 2,
+  "totalNodes": 20,
+  "icon": "hive",
+  "nodes": [
+    {
+      "id": "document-database-foundations",
+      "label": "Document Database Foundations",
+      "description": "Explain what MongoDB and document databases are, understand the database/collection/document/field hierarchy and _id, and recognize why 'schemaless' is an incomplete description of MongoDB's flexible schema.",
+      "icon": "storage",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "document-database-foundations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "mongosh-environment",
+      "label": "MongoDB Environment & mongosh",
+      "description": "Connect to MongoDB with mongosh, use commands to list and inspect databases, collections, and indexes, and browse data with MongoDB Compass without depending on it exclusively.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "mongosh-environment-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["document-database-foundations"]
+    },
+    {
+      "id": "bson-data-types",
+      "label": "BSON, Documents & Data Types",
+      "description": "Understand BSON and how it differs from JSON, choose appropriate types like ObjectId, Date, Decimal128, and embedded documents/arrays, and recognize common application/BSON type mismatches.",
+      "icon": "layers",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "bson-data-types-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["document-database-foundations"]
+    },
+    {
+      "id": "crud-fundamentals",
+      "label": "CRUD Fundamentals",
+      "description": "Perform insertOne/insertMany, find/findOne with projection, sorting, and pagination, and update or delete documents with updateOne/updateMany/deleteOne/deleteMany to implement complete CRUD operations.",
+      "icon": "build",
+      "zone": "Core CRUD",
+      "resources": [
+        {
+          "id": "crud-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["mongosh-environment", "bson-data-types"]
+    },
+    {
+      "id": "query-operators",
+      "label": "Query Operators & Projections",
+      "description": "Construct filters using comparison, logical, element, and array operators, query nested fields with dot notation, and distinguish a field containing null from a field that does not exist.",
+      "icon": "science",
+      "zone": "Core CRUD",
+      "resources": [
+        {
+          "id": "query-operators-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["crud-fundamentals"]
+    },
+    {
+      "id": "updates-array-operations",
+      "label": "Updates & Array Operations",
+      "description": "Modify documents safely with $set/$unset/$inc and array operators like $push/$addToSet/$pull, use positional operators and arrayFilters, and perform upserts without unnecessarily replacing whole documents.",
+      "icon": "sync",
+      "zone": "Core CRUD",
+      "resources": [
+        {
+          "id": "updates-array-operations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["query-operators"]
+    },
+    {
+      "id": "document-schema-design",
+      "label": "Document & Schema Design",
+      "description": "Design document boundaries around application access patterns, weigh the tradeoffs of embedding versus referencing, and recognize document-growth and duplication risks before defaulting to relational-style modeling.",
+      "icon": "architecture",
+      "zone": "Data Modeling",
+      "resources": [
+        {
+          "id": "document-schema-design-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["updates-array-operations"]
+    },
+    {
+      "id": "embedding-vs-referencing",
+      "label": "Relationships: Embedding vs Referencing",
+      "description": "Model one-to-one, one-to-few, one-to-many, and many-to-many relationships by choosing embedding, referencing, or $lookup based on cardinality, boundedness, and update patterns rather than a fixed rule.",
+      "icon": "hub",
+      "zone": "Data Modeling",
+      "resources": [
+        {
+          "id": "embedding-vs-referencing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["document-schema-design"]
+    },
+    {
+      "id": "validation-data-integrity",
+      "label": "Validation & Data Integrity",
+      "description": "Enforce document structure with JSON Schema-style collection validation and unique indexes, and understand which relational integrity guarantees — like automatic foreign-key enforcement — MongoDB does not provide.",
+      "icon": "verified",
+      "zone": "Data Modeling",
+      "resources": [
+        {
+          "id": "validation-data-integrity-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["embedding-vs-referencing"]
+    },
+    {
+      "id": "aggregation-pipeline",
+      "label": "Aggregation Pipeline",
+      "description": "Build multi-stage aggregation pipelines using $match, $project, $group, $sort, $unwind, $lookup, and $facet, and reason about how stage ordering affects correctness and performance.",
+      "icon": "functions",
+      "zone": "Aggregation & Performance",
+      "resources": [
+        {
+          "id": "aggregation-pipeline-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["embedding-vs-referencing"]
+    },
+    {
+      "id": "indexes-query-performance",
+      "label": "Indexes & Query Performance",
+      "description": "Create single-field, compound, multikey, partial, and TTL indexes, and use explain('executionStats') to diagnose collection scans, poor index order, and inefficient pagination.",
+      "icon": "speed",
+      "zone": "Aggregation & Performance",
+      "resources": [
+        {
+          "id": "indexes-query-performance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["validation-data-integrity", "aggregation-pipeline"]
+    },
+    {
+      "id": "transactions-concurrency",
+      "label": "Atomicity, Transactions & Concurrency",
+      "description": "Rely on single-document atomicity and atomic update operators where possible, and know when a true multi-document transaction with sessions is required, including basic optimistic-concurrency patterns.",
+      "icon": "health_and_safety",
+      "zone": "Aggregation & Performance",
+      "resources": [
+        {
+          "id": "transactions-concurrency-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["indexes-query-performance"]
+    },
+    {
+      "id": "mongodb-specific-capabilities",
+      "label": "MongoDB-Specific Capabilities",
+      "description": "Use bulk operations, change streams, TTL data, geospatial queries, and text/Atlas Search where they genuinely simplify application requirements, and recognize the specialized purpose of capped collections.",
+      "icon": "auto_awesome",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "mongodb-specific-capabilities-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["transactions-concurrency"]
+    },
+    {
+      "id": "security-access-control",
+      "label": "Security & Access Control",
+      "description": "Configure least-privilege database users and roles, protect credentials and connection strings, prevent query/operator injection from untrusted request bodies, and require TLS for production connections.",
+      "icon": "security",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "security-access-control-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["transactions-concurrency"]
+    },
+    {
+      "id": "application-integration",
+      "label": "Application Integration",
+      "description": "Understand how the MongoDB driver manages connections, pooling, and BSON serialization, handle common driver errors, and trace a request from frontend through backend to a MongoDB operation and back.",
+      "icon": "integration_instructions",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "application-integration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["mongodb-specific-capabilities", "security-access-control"]
+    },
+    {
+      "id": "odm-framework-integration",
+      "label": "ODM / Framework Integration",
+      "description": "Use an ODM such as Mongoose or Spring Data MongoDB productively while distinguishing its behavior from MongoDB's own, and inspect the queries an abstraction actually generates.",
+      "icon": "sync",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "odm-framework-integration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["application-integration"]
+    },
+    {
+      "id": "schema-evolution-migrations",
+      "label": "Schema Evolution & Data Migrations",
+      "description": "Evolve document structures safely with eager or lazy migration strategies, handle field renames and type changes, and stage backward-compatible application and data changes during rollout.",
+      "icon": "timeline",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "schema-evolution-migrations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["odm-framework-integration"]
+    },
+    {
+      "id": "testing-debugging",
+      "label": "Testing & Debugging",
+      "description": "Test queries, validation rules, and aggregation pipelines stage-by-stage, and determine whether a data bug originates in the frontend, backend, ODM, BSON types, schema design, or MongoDB itself.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-debugging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["schema-evolution-migrations"]
+    },
+    {
+      "id": "atlas-production-fundamentals",
+      "label": "MongoDB Atlas & Production Fundamentals",
+      "description": "Deploy and connect to MongoDB Atlas securely, understand backups, key metrics to monitor, and conceptual awareness of replica sets and sharding without requiring database-administrator depth.",
+      "icon": "cloud",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "atlas-production-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["testing-debugging"]
+    },
+    {
+      "id": "professional-mastery",
+      "label": "Professional Full-Stack MongoDB Mastery",
+      "description": "Independently design a MongoDB document model, write aggregation pipelines and indexes, integrate with backend application code, and evolve, secure, and debug a MongoDB-backed application in production.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-mastery-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["atlas-production-fundamentals"]
+    }
+  ],
+  "edges": [
+    { "id": "e-document-database-foundations-mongosh-environment", "source": "document-database-foundations", "target": "mongosh-environment" },
+    { "id": "e-document-database-foundations-bson-data-types", "source": "document-database-foundations", "target": "bson-data-types" },
+    { "id": "e-mongosh-environment-crud-fundamentals", "source": "mongosh-environment", "target": "crud-fundamentals" },
+    { "id": "e-bson-data-types-crud-fundamentals", "source": "bson-data-types", "target": "crud-fundamentals" },
+    { "id": "e-crud-fundamentals-query-operators", "source": "crud-fundamentals", "target": "query-operators" },
+    { "id": "e-query-operators-updates-array-operations", "source": "query-operators", "target": "updates-array-operations" },
+    { "id": "e-updates-array-operations-document-schema-design", "source": "updates-array-operations", "target": "document-schema-design" },
+    { "id": "e-document-schema-design-embedding-vs-referencing", "source": "document-schema-design", "target": "embedding-vs-referencing" },
+    { "id": "e-embedding-vs-referencing-validation-data-integrity", "source": "embedding-vs-referencing", "target": "validation-data-integrity" },
+    { "id": "e-embedding-vs-referencing-aggregation-pipeline", "source": "embedding-vs-referencing", "target": "aggregation-pipeline" },
+    { "id": "e-validation-data-integrity-indexes-query-performance", "source": "validation-data-integrity", "target": "indexes-query-performance" },
+    { "id": "e-aggregation-pipeline-indexes-query-performance", "source": "aggregation-pipeline", "target": "indexes-query-performance" },
+    { "id": "e-indexes-query-performance-transactions-concurrency", "source": "indexes-query-performance", "target": "transactions-concurrency" },
+    { "id": "e-transactions-concurrency-mongodb-specific-capabilities", "source": "transactions-concurrency", "target": "mongodb-specific-capabilities" },
+    { "id": "e-transactions-concurrency-security-access-control", "source": "transactions-concurrency", "target": "security-access-control" },
+    { "id": "e-mongodb-specific-capabilities-application-integration", "source": "mongodb-specific-capabilities", "target": "application-integration" },
+    { "id": "e-security-access-control-application-integration", "source": "security-access-control", "target": "application-integration" },
+    { "id": "e-application-integration-odm-framework-integration", "source": "application-integration", "target": "odm-framework-integration" },
+    { "id": "e-odm-framework-integration-schema-evolution-migrations", "source": "odm-framework-integration", "target": "schema-evolution-migrations" },
+    { "id": "e-schema-evolution-migrations-testing-debugging", "source": "schema-evolution-migrations", "target": "testing-debugging" },
+    { "id": "e-testing-debugging-atlas-production-fundamentals", "source": "testing-debugging", "target": "atlas-production-fundamentals" },
+    { "id": "e-atlas-production-fundamentals-professional-mastery", "source": "atlas-production-fundamentals", "target": "professional-mastery" }
+  ]
+}

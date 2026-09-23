@@ -1,0 +1,375 @@
+{
+  "treeId": "spring-cloud-gateway",
+  "order": 38,
+  "title": "Spring Cloud Gateway",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn Spring Cloud Gateway at the developer level: understand why an API gateway exists, create a gateway as a separate Spring Boot application, define routes/predicates/filters, integrate routing with Eureka service discovery, handle CORS and cross-cutting concerns, troubleshoot routing failures, and prepare the system for later security, resilience, observability, and cloud deployment work.",
+  "version": "1.0",
+  "estimatedMonths": 0.75,
+  "totalNodes": 18,
+  "icon": "api",
+  "nodes": [
+    {
+      "id": "why-gateway-exists",
+      "label": "Why an API Gateway Exists",
+      "description": "Understand why a direct client-to-every-service architecture stops scaling as services multiply, and how a gateway complements Eureka: Eureka answers where service instances are, while the gateway answers where an incoming request should be routed.",
+      "icon": "api",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "why-gateway-exists-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "gateway-foundations",
+      "label": "Gateway Foundations & Compatibility",
+      "description": "Recognize Spring Cloud Gateway as its own routing/filtering-focused Spring application built on a reactive, non-blocking foundation, and maintain Spring Boot/Spring Cloud version compatibility rather than blindly reusing outdated tutorials.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "gateway-foundations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["why-gateway-exists"]
+    },
+    {
+      "id": "project-setup",
+      "label": "Gateway Project Setup",
+      "description": "Create the gateway as a separate Spring Boot application with its own logical name, port, and dependencies, and externalize its configuration — application identity, Eureka location, routes, CORS, logging — through Spring configuration mechanisms.",
+      "icon": "build",
+      "zone": "Project Setup",
+      "resources": [
+        {
+          "id": "project-setup-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["gateway-foundations"]
+    },
+    {
+      "id": "routes-predicates-filters",
+      "label": "Routes, Predicates & Filters",
+      "description": "Understand the three building blocks of gateway routing: a route's ID/destination/predicates/filters, predicates that decide whether a route matches an incoming request, and filters that modify the request or response as it passes through.",
+      "icon": "account_tree",
+      "zone": "Project Setup",
+      "resources": [
+        {
+          "id": "routes-predicates-filters-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["project-setup"]
+    },
+    {
+      "id": "static-and-path-routing",
+      "label": "Static & Path-Based Routing",
+      "description": "Build a first static route to a fixed local destination to prove routing works independently of discovery, add path-based routing for multiple services, and reason about route ordering and specificity when predicates could overlap.",
+      "icon": "alt_route",
+      "zone": "Routing Mechanics",
+      "resources": [
+        {
+          "id": "static-and-path-routing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["routes-predicates-filters"]
+    },
+    {
+      "id": "path-and-header-manipulation",
+      "label": "Path Rewriting, Headers & Parameters",
+      "description": "Use gateway filters to rewrite paths and strip prefixes so the external API stays stable while internal service paths evolve, add or modify headers, preserve query parameters intentionally, and constrain routes by HTTP method when useful.",
+      "icon": "code",
+      "zone": "Routing Mechanics",
+      "resources": [
+        {
+          "id": "path-and-header-manipulation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["static-and-path-routing"]
+    },
+    {
+      "id": "discovery-based-routing",
+      "label": "Discovery-Based Routing",
+      "description": "Replace fixed physical route destinations with Eureka-discovered logical service identities, route to multiple instances of one service through discovery/load-balancing integration, and prefer explicit route design over fully automatic discovery-generated routes.",
+      "icon": "dns",
+      "zone": "Discovery Integration",
+      "resources": [
+        {
+          "id": "discovery-based-routing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["path-and-header-manipulation"]
+    },
+    {
+      "id": "public-api-design",
+      "label": "Public API Design & Filter Scope",
+      "description": "Keep the gateway's stable, external public API paths deliberately separate from internal Eureka service names, and choose between route-specific filters and global filters based on whether behavior applies to one route or to all traffic.",
+      "icon": "layers",
+      "zone": "Discovery Integration",
+      "resources": [
+        {
+          "id": "public-api-design-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["discovery-based-routing"]
+    },
+    {
+      "id": "correlation-and-logging",
+      "label": "Correlation IDs & Gateway Logging",
+      "description": "Establish or propagate correlation/request IDs at the gateway so a request can be traced across downstream services, and produce useful gateway logs — path, matched route, status, failures — without logging secrets or sensitive data.",
+      "icon": "timeline",
+      "zone": "Cross-Cutting Concerns",
+      "resources": [
+        {
+          "id": "correlation-and-logging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["public-api-design"]
+    },
+    {
+      "id": "cors-and-preflight",
+      "label": "CORS & Preflight Handling",
+      "description": "Understand why a frontend origin and gateway origin differ, configure CORS centrally at the gateway with least-necessary allowed origins/methods/headers, and recognize browser preflight OPTIONS requests when debugging cross-origin failures.",
+      "icon": "security",
+      "zone": "Cross-Cutting Concerns",
+      "resources": [
+        {
+          "id": "cors-and-preflight-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["correlation-and-logging"]
+    },
+    {
+      "id": "gateway-scope-boundaries",
+      "label": "What Belongs at the Gateway",
+      "description": "Identify which cross-cutting concerns — routing, correlation, CORS, selected logging — reasonably centralize at the gateway, and keep business logic, validation rules, and persistence out of it so the gateway doesn't become a new monolith.",
+      "icon": "architecture",
+      "zone": "Cross-Cutting Concerns",
+      "resources": [
+        {
+          "id": "gateway-scope-boundaries-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cors-and-preflight"]
+    },
+    {
+      "id": "security-and-resilience-awareness",
+      "label": "Security & Resilience Awareness",
+      "description": "Understand at an awareness level how the gateway can later participate in authentication, authorization, token propagation, and rate limiting, why discovery does not make downstream calls reliable, and why gateway availability itself becomes critical infrastructure.",
+      "icon": "health_and_safety",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "security-and-resilience-awareness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["gateway-scope-boundaries"]
+    },
+    {
+      "id": "troubleshooting-routing-failures",
+      "label": "Troubleshooting Routing Failures",
+      "description": "Diagnose gateway routing failures by classifying whether an error originates from the client, gateway, discovery, or downstream service, working through common 404 (no matching route), 503 (no available instance), 500, and timeout scenarios.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "troubleshooting-routing-failures-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["security-and-resilience-awareness"]
+    },
+    {
+      "id": "testing-and-performance",
+      "label": "Testing Routes & Performance",
+      "description": "Write positive and negative route tests — expected service, unknown path, unavailable service, invalid method — and target the gateway with JMeter to measure client-visible performance through the full routing path.",
+      "icon": "speed",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-and-performance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["troubleshooting-routing-failures"]
+    },
+    {
+      "id": "containerization-and-frontend",
+      "label": "Containerization & Frontend Integration",
+      "description": "Containerize the gateway alongside Eureka and the services in Docker Compose with correct container-network hostnames, and point the frontend — directly or through its dev-server proxy — at the gateway's stable public API instead of individual service addresses.",
+      "icon": "cloud",
+      "zone": "Deployment & Architecture",
+      "resources": [
+        {
+          "id": "containerization-and-frontend-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["testing-and-performance"]
+    },
+    {
+      "id": "gateway-comparisons",
+      "label": "Gateway vs Proxy, Load Balancer & Ingress",
+      "description": "Compare Spring Cloud Gateway with a generic reverse proxy, a load balancer, Eureka, and Kubernetes Ingress, and recognize that the same routing concepts apply even when the underlying discovery mechanism or cloud platform changes.",
+      "icon": "lan",
+      "zone": "Deployment & Architecture",
+      "resources": [
+        {
+          "id": "gateway-comparisons-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["containerization-and-frontend"]
+    },
+    {
+      "id": "observability-and-config-connections",
+      "label": "Observability & Configuration Connections",
+      "description": "Recognize the gateway as a valuable observation point for request count, latency, errors, and correlation IDs that should feed centralized logging alongside service logs, and understand why growing configuration needs point toward a future Spring Cloud Config tree rather than overloading Eureka or Gateway.",
+      "icon": "visibility",
+      "zone": "Deployment & Architecture",
+      "resources": [
+        {
+          "id": "observability-and-config-connections-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["gateway-comparisons"]
+    },
+    {
+      "id": "security-boundaries-and-anti-patterns",
+      "label": "Security Boundaries & Anti-Patterns",
+      "description": "Treat the gateway as security-sensitive since it is a major entry point that should never be assumed trusted by default, and recognize common gateway anti-patterns such as becoming a new monolith, allow-all CORS, trusting client-supplied headers, and stacking redundant routing layers.",
+      "icon": "verified",
+      "zone": "Deployment & Architecture",
+      "resources": [
+        {
+          "id": "security-boundaries-and-anti-patterns-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["observability-and-config-connections"]
+    }
+  ],
+  "edges": [
+    { "id": "e-why-gateway-exists-gateway-foundations", "source": "why-gateway-exists", "target": "gateway-foundations" },
+    { "id": "e-gateway-foundations-project-setup", "source": "gateway-foundations", "target": "project-setup" },
+    { "id": "e-project-setup-routes-predicates-filters", "source": "project-setup", "target": "routes-predicates-filters" },
+    { "id": "e-routes-predicates-filters-static-and-path-routing", "source": "routes-predicates-filters", "target": "static-and-path-routing" },
+    { "id": "e-static-and-path-routing-path-and-header-manipulation", "source": "static-and-path-routing", "target": "path-and-header-manipulation" },
+    { "id": "e-path-and-header-manipulation-discovery-based-routing", "source": "path-and-header-manipulation", "target": "discovery-based-routing" },
+    { "id": "e-discovery-based-routing-public-api-design", "source": "discovery-based-routing", "target": "public-api-design" },
+    { "id": "e-public-api-design-correlation-and-logging", "source": "public-api-design", "target": "correlation-and-logging" },
+    { "id": "e-correlation-and-logging-cors-and-preflight", "source": "correlation-and-logging", "target": "cors-and-preflight" },
+    { "id": "e-cors-and-preflight-gateway-scope-boundaries", "source": "cors-and-preflight", "target": "gateway-scope-boundaries" },
+    { "id": "e-gateway-scope-boundaries-security-and-resilience-awareness", "source": "gateway-scope-boundaries", "target": "security-and-resilience-awareness" },
+    { "id": "e-security-and-resilience-awareness-troubleshooting-routing-failures", "source": "security-and-resilience-awareness", "target": "troubleshooting-routing-failures" },
+    { "id": "e-troubleshooting-routing-failures-testing-and-performance", "source": "troubleshooting-routing-failures", "target": "testing-and-performance" },
+    { "id": "e-testing-and-performance-containerization-and-frontend", "source": "testing-and-performance", "target": "containerization-and-frontend" },
+    { "id": "e-containerization-and-frontend-gateway-comparisons", "source": "containerization-and-frontend", "target": "gateway-comparisons" },
+    { "id": "e-gateway-comparisons-observability-and-config-connections", "source": "gateway-comparisons", "target": "observability-and-config-connections" },
+    { "id": "e-observability-and-config-connections-security-boundaries-and-anti-patterns", "source": "observability-and-config-connections", "target": "security-boundaries-and-anti-patterns" }
+  ]
+}

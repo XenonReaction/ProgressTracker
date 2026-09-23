@@ -1,0 +1,1081 @@
+{
+  "treeId": "java-enterprise-full-stack",
+  "order": 0,
+  "title": "Enterprise Java Full-Stack Developer",
+  "category": "Technology",
+  "difficulty": "hard",
+  "description": "The master map of the complete enterprise Java full-stack curriculum: development environment and Git, HTML/CSS/JS/TS/Angular/React frontends, the full Java and Spring ecosystem, SQL/NoSQL/graph databases, AI-assisted development and RAG/Spring AI, and the container/CI-CD/cloud/observability stack. Each node is a gateway to its own dedicated, in-depth skill tree.",
+  "version": "2.0",
+  "estimatedMonths": 15,
+  "totalNodes": 37,
+  "icon": "dns",
+  "nodes": [
+    {
+      "id": "ubuntu-wsl2-expert",
+      "label": "Ubuntu & WSL2",
+      "description": "Linux shell and development-environment foundation, including running Ubuntu under WSL2 on Windows, for every tool and workflow that follows.",
+      "icon": "terminal",
+      "zone": "Development Environment & Version Control",
+      "resources": [
+        {
+          "id": "ubuntu-wsl2-expert-subtree",
+          "title": "See skill tree: ubuntu-wsl2-expert",
+          "url": "internal://data/trees/ubuntu-wsl2-expert.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "git-version-control-expert",
+      "label": "Git Version Control",
+      "description": "Distributed version control: branching, merging, collaboration, history rewriting, and recovery workflows used on every professional codebase.",
+      "icon": "fork_right",
+      "zone": "Development Environment & Version Control",
+      "resources": [
+        {
+          "id": "git-version-control-expert-subtree",
+          "title": "See skill tree: git-version-control-expert",
+          "url": "internal://data/trees/git-version-control-expert.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "ubuntu-wsl2-expert"
+      ]
+    },
+    {
+      "id": "html-css-web-mastery",
+      "label": "HTML & CSS",
+      "description": "Web structure, semantics, layout, responsiveness, and accessibility \u2014 the markup and styling foundation of every frontend.",
+      "icon": "html",
+      "zone": "Web & Frontend Foundations",
+      "resources": [
+        {
+          "id": "html-css-web-mastery-subtree",
+          "title": "See skill tree: html-css-web-mastery",
+          "url": "internal://data/trees/html-css-web-mastery.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "javascript-frontend-mastery",
+      "label": "JavaScript",
+      "description": "The browser and application programming language for behavior, the DOM, asynchronous work, and web APIs.",
+      "icon": "javascript",
+      "zone": "Web & Frontend Foundations",
+      "resources": [
+        {
+          "id": "javascript-frontend-mastery-subtree",
+          "title": "See skill tree: javascript-frontend-mastery",
+          "url": "internal://data/trees/javascript-frontend-mastery.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "html-css-web-mastery"
+      ]
+    },
+    {
+      "id": "typescript-frontend-mastery",
+      "label": "TypeScript",
+      "description": "Typed JavaScript for safer, more maintainable large-scale frontend applications.",
+      "icon": "description",
+      "zone": "Web & Frontend Foundations",
+      "resources": [
+        {
+          "id": "typescript-frontend-mastery-subtree",
+          "title": "See skill tree: typescript-frontend-mastery",
+          "url": "internal://data/trees/typescript-frontend-mastery.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "javascript-frontend-mastery"
+      ]
+    },
+    {
+      "id": "angular-frontend-mastery",
+      "label": "Angular",
+      "description": "A full TypeScript frontend framework: components, dependency injection, forms, HTTP, routing, and testing.",
+      "icon": "web",
+      "zone": "Web & Frontend Foundations",
+      "resources": [
+        {
+          "id": "angular-frontend-mastery-subtree",
+          "title": "See skill tree: angular-frontend-mastery",
+          "url": "internal://data/trees/angular-frontend-mastery.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "typescript-frontend-mastery",
+        "http-https-rest-apis"
+      ]
+    },
+    {
+      "id": "react-frontend-mastery",
+      "label": "React",
+      "description": "A component-based frontend library using JSX/TSX, state and hooks, API integration, routing, and testing.",
+      "icon": "data_object",
+      "zone": "Web & Frontend Foundations",
+      "resources": [
+        {
+          "id": "react-frontend-mastery-subtree",
+          "title": "See skill tree: react-frontend-mastery",
+          "url": "internal://data/trees/react-frontend-mastery.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "javascript-frontend-mastery",
+        "http-https-rest-apis"
+      ]
+    },
+    {
+      "id": "http-https-rest-apis",
+      "label": "HTTP/HTTPS & REST APIs",
+      "description": "The protocol and API-contract foundation connecting clients and services, underpinning Spring, microservices, and gateways.",
+      "icon": "api",
+      "zone": "Web & Frontend Foundations",
+      "resources": [
+        {
+          "id": "http-https-rest-apis-subtree",
+          "title": "See skill tree: http-https-rest-apis",
+          "url": "internal://data/trees/http-https-rest-apis.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "java-fullstack-foundations",
+      "label": "Java",
+      "description": "The Java language and standard library, progressing from no experience to professional application-level proficiency.",
+      "icon": "coffee",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "java-fullstack-foundations-subtree",
+          "title": "See skill tree: java-fullstack-foundations",
+          "url": "internal://data/trees/java-fullstack-foundations.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "maven-build-tooling",
+      "label": "Maven",
+      "description": "Dependency management, build lifecycle, and packaging automation for Java projects.",
+      "icon": "build",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "maven-build-tooling-subtree",
+          "title": "See skill tree: maven-build-tooling",
+          "url": "internal://data/trees/maven-build-tooling.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fullstack-foundations"
+      ]
+    },
+    {
+      "id": "junit-testing",
+      "label": "JUnit",
+      "description": "Automated Java unit testing: lifecycle, assertions, and parameterized tests.",
+      "icon": "task_alt",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "junit-testing-subtree",
+          "title": "See skill tree: junit-testing",
+          "url": "internal://data/trees/junit-testing.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fullstack-foundations",
+        "maven-build-tooling"
+      ]
+    },
+    {
+      "id": "mockito-testing",
+      "label": "Mockito",
+      "description": "Mocking and isolation for Java unit and service tests, building on JUnit and DI-friendly design.",
+      "icon": "science",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "mockito-testing-subtree",
+          "title": "See skill tree: mockito-testing",
+          "url": "internal://data/trees/mockito-testing.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "junit-testing"
+      ]
+    },
+    {
+      "id": "java-multithreading-concurrency",
+      "label": "Java Multithreading & Concurrency",
+      "description": "Threads, synchronization, executors, futures, concurrent collections, and virtual threads.",
+      "icon": "sync",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "java-multithreading-concurrency-subtree",
+          "title": "See skill tree: java-multithreading-concurrency",
+          "url": "internal://data/trees/java-multithreading-concurrency.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fullstack-foundations"
+      ]
+    },
+    {
+      "id": "jmeter-performance-testing",
+      "label": "JMeter",
+      "description": "Load and performance testing of REST APIs and microservices: test plans, thread groups, samplers, and CI execution.",
+      "icon": "speed",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "jmeter-performance-testing-subtree",
+          "title": "See skill tree: jmeter-performance-testing",
+          "url": "internal://data/trees/jmeter-performance-testing.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "http-https-rest-apis",
+        "ubuntu-wsl2-expert"
+      ]
+    },
+    {
+      "id": "spring-boot-initializr",
+      "label": "Spring Boot & Initializr",
+      "description": "Modern Spring application creation, dependency injection, configuration, REST layers, testing, and operations.",
+      "icon": "rocket_launch",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "spring-boot-initializr-subtree",
+          "title": "See skill tree: spring-boot-initializr",
+          "url": "internal://data/trees/spring-boot-initializr.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fullstack-foundations",
+        "maven-build-tooling",
+        "http-https-rest-apis",
+        "junit-testing"
+      ]
+    },
+    {
+      "id": "spring-aop-fundamentals",
+      "label": "Spring AOP",
+      "description": "Cross-cutting concerns handled through aspects, pointcuts, advice, and Spring's proxy-based interception model.",
+      "icon": "layers",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "spring-aop-fundamentals-subtree",
+          "title": "See skill tree: spring-aop-fundamentals",
+          "url": "internal://data/trees/spring-aop-fundamentals.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fullstack-foundations",
+        "spring-boot-initializr"
+      ]
+    },
+    {
+      "id": "spring-data-jpa",
+      "label": "Spring Data JPA",
+      "description": "Spring's repository abstraction over JPA, eliminating persistence boilerplate with declarative queries.",
+      "icon": "inventory_2",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "spring-data-jpa-subtree",
+          "title": "See skill tree: spring-data-jpa",
+          "url": "internal://data/trees/spring-data-jpa.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "orm-jpa-hibernate",
+        "spring-boot-initializr"
+      ]
+    },
+    {
+      "id": "spring-cloud-microservices",
+      "label": "Spring Cloud & Microservices",
+      "description": "Service boundaries, independent services, HTTP communication, distributed failure modes, and observability concerns.",
+      "icon": "hub",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "spring-cloud-microservices-subtree",
+          "title": "See skill tree: spring-cloud-microservices",
+          "url": "internal://data/trees/spring-cloud-microservices.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "spring-boot-initializr",
+        "http-https-rest-apis"
+      ]
+    },
+    {
+      "id": "eureka-service-discovery",
+      "label": "Eureka Service Discovery",
+      "description": "Dynamic service registration and discovery for Spring microservices with Netflix Eureka.",
+      "icon": "radar",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "eureka-service-discovery-subtree",
+          "title": "See skill tree: eureka-service-discovery",
+          "url": "internal://data/trees/eureka-service-discovery.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "spring-cloud-microservices"
+      ]
+    },
+    {
+      "id": "spring-cloud-gateway",
+      "label": "Spring Cloud Gateway",
+      "description": "A central API gateway with routes, predicates, filters, discovery-based routing, and CORS/header handling.",
+      "icon": "alt_route",
+      "zone": "Java Backend Foundations",
+      "resources": [
+        {
+          "id": "spring-cloud-gateway-subtree",
+          "title": "See skill tree: spring-cloud-gateway",
+          "url": "internal://data/trees/spring-cloud-gateway.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "spring-cloud-microservices",
+        "eureka-service-discovery"
+      ]
+    },
+    {
+      "id": "postgresql-fullstack",
+      "label": "PostgreSQL",
+      "description": "Relational database design and SQL querying with PostgreSQL.",
+      "icon": "table_chart",
+      "zone": "Data",
+      "resources": [
+        {
+          "id": "postgresql-fullstack-subtree",
+          "title": "See skill tree: postgresql-fullstack",
+          "url": "internal://data/trees/postgresql-fullstack.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "jdbc-fullstack",
+      "label": "JDBC",
+      "description": "The low-level Java API for connecting to and querying relational databases.",
+      "icon": "cable",
+      "zone": "Data",
+      "resources": [
+        {
+          "id": "jdbc-fullstack-subtree",
+          "title": "See skill tree: jdbc-fullstack",
+          "url": "internal://data/trees/jdbc-fullstack.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fullstack-foundations",
+        "postgresql-fullstack"
+      ]
+    },
+    {
+      "id": "orm-jpa-hibernate",
+      "label": "ORM, JPA & Hibernate",
+      "description": "Object-relational mapping, the Jakarta Persistence API, entities, relationships, JPQL, and Hibernate behavior.",
+      "icon": "storage",
+      "zone": "Data",
+      "resources": [
+        {
+          "id": "orm-jpa-hibernate-subtree",
+          "title": "See skill tree: orm-jpa-hibernate",
+          "url": "internal://data/trees/orm-jpa-hibernate.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fullstack-foundations",
+        "postgresql-fullstack",
+        "jdbc-fullstack"
+      ]
+    },
+    {
+      "id": "mongodb-fullstack",
+      "label": "MongoDB",
+      "description": "Document database modeling and querying with MongoDB.",
+      "icon": "data_object",
+      "zone": "Data",
+      "resources": [
+        {
+          "id": "mongodb-fullstack-subtree",
+          "title": "See skill tree: mongodb-fullstack",
+          "url": "internal://data/trees/mongodb-fullstack.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "postgresql-fullstack"
+      ]
+    },
+    {
+      "id": "neo4j-graph-database",
+      "label": "Neo4j & Cypher",
+      "description": "Graph database modeling with nodes, relationships, and the Cypher query language.",
+      "icon": "hub",
+      "zone": "Data",
+      "resources": [
+        {
+          "id": "neo4j-graph-database-subtree",
+          "title": "See skill tree: neo4j-graph-database",
+          "url": "internal://data/trees/neo4j-graph-database.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "postgresql-fullstack"
+      ]
+    },
+    {
+      "id": "ai-assisted-software-development",
+      "label": "AI-Assisted Software Development",
+      "description": "Professional use of chat assistants, IDE copilots, and CLI/coding agents: context engineering, repository exploration, task decomposition, verification, and Git safety.",
+      "icon": "smart_toy",
+      "zone": "AI-Assisted Development & AI Applications",
+      "resources": [
+        {
+          "id": "ai-assisted-software-development-subtree",
+          "title": "See skill tree: ai-assisted-software-development",
+          "url": "internal://data/trees/ai-assisted-software-development.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fullstack-foundations",
+        "git-version-control-expert",
+        "junit-testing"
+      ]
+    },
+    {
+      "id": "rag-fundamentals",
+      "label": "RAG Fundamentals",
+      "description": "Framework-independent Retrieval-Augmented Generation: ingest, chunk, embed/index, retrieve, rerank, construct context, generate grounded answers, and evaluate.",
+      "icon": "psychology",
+      "zone": "AI-Assisted Development & AI Applications",
+      "resources": [
+        {
+          "id": "rag-fundamentals-subtree",
+          "title": "See skill tree: rag-fundamentals",
+          "url": "internal://data/trees/rag-fundamentals.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "http-https-rest-apis",
+        "java-fullstack-foundations"
+      ]
+    },
+    {
+      "id": "spring-ai",
+      "label": "Spring AI",
+      "description": "Spring abstractions for model APIs, embeddings, vector stores, tools, RAG, and observability in AI-enabled Spring applications.",
+      "icon": "auto_awesome",
+      "zone": "AI-Assisted Development & AI Applications",
+      "resources": [
+        {
+          "id": "spring-ai-subtree",
+          "title": "See skill tree: spring-ai",
+          "url": "internal://data/trees/spring-ai.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "spring-boot-initializr",
+        "rag-fundamentals"
+      ]
+    },
+    {
+      "id": "docker-fullstack",
+      "label": "Docker",
+      "description": "Container images, Dockerfiles, networking, volumes, and Compose for full-stack containerization.",
+      "icon": "category",
+      "zone": "Containers, Delivery & Deployment",
+      "resources": [
+        {
+          "id": "docker-fullstack-subtree",
+          "title": "See skill tree: docker-fullstack",
+          "url": "internal://data/trees/docker-fullstack.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "ubuntu-wsl2-expert"
+      ]
+    },
+    {
+      "id": "cicd-fundamentals",
+      "label": "CI/CD Fundamentals",
+      "description": "Tool-independent automated build, test, package, release, and deploy practices.",
+      "icon": "cached",
+      "zone": "Containers, Delivery & Deployment",
+      "resources": [
+        {
+          "id": "cicd-fundamentals-subtree",
+          "title": "See skill tree: cicd-fundamentals",
+          "url": "internal://data/trees/cicd-fundamentals.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "git-version-control-expert"
+      ]
+    },
+    {
+      "id": "jenkins-cicd",
+      "label": "Jenkins",
+      "description": "Jenkinsfile-based CI/CD pipelines: automated build, test, package, publish, and deploy.",
+      "icon": "precision_manufacturing",
+      "zone": "Containers, Delivery & Deployment",
+      "resources": [
+        {
+          "id": "jenkins-cicd-subtree",
+          "title": "See skill tree: jenkins-cicd",
+          "url": "internal://data/trees/jenkins-cicd.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "cicd-fundamentals",
+        "git-version-control-expert"
+      ]
+    },
+    {
+      "id": "github-actions-cicd",
+      "label": "GitHub Actions",
+      "description": "GitHub-native workflow automation for CI/CD.",
+      "icon": "integration_instructions",
+      "zone": "Containers, Delivery & Deployment",
+      "resources": [
+        {
+          "id": "github-actions-cicd-subtree",
+          "title": "See skill tree: github-actions-cicd",
+          "url": "internal://data/trees/github-actions-cicd.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "cicd-fundamentals",
+        "git-version-control-expert"
+      ]
+    },
+    {
+      "id": "gitlab-cicd",
+      "label": "GitLab CI/CD",
+      "description": "GitLab-native pipeline automation for CI/CD.",
+      "icon": "integration_instructions",
+      "zone": "Containers, Delivery & Deployment",
+      "resources": [
+        {
+          "id": "gitlab-cicd-subtree",
+          "title": "See skill tree: gitlab-cicd",
+          "url": "internal://data/trees/gitlab-cicd.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "cicd-fundamentals",
+        "git-version-control-expert"
+      ]
+    },
+    {
+      "id": "deployment-fundamentals",
+      "label": "Deployment Fundamentals",
+      "description": "Tool-independent release, environment, deployment, verification, rollback, and operations concepts.",
+      "icon": "rocket_launch",
+      "zone": "Containers, Delivery & Deployment",
+      "resources": [
+        {
+          "id": "deployment-fundamentals-subtree",
+          "title": "See skill tree: deployment-fundamentals",
+          "url": "internal://data/trees/deployment-fundamentals.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "cicd-fundamentals"
+      ]
+    },
+    {
+      "id": "aws-fundamentals-ec2-s3-ebs",
+      "label": "AWS: EC2, S3 & EBS",
+      "description": "Introductory cloud compute, object storage, and block storage on AWS.",
+      "icon": "cloud",
+      "zone": "Containers, Delivery & Deployment",
+      "resources": [
+        {
+          "id": "aws-fundamentals-ec2-s3-ebs-subtree",
+          "title": "See skill tree: aws-fundamentals-ec2-s3-ebs",
+          "url": "internal://data/trees/aws-fundamentals-ec2-s3-ebs.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "deployment-fundamentals"
+      ]
+    },
+    {
+      "id": "kubernetes-fullstack",
+      "label": "Kubernetes",
+      "description": "Declarative container orchestration: Pods, Deployments, Services, config, storage, health, and scaling.",
+      "icon": "all_inclusive",
+      "zone": "Containers, Delivery & Deployment",
+      "resources": [
+        {
+          "id": "kubernetes-fullstack-subtree",
+          "title": "See skill tree: kubernetes-fullstack",
+          "url": "internal://data/trees/kubernetes-fullstack.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "docker-fullstack",
+        "deployment-fundamentals"
+      ]
+    },
+    {
+      "id": "elk-elastic-stack",
+      "label": "ELK / Elastic Stack",
+      "description": "Centralized logging, search, and visualization using Elasticsearch, Logstash, and Kibana.",
+      "icon": "monitoring",
+      "zone": "Observability",
+      "resources": [
+        {
+          "id": "elk-elastic-stack-subtree",
+          "title": "See skill tree: elk-elastic-stack",
+          "url": "internal://data/trees/elk-elastic-stack.json",
+          "type": "docs",
+          "author": "SkillTreeOSS",
+          "estimatedHours": 0,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "spring-boot-initializr",
+        "docker-fullstack"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-ubuntu-wsl2-expert-git-version-control-expert",
+      "source": "ubuntu-wsl2-expert",
+      "target": "git-version-control-expert"
+    },
+    {
+      "id": "e-html-css-web-mastery-javascript-frontend-mastery",
+      "source": "html-css-web-mastery",
+      "target": "javascript-frontend-mastery"
+    },
+    {
+      "id": "e-javascript-frontend-mastery-typescript-frontend-mastery",
+      "source": "javascript-frontend-mastery",
+      "target": "typescript-frontend-mastery"
+    },
+    {
+      "id": "e-typescript-frontend-mastery-angular-frontend-mastery",
+      "source": "typescript-frontend-mastery",
+      "target": "angular-frontend-mastery"
+    },
+    {
+      "id": "e-javascript-frontend-mastery-react-frontend-mastery",
+      "source": "javascript-frontend-mastery",
+      "target": "react-frontend-mastery"
+    },
+    {
+      "id": "e-http-https-rest-apis-angular-frontend-mastery",
+      "source": "http-https-rest-apis",
+      "target": "angular-frontend-mastery"
+    },
+    {
+      "id": "e-http-https-rest-apis-react-frontend-mastery",
+      "source": "http-https-rest-apis",
+      "target": "react-frontend-mastery"
+    },
+    {
+      "id": "e-java-fullstack-foundations-maven-build-tooling",
+      "source": "java-fullstack-foundations",
+      "target": "maven-build-tooling"
+    },
+    {
+      "id": "e-java-fullstack-foundations-junit-testing",
+      "source": "java-fullstack-foundations",
+      "target": "junit-testing"
+    },
+    {
+      "id": "e-maven-build-tooling-junit-testing",
+      "source": "maven-build-tooling",
+      "target": "junit-testing"
+    },
+    {
+      "id": "e-junit-testing-mockito-testing",
+      "source": "junit-testing",
+      "target": "mockito-testing"
+    },
+    {
+      "id": "e-java-fullstack-foundations-java-multithreading-concurrency",
+      "source": "java-fullstack-foundations",
+      "target": "java-multithreading-concurrency"
+    },
+    {
+      "id": "e-http-https-rest-apis-jmeter-performance-testing",
+      "source": "http-https-rest-apis",
+      "target": "jmeter-performance-testing"
+    },
+    {
+      "id": "e-ubuntu-wsl2-expert-jmeter-performance-testing",
+      "source": "ubuntu-wsl2-expert",
+      "target": "jmeter-performance-testing"
+    },
+    {
+      "id": "e-java-fullstack-foundations-spring-boot-initializr",
+      "source": "java-fullstack-foundations",
+      "target": "spring-boot-initializr"
+    },
+    {
+      "id": "e-maven-build-tooling-spring-boot-initializr",
+      "source": "maven-build-tooling",
+      "target": "spring-boot-initializr"
+    },
+    {
+      "id": "e-http-https-rest-apis-spring-boot-initializr",
+      "source": "http-https-rest-apis",
+      "target": "spring-boot-initializr"
+    },
+    {
+      "id": "e-junit-testing-spring-boot-initializr",
+      "source": "junit-testing",
+      "target": "spring-boot-initializr"
+    },
+    {
+      "id": "e-java-fullstack-foundations-spring-aop-fundamentals",
+      "source": "java-fullstack-foundations",
+      "target": "spring-aop-fundamentals"
+    },
+    {
+      "id": "e-spring-boot-initializr-spring-aop-fundamentals",
+      "source": "spring-boot-initializr",
+      "target": "spring-aop-fundamentals"
+    },
+    {
+      "id": "e-orm-jpa-hibernate-spring-data-jpa",
+      "source": "orm-jpa-hibernate",
+      "target": "spring-data-jpa"
+    },
+    {
+      "id": "e-spring-boot-initializr-spring-data-jpa",
+      "source": "spring-boot-initializr",
+      "target": "spring-data-jpa"
+    },
+    {
+      "id": "e-spring-boot-initializr-spring-cloud-microservices",
+      "source": "spring-boot-initializr",
+      "target": "spring-cloud-microservices"
+    },
+    {
+      "id": "e-http-https-rest-apis-spring-cloud-microservices",
+      "source": "http-https-rest-apis",
+      "target": "spring-cloud-microservices"
+    },
+    {
+      "id": "e-spring-cloud-microservices-eureka-service-discovery",
+      "source": "spring-cloud-microservices",
+      "target": "eureka-service-discovery"
+    },
+    {
+      "id": "e-spring-cloud-microservices-spring-cloud-gateway",
+      "source": "spring-cloud-microservices",
+      "target": "spring-cloud-gateway"
+    },
+    {
+      "id": "e-eureka-service-discovery-spring-cloud-gateway",
+      "source": "eureka-service-discovery",
+      "target": "spring-cloud-gateway"
+    },
+    {
+      "id": "e-java-fullstack-foundations-jdbc-fullstack",
+      "source": "java-fullstack-foundations",
+      "target": "jdbc-fullstack"
+    },
+    {
+      "id": "e-postgresql-fullstack-jdbc-fullstack",
+      "source": "postgresql-fullstack",
+      "target": "jdbc-fullstack"
+    },
+    {
+      "id": "e-java-fullstack-foundations-orm-jpa-hibernate",
+      "source": "java-fullstack-foundations",
+      "target": "orm-jpa-hibernate"
+    },
+    {
+      "id": "e-postgresql-fullstack-orm-jpa-hibernate",
+      "source": "postgresql-fullstack",
+      "target": "orm-jpa-hibernate"
+    },
+    {
+      "id": "e-jdbc-fullstack-orm-jpa-hibernate",
+      "source": "jdbc-fullstack",
+      "target": "orm-jpa-hibernate"
+    },
+    {
+      "id": "e-postgresql-fullstack-mongodb-fullstack",
+      "source": "postgresql-fullstack",
+      "target": "mongodb-fullstack"
+    },
+    {
+      "id": "e-postgresql-fullstack-neo4j-graph-database",
+      "source": "postgresql-fullstack",
+      "target": "neo4j-graph-database"
+    },
+    {
+      "id": "e-java-fullstack-foundations-ai-assisted-software-development",
+      "source": "java-fullstack-foundations",
+      "target": "ai-assisted-software-development"
+    },
+    {
+      "id": "e-git-version-control-expert-ai-assisted-software-development",
+      "source": "git-version-control-expert",
+      "target": "ai-assisted-software-development"
+    },
+    {
+      "id": "e-junit-testing-ai-assisted-software-development",
+      "source": "junit-testing",
+      "target": "ai-assisted-software-development"
+    },
+    {
+      "id": "e-http-https-rest-apis-rag-fundamentals",
+      "source": "http-https-rest-apis",
+      "target": "rag-fundamentals"
+    },
+    {
+      "id": "e-java-fullstack-foundations-rag-fundamentals",
+      "source": "java-fullstack-foundations",
+      "target": "rag-fundamentals"
+    },
+    {
+      "id": "e-spring-boot-initializr-spring-ai",
+      "source": "spring-boot-initializr",
+      "target": "spring-ai"
+    },
+    {
+      "id": "e-rag-fundamentals-spring-ai",
+      "source": "rag-fundamentals",
+      "target": "spring-ai"
+    },
+    {
+      "id": "e-ubuntu-wsl2-expert-docker-fullstack",
+      "source": "ubuntu-wsl2-expert",
+      "target": "docker-fullstack"
+    },
+    {
+      "id": "e-git-version-control-expert-cicd-fundamentals",
+      "source": "git-version-control-expert",
+      "target": "cicd-fundamentals"
+    },
+    {
+      "id": "e-cicd-fundamentals-jenkins-cicd",
+      "source": "cicd-fundamentals",
+      "target": "jenkins-cicd"
+    },
+    {
+      "id": "e-git-version-control-expert-jenkins-cicd",
+      "source": "git-version-control-expert",
+      "target": "jenkins-cicd"
+    },
+    {
+      "id": "e-cicd-fundamentals-github-actions-cicd",
+      "source": "cicd-fundamentals",
+      "target": "github-actions-cicd"
+    },
+    {
+      "id": "e-git-version-control-expert-github-actions-cicd",
+      "source": "git-version-control-expert",
+      "target": "github-actions-cicd"
+    },
+    {
+      "id": "e-cicd-fundamentals-gitlab-cicd",
+      "source": "cicd-fundamentals",
+      "target": "gitlab-cicd"
+    },
+    {
+      "id": "e-git-version-control-expert-gitlab-cicd",
+      "source": "git-version-control-expert",
+      "target": "gitlab-cicd"
+    },
+    {
+      "id": "e-cicd-fundamentals-deployment-fundamentals",
+      "source": "cicd-fundamentals",
+      "target": "deployment-fundamentals"
+    },
+    {
+      "id": "e-deployment-fundamentals-aws-fundamentals-ec2-s3-ebs",
+      "source": "deployment-fundamentals",
+      "target": "aws-fundamentals-ec2-s3-ebs"
+    },
+    {
+      "id": "e-docker-fullstack-kubernetes-fullstack",
+      "source": "docker-fullstack",
+      "target": "kubernetes-fullstack"
+    },
+    {
+      "id": "e-deployment-fundamentals-kubernetes-fullstack",
+      "source": "deployment-fundamentals",
+      "target": "kubernetes-fullstack"
+    },
+    {
+      "id": "e-spring-boot-initializr-elk-elastic-stack",
+      "source": "spring-boot-initializr",
+      "target": "elk-elastic-stack"
+    },
+    {
+      "id": "e-docker-fullstack-elk-elastic-stack",
+      "source": "docker-fullstack",
+      "target": "elk-elastic-stack"
+    }
+  ]
+}

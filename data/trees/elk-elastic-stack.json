@@ -1,0 +1,335 @@
+{
+  "treeId": "elk-elastic-stack",
+  "order": 27,
+  "title": "ELK / Elastic Stack for Full-Stack Developers",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from application logging fundamentals to independently collecting, processing, indexing, searching, visualizing, and troubleshooting application logs with Elasticsearch, Logstash, and Kibana.",
+  "version": "1.0",
+  "estimatedMonths": 1.5,
+  "totalNodes": 16,
+  "icon": "search",
+  "nodes": [
+    {
+      "id": "observability-and-logging-fundamentals",
+      "label": "Observability & Logging Fundamentals",
+      "description": "Explain observability through logs, metrics, and traces, and understand why intentional, production-grade logging is necessary once an application can no longer be debugged by attaching an IDE.",
+      "icon": "visibility",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "observability-and-logging-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "log-levels-and-structured-logging",
+      "label": "Log Levels & Structured Logging",
+      "description": "Choose appropriate log levels (TRACE through ERROR) for different events, and prefer structured JSON logs with well-designed fields over plain text so that logs become machine-searchable and aggregable.",
+      "icon": "list_alt",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "log-levels-and-structured-logging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["observability-and-logging-fundamentals"]
+    },
+    {
+      "id": "spring-boot-logging",
+      "label": "Spring Boot Logging",
+      "description": "Use SLF4J as a logging facade in Spring Boot applications, configure Logback as the default logging implementation, and understand Log4j2's role as an alternative implementation unrelated to Logstash.",
+      "icon": "coffee",
+      "zone": "Application Logging",
+      "resources": [
+        {
+          "id": "spring-boot-logging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["log-levels-and-structured-logging"]
+    },
+    {
+      "id": "centralized-logging-and-elk-architecture",
+      "label": "Centralized Logging & ELK Architecture",
+      "description": "Explain why distributed services need centralized log collection, and describe the responsibilities of each ELK component — Logstash collects/transforms, Elasticsearch stores/searches, Kibana visualizes.",
+      "icon": "hub",
+      "zone": "Application Logging",
+      "resources": [
+        {
+          "id": "centralized-logging-and-elk-architecture-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["spring-boot-logging"]
+    },
+    {
+      "id": "elasticsearch-fundamentals",
+      "label": "Elasticsearch Fundamentals",
+      "description": "Understand Elasticsearch as a distributed, near-real-time search and analytics engine built on JSON documents, and learn the core vocabulary of clusters, nodes, indices, documents, and fields.",
+      "icon": "search",
+      "zone": "Elasticsearch",
+      "resources": [
+        {
+          "id": "elasticsearch-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["centralized-logging-and-elk-architecture"]
+    },
+    {
+      "id": "mappings-and-indexing",
+      "label": "Mappings & Indexing",
+      "description": "Design field mappings — choosing text versus keyword correctly — for a document type, and index, update, delete, and bulk-load documents efficiently at logging-scale volume.",
+      "icon": "schema",
+      "zone": "Elasticsearch",
+      "resources": [
+        {
+          "id": "mappings-and-indexing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["elasticsearch-fundamentals"]
+    },
+    {
+      "id": "search-and-query-dsl",
+      "label": "Search & Query DSL",
+      "description": "Search and filter Elasticsearch data using Query DSL constructs such as match, term, range, and bool queries, and combine structured filters with full-text search across analyzed message fields.",
+      "icon": "manage_search",
+      "zone": "Elasticsearch",
+      "resources": [
+        {
+          "id": "search-and-query-dsl-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["mappings-and-indexing"]
+    },
+    {
+      "id": "analysis-and-aggregations",
+      "label": "Analysis & Aggregations",
+      "description": "Understand the text analysis pipeline (tokenizers and analyzers) at a practical level, and build bucket and metric aggregations to summarize log events — such as errors by service or average request duration.",
+      "icon": "functions",
+      "zone": "Elasticsearch",
+      "resources": [
+        {
+          "id": "analysis-and-aggregations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["search-and-query-dsl"]
+    },
+    {
+      "id": "cluster-shards-and-lifecycle",
+      "label": "Cluster, Shards & Lifecycle",
+      "description": "Explain shards and replicas as the mechanisms behind Elasticsearch's scalability and availability, recognize basic cluster health problems, and design a reasonable retention/lifecycle policy so log storage does not grow unbounded.",
+      "icon": "dns",
+      "zone": "Elasticsearch",
+      "resources": [
+        {
+          "id": "cluster-shards-and-lifecycle-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["analysis-and-aggregations"]
+    },
+    {
+      "id": "logstash-pipeline",
+      "label": "Logstash Pipeline Basics",
+      "description": "Build a Logstash input → filter → output pipeline, configure common input sources such as files, and use Grok patterns to parse unstructured legacy log text into structured fields.",
+      "icon": "filter_alt",
+      "zone": "Logstash",
+      "resources": [
+        {
+          "id": "logstash-pipeline-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cluster-shards-and-lifecycle"]
+    },
+    {
+      "id": "logstash-outputs-and-design",
+      "label": "Logstash Outputs & Pipeline Design",
+      "description": "Configure Logstash output to Elasticsearch with attention to failure/retry behavior, and design pipelines that are understandable, testable, resilient to malformed events, and able to handle backpressure.",
+      "icon": "output",
+      "zone": "Logstash",
+      "resources": [
+        {
+          "id": "logstash-outputs-and-design-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["logstash-pipeline"]
+    },
+    {
+      "id": "kibana-exploration",
+      "label": "Kibana Discover & Search",
+      "description": "Use Kibana Discover to investigate raw log events — setting time ranges, filtering fields, and following a correlation ID — to reconstruct the path of a failed request.",
+      "icon": "travel_explore",
+      "zone": "Kibana",
+      "resources": [
+        {
+          "id": "kibana-exploration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["logstash-outputs-and-design"]
+    },
+    {
+      "id": "kibana-visualization",
+      "label": "Kibana Dashboards & Alerts",
+      "description": "Build visualizations and dashboards that answer real operational questions rather than decorate a screen, and configure alerts with sensible thresholds that avoid alert fatigue.",
+      "icon": "dashboard",
+      "zone": "Kibana",
+      "resources": [
+        {
+          "id": "kibana-visualization-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["kibana-exploration"]
+    },
+    {
+      "id": "integration-and-correlation",
+      "label": "Integration & Correlation",
+      "description": "Connect Spring Boot logs to the ELK pipeline via log shippers/agents, use correlation IDs and MDC to trace a request across services, and run a local ELK stack with Docker Compose for microservices-readiness.",
+      "icon": "device_hub",
+      "zone": "Integration",
+      "resources": [
+        {
+          "id": "integration-and-correlation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["kibana-visualization"]
+    },
+    {
+      "id": "security-and-performance",
+      "label": "Security & Performance",
+      "description": "Protect Elasticsearch, Logstash, and Kibana with authentication, authorization, and TLS, keep sensitive data out of logs, and reason about ingestion/search performance factors like mapping design and high-cardinality fields.",
+      "icon": "security",
+      "zone": "Production",
+      "resources": [
+        {
+          "id": "security-and-performance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["integration-and-correlation"]
+    },
+    {
+      "id": "troubleshooting-and-governance",
+      "label": "Troubleshooting & Data Governance",
+      "description": "Debug a missing log event by checking every pipeline stage in order, and design logging with data governance and cost in mind — intentional retention, tuned log volume, and events derived from real operational questions.",
+      "icon": "bug_report",
+      "zone": "Production",
+      "resources": [
+        {
+          "id": "troubleshooting-and-governance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["security-and-performance"]
+    }
+  ],
+  "edges": [
+    { "id": "e-observability-and-logging-fundamentals-log-levels-and-structured-logging", "source": "observability-and-logging-fundamentals", "target": "log-levels-and-structured-logging" },
+    { "id": "e-log-levels-and-structured-logging-spring-boot-logging", "source": "log-levels-and-structured-logging", "target": "spring-boot-logging" },
+    { "id": "e-spring-boot-logging-centralized-logging-and-elk-architecture", "source": "spring-boot-logging", "target": "centralized-logging-and-elk-architecture" },
+    { "id": "e-centralized-logging-and-elk-architecture-elasticsearch-fundamentals", "source": "centralized-logging-and-elk-architecture", "target": "elasticsearch-fundamentals" },
+    { "id": "e-elasticsearch-fundamentals-mappings-and-indexing", "source": "elasticsearch-fundamentals", "target": "mappings-and-indexing" },
+    { "id": "e-mappings-and-indexing-search-and-query-dsl", "source": "mappings-and-indexing", "target": "search-and-query-dsl" },
+    { "id": "e-search-and-query-dsl-analysis-and-aggregations", "source": "search-and-query-dsl", "target": "analysis-and-aggregations" },
+    { "id": "e-analysis-and-aggregations-cluster-shards-and-lifecycle", "source": "analysis-and-aggregations", "target": "cluster-shards-and-lifecycle" },
+    { "id": "e-cluster-shards-and-lifecycle-logstash-pipeline", "source": "cluster-shards-and-lifecycle", "target": "logstash-pipeline" },
+    { "id": "e-logstash-pipeline-logstash-outputs-and-design", "source": "logstash-pipeline", "target": "logstash-outputs-and-design" },
+    { "id": "e-logstash-outputs-and-design-kibana-exploration", "source": "logstash-outputs-and-design", "target": "kibana-exploration" },
+    { "id": "e-kibana-exploration-kibana-visualization", "source": "kibana-exploration", "target": "kibana-visualization" },
+    { "id": "e-kibana-visualization-integration-and-correlation", "source": "kibana-visualization", "target": "integration-and-correlation" },
+    { "id": "e-integration-and-correlation-security-and-performance", "source": "integration-and-correlation", "target": "security-and-performance" },
+    { "id": "e-security-and-performance-troubleshooting-and-governance", "source": "security-and-performance", "target": "troubleshooting-and-governance" }
+  ]
+}

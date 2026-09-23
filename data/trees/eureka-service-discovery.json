@@ -1,0 +1,335 @@
+{
+  "treeId": "eureka-service-discovery",
+  "order": 37,
+  "title": "Eureka Service Discovery",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn service discovery at the developer level using Spring Cloud Netflix Eureka: build a Eureka Server, register Spring Boot services as Eureka clients, discover logical services without hardcoded instance addresses, work with multiple instances, and understand health/lease behavior and client-side load balancing while preparing for Spring Cloud Gateway.",
+  "version": "1.0",
+  "estimatedMonths": 0.5,
+  "totalNodes": 16,
+  "icon": "dns",
+  "nodes": [
+    {
+      "id": "discovery-problem-and-concepts",
+      "label": "The Discovery Problem & Eureka Concepts",
+      "description": "Understand why hardcoded service locations become fragile as services restart, move, and scale, what a service registry does, what Eureka specifically is (a registration server plus client), and what Eureka deliberately is not — an API gateway, a business database, or a message broker.",
+      "icon": "dns",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "discovery-problem-and-concepts-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "before-after-architecture-and-compatibility",
+      "label": "Architecture Before/After Eureka & Compatibility",
+      "description": "Contrast the fixed-URL architecture with the Eureka-based architecture where callers depend on a logical service name instead of a physical address, and maintain Spring Boot/Spring Cloud version compatibility discipline rather than following outdated tutorials.",
+      "icon": "sync",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "before-after-architecture-and-compatibility-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["discovery-problem-and-concepts"]
+    },
+    {
+      "id": "building-eureka-server",
+      "label": "Building the Eureka Server",
+      "description": "Create a dedicated, infrastructure-focused Eureka Server Spring Boot application, add server support with the current Spring Cloud dependency, configure standalone registry behavior, and start and verify it through the dashboard before any clients register.",
+      "icon": "build",
+      "zone": "Building the Registry",
+      "resources": [
+        {
+          "id": "building-eureka-server-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["before-after-architecture-and-compatibility"]
+    },
+    {
+      "id": "registering-clients",
+      "label": "Registering Eureka Clients",
+      "description": "Add Eureka client support to a Spring Boot service, configure spring.application.name as its logical identity, distinguish that logical service identity from a physical host/port instance identity, and register multiple independent services with the same registry.",
+      "icon": "hub",
+      "zone": "Building the Registry",
+      "resources": [
+        {
+          "id": "registering-clients-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["building-eureka-server"]
+    },
+    {
+      "id": "registration-lifecycle-and-staleness",
+      "label": "Registration Lifecycle, Heartbeats & Staleness",
+      "description": "Understand that registration is an ongoing lease maintained through periodic heartbeats rather than a one-time record, why failure detection can never be instantaneous, why registry information can be temporarily stale, and why Eureka's self-preservation behavior avoids over-reacting to ambiguous network failures.",
+      "icon": "schedule",
+      "zone": "Registry Mechanics",
+      "resources": [
+        {
+          "id": "registration-lifecycle-and-staleness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["registering-clients"]
+    },
+    {
+      "id": "discovering-and-calling-services",
+      "label": "Discovering & Calling Services",
+      "description": "Fetch and cache registry information to discover services by logical name, choose among multiple instances with client-side load balancing via Spring Cloud LoadBalancer, and build a discovery-aware HTTP client that keeps discovery mechanics out of core business logic.",
+      "icon": "manage_search",
+      "zone": "Registry Mechanics",
+      "resources": [
+        {
+          "id": "discovering-and-calling-services-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["registration-lifecycle-and-staleness"]
+    },
+    {
+      "id": "replacing-hardcoded-urls",
+      "label": "Replacing Hardcoded URLs",
+      "description": "Replace a hardcoded downstream service URL with logical-name-based discovery, then verify the smallest possible end-to-end discovered call works correctly across services.",
+      "icon": "link",
+      "zone": "Hands-On Integration",
+      "resources": [
+        {
+          "id": "replacing-hardcoded-urls-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["discovering-and-calling-services"]
+    },
+    {
+      "id": "scaling-and-instance-observation",
+      "label": "Scaling & Instance Observation",
+      "description": "Run multiple instances of the same logical service under one application name, confirm the registry treats them as instances of one service rather than separate services, and observe how discovery and load balancing distribute repeated calls across those instances.",
+      "icon": "layers",
+      "zone": "Hands-On Integration",
+      "resources": [
+        {
+          "id": "scaling-and-instance-observation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["replacing-hardcoded-urls"]
+    },
+    {
+      "id": "failure-drills",
+      "label": "Instance & Registry Failure Drills",
+      "description": "Stop a service instance and observe how registry state and client behavior change over time, then separately reason about what happens to already-running clients, new registrations, and registry refresh if the Eureka server itself becomes unavailable, including why production registries may need redundancy.",
+      "icon": "bug_report",
+      "zone": "Hands-On Integration",
+      "resources": [
+        {
+          "id": "failure-drills-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["scaling-and-instance-observation"]
+    },
+    {
+      "id": "health-and-configuration",
+      "label": "Health, Status & Configuration Discipline",
+      "description": "Connect service registration to Spring Boot health/Actuator concepts so 'registered' isn't confused with 'healthy and ready to serve traffic,' and externalize the Eureka server location as environment-specific configuration rather than a Java literal.",
+      "icon": "health_and_safety",
+      "zone": "Operations",
+      "resources": [
+        {
+          "id": "health-and-configuration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["failure-drills"]
+    },
+    {
+      "id": "docker-and-startup-timing",
+      "label": "Docker Compose & Startup Timing",
+      "description": "Containerize the discovery server and its clients and run them together with Docker Compose, use correct container hostnames instead of localhost, and handle startup-order timing since a started process is not necessarily a ready one.",
+      "icon": "cloud",
+      "zone": "Operations",
+      "resources": [
+        {
+          "id": "docker-and-startup-timing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["health-and-configuration"]
+    },
+    {
+      "id": "troubleshooting",
+      "label": "Troubleshooting Registration & Discovery",
+      "description": "Use the Eureka dashboard and service/client logs to diagnose common registration failures (wrong URL, wrong application name, version mismatch) and discovery failures (service found but the call still fails), and maintain consistent, capability-based logical service names.",
+      "icon": "terminal",
+      "zone": "Operations",
+      "resources": [
+        {
+          "id": "troubleshooting-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["docker-and-startup-timing"]
+    },
+    {
+      "id": "what-discovery-does-not-replace",
+      "label": "What Discovery Does Not Replace",
+      "description": "Understand that Eureka only answers 'where is the service' — it does not make calls reliable (resilience), explain what happened when something breaks (observability), centralize application settings (configuration), or authorize access (security), each of which remains a separate concern.",
+      "icon": "verified",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "what-discovery-does-not-replace-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["troubleshooting"]
+    },
+    {
+      "id": "gateway-transition",
+      "label": "From Eureka to Spring Cloud Gateway",
+      "description": "See how Eureka (solving location) and Spring Cloud Gateway (solving routing) combine so a gateway can route to logical services and their instances instead of fixed addresses, setting up the direct transition into the Spring Cloud Gateway tree.",
+      "icon": "api",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "gateway-transition-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["what-discovery-does-not-replace"]
+    },
+    {
+      "id": "platform-comparisons",
+      "label": "Kubernetes, AWS & Deployment Context",
+      "description": "Compare Eureka's application-level registry model with Kubernetes' platform-level Services/DNS discovery and recognize when Eureka may be redundant, and connect discovery to broader concerns like AWS deployments, JMeter-observed performance under scaling, and CI/CD-driven instance churn.",
+      "icon": "lan",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "platform-comparisons-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["gateway-transition"]
+    },
+    {
+      "id": "anti-patterns-and-mastery",
+      "label": "Eureka Anti-Patterns & Mastery",
+      "description": "Recognize common Eureka misuses — treating it as a gateway, assuming registration means permanently healthy, hardcoding every instance anyway, exposing the registry carelessly, or skipping resilience because 'discovery handles it' — and consolidate the full registration-to-discovery mental model.",
+      "icon": "architecture",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "anti-patterns-and-mastery-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["platform-comparisons"]
+    }
+  ],
+  "edges": [
+    { "id": "e-discovery-problem-and-concepts-before-after-architecture-and-compatibility", "source": "discovery-problem-and-concepts", "target": "before-after-architecture-and-compatibility" },
+    { "id": "e-before-after-architecture-and-compatibility-building-eureka-server", "source": "before-after-architecture-and-compatibility", "target": "building-eureka-server" },
+    { "id": "e-building-eureka-server-registering-clients", "source": "building-eureka-server", "target": "registering-clients" },
+    { "id": "e-registering-clients-registration-lifecycle-and-staleness", "source": "registering-clients", "target": "registration-lifecycle-and-staleness" },
+    { "id": "e-registration-lifecycle-and-staleness-discovering-and-calling-services", "source": "registration-lifecycle-and-staleness", "target": "discovering-and-calling-services" },
+    { "id": "e-discovering-and-calling-services-replacing-hardcoded-urls", "source": "discovering-and-calling-services", "target": "replacing-hardcoded-urls" },
+    { "id": "e-replacing-hardcoded-urls-scaling-and-instance-observation", "source": "replacing-hardcoded-urls", "target": "scaling-and-instance-observation" },
+    { "id": "e-scaling-and-instance-observation-failure-drills", "source": "scaling-and-instance-observation", "target": "failure-drills" },
+    { "id": "e-failure-drills-health-and-configuration", "source": "failure-drills", "target": "health-and-configuration" },
+    { "id": "e-health-and-configuration-docker-and-startup-timing", "source": "health-and-configuration", "target": "docker-and-startup-timing" },
+    { "id": "e-docker-and-startup-timing-troubleshooting", "source": "docker-and-startup-timing", "target": "troubleshooting" },
+    { "id": "e-troubleshooting-what-discovery-does-not-replace", "source": "troubleshooting", "target": "what-discovery-does-not-replace" },
+    { "id": "e-what-discovery-does-not-replace-gateway-transition", "source": "what-discovery-does-not-replace", "target": "gateway-transition" },
+    { "id": "e-gateway-transition-platform-comparisons", "source": "gateway-transition", "target": "platform-comparisons" },
+    { "id": "e-platform-comparisons-anti-patterns-and-mastery", "source": "platform-comparisons", "target": "anti-patterns-and-mastery" }
+  ]
+}

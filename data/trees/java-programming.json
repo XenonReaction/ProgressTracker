@@ -1,0 +1,701 @@
+{
+  "treeId": "java-programming",
+  "order": 5,
+  "title": "Java Programming",
+  "category": "Technology",
+  "difficulty": "hard",
+  "description": "A comprehensive path through the Java language and platform — from syntax and object-oriented fundamentals through generics, concurrency, the Collections and Stream APIs, networking, and GUI/server-side programming. Structured after the chapter organization of \"Java: The Complete Reference.\"",
+  "version": "1.0",
+  "estimatedMonths": 5,
+  "totalNodes": 22,
+  "icon": "coffee",
+  "nodes": [
+    {
+      "id": "java-fundamentals",
+      "label": "Java Fundamentals & Setup",
+      "description": "Understand Java's history and design goals, install the JDK, and write, compile, and run your first program.",
+      "icon": "terminal",
+      "zone": "Foundation",
+      "resources": [
+        {
+          "id": "java-fundamentals-oracle-docs",
+          "title": "Getting Started — The Java Tutorials",
+          "url": "https://docs.oracle.com/javase/tutorial/getStarted/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 2,
+          "isFree": true
+        },
+        {
+          "id": "java-fundamentals-w3schools-article",
+          "title": "Java Get Started",
+          "url": "https://www.w3schools.com/java/java_get_started.asp",
+          "type": "article",
+          "author": "W3Schools",
+          "estimatedHours": 0.5,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "java-data-types",
+      "label": "Data Types, Variables & Operators",
+      "description": "Learn Java's primitive types, variable declaration and scope, type conversion and casting, arrays, and the full range of operators.",
+      "icon": "123",
+      "zone": "Foundation",
+      "resources": [
+        {
+          "id": "java-data-types-oracle-docs",
+          "title": "Language Basics — Nuts and Bolts of the Java Language",
+          "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 3,
+          "isFree": true
+        },
+        {
+          "id": "java-data-types-w3schools-article",
+          "title": "Java Data Types",
+          "url": "https://www.w3schools.com/java/java_data_types.asp",
+          "type": "article",
+          "author": "W3Schools",
+          "estimatedHours": 0.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-fundamentals"
+      ]
+    },
+    {
+      "id": "java-control-flow",
+      "label": "Control Statements",
+      "description": "Master Java's selection statements (if, switch), iteration statements (while, do-while, for, for-each), and jump statements (break, continue).",
+      "icon": "call_split",
+      "zone": "Foundation",
+      "resources": [
+        {
+          "id": "java-control-flow-oracle-docs",
+          "title": "Control Flow Statements",
+          "url": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 1.5,
+          "isFree": true
+        },
+        {
+          "id": "java-control-flow-w3schools-article",
+          "title": "Java Conditions",
+          "url": "https://www.w3schools.com/java/java_conditions.asp",
+          "type": "article",
+          "author": "W3Schools",
+          "estimatedHours": 0.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-data-types"
+      ]
+    },
+    {
+      "id": "java-classes-objects",
+      "label": "Classes & Objects",
+      "description": "Learn class fundamentals, declaring and creating objects, constructors, the this keyword, and garbage collection.",
+      "icon": "widgets",
+      "zone": "OOP Core",
+      "resources": [
+        {
+          "id": "java-classes-objects-oracle-docs",
+          "title": "Classes and Objects",
+          "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 4,
+          "isFree": true
+        },
+        {
+          "id": "java-classes-objects-video",
+          "title": "Java - OOP Basics 1/5 (Class and Object)",
+          "url": "https://www.youtube.com/watch?v=0NPR8GFHNmE",
+          "type": "video",
+          "author": "Coding with John",
+          "estimatedHours": 0.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-control-flow"
+      ]
+    },
+    {
+      "id": "java-methods-deep-dive",
+      "label": "Methods, Overloading & Access Control",
+      "description": "Go deeper into methods: overloading, passing and returning objects, recursion, access control, static and final, and varargs.",
+      "icon": "functions",
+      "zone": "OOP Core",
+      "resources": [
+        {
+          "id": "java-methods-oracle-docs",
+          "title": "Defining Methods",
+          "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 2,
+          "isFree": true
+        },
+        {
+          "id": "java-methods-video",
+          "title": "OOP 1 | Introduction & Concepts - Classes, Objects, Constructors, Keywords",
+          "url": "https://www.youtube.com/watch?v=BSVKUk58K6U",
+          "type": "video",
+          "author": "Bro Code",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-classes-objects"
+      ]
+    },
+    {
+      "id": "java-inheritance",
+      "label": "Inheritance",
+      "description": "Understand inheritance basics, using super, method overriding and dynamic dispatch, abstract classes, and final.",
+      "icon": "account_tree",
+      "zone": "OOP Core",
+      "resources": [
+        {
+          "id": "java-inheritance-oracle-docs",
+          "title": "Interfaces and Inheritance",
+          "url": "https://docs.oracle.com/javase/tutorial/java/IandI/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 3,
+          "isFree": true
+        },
+        {
+          "id": "java-inheritance-video",
+          "title": "Java Tutorial For Beginners - Inheritance in Java",
+          "url": "https://www.youtube.com/watch?v=JABbak8aNRY",
+          "type": "video",
+          "author": "Bro Code",
+          "estimatedHours": 0.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-classes-objects"
+      ]
+    },
+    {
+      "id": "java-interfaces-packages",
+      "label": "Interfaces & Packages",
+      "description": "Define and implement interfaces, use default and static interface methods, and organize code with packages and access control.",
+      "icon": "layers",
+      "zone": "OOP Core",
+      "resources": [
+        {
+          "id": "java-interfaces-packages-oracle-docs",
+          "title": "Creating and Using Packages",
+          "url": "https://docs.oracle.com/javase/tutorial/java/package/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 1.5,
+          "isFree": true
+        },
+        {
+          "id": "java-interfaces-packages-video",
+          "title": "Master OOP in Java: Classes, Objects, Inheritance, Polymorphism, Encapsulation, Abstraction",
+          "url": "https://www.youtube.com/watch?v=uLeuayp3jjc",
+          "type": "video",
+          "author": "Amigoscode",
+          "estimatedHours": 2,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-inheritance"
+      ]
+    },
+    {
+      "id": "java-exception-handling",
+      "label": "Exception Handling",
+      "description": "Handle errors robustly with try/catch/finally, throw and throws, multiple catch clauses, and custom exception classes.",
+      "icon": "error",
+      "zone": "OOP Core",
+      "resources": [
+        {
+          "id": "java-exception-handling-oracle-docs",
+          "title": "Exceptions",
+          "url": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 2,
+          "isFree": true
+        },
+        {
+          "id": "java-exception-handling-baeldung-article",
+          "title": "Common Java Exceptions",
+          "url": "https://www.baeldung.com/java-common-exceptions",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 1,
+          "isFree": true
+        },
+        {
+          "id": "java-exception-handling-video",
+          "title": "Java Tutorial | Exception Handling Try Catch Finally",
+          "url": "https://www.youtube.com/watch?v=oR2CVVjCsCA",
+          "type": "video",
+          "author": "Telusko",
+          "estimatedHours": 0.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-methods-deep-dive"
+      ]
+    },
+    {
+      "id": "java-enums-annotations",
+      "label": "Enumerations & Annotations",
+      "description": "Learn enum fundamentals and type-safety, autoboxing of primitive wrapper types, and annotation basics with retention policies.",
+      "icon": "label",
+      "zone": "Language Features",
+      "resources": [
+        {
+          "id": "java-enums-annotations-oracle-docs",
+          "title": "Annotations",
+          "url": "https://docs.oracle.com/javase/tutorial/java/annotations/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 1.5,
+          "isFree": true
+        },
+        {
+          "id": "java-enums-annotations-baeldung-article",
+          "title": "A Guide to Java Enums",
+          "url": "https://www.baeldung.com/a-guide-to-java-enums",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-interfaces-packages"
+      ]
+    },
+    {
+      "id": "java-generics",
+      "label": "Generics",
+      "description": "Write type-safe generic classes and methods, use bounded types and wildcards, and understand type erasure.",
+      "icon": "category",
+      "zone": "Language Features",
+      "resources": [
+        {
+          "id": "java-generics-oracle-docs",
+          "title": "Generics",
+          "url": "https://docs.oracle.com/javase/tutorial/java/generics/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 2.5,
+          "isFree": true
+        },
+        {
+          "id": "java-generics-video",
+          "title": "Generics In Java - Full Simple Tutorial",
+          "url": "https://www.youtube.com/watch?v=K1iu1kXkVoA",
+          "type": "video",
+          "author": "Coding with John",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-interfaces-packages"
+      ]
+    },
+    {
+      "id": "java-lambda-expressions",
+      "label": "Lambda Expressions",
+      "description": "Introduce lambda expressions and functional interfaces, method and constructor references, and predefined functional interfaces.",
+      "icon": "bolt",
+      "zone": "Language Features",
+      "resources": [
+        {
+          "id": "java-lambda-expressions-oracle-docs",
+          "title": "Lambda Expressions",
+          "url": "https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 1.5,
+          "isFree": true
+        },
+        {
+          "id": "java-lambda-expressions-video",
+          "title": "Lambda Expressions in Java - Full Simple Tutorial",
+          "url": "https://www.youtube.com/watch?v=tj5sLSFjVj4",
+          "type": "video",
+          "author": "Coding with John",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-generics"
+      ]
+    },
+    {
+      "id": "java-modules",
+      "label": "Java Platform Modules",
+      "description": "Understand the module system introduced in Java 9: module basics, requires and exports, services, and jlink.",
+      "icon": "view_module",
+      "zone": "Language Features",
+      "resources": [
+        {
+          "id": "java-modules-baeldung-article",
+          "title": "A Guide to Java 9 Modularity",
+          "url": "https://www.baeldung.com/java-modularity",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 2,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-interfaces-packages"
+      ]
+    },
+    {
+      "id": "java-io-fundamentals",
+      "label": "I/O Basics & Try-with-Resources",
+      "description": "Cover the I/O stream model, reading console input and writing console output, and automatically closing resources.",
+      "icon": "input",
+      "zone": "Language Features",
+      "resources": [
+        {
+          "id": "java-io-fundamentals-oracle-docs",
+          "title": "Basic I/O",
+          "url": "https://docs.oracle.com/javase/tutorial/essential/io/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 3,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-exception-handling"
+      ]
+    },
+    {
+      "id": "java-string-handling",
+      "label": "String Handling",
+      "description": "Master the String, StringBuffer, and StringBuilder classes: construction, comparison, searching, and modification.",
+      "icon": "text_fields",
+      "zone": "Core Library",
+      "resources": [
+        {
+          "id": "java-string-handling-oracle-docs",
+          "title": "Numbers and Strings",
+          "url": "https://docs.oracle.com/javase/tutorial/java/data/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 1.5,
+          "isFree": true
+        },
+        {
+          "id": "java-string-handling-baeldung-article",
+          "title": "All About String in Java",
+          "url": "https://www.baeldung.com/java-string",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 1.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-classes-objects"
+      ]
+    },
+    {
+      "id": "java-collections-framework",
+      "label": "Collections Framework",
+      "description": "Learn the Collection interfaces (List, Set, Queue, Map), core implementations like ArrayList and HashMap, iterators, and comparators.",
+      "icon": "inventory_2",
+      "zone": "Core Library",
+      "resources": [
+        {
+          "id": "java-collections-framework-oracle-docs",
+          "title": "Trail: Collections",
+          "url": "https://docs.oracle.com/javase/tutorial/collections/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 5,
+          "isFree": true
+        },
+        {
+          "id": "java-collections-framework-baeldung-article",
+          "title": "Java Collections Series",
+          "url": "https://www.baeldung.com/java-collections",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 2,
+          "isFree": true
+        },
+        {
+          "id": "java-collections-framework-video",
+          "title": "Master Java Collections Framework in 3 Hours | Full Course in Depth | For DSA",
+          "url": "https://www.youtube.com/watch?v=VE_AAUxTUCY",
+          "type": "video",
+          "author": "Kunal Kushwaha",
+          "estimatedHours": 3,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-generics",
+        "java-string-handling"
+      ]
+    },
+    {
+      "id": "java-io-nio",
+      "label": "File I/O & NIO",
+      "description": "Work with the File class and byte/character streams, then move to the modern NIO Path API, channels, buffers, and selectors.",
+      "icon": "save",
+      "zone": "Core Library",
+      "resources": [
+        {
+          "id": "java-io-nio-baeldung-article",
+          "title": "Introduction to Java NIO2 File API",
+          "url": "https://www.baeldung.com/java-nio-2-file-api",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 1.5,
+          "isFree": true
+        },
+        {
+          "id": "java-io-nio-baeldung-selector-article",
+          "title": "Introduction to the Java NIO Selector",
+          "url": "https://www.baeldung.com/java-nio-selector",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-io-fundamentals"
+      ]
+    },
+    {
+      "id": "java-networking",
+      "label": "Networking",
+      "description": "Use the java.net package for sockets, InetAddress, and URL connections to build client-server applications.",
+      "icon": "lan",
+      "zone": "Core Library",
+      "resources": [
+        {
+          "id": "java-networking-oracle-docs",
+          "title": "Trail: Custom Networking",
+          "url": "https://docs.oracle.com/javase/tutorial/networking/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 3,
+          "isFree": true
+        },
+        {
+          "id": "java-networking-gfg-article",
+          "title": "Socket Programming in Java",
+          "url": "https://www.geeksforgeeks.org/java/socket-programming-in-java/",
+          "type": "article",
+          "author": "GeeksforGeeks",
+          "estimatedHours": 1,
+          "isFree": true
+        },
+        {
+          "id": "java-networking-video",
+          "title": "Java Sockets Tutorial",
+          "url": "https://www.youtube.com/watch?v=aEDV0WlwXTs",
+          "type": "video",
+          "author": "Derek Banas",
+          "estimatedHours": 0.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-io-nio"
+      ]
+    },
+    {
+      "id": "java-multithreading",
+      "label": "Multithreaded Programming",
+      "description": "Learn the Java thread model: creating threads via Runnable and Thread, synchronization, interthread communication, and deadlock.",
+      "icon": "sync",
+      "zone": "Concurrency & Streams",
+      "resources": [
+        {
+          "id": "java-multithreading-oracle-docs",
+          "title": "Concurrency",
+          "url": "https://docs.oracle.com/javase/tutorial/essential/concurrency/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 3,
+          "isFree": true
+        },
+        {
+          "id": "java-multithreading-video",
+          "title": "Java Concurrency & Multithreading Complete Course in 2 Hours | Zero to Hero",
+          "url": "https://www.youtube.com/watch?v=WldMTtUWqTg",
+          "type": "video",
+          "author": "Coding with John",
+          "estimatedHours": 2,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-exception-handling"
+      ]
+    },
+    {
+      "id": "java-concurrency-utilities",
+      "label": "Concurrency Utilities",
+      "description": "Go beyond the basic thread model with java.util.concurrent: executor services, locks, atomic variables, and synchronizers.",
+      "icon": "speed",
+      "zone": "Concurrency & Streams",
+      "resources": [
+        {
+          "id": "java-concurrency-utilities-baeldung-article",
+          "title": "A Guide to the Java ExecutorService",
+          "url": "https://www.baeldung.com/java-executor-service-tutorial",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 1.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-multithreading"
+      ]
+    },
+    {
+      "id": "java-stream-api",
+      "label": "The Stream API",
+      "description": "Process collections declaratively with the Stream API: pipelines, map/filter/reduce, collectors, and parallel streams.",
+      "icon": "waves",
+      "zone": "Concurrency & Streams",
+      "resources": [
+        {
+          "id": "java-stream-api-video-basics",
+          "title": "Java Streams API #1 - The Basics",
+          "url": "https://www.youtube.com/watch?v=bcrl-GL0vV4",
+          "type": "video",
+          "author": "Coding with John",
+          "estimatedHours": 0.5,
+          "isFree": true
+        },
+        {
+          "id": "java-stream-api-video-full",
+          "title": "Java Streams Full Course | Java Streams API Complete Tutorial in 2.5 Hours",
+          "url": "https://www.youtube.com/watch?v=fE_1zPrt9UA",
+          "type": "video",
+          "author": "Telusko",
+          "estimatedHours": 2.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-lambda-expressions",
+        "java-collections-framework"
+      ]
+    },
+    {
+      "id": "java-swing-gui",
+      "label": "GUI Programming with Swing",
+      "description": "Build desktop user interfaces with AWT event handling and Swing components, layout managers, and menus.",
+      "icon": "window",
+      "zone": "GUI & Applied",
+      "resources": [
+        {
+          "id": "java-swing-gui-oracle-docs",
+          "title": "Trail: Creating a GUI with Swing",
+          "url": "https://docs.oracle.com/javase/tutorial/uiswing/index.html",
+          "type": "docs",
+          "author": "Oracle",
+          "estimatedHours": 4,
+          "isFree": true
+        },
+        {
+          "id": "java-swing-gui-video",
+          "title": "Java GUI: Full Course",
+          "url": "https://www.youtube.com/watch?v=Kmgo00avvEw",
+          "type": "video",
+          "author": "Bro Code",
+          "estimatedHours": 3,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-networking"
+      ]
+    },
+    {
+      "id": "java-servlets",
+      "label": "Servlets & JavaBeans",
+      "description": "Take Java to the server side: JavaBeans conventions, the servlet lifecycle, and handling HTTP requests and responses.",
+      "icon": "web",
+      "zone": "GUI & Applied",
+      "resources": [
+        {
+          "id": "java-servlets-baeldung-article",
+          "title": "Introduction to Java Servlets",
+          "url": "https://www.baeldung.com/intro-to-servlets",
+          "type": "article",
+          "author": "Baeldung",
+          "estimatedHours": 1.5,
+          "isFree": true
+        },
+        {
+          "id": "java-servlets-video",
+          "title": "Java Servlets Tutorial For Beginners",
+          "url": "https://www.youtube.com/watch?v=fp29K9QDxv4",
+          "type": "video",
+          "author": "Edureka",
+          "estimatedHours": 1.5,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-networking",
+        "java-multithreading"
+      ]
+    }
+  ],
+  "edges": [
+    { "id": "e-fund-data", "source": "java-fundamentals", "target": "java-data-types" },
+    { "id": "e-data-control", "source": "java-data-types", "target": "java-control-flow" },
+    { "id": "e-control-classes", "source": "java-control-flow", "target": "java-classes-objects" },
+    { "id": "e-classes-methods", "source": "java-classes-objects", "target": "java-methods-deep-dive" },
+    { "id": "e-classes-inheritance", "source": "java-classes-objects", "target": "java-inheritance" },
+    { "id": "e-classes-strings", "source": "java-classes-objects", "target": "java-string-handling" },
+    { "id": "e-inheritance-interfaces", "source": "java-inheritance", "target": "java-interfaces-packages" },
+    { "id": "e-methods-exceptions", "source": "java-methods-deep-dive", "target": "java-exception-handling" },
+    { "id": "e-interfaces-enums", "source": "java-interfaces-packages", "target": "java-enums-annotations" },
+    { "id": "e-interfaces-generics", "source": "java-interfaces-packages", "target": "java-generics" },
+    { "id": "e-interfaces-modules", "source": "java-interfaces-packages", "target": "java-modules" },
+    { "id": "e-generics-lambda", "source": "java-generics", "target": "java-lambda-expressions" },
+    { "id": "e-exceptions-io", "source": "java-exception-handling", "target": "java-io-fundamentals" },
+    { "id": "e-exceptions-threads", "source": "java-exception-handling", "target": "java-multithreading" },
+    { "id": "e-generics-collections", "source": "java-generics", "target": "java-collections-framework" },
+    { "id": "e-strings-collections", "source": "java-string-handling", "target": "java-collections-framework" },
+    { "id": "e-io-nio", "source": "java-io-fundamentals", "target": "java-io-nio" },
+    { "id": "e-nio-networking", "source": "java-io-nio", "target": "java-networking" },
+    { "id": "e-threads-concurrency", "source": "java-multithreading", "target": "java-concurrency-utilities" },
+    { "id": "e-lambda-streams", "source": "java-lambda-expressions", "target": "java-stream-api" },
+    { "id": "e-collections-streams", "source": "java-collections-framework", "target": "java-stream-api" },
+    { "id": "e-networking-swing", "source": "java-networking", "target": "java-swing-gui" },
+    { "id": "e-networking-servlets", "source": "java-networking", "target": "java-servlets" },
+    { "id": "e-threads-servlets", "source": "java-multithreading", "target": "java-servlets" }
+  ]
+}

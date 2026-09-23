@@ -1,0 +1,255 @@
+{
+  "treeId": "orm-jpa-hibernate",
+  "order": 20,
+  "title": "ORM / JPA / Hibernate for Full-Stack Java",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Understand object-relational mapping, use Jakarta Persistence (JPA) correctly, understand Hibernate as a JPA provider, and build and debug persistence code without losing sight of underlying SQL and PostgreSQL behavior.",
+  "version": "1.0",
+  "estimatedMonths": 0.75,
+  "totalNodes": 12,
+  "icon": "coffee",
+  "nodes": [
+    {
+      "id": "orm-foundations",
+      "label": "ORM Foundations",
+      "description": "Distinguish ORM, JPA/Jakarta Persistence, Hibernate, and Spring Data JPA as separate layers, and understand why ORM exists to reduce JDBC row-mapping boilerplate while tracking object identity and unit-of-work changes.",
+      "icon": "account_tree",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "orm-foundations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "jpa-architecture-entities",
+      "label": "JPA Architecture & Entity Basics",
+      "description": "Understand the EntityManager, persistence context, and provider relationship in JPA architecture, and define basic entities with @Entity and @Table that map to database tables.",
+      "icon": "architecture",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "jpa-architecture-entities-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["orm-foundations"]
+    },
+    {
+      "id": "keys-and-mapping",
+      "label": "Keys & Field Mapping",
+      "description": "Map primary keys with @Id and @GeneratedValue, map basic fields with @Column, and choose correct Java types — including BigDecimal, java.time types, UUID, and @Enumerated enums — for entity properties.",
+      "icon": "verified",
+      "zone": "Entity Mapping",
+      "resources": [
+        {
+          "id": "keys-and-mapping-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["jpa-architecture-entities"]
+    },
+    {
+      "id": "persistence-context-lifecycle",
+      "label": "Persistence Context & Entity Lifecycle",
+      "description": "Explain the persistence context as a first-level cache, and trace an entity through its transient, managed, detached, and removed lifecycle states.",
+      "icon": "memory",
+      "zone": "Entity Mapping",
+      "resources": [
+        {
+          "id": "persistence-context-lifecycle-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["keys-and-mapping"]
+    },
+    {
+      "id": "entitymanager-crud",
+      "label": "EntityManager CRUD, Dirty Checking & Flush",
+      "description": "Perform CRUD with EntityManager's persist/find/remove/merge, and understand dirty checking and the difference between flush and commit, including why SQL can execute later than the Java line that changed an entity.",
+      "icon": "build",
+      "zone": "Entity Mapping",
+      "resources": [
+        {
+          "id": "entitymanager-crud-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["persistence-context-lifecycle"]
+    },
+    {
+      "id": "entity-relationships",
+      "label": "Entity Relationships, Cascades & Orphan Removal",
+      "description": "Map @OneToOne, @OneToMany, @ManyToOne, and @ManyToMany relationships with correct owning side and mappedBy usage, and apply cascade operations and orphan removal deliberately rather than by habit.",
+      "icon": "hub",
+      "zone": "Relationships",
+      "resources": [
+        {
+          "id": "entity-relationships-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["entitymanager-crud"]
+    },
+    {
+      "id": "fetching-and-n1",
+      "label": "Fetching & the N+1 Query Problem",
+      "description": "Choose LAZY versus EAGER fetching based on use case, and recognize and fix the N+1 query problem using fetch joins or entity graphs instead of hiding the symptom.",
+      "icon": "speed",
+      "zone": "Relationships",
+      "resources": [
+        {
+          "id": "fetching-and-n1-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["entity-relationships"]
+    },
+    {
+      "id": "jpql-and-native-sql",
+      "label": "JPQL & Native SQL",
+      "description": "Write parameterized JPQL queries against entities and fields, and know when to drop to native SQL for database-specific capability or control without abandoning SQL skills.",
+      "icon": "code",
+      "zone": "Querying",
+      "resources": [
+        {
+          "id": "jpql-and-native-sql-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["fetching-and-n1"]
+    },
+    {
+      "id": "transactions-locking",
+      "label": "Transactions & Locking",
+      "description": "Understand how persistence operations relate to transaction boundaries and commit/rollback, and apply optimistic locking with @Version to prevent lost updates.",
+      "icon": "sync",
+      "zone": "Querying",
+      "resources": [
+        {
+          "id": "transactions-locking-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["jpql-and-native-sql"]
+    },
+    {
+      "id": "hibernate-provider-details",
+      "label": "Hibernate as Provider, Schema & Caching",
+      "description": "Understand Hibernate as a JPA provider with its own dialect and generated SQL, distinguish ddl-auto schema generation from real migration tools like Flyway/Liquibase, and apply caching only for a measured reason.",
+      "icon": "coffee",
+      "zone": "Hibernate Internals",
+      "resources": [
+        {
+          "id": "hibernate-provider-details-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["transactions-locking"]
+    },
+    {
+      "id": "entity-design-performance",
+      "label": "Entity Design & Performance",
+      "description": "Design entities that avoid huge object graphs and lazy-entity leakage into API responses via DTOs, and reason about query count, fetch strategy, batching, and pagination for persistence performance.",
+      "icon": "layers",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "entity-design-performance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["hibernate-provider-details"]
+    },
+    {
+      "id": "testing-debugging-professional",
+      "label": "Error Handling, Testing & Debugging",
+      "description": "Diagnose constraint violations, lazy-initialization failures, and optimistic-locking exceptions, write integration tests against real persistence behavior, and debug by tracing from entity mapping and generated SQL down to PostgreSQL.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-debugging-professional-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["entity-design-performance"]
+    }
+  ],
+  "edges": [
+    { "id": "e-orm-foundations-jpa-architecture-entities", "source": "orm-foundations", "target": "jpa-architecture-entities" },
+    { "id": "e-jpa-architecture-entities-keys-and-mapping", "source": "jpa-architecture-entities", "target": "keys-and-mapping" },
+    { "id": "e-keys-and-mapping-persistence-context-lifecycle", "source": "keys-and-mapping", "target": "persistence-context-lifecycle" },
+    { "id": "e-persistence-context-lifecycle-entitymanager-crud", "source": "persistence-context-lifecycle", "target": "entitymanager-crud" },
+    { "id": "e-entitymanager-crud-entity-relationships", "source": "entitymanager-crud", "target": "entity-relationships" },
+    { "id": "e-entity-relationships-fetching-and-n1", "source": "entity-relationships", "target": "fetching-and-n1" },
+    { "id": "e-fetching-and-n1-jpql-and-native-sql", "source": "fetching-and-n1", "target": "jpql-and-native-sql" },
+    { "id": "e-jpql-and-native-sql-transactions-locking", "source": "jpql-and-native-sql", "target": "transactions-locking" },
+    { "id": "e-transactions-locking-hibernate-provider-details", "source": "transactions-locking", "target": "hibernate-provider-details" },
+    { "id": "e-hibernate-provider-details-entity-design-performance", "source": "hibernate-provider-details", "target": "entity-design-performance" },
+    { "id": "e-entity-design-performance-testing-debugging-professional", "source": "entity-design-performance", "target": "testing-debugging-professional" }
+  ]
+}

@@ -1,0 +1,255 @@
+{
+  "treeId": "java-fullstack-foundations",
+  "order": 4,
+  "title": "Java Full-Stack Foundations",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from no Java experience to professional, application-level Java proficiency suitable for full-stack/backend development, covering the Java language and standard library up through the readiness needed for a dedicated Spring/Spring Boot path.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 12,
+  "icon": "coffee",
+  "nodes": [
+    {
+      "id": "orientation",
+      "label": "Orientation",
+      "description": "Understand the Java platform — source code, bytecode, the JVM, and the standard library — and set up a JDK toolchain to compile and run programs from the command line without an IDE.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "orientation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "core-programming",
+      "label": "Core Programming",
+      "description": "Learn Java syntax, primitive types, variables, literals, and conversions, then apply operators, control flow, methods, and array/string manipulation to solve procedural programming problems.",
+      "icon": "code",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "core-programming-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["orientation"]
+    },
+    {
+      "id": "object-oriented-java",
+      "label": "Object-Oriented Java",
+      "description": "Build classes and objects, write constructors, and correctly override equals/hashCode/toString, then apply encapsulation, inheritance, polymorphism, interfaces, and package organization to model real-world domains.",
+      "icon": "account_tree",
+      "zone": "Object-Oriented Design",
+      "resources": [
+        {
+          "id": "object-oriented-java-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["core-programming"]
+    },
+    {
+      "id": "reliable-java-programs",
+      "label": "Reliable Java Programs",
+      "description": "Handle failure with the exception hierarchy, try/catch/finally, custom exceptions, and try-with-resources, and model data safely with enums, records, and nested types before writing type-safe generic utilities.",
+      "icon": "health_and_safety",
+      "zone": "Object-Oriented Design",
+      "resources": [
+        {
+          "id": "reliable-java-programs-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["object-oriented-java"]
+    },
+    {
+      "id": "collections-functional-java",
+      "label": "Collections & Functional Java",
+      "description": "Choose and use List/Set/Map/Queue implementations with an eye on complexity, then express data transformations with lambdas, method references, the Stream API, and Optional for safe null handling.",
+      "icon": "functions",
+      "zone": "Data & Functional Programming",
+      "resources": [
+        {
+          "id": "collections-functional-java-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["reliable-java-programs"]
+    },
+    {
+      "id": "modern-java",
+      "label": "Modern Java",
+      "description": "Extend the Java 11 baseline to current Java with switch expressions, text blocks, pattern matching for instanceof and switch, and sealed classes for modeling restricted type hierarchies.",
+      "icon": "auto_awesome",
+      "zone": "Data & Functional Programming",
+      "resources": [
+        {
+          "id": "modern-java-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["collections-functional-java"]
+    },
+    {
+      "id": "files-time-data-processing",
+      "label": "Files, Time & Data Processing",
+      "description": "Read, write, and manage files with byte/character streams and NIO.2, represent dates and times correctly with java.time, and process text with regular expressions.",
+      "icon": "schedule",
+      "zone": "Data & Functional Programming",
+      "resources": [
+        {
+          "id": "files-time-data-processing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["modern-java"]
+    },
+    {
+      "id": "runtime-capabilities",
+      "label": "Runtime Capabilities",
+      "description": "Use annotations and reflection to understand how frameworks inspect and drive behavior at runtime, then build HTTP clients with java.net.http.HttpClient to send and receive requests over the network.",
+      "icon": "hub",
+      "zone": "Platform & Tooling",
+      "resources": [
+        {
+          "id": "runtime-capabilities-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["files-time-data-processing"]
+    },
+    {
+      "id": "jvm-build-knowledge",
+      "label": "JVM & Build Knowledge",
+      "description": "Understand JVM memory, class loading, and garbage collection at a practical level, package code into JARs and modules, and manage dependencies and the build lifecycle with Maven.",
+      "icon": "memory",
+      "zone": "Platform & Tooling",
+      "resources": [
+        {
+          "id": "jvm-build-knowledge-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["runtime-capabilities"]
+    },
+    {
+      "id": "testing-diagnostics",
+      "label": "Testing & Diagnostics",
+      "description": "Write meaningful JUnit tests against testable, dependency-injected designs, understand test doubles, and diagnose failures using breakpoints, stack traces, structured logging, and a systematic troubleshooting process.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-diagnostics-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["jvm-build-knowledge"]
+    },
+    {
+      "id": "professional-application-design",
+      "label": "Professional Application Design",
+      "description": "Separate concerns into controller/service/repository layers, apply SOLID principles and common design patterns, and follow baseline security and performance practices when building backend applications.",
+      "icon": "architecture",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-application-design-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["testing-diagnostics"]
+    },
+    {
+      "id": "fullstack-java-readiness",
+      "label": "Full-Stack Java Readiness",
+      "description": "Consolidate language fluency, data manipulation, backend concepts, and build/testing skills into the readiness needed to begin a dedicated Spring/Spring Boot skill tree.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "fullstack-java-readiness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["professional-application-design"]
+    }
+  ],
+  "edges": [
+    { "id": "e-orientation-core-programming", "source": "orientation", "target": "core-programming" },
+    { "id": "e-core-programming-object-oriented-java", "source": "core-programming", "target": "object-oriented-java" },
+    { "id": "e-object-oriented-java-reliable-java-programs", "source": "object-oriented-java", "target": "reliable-java-programs" },
+    { "id": "e-reliable-java-programs-collections-functional-java", "source": "reliable-java-programs", "target": "collections-functional-java" },
+    { "id": "e-collections-functional-java-modern-java", "source": "collections-functional-java", "target": "modern-java" },
+    { "id": "e-modern-java-files-time-data-processing", "source": "modern-java", "target": "files-time-data-processing" },
+    { "id": "e-files-time-data-processing-runtime-capabilities", "source": "files-time-data-processing", "target": "runtime-capabilities" },
+    { "id": "e-runtime-capabilities-jvm-build-knowledge", "source": "runtime-capabilities", "target": "jvm-build-knowledge" },
+    { "id": "e-jvm-build-knowledge-testing-diagnostics", "source": "jvm-build-knowledge", "target": "testing-diagnostics" },
+    { "id": "e-testing-diagnostics-professional-application-design", "source": "testing-diagnostics", "target": "professional-application-design" },
+    { "id": "e-professional-application-design-fullstack-java-readiness", "source": "professional-application-design", "target": "fullstack-java-readiness" }
+  ]
+}

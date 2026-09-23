@@ -1,0 +1,356 @@
+{
+  "treeId": "git-version-control-expert",
+  "order": 3,
+  "title": "Git Version Control Expert",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Build genuine Git expertise — not just command memorization — by mastering the staging/commit/branch model, safe collaboration, history manipulation, recovery from mistakes, and Git's internal object model well enough to reason about unfamiliar situations and speak to them confidently in an interview.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 17,
+  "icon": "account_tree",
+  "nodes": [
+    {
+      "id": "core-commands-and-fundamentals",
+      "label": "Core Commands & VCS Fundamentals",
+      "description": "Memorize the daily-use Git commands (init, clone, status, add, commit, log, diff, branch, switch, merge, fetch/pull/push, remote, restore, reset, revert, rebase, stash, cherry-pick, reflog) and understand version control's purpose as a distributed system for tracking, comparing, and restoring history.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "core-commands-and-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "git-mental-model-and-terminology",
+      "label": "Git Mental Model & Terminology",
+      "description": "Internalize Git's core flow — working directory to staging area to local repository to remote — and build fluent command of the essential vocabulary (commit, branch, HEAD, ref, remote, upstream) needed to reason about repository state.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "git-mental-model-and-terminology-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["core-commands-and-fundamentals"]
+    },
+    {
+      "id": "inspecting-and-committing",
+      "label": "Inspecting State & Creating Commits",
+      "description": "Read repository state confidently with status/log/diff/show, and create clean, logical commits by staging deliberately (including with git add -p) and understanding that amending creates a new commit rather than editing the old one.",
+      "icon": "commit",
+      "zone": "Core Workflow",
+      "resources": [
+        {
+          "id": "inspecting-and-committing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["git-mental-model-and-terminology"]
+    },
+    {
+      "id": "branching-and-head",
+      "label": "Branching & HEAD",
+      "description": "Create, switch, delete, and rename branches, and understand HEAD as a movable pointer to the current commit — including how detached HEAD happens and how to recover work committed in that state.",
+      "icon": "call_split",
+      "zone": "Core Workflow",
+      "resources": [
+        {
+          "id": "branching-and-head-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["inspecting-and-committing"]
+    },
+    {
+      "id": "merging-and-conflicts",
+      "label": "Merging & Conflict Resolution",
+      "description": "Merge branches understanding fast-forward versus three-way merges, resolve merge conflicts by reading conflict markers and committing the resolution, and apply practices (small commits, frequent sync) that reduce how often conflicts occur.",
+      "icon": "merge",
+      "zone": "Collaboration",
+      "resources": [
+        {
+          "id": "merging-and-conflicts-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["branching-and-head"]
+    },
+    {
+      "id": "rebasing-and-history-editing",
+      "label": "Rebasing & History Editing",
+      "description": "Rebase a branch onto a new base understanding that rebase creates new commit identities, and use interactive rebase to reorder, reword, squash, and drop commits before integrating a clean branch history.",
+      "icon": "history_edu",
+      "zone": "History Manipulation",
+      "resources": [
+        {
+          "id": "rebasing-and-history-editing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["merging-and-conflicts"]
+    },
+    {
+      "id": "remotes-and-sync",
+      "label": "Remotes & Synchronization",
+      "description": "Manage remote connections and synchronize history correctly with fetch, pull, and push — including upstream tracking and the real risk of force-pushing shared history, preferring --force-with-lease when it's unavoidable.",
+      "icon": "cloud_sync",
+      "zone": "Collaboration",
+      "resources": [
+        {
+          "id": "remotes-and-sync-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["merging-and-conflicts"]
+    },
+    {
+      "id": "undoing-and-recovering-changes",
+      "label": "Undoing & Recovering Changes",
+      "description": "Choose correctly among restore, reset, and revert to undo changes at the right layer (working tree, staging, or history), and use reflog to recover commits that have disappeared from normal log output.",
+      "icon": "undo",
+      "zone": "Safety & Recovery",
+      "resources": [
+        {
+          "id": "undoing-and-recovering-changes-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rebasing-and-history-editing", "remotes-and-sync"]
+    },
+    {
+      "id": "stash-cherry-pick-and-tags",
+      "label": "Stash, Cherry-Pick & Tags",
+      "description": "Temporarily shelve uncommitted work with stash, apply a specific commit's change onto another branch with cherry-pick, and mark releases with lightweight and annotated tags.",
+      "icon": "bookmark",
+      "zone": "Core Workflow",
+      "resources": [
+        {
+          "id": "stash-cherry-pick-and-tags-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["undoing-and-recovering-changes"]
+    },
+    {
+      "id": "ignoring-and-configuring",
+      "label": "Ignoring Files & Configuration",
+      "description": "Configure .gitignore and .gitattributes to control what Git tracks and how it handles line endings and binary files, and set up global/local Git configuration and authentication (SSH keys, credential helpers, tokens) correctly.",
+      "icon": "settings",
+      "zone": "Configuration",
+      "resources": [
+        {
+          "id": "ignoring-and-configuring-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["stash-cherry-pick-and-tags"]
+    },
+    {
+      "id": "hosting-and-collaboration-workflows",
+      "label": "Hosting & Collaboration Workflows",
+      "description": "Understand forks, pull/merge requests, and branch protection as hosting-platform features layered on top of Git, and choose an appropriate team workflow (feature branching, GitHub Flow, Git Flow, trunk-based) while writing high-quality, well-scoped commits.",
+      "icon": "groups",
+      "zone": "Collaboration",
+      "resources": [
+        {
+          "id": "hosting-and-collaboration-workflows-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ignoring-and-configuring"]
+    },
+    {
+      "id": "history-investigation-and-internals",
+      "label": "History Investigation & Internals",
+      "description": "Investigate history with blame and bisect to find when and why a line or regression was introduced, and understand Git as a content-addressed object database of blobs, trees, and commits connected in a DAG through refs.",
+      "icon": "search",
+      "zone": "Investigation & Internals",
+      "resources": [
+        {
+          "id": "history-investigation-and-internals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["hosting-and-collaboration-workflows"]
+    },
+    {
+      "id": "history-rewriting-and-recovery",
+      "label": "History Rewriting & Recovery",
+      "description": "Rewrite history deliberately with amend, interactive rebase, and reset while understanding the dangers of rewriting shared history, and recover confidently from bad rebases, bad merges, lost commits, and other common mistakes using reflog, reset, and cherry-pick.",
+      "icon": "restore",
+      "zone": "Safety & Recovery",
+      "resources": [
+        {
+          "id": "history-rewriting-and-recovery-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["history-investigation-and-internals"]
+    },
+    {
+      "id": "diagnosing-remote-and-branch-problems",
+      "label": "Diagnosing Remote & Branch Problems",
+      "description": "Diagnose common remote and branch errors (non-fast-forward, unrelated histories, permission denied, diverged branches) with status/remote -v/branch -vv/fetch, and handle file-level issues like accidentally tracked files, line-ending differences, and committed secrets.",
+      "icon": "troubleshoot",
+      "zone": "Troubleshooting",
+      "resources": [
+        {
+          "id": "diagnosing-remote-and-branch-problems-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["history-rewriting-and-recovery"]
+    },
+    {
+      "id": "security-hooks-and-automation",
+      "label": "Security, Hooks & Automation",
+      "description": "Keep secrets out of history (knowing that deleting one later doesn't remove it from earlier commits), use commit/tag signing for verification, and automate quality and CI/CD with Git hooks and push-triggered pipelines.",
+      "icon": "security",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "security-hooks-and-automation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["diagnosing-remote-and-branch-problems"]
+    },
+    {
+      "id": "large-repos-and-team-governance",
+      "label": "Large Repos & Team Governance",
+      "description": "Handle large-repository needs with LFS, shallow/partial clones, and sparse checkout, use submodules/subtrees/worktrees for multi-repository or multi-branch work, and apply team governance practices like protected branches, required reviews, and CODEOWNERS.",
+      "icon": "database",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "large-repos-and-team-governance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["security-hooks-and-automation"]
+    },
+    {
+      "id": "mastery-and-interview-readiness",
+      "label": "Mastery & Interview Readiness",
+      "description": "Recognize genuinely dangerous operations and reason confidently about what state they change and whether it's recoverable, debug unexpected Git behavior by first inspecting repository state, and explain Git's model and vocabulary fluently enough for a technical interview.",
+      "icon": "military_tech",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "mastery-and-interview-readiness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["large-repos-and-team-governance"]
+    }
+  ],
+  "edges": [
+    { "id": "e-core-commands-and-fundamentals-git-mental-model-and-terminology", "source": "core-commands-and-fundamentals", "target": "git-mental-model-and-terminology" },
+    { "id": "e-git-mental-model-and-terminology-inspecting-and-committing", "source": "git-mental-model-and-terminology", "target": "inspecting-and-committing" },
+    { "id": "e-inspecting-and-committing-branching-and-head", "source": "inspecting-and-committing", "target": "branching-and-head" },
+    { "id": "e-branching-and-head-merging-and-conflicts", "source": "branching-and-head", "target": "merging-and-conflicts" },
+    { "id": "e-merging-and-conflicts-rebasing-and-history-editing", "source": "merging-and-conflicts", "target": "rebasing-and-history-editing" },
+    { "id": "e-merging-and-conflicts-remotes-and-sync", "source": "merging-and-conflicts", "target": "remotes-and-sync" },
+    { "id": "e-rebasing-and-history-editing-undoing-and-recovering-changes", "source": "rebasing-and-history-editing", "target": "undoing-and-recovering-changes" },
+    { "id": "e-remotes-and-sync-undoing-and-recovering-changes", "source": "remotes-and-sync", "target": "undoing-and-recovering-changes" },
+    { "id": "e-undoing-and-recovering-changes-stash-cherry-pick-and-tags", "source": "undoing-and-recovering-changes", "target": "stash-cherry-pick-and-tags" },
+    { "id": "e-stash-cherry-pick-and-tags-ignoring-and-configuring", "source": "stash-cherry-pick-and-tags", "target": "ignoring-and-configuring" },
+    { "id": "e-ignoring-and-configuring-hosting-and-collaboration-workflows", "source": "ignoring-and-configuring", "target": "hosting-and-collaboration-workflows" },
+    { "id": "e-hosting-and-collaboration-workflows-history-investigation-and-internals", "source": "hosting-and-collaboration-workflows", "target": "history-investigation-and-internals" },
+    { "id": "e-history-investigation-and-internals-history-rewriting-and-recovery", "source": "history-investigation-and-internals", "target": "history-rewriting-and-recovery" },
+    { "id": "e-history-rewriting-and-recovery-diagnosing-remote-and-branch-problems", "source": "history-rewriting-and-recovery", "target": "diagnosing-remote-and-branch-problems" },
+    { "id": "e-diagnosing-remote-and-branch-problems-security-hooks-and-automation", "source": "diagnosing-remote-and-branch-problems", "target": "security-hooks-and-automation" },
+    { "id": "e-security-hooks-and-automation-large-repos-and-team-governance", "source": "security-hooks-and-automation", "target": "large-repos-and-team-governance" },
+    { "id": "e-large-repos-and-team-governance-mastery-and-interview-readiness", "source": "large-repos-and-team-governance", "target": "mastery-and-interview-readiness" }
+  ]
+}

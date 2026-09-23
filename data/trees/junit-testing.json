@@ -1,0 +1,295 @@
+{
+  "treeId": "junit-testing",
+  "order": 10,
+  "title": "JUnit Testing",
+  "category": "Technology",
+  "difficulty": "easy",
+  "description": "Progress from basic Java knowledge to professional use of modern JUnit 5 for automated testing \u2014 covering assertions, lifecycle, parameterized tests, and test design principles \u2014 as preparation for Mockito and Spring Boot testing.",
+  "version": "1.0",
+  "estimatedMonths": 0.5,
+  "totalNodes": 11,
+  "icon": "verified",
+  "nodes": [
+    {
+      "id": "java-testing-prerequisites",
+      "label": "Java Testing Prerequisites",
+      "description": "Confirm the Java prerequisites \u2014 methods, classes, interfaces, exceptions, collections, and basic Maven usage \u2014 needed to write and run automated tests.",
+      "icon": "coffee",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "java-testing-prerequisites-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "testing-fundamentals",
+      "label": "Testing Fundamentals",
+      "description": "Explain why automated tests exist and what they do and don't prove, distinguish unit/integration/end-to-end test scope, and structure a test using Arrange/Act/Assert with a behavior-oriented name.",
+      "icon": "science",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "testing-fundamentals-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-testing-prerequisites"
+      ]
+    },
+    {
+      "id": "first-junit-tests",
+      "label": "First JUnit Tests",
+      "description": "Add JUnit Jupiter to a Maven project, mark and run test methods with @Test, and apply core assertions (assertEquals, assertTrue, assertNull, assertArrayEquals, etc.) with clear failure messages.",
+      "icon": "verified",
+      "zone": "Core JUnit",
+      "resources": [
+        {
+          "id": "first-junit-tests-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "testing-fundamentals"
+      ]
+    },
+    {
+      "id": "test-lifecycle-and-organization",
+      "label": "Test Lifecycle & Organization",
+      "description": "Manage test fixtures with @BeforeEach/@AfterEach/@BeforeAll/@AfterAll, and organize related tests with @DisplayName and @Nested classes so test intent stays visible.",
+      "icon": "schedule",
+      "zone": "Core JUnit",
+      "resources": [
+        {
+          "id": "test-lifecycle-and-organization-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "first-junit-tests"
+      ]
+    },
+    {
+      "id": "exception-and-behavior-testing",
+      "label": "Exception & Behavior Testing",
+      "description": "Test exception-throwing behavior with assertThrows/assertDoesNotThrow, group related assertions with assertAll, and use assumptions and timeout assertions carefully to avoid flaky tests.",
+      "icon": "bug_report",
+      "zone": "Core JUnit",
+      "resources": [
+        {
+          "id": "exception-and-behavior-testing-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "test-lifecycle-and-organization"
+      ]
+    },
+    {
+      "id": "parameterized-and-advanced-tests",
+      "label": "Parameterized & Advanced Tests",
+      "description": "Reduce duplicated test methods with @ParameterizedTest and its sources (@ValueSource, @CsvSource, @MethodSource, @EnumSource), and recognize when @RepeatedTest or dynamic @TestFactory tests are appropriate.",
+      "icon": "functions",
+      "zone": "Advanced JUnit",
+      "resources": [
+        {
+          "id": "parameterized-and-advanced-tests-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "exception-and-behavior-testing"
+      ]
+    },
+    {
+      "id": "testing-real-code",
+      "label": "Testing Real Code",
+      "description": "Apply systematic test coverage \u2014 normal inputs, boundaries, empty/null/invalid inputs \u2014 to pure functions, classes, collections, and business logic, producing a comprehensive suite for a domain class without Spring or Mockito.",
+      "icon": "code",
+      "zone": "Advanced JUnit",
+      "resources": [
+        {
+          "id": "testing-real-code-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "parameterized-and-advanced-tests"
+      ]
+    },
+    {
+      "id": "test-design-principles",
+      "label": "Test Design Principles",
+      "description": "Design tests for isolation and determinism, apply boundary-value thinking, and follow FIRST principles (Fast, Independent, Repeatable, Self-validating, Timely) to keep a test suite fast, reliable, and maintainable.",
+      "icon": "architecture",
+      "zone": "Test Design",
+      "resources": [
+        {
+          "id": "test-design-principles-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "testing-real-code"
+      ]
+    },
+    {
+      "id": "junit-extension-model",
+      "label": "JUnit Extension Model",
+      "description": "Understand JUnit's extension model via @ExtendWith, and recognize why isolating a class from its dependencies (test doubles, dependency substitution) sets up the need for Mockito.",
+      "icon": "integration_instructions",
+      "zone": "Test Design",
+      "resources": [
+        {
+          "id": "junit-extension-model-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "test-design-principles"
+      ]
+    },
+    {
+      "id": "maven-workflow-and-debugging",
+      "label": "Maven Workflow & Debugging",
+      "description": "Run and filter tests through Maven, read Surefire reports, debug failing tests with breakpoints and minimal reproductions, and use tests as a safety net while refactoring or practicing TDD's red-green-refactor cycle.",
+      "icon": "terminal",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "maven-workflow-and-debugging-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "junit-extension-model"
+      ]
+    },
+    {
+      "id": "spring-boot-testing-readiness",
+      "label": "Spring Boot Testing Readiness",
+      "description": "Recognize that JUnit remains the test framework inside Spring Boot, with Spring adding testing infrastructure (Spring Test, test slices, MockMvc) on top \u2014 and that plain, fast Java unit tests stay valuable alongside Spring integration tests.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "spring-boot-testing-readiness-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "maven-workflow-and-debugging"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-java-testing-prerequisites-testing-fundamentals",
+      "source": "java-testing-prerequisites",
+      "target": "testing-fundamentals"
+    },
+    {
+      "id": "e-testing-fundamentals-first-junit-tests",
+      "source": "testing-fundamentals",
+      "target": "first-junit-tests"
+    },
+    {
+      "id": "e-first-junit-tests-test-lifecycle-and-organization",
+      "source": "first-junit-tests",
+      "target": "test-lifecycle-and-organization"
+    },
+    {
+      "id": "e-test-lifecycle-and-organization-exception-and-behavior-testing",
+      "source": "test-lifecycle-and-organization",
+      "target": "exception-and-behavior-testing"
+    },
+    {
+      "id": "e-exception-and-behavior-testing-parameterized-and-advanced-tests",
+      "source": "exception-and-behavior-testing",
+      "target": "parameterized-and-advanced-tests"
+    },
+    {
+      "id": "e-parameterized-and-advanced-tests-testing-real-code",
+      "source": "parameterized-and-advanced-tests",
+      "target": "testing-real-code"
+    },
+    {
+      "id": "e-testing-real-code-test-design-principles",
+      "source": "testing-real-code",
+      "target": "test-design-principles"
+    },
+    {
+      "id": "e-test-design-principles-junit-extension-model",
+      "source": "test-design-principles",
+      "target": "junit-extension-model"
+    },
+    {
+      "id": "e-junit-extension-model-maven-workflow-and-debugging",
+      "source": "junit-extension-model",
+      "target": "maven-workflow-and-debugging"
+    },
+    {
+      "id": "e-maven-workflow-and-debugging-spring-boot-testing-readiness",
+      "source": "maven-workflow-and-debugging",
+      "target": "spring-boot-testing-readiness"
+    }
+  ]
+}

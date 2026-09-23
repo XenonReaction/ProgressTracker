@@ -1,0 +1,477 @@
+{
+  "treeId": "deployment-fundamentals",
+  "order": 23,
+  "title": "Deployment Fundamentals",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Build a tool-independent understanding of how a tested software release is safely moved into a runtime environment, verified, operated, upgraded, and recovered, before learning a specific platform such as AWS, Kubernetes, or Docker Compose.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "icon": "rocket_launch",
+  "totalNodes": 18,
+  "nodes": [
+    {
+      "id": "deployment-fundamentals-intro",
+      "label": "What Deployment Is",
+      "description": "Distinguish deployment from build, release, and CI/CD as related but separate concepts, understanding deployment as the process of placing a versioned release into a runtime environment.",
+      "icon": "rocket_launch",
+      "zone": "Deployment Basics",
+      "resources": [
+        {
+          "id": "deployment-fundamentals-intro-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "deployable-artifact",
+      "label": "The Deployable Artifact",
+      "description": "Identify a deployable artifact and give it a traceable identity through versioning, commit SHAs, and build numbers, and understand why the same built artifact should be promoted across environments rather than rebuilt for each one.",
+      "icon": "layers",
+      "zone": "Deployment Basics",
+      "resources": [
+        {
+          "id": "deployable-artifact-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "deployment-fundamentals-intro"
+      ]
+    },
+    {
+      "id": "environments",
+      "label": "Environments",
+      "description": "Distinguish development, testing, staging, and production as environments with different purposes, and explain environment parity and why production deserves stronger controls than any other environment.",
+      "icon": "cloud",
+      "zone": "Deployment Basics",
+      "resources": [
+        {
+          "id": "environments-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "deployable-artifact"
+      ]
+    },
+    {
+      "id": "runtime-requirements-and-config",
+      "label": "Runtime Requirements & Configuration",
+      "description": "Identify an application's runtime dependencies and externalize environment-specific configuration from the artifact so the same build can run correctly in every environment.",
+      "icon": "settings",
+      "zone": "Preparing to Deploy",
+      "resources": [
+        {
+          "id": "runtime-requirements-and-config-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "environments"
+      ]
+    },
+    {
+      "id": "secrets-and-infrastructure",
+      "label": "Secrets & Infrastructure",
+      "description": "Separate secrets from ordinary configuration and handle them with least-privilege access, and identify the infrastructure \u2014 compute, network, storage, DNS, load balancing \u2014 a deployment needs to run on.",
+      "icon": "security",
+      "zone": "Preparing to Deploy",
+      "resources": [
+        {
+          "id": "secrets-and-infrastructure-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "runtime-requirements-and-config"
+      ]
+    },
+    {
+      "id": "manual-vs-automated-deployment",
+      "label": "Manual vs Automated Deployment",
+      "description": "Compare manual and automated deployment processes, and define deployment preconditions \u2014 artifact readiness, passed tests, environment health, authorization \u2014 that must hold before a deployment gate opens.",
+      "icon": "verified",
+      "zone": "Preparing to Deploy",
+      "resources": [
+        {
+          "id": "manual-vs-automated-deployment-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "secrets-and-infrastructure"
+      ]
+    },
+    {
+      "id": "deployment-strategies",
+      "label": "Deployment Strategies",
+      "description": "Compare recreate, rolling, blue/green, and canary deployment strategies by their tradeoffs in downtime, infrastructure cost, rollback speed, and blast radius, and choose the strategy that fits a given system's constraints.",
+      "icon": "sync",
+      "zone": "Deployment Strategies",
+      "resources": [
+        {
+          "id": "deployment-strategies-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "manual-vs-automated-deployment"
+      ]
+    },
+    {
+      "id": "state-and-data",
+      "label": "State, Persistence & Database Migrations",
+      "description": "Distinguish stateless from stateful applications, protect persistent data across instance replacement, and coordinate database schema migrations with backward-compatible expand/contract changes during rolling deployment.",
+      "icon": "database",
+      "zone": "Deployment Strategies",
+      "resources": [
+        {
+          "id": "state-and-data-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "deployment-strategies"
+      ]
+    },
+    {
+      "id": "health-and-lifecycle",
+      "label": "Health, Startup & Smoke Tests",
+      "description": "Distinguish liveness from readiness, design graceful startup and shutdown so traffic is never routed too early or interrupted abruptly, and write smoke tests that verify basic post-deployment operation.",
+      "icon": "health_and_safety",
+      "zone": "Runtime Reliability",
+      "resources": [
+        {
+          "id": "health-and-lifecycle-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "state-and-data"
+      ]
+    },
+    {
+      "id": "traffic-and-networking",
+      "label": "Traffic & Networking",
+      "description": "Route traffic to healthy instances through load balancers, DNS, and reverse proxies, understand where TLS terminates, and explain how service discovery keeps track of instances as deployments change them.",
+      "icon": "lan",
+      "zone": "Runtime Reliability",
+      "resources": [
+        {
+          "id": "traffic-and-networking-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "health-and-lifecycle"
+      ]
+    },
+    {
+      "id": "resources-and-scaling",
+      "label": "Resources, Scaling & Availability",
+      "description": "Define realistic CPU/memory requirements, choose between vertical and horizontal scaling, reason about availability during deployment with multiple instances, and limit blast radius through isolation.",
+      "icon": "speed",
+      "zone": "Runtime Reliability",
+      "resources": [
+        {
+          "id": "resources-and-scaling-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "traffic-and-networking"
+      ]
+    },
+    {
+      "id": "verification-and-observability",
+      "label": "Verification & Observability",
+      "description": "Verify a deployment through layered checks rather than trusting a successful deployment command, and use logs, metrics, and traces correlated to version and deployment event to confirm the system behaves acceptably.",
+      "icon": "science",
+      "zone": "Production Safety",
+      "resources": [
+        {
+          "id": "verification-and-observability-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "resources-and-scaling"
+      ]
+    },
+    {
+      "id": "rollback-and-recovery",
+      "label": "Rollback, Roll Forward & Recovery",
+      "description": "Design rollback and roll-forward recovery paths with retained artifacts and compatible configuration, apply automatic rollback guardrails based on health signals, and bound deployment operations with timeouts and limited retries.",
+      "icon": "bug_report",
+      "zone": "Production Safety",
+      "resources": [
+        {
+          "id": "rollback-and-recovery-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "verification-and-observability"
+      ]
+    },
+    {
+      "id": "idempotency-concurrency-permissions",
+      "label": "Idempotency, Concurrency & Permissions",
+      "description": "Design deployment operations to be idempotent under repetition, prevent conflicting concurrent deployments, and apply least-privilege permissions and network exposure boundaries to who and what can deploy production.",
+      "icon": "lock",
+      "zone": "Production Safety",
+      "resources": [
+        {
+          "id": "idempotency-concurrency-permissions-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "rollback-and-recovery"
+      ]
+    },
+    {
+      "id": "sessions-background-compatibility",
+      "label": "Sessions, Background Work & Compatibility",
+      "description": "Account for user sessions and in-flight background jobs when instances are replaced during deployment, and reason about API/schema/message compatibility when multiple application versions run simultaneously.",
+      "icon": "hub",
+      "zone": "Advanced Concerns & Mastery",
+      "resources": [
+        {
+          "id": "sessions-background-compatibility-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "idempotency-concurrency-permissions"
+      ]
+    },
+    {
+      "id": "feature-flags-and-documentation",
+      "label": "Feature Flags, Runbooks & Metrics",
+      "description": "Separate deployment from user-facing release using feature flags, and support recovery under pressure with a deployment runbook and meaningful deployment metrics such as duration, frequency, and change failure rate.",
+      "icon": "auto_awesome",
+      "zone": "Advanced Concerns & Mastery",
+      "resources": [
+        {
+          "id": "feature-flags-and-documentation-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "sessions-background-compatibility"
+      ]
+    },
+    {
+      "id": "troubleshooting-and-design",
+      "label": "Troubleshooting & Production Design",
+      "description": "Troubleshoot deployment failures layer by layer \u2014 artifact, configuration, secrets, infrastructure, network, application, health \u2014 and answer the full set of questions a production deployment design must address before going live.",
+      "icon": "architecture",
+      "zone": "Advanced Concerns & Mastery",
+      "resources": [
+        {
+          "id": "troubleshooting-and-design-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "feature-flags-and-documentation"
+      ]
+    },
+    {
+      "id": "fullstack-architecture-and-platforms",
+      "label": "Full-Stack Architecture & Platform Translation",
+      "description": "Design a complete full-stack deployment architecture spanning DNS, load balancing, frontend, backend, and database, and translate the platform-independent concepts into Docker, AWS, and Kubernetes vocabulary.",
+      "icon": "timeline",
+      "zone": "Advanced Concerns & Mastery",
+      "resources": [
+        {
+          "id": "fullstack-architecture-and-platforms-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "troubleshooting-and-design"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-deployment-fundamentals-intro-deployable-artifact",
+      "source": "deployment-fundamentals-intro",
+      "target": "deployable-artifact"
+    },
+    {
+      "id": "e-deployable-artifact-environments",
+      "source": "deployable-artifact",
+      "target": "environments"
+    },
+    {
+      "id": "e-environments-runtime-requirements-and-config",
+      "source": "environments",
+      "target": "runtime-requirements-and-config"
+    },
+    {
+      "id": "e-runtime-requirements-and-config-secrets-and-infrastructure",
+      "source": "runtime-requirements-and-config",
+      "target": "secrets-and-infrastructure"
+    },
+    {
+      "id": "e-secrets-and-infrastructure-manual-vs-automated-deployment",
+      "source": "secrets-and-infrastructure",
+      "target": "manual-vs-automated-deployment"
+    },
+    {
+      "id": "e-manual-vs-automated-deployment-deployment-strategies",
+      "source": "manual-vs-automated-deployment",
+      "target": "deployment-strategies"
+    },
+    {
+      "id": "e-deployment-strategies-state-and-data",
+      "source": "deployment-strategies",
+      "target": "state-and-data"
+    },
+    {
+      "id": "e-state-and-data-health-and-lifecycle",
+      "source": "state-and-data",
+      "target": "health-and-lifecycle"
+    },
+    {
+      "id": "e-health-and-lifecycle-traffic-and-networking",
+      "source": "health-and-lifecycle",
+      "target": "traffic-and-networking"
+    },
+    {
+      "id": "e-traffic-and-networking-resources-and-scaling",
+      "source": "traffic-and-networking",
+      "target": "resources-and-scaling"
+    },
+    {
+      "id": "e-resources-and-scaling-verification-and-observability",
+      "source": "resources-and-scaling",
+      "target": "verification-and-observability"
+    },
+    {
+      "id": "e-verification-and-observability-rollback-and-recovery",
+      "source": "verification-and-observability",
+      "target": "rollback-and-recovery"
+    },
+    {
+      "id": "e-rollback-and-recovery-idempotency-concurrency-permissions",
+      "source": "rollback-and-recovery",
+      "target": "idempotency-concurrency-permissions"
+    },
+    {
+      "id": "e-idempotency-concurrency-permissions-sessions-background-compatibility",
+      "source": "idempotency-concurrency-permissions",
+      "target": "sessions-background-compatibility"
+    },
+    {
+      "id": "e-sessions-background-compatibility-feature-flags-and-documentation",
+      "source": "sessions-background-compatibility",
+      "target": "feature-flags-and-documentation"
+    },
+    {
+      "id": "e-feature-flags-and-documentation-troubleshooting-and-design",
+      "source": "feature-flags-and-documentation",
+      "target": "troubleshooting-and-design"
+    },
+    {
+      "id": "e-troubleshooting-and-design-fullstack-architecture-and-platforms",
+      "source": "troubleshooting-and-design",
+      "target": "fullstack-architecture-and-platforms"
+    }
+  ]
+}

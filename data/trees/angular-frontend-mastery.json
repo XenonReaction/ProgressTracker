@@ -1,0 +1,398 @@
+{
+  "treeId": "angular-frontend-mastery",
+  "order": 18,
+  "title": "Angular Frontend Development Mastery",
+  "category": "Technology",
+  "difficulty": "hard",
+  "description": "Become capable of building, explaining, debugging, testing, and maintaining a real Angular frontend — covering standalone components, signals, dependency injection, RxJS, HttpClient, reactive forms, routing, and security — that communicates cleanly with a Spring Boot REST backend.",
+  "version": "1.0",
+  "estimatedMonths": 2,
+  "totalNodes": 19,
+  "icon": "widgets",
+  "nodes": [
+    {
+      "id": "angular-orientation",
+      "label": "Angular Orientation",
+      "description": "Understand Angular as an integrated application framework built on TypeScript — distinct from a UI library like React — and its core mental model of routes, components, services, and HttpClient connecting to a backend API, plus Node.js/npm's role in Angular tooling.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "angular-orientation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "cli-and-project-setup",
+      "label": "CLI & Project Setup",
+      "description": "Use the Angular CLI (ng new, ng serve, ng generate, ng build) to create, run, and generate code for a project, and recognize the purpose of package.json, angular.json, and tsconfig files and how the application bootstraps.",
+      "icon": "build",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "cli-and-project-setup-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["angular-orientation"]
+    },
+    {
+      "id": "standalone-components-and-templates",
+      "label": "Standalone Components & Templates",
+      "description": "Build standalone components combining a TypeScript class, @Component metadata, an HTML template, and scoped styles, and understand how a selector connects a component class to template markup.",
+      "icon": "widgets",
+      "zone": "Components & Templates",
+      "resources": [
+        {
+          "id": "standalone-components-and-templates-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cli-and-project-setup"]
+    },
+    {
+      "id": "data-binding",
+      "label": "Data Binding",
+      "description": "Bind component state to the DOM using interpolation, property binding, event binding, and two-way binding, plus attribute/class/style binding, recognizing each syntax ({{ }}, [], (), [()]) from memory.",
+      "icon": "sync",
+      "zone": "Components & Templates",
+      "resources": [
+        {
+          "id": "data-binding-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["standalone-components-and-templates"]
+    },
+    {
+      "id": "modern-control-flow",
+      "label": "Modern Template Control Flow",
+      "description": "Render conditional and list content with Angular's built-in @if/@for/@switch control flow, understand track-based list identity, and recognize the legacy *ngIf/*ngFor/ngSwitch directives found in existing code.",
+      "icon": "alt_route",
+      "zone": "Components & Templates",
+      "resources": [
+        {
+          "id": "modern-control-flow-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["data-binding"]
+    },
+    {
+      "id": "component-composition-io",
+      "label": "Component Composition & I/O",
+      "description": "Compose component trees with parent-to-child inputs and child-to-parent outputs — both decorator-based and modern signal-based input()/output()/model() — project content with ng-content, and query view/content children when direct references are needed.",
+      "icon": "account_tree",
+      "zone": "Components & Templates",
+      "resources": [
+        {
+          "id": "component-composition-io-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["modern-control-flow"]
+    },
+    {
+      "id": "signals",
+      "label": "Signals",
+      "description": "Model reactive component state with signal(), read/set/update it, derive values with computed(), and run side effects with effect() inside a valid injection context — while knowing when signals fit better than RxJS and vice versa.",
+      "icon": "bolt",
+      "zone": "Reactivity & State",
+      "resources": [
+        {
+          "id": "signals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["component-composition-io"]
+    },
+    {
+      "id": "dependency-injection",
+      "label": "Dependency Injection",
+      "description": "Explain Angular's dependency injection as an actual resolution process — services, @Injectable, providedIn scope, constructor injection vs inject(), providers, injection tokens, and hierarchical injectors — rather than just 'Angular injects the service.'",
+      "icon": "integration_instructions",
+      "zone": "Reactivity & State",
+      "resources": [
+        {
+          "id": "dependency-injection-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["component-composition-io"]
+    },
+    {
+      "id": "rxjs-fundamentals",
+      "label": "RxJS Fundamentals",
+      "description": "Model asynchronous and event streams with RxJS Observables, subscribe and compose pipelines with map/filter/tap/switchMap/catchError/finalize, use Subject and BehaviorSubject for shared state, and manage subscription lifecycle to avoid leaks and duplicate requests.",
+      "icon": "science",
+      "zone": "Reactivity & State",
+      "resources": [
+        {
+          "id": "rxjs-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["dependency-injection"]
+    },
+    {
+      "id": "http-client-and-rest",
+      "label": "HttpClient & REST Integration",
+      "description": "Call REST APIs from Angular services using typed HttpClient methods, apply interceptors for cross-cutting request concerns, and correctly distinguish a development proxy from backend CORS configuration when calling a separately hosted API.",
+      "icon": "api",
+      "zone": "Data & Forms",
+      "resources": [
+        {
+          "id": "http-client-and-rest-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rxjs-fundamentals"]
+    },
+    {
+      "id": "reactive-forms",
+      "label": "Reactive Forms",
+      "description": "Build typed reactive forms with FormControl/FormGroup, apply built-in and custom validators, model form state (dirty/touched/valid) to drive validation UX, and remember that frontend validation is UX only — the backend remains the authoritative trust boundary.",
+      "icon": "fact_check",
+      "zone": "Data & Forms",
+      "resources": [
+        {
+          "id": "reactive-forms-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["http-client-and-rest"]
+    },
+    {
+      "id": "routing",
+      "label": "Routing",
+      "description": "Configure Angular Router routes, outlets, links, route/query parameters, nested routes, redirects, wildcard fallbacks, guards, and lazy-loaded features — while treating route guards as navigation UX rather than backend security.",
+      "icon": "alt_route",
+      "zone": "Data & Forms",
+      "resources": [
+        {
+          "id": "routing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["reactive-forms"]
+    },
+    {
+      "id": "lifecycle-and-change-detection",
+      "label": "Lifecycle & Change Detection",
+      "description": "Explain the Angular component lifecycle (constructor, ngOnInit, ngOnChanges, ngAfterViewInit, ngOnDestroy) and how change detection — including OnPush and signal-driven updates — synchronizes component state with the rendered DOM.",
+      "icon": "schedule",
+      "zone": "Rendering & Architecture",
+      "resources": [
+        {
+          "id": "lifecycle-and-change-detection-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["signals", "routing"]
+    },
+    {
+      "id": "application-architecture",
+      "label": "Application Architecture",
+      "description": "Organize a growing Angular application into feature-oriented core/shared/features folders with clear component/service/model/pipe/directive responsibilities, choose a shared-state approach deliberately, and avoid both fat components and god services.",
+      "icon": "architecture",
+      "zone": "Rendering & Architecture",
+      "resources": [
+        {
+          "id": "application-architecture-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["lifecycle-and-change-detection"]
+    },
+    {
+      "id": "security",
+      "label": "Frontend Security",
+      "description": "Apply Angular's frontend security boundaries — built-in XSS escaping, the danger of innerHTML and sanitization-bypass APIs, never shipping secrets to the browser, and the principle that authentication/authorization and CSRF protection must ultimately be enforced by the backend.",
+      "icon": "security",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "security-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["application-architecture"]
+    },
+    {
+      "id": "testing",
+      "label": "Testing with Jasmine/Karma",
+      "description": "Write Angular unit and component tests with Jasmine (describe/it/expect/spies) run through TestBed, mock dependencies via DI, test HTTP calls without a real backend, and verify reactive forms and signals — recognizing Karma's role as the browser test runner.",
+      "icon": "verified",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["application-architecture"]
+    },
+    {
+      "id": "debugging-and-performance",
+      "label": "Debugging & Performance",
+      "description": "Localize a failure to the right layer — template, DI, RxJS, HTTP, or CORS — using browser and Angular DevTools and the Network tab, diagnose common HTTP status errors and duplicate-subscription bugs, and apply performance practices like list tracking and lazy loading only after measuring.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "debugging-and-performance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["security", "testing"]
+    },
+    {
+      "id": "accessibility-and-legacy",
+      "label": "Accessibility & Legacy Angular",
+      "description": "Build accessible dynamic UI such as dialogs, menus, and tabs on top of semantic HTML with proper keyboard and focus handling, and read legacy NgModule-based Angular applications well enough to maintain them alongside modern standalone code.",
+      "icon": "accessibility",
+      "zone": "Rendering & Architecture",
+      "resources": [
+        {
+          "id": "accessibility-and-legacy-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["lifecycle-and-change-detection"]
+    },
+    {
+      "id": "fullstack-capstone",
+      "label": "Full-Stack Capstone",
+      "description": "Explain and build the complete Angular-to-Spring Boot request flow — component, service, HttpClient, controller, service, repository, database — with aligned DTOs and environment configuration, culminating in a full Angular guestbook frontend capstone against a REST API.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "fullstack-capstone-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["debugging-and-performance", "accessibility-and-legacy"]
+    }
+  ],
+  "edges": [
+    { "id": "e-angular-orientation-cli-and-project-setup", "source": "angular-orientation", "target": "cli-and-project-setup" },
+    { "id": "e-cli-and-project-setup-standalone-components-and-templates", "source": "cli-and-project-setup", "target": "standalone-components-and-templates" },
+    { "id": "e-standalone-components-and-templates-data-binding", "source": "standalone-components-and-templates", "target": "data-binding" },
+    { "id": "e-data-binding-modern-control-flow", "source": "data-binding", "target": "modern-control-flow" },
+    { "id": "e-modern-control-flow-component-composition-io", "source": "modern-control-flow", "target": "component-composition-io" },
+    { "id": "e-component-composition-io-signals", "source": "component-composition-io", "target": "signals" },
+    { "id": "e-component-composition-io-dependency-injection", "source": "component-composition-io", "target": "dependency-injection" },
+    { "id": "e-dependency-injection-rxjs-fundamentals", "source": "dependency-injection", "target": "rxjs-fundamentals" },
+    { "id": "e-rxjs-fundamentals-http-client-and-rest", "source": "rxjs-fundamentals", "target": "http-client-and-rest" },
+    { "id": "e-http-client-and-rest-reactive-forms", "source": "http-client-and-rest", "target": "reactive-forms" },
+    { "id": "e-reactive-forms-routing", "source": "reactive-forms", "target": "routing" },
+    { "id": "e-signals-lifecycle-and-change-detection", "source": "signals", "target": "lifecycle-and-change-detection" },
+    { "id": "e-routing-lifecycle-and-change-detection", "source": "routing", "target": "lifecycle-and-change-detection" },
+    { "id": "e-lifecycle-and-change-detection-application-architecture", "source": "lifecycle-and-change-detection", "target": "application-architecture" },
+    { "id": "e-application-architecture-security", "source": "application-architecture", "target": "security" },
+    { "id": "e-application-architecture-testing", "source": "application-architecture", "target": "testing" },
+    { "id": "e-security-debugging-and-performance", "source": "security", "target": "debugging-and-performance" },
+    { "id": "e-testing-debugging-and-performance", "source": "testing", "target": "debugging-and-performance" },
+    { "id": "e-lifecycle-and-change-detection-accessibility-and-legacy", "source": "lifecycle-and-change-detection", "target": "accessibility-and-legacy" },
+    { "id": "e-debugging-and-performance-fullstack-capstone", "source": "debugging-and-performance", "target": "fullstack-capstone" },
+    { "id": "e-accessibility-and-legacy-fullstack-capstone", "source": "accessibility-and-legacy", "target": "fullstack-capstone" }
+  ]
+}

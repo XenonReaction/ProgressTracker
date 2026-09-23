@@ -1,0 +1,269 @@
+{
+  "treeId": "spring-aop-fundamentals",
+  "order": 14,
+  "title": "Spring AOP Fundamentals",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Understand cross-cutting concerns and general AOP theory, then apply Spring's proxy-based AOP safely \u2014 writing aspects, pointcuts, and advice while recognizing how framework features like @Transactional rely on the same interception mechanism.",
+  "version": "1.0",
+  "estimatedMonths": 0.5,
+  "totalNodes": 10,
+  "icon": "hub",
+  "nodes": [
+    {
+      "id": "aop-motivation-vocabulary",
+      "label": "AOP Motivation & Vocabulary",
+      "description": "Understand why cross-cutting concerns like logging and auditing scatter and tangle code, then learn the core AOP vocabulary \u2014 aspect, join point, pointcut, advice, target, proxy, and weaving \u2014 that names the problem and its solution.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "aop-motivation-vocabulary-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "advice-types-and-pointcuts",
+      "label": "Advice Types & Pointcuts",
+      "description": "Distinguish before, after, after-returning, after-throwing, and around advice, and learn how pointcuts select which join points each piece of advice applies to.",
+      "icon": "layers",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "advice-types-and-pointcuts-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "aop-motivation-vocabulary"
+      ]
+    },
+    {
+      "id": "weaving-and-proxy-fundamentals",
+      "label": "Weaving & Proxy Fundamentals",
+      "description": "Compare compile-time, load-time, and runtime weaving models, and understand that Spring AOP is fundamentally a runtime, proxy-based interception mechanism that can only intercept calls passing through the proxy.",
+      "icon": "sync",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "weaving-and-proxy-fundamentals-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "advice-types-and-pointcuts"
+      ]
+    },
+    {
+      "id": "spring-aop-setup",
+      "label": "Spring AOP Setup",
+      "description": "Configure Spring AOP with @Aspect-annotated beans, @Pointcut, and the five advice annotations (@Before, @After, @AfterReturning, @AfterThrowing, @Around) to intercept method calls declaratively.",
+      "icon": "integration_instructions",
+      "zone": "Core Implementation",
+      "resources": [
+        {
+          "id": "spring-aop-setup-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "weaving-and-proxy-fundamentals"
+      ]
+    },
+    {
+      "id": "joinpoint-and-pointcut-expressions",
+      "label": "JoinPoint & Pointcut Expressions",
+      "description": "Use JoinPoint and ProceedingJoinPoint to inspect method signatures and arguments, correctly proceed and return values from around advice, and write execution(), within(), @annotation, and args/target/this pointcut expressions that stay maintainable.",
+      "icon": "code",
+      "zone": "Core Implementation",
+      "resources": [
+        {
+          "id": "joinpoint-and-pointcut-expressions-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "spring-aop-setup"
+      ]
+    },
+    {
+      "id": "aspect-ordering-and-proxy-limitations",
+      "label": "Aspect Ordering & Proxy Limitations",
+      "description": "Reason about multiple aspects matching one invocation with @Order, and recognize Spring's proxy limitations \u2014 the self-invocation problem, private/final method restrictions, and beans created outside Spring never being proxied.",
+      "icon": "account_tree",
+      "zone": "Core Implementation",
+      "resources": [
+        {
+          "id": "aspect-ordering-and-proxy-limitations-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "joinpoint-and-pointcut-expressions"
+      ]
+    },
+    {
+      "id": "common-aop-applications",
+      "label": "Common AOP Applications",
+      "description": "Apply AOP to genuinely cross-cutting concerns such as logging, tracing, metrics, and auditing, while recognizing that AOP should never be used to hide core domain behavior.",
+      "icon": "timeline",
+      "zone": "Applied Patterns",
+      "resources": [
+        {
+          "id": "common-aop-applications-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "aspect-ordering-and-proxy-limitations"
+      ]
+    },
+    {
+      "id": "aop-and-framework-features",
+      "label": "AOP & Framework Features",
+      "description": "Understand how @Transactional, @Async, caching, and security annotations rely on the same proxy/interception mechanism as custom aspects, and why self-invocation defeats them the same way.",
+      "icon": "security",
+      "zone": "Applied Patterns",
+      "resources": [
+        {
+          "id": "aop-and-framework-features-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "common-aop-applications"
+      ]
+    },
+    {
+      "id": "testing-and-debugging-aspects",
+      "label": "Testing & Debugging Aspects",
+      "description": "Unit-test advice logic directly and integration-test that Spring proxying actually occurs, then systematically debug AOP by checking bean registration, pointcut matches, proxy type, and invocation path.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-and-debugging-aspects-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "aop-and-framework-features"
+      ]
+    },
+    {
+      "id": "professional-aop-judgment",
+      "label": "Professional AOP Judgment",
+      "description": "Apply professional judgment about when AOP is the right tool versus filters, interceptors, or explicit code, and develop enough AspectJ awareness to recognize its broader weaving capabilities without needing to master them.",
+      "icon": "verified",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-aop-judgment-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "testing-and-debugging-aspects"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-aop-motivation-vocabulary-advice-types-and-pointcuts",
+      "source": "aop-motivation-vocabulary",
+      "target": "advice-types-and-pointcuts"
+    },
+    {
+      "id": "e-advice-types-and-pointcuts-weaving-and-proxy-fundamentals",
+      "source": "advice-types-and-pointcuts",
+      "target": "weaving-and-proxy-fundamentals"
+    },
+    {
+      "id": "e-weaving-and-proxy-fundamentals-spring-aop-setup",
+      "source": "weaving-and-proxy-fundamentals",
+      "target": "spring-aop-setup"
+    },
+    {
+      "id": "e-spring-aop-setup-joinpoint-and-pointcut-expressions",
+      "source": "spring-aop-setup",
+      "target": "joinpoint-and-pointcut-expressions"
+    },
+    {
+      "id": "e-joinpoint-and-pointcut-expressions-aspect-ordering-and-proxy-limitations",
+      "source": "joinpoint-and-pointcut-expressions",
+      "target": "aspect-ordering-and-proxy-limitations"
+    },
+    {
+      "id": "e-aspect-ordering-and-proxy-limitations-common-aop-applications",
+      "source": "aspect-ordering-and-proxy-limitations",
+      "target": "common-aop-applications"
+    },
+    {
+      "id": "e-common-aop-applications-aop-and-framework-features",
+      "source": "common-aop-applications",
+      "target": "aop-and-framework-features"
+    },
+    {
+      "id": "e-aop-and-framework-features-testing-and-debugging-aspects",
+      "source": "aop-and-framework-features",
+      "target": "testing-and-debugging-aspects"
+    },
+    {
+      "id": "e-testing-and-debugging-aspects-professional-aop-judgment",
+      "source": "testing-and-debugging-aspects",
+      "target": "professional-aop-judgment"
+    }
+  ]
+}

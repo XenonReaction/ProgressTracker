@@ -1,0 +1,396 @@
+{
+  "treeId": "html-css-web-mastery",
+  "order": 15,
+  "title": "HTML & CSS Web Development Mastery",
+  "category": "Technology",
+  "difficulty": "easy",
+  "description": "Build complete, accessible, responsive web pages from HTML and CSS fundamentals through Flexbox/Grid, frameworks, browser internals, and enough JavaScript/HTTP knowledge to bridge into full-stack development.",
+  "version": "1.0",
+  "estimatedMonths": 1.5,
+  "totalNodes": 19,
+  "icon": "web",
+  "nodes": [
+    {
+      "id": "web-fundamentals-orientation",
+      "label": "Web Fundamentals Orientation",
+      "description": "Understand the distinct responsibilities of HTML (structure/meaning), CSS (presentation/layout), and JavaScript (behavior) as the three layers of a web page, and how they combine in the browser.",
+      "icon": "web",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "web-fundamentals-orientation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "html-document-structure",
+      "label": "HTML Document Structure",
+      "description": "Write a complete HTML document from memory — DOCTYPE, html/head/body, elements, attributes, and nesting relationships — and know the purpose of key head elements like meta charset, viewport, title, and stylesheet links.",
+      "icon": "code",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "html-document-structure-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["web-fundamentals-orientation"]
+    },
+    {
+      "id": "text-content-and-media",
+      "label": "Text Content & Media",
+      "description": "Structure page content with headings that reflect document hierarchy rather than visual size, paragraphs and inline text semantics, links with correct relative/absolute/fragment URLs, meaningful alt text on images, and ordered/unordered/description lists.",
+      "icon": "article",
+      "zone": "HTML Content & Forms",
+      "resources": [
+        {
+          "id": "text-content-and-media-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["html-document-structure"]
+    },
+    {
+      "id": "semantic-html-and-tables",
+      "label": "Semantic HTML & Tables",
+      "description": "Choose meaningful semantic elements — header, nav, main, section, article, aside, footer — over generic div/span containers, and mark up tabular data correctly with table/thead/tbody/th/td.",
+      "icon": "account_tree",
+      "zone": "HTML Content & Forms",
+      "resources": [
+        {
+          "id": "semantic-html-and-tables-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["text-content-and-media"]
+    },
+    {
+      "id": "forms-fundamentals",
+      "label": "Forms Fundamentals",
+      "description": "Build HTML forms with correctly associated labels, appropriate input types, the name/id distinction, action and method attributes, native browser validation attributes, and explicit button types — understanding that a form can submit without any JavaScript.",
+      "icon": "fact_check",
+      "zone": "HTML Content & Forms",
+      "resources": [
+        {
+          "id": "forms-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["semantic-html-and-tables"]
+    },
+    {
+      "id": "accessibility-fundamentals",
+      "label": "Accessibility Fundamentals",
+      "description": "Apply accessibility as a first-class part of HTML design — semantic structure, labels, heading hierarchy, keyboard operability, visible focus, and the principle of preferring native HTML semantics before reaching for ARIA.",
+      "icon": "accessibility",
+      "zone": "HTML Content & Forms",
+      "resources": [
+        {
+          "id": "accessibility-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["forms-fundamentals"]
+    },
+    {
+      "id": "css-syntax-and-selectors",
+      "label": "CSS Syntax & Selectors",
+      "description": "Write CSS rules and connect them to HTML via external stylesheets, and select elements with type/class/ID/universal/relationship/attribute selectors plus pseudo-classes and pseudo-elements.",
+      "icon": "code",
+      "zone": "CSS Core",
+      "resources": [
+        {
+          "id": "css-syntax-and-selectors-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["accessibility-fundamentals"]
+    },
+    {
+      "id": "cascade-and-box-model",
+      "label": "Cascade & Box Model",
+      "description": "Reason about which competing CSS declaration wins using the cascade, specificity, !important, and inheritance, and model every element's sizing with the content/padding/border/margin box model and box-sizing: border-box.",
+      "icon": "layers",
+      "zone": "CSS Core",
+      "resources": [
+        {
+          "id": "cascade-and-box-model-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["css-syntax-and-selectors"]
+    },
+    {
+      "id": "css-units-colors-typography",
+      "label": "Units, Colors & Typography",
+      "description": "Choose appropriate CSS units (px, %, em, rem, vw/vh, fr) for the situation, and apply color formats, typography properties, backgrounds, borders/radius, and margin/padding — including vertical margin collapsing — to style content.",
+      "icon": "palette",
+      "zone": "CSS Core",
+      "resources": [
+        {
+          "id": "css-units-colors-typography-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cascade-and-box-model"]
+    },
+    {
+      "id": "layout-flow-and-positioning",
+      "label": "Layout Flow & Positioning",
+      "description": "Reason from CSS normal document flow before overriding it, understand how the display property changes layout participation, and apply static/relative/absolute/fixed/sticky positioning with z-index and stacking contexts.",
+      "icon": "view_quilt",
+      "zone": "CSS Core",
+      "resources": [
+        {
+          "id": "layout-flow-and-positioning-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["css-units-colors-typography"]
+    },
+    {
+      "id": "flexbox-and-grid",
+      "label": "Flexbox & Grid",
+      "description": "Build one-dimensional layouts with Flexbox (main/cross axis, justify-content, align-items, flex-grow/shrink) and two-dimensional layouts with CSS Grid (template columns/rows, repeat/minmax/auto-fit), and choose the right tool for a given layout problem.",
+      "icon": "grid_view",
+      "zone": "Layout Systems & Frameworks",
+      "resources": [
+        {
+          "id": "flexbox-and-grid-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["layout-flow-and-positioning"]
+    },
+    {
+      "id": "css-frameworks",
+      "label": "CSS Frameworks",
+      "description": "Understand why teams adopt a CSS framework and the tradeoffs involved, and compose interfaces with Tailwind's utility-first classes or Bootstrap's pre-built components and 12-column grid — recognizing that both still rest on the box model, Flexbox, and Grid fundamentals underneath.",
+      "icon": "widgets",
+      "zone": "Layout Systems & Frameworks",
+      "resources": [
+        {
+          "id": "css-frameworks-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["flexbox-and-grid"]
+    },
+    {
+      "id": "responsive-design",
+      "label": "Responsive Design",
+      "description": "Build interfaces that adapt to viewport width, device, and user preference using correct viewport metadata, mobile-first media queries, responsive images, CSS custom properties, fluid sizing with calc/min/max/clamp, and purposeful transitions/animations that respect prefers-reduced-motion.",
+      "icon": "devices",
+      "zone": "Layout Systems & Frameworks",
+      "resources": [
+        {
+          "id": "responsive-design-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["css-frameworks"]
+    },
+    {
+      "id": "browser-rendering-and-devtools",
+      "label": "Browser Rendering & DevTools",
+      "description": "Explain the browser's parse-DOM-layout-paint-composite pipeline, and use DevTools' Elements, Styles, Computed, Network, and Console panels to inspect the DOM, debug CSS cascade/box-model issues, and test responsive breakpoints.",
+      "icon": "bug_report",
+      "zone": "Browser & Web Fundamentals",
+      "resources": [
+        {
+          "id": "browser-rendering-and-devtools-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["responsive-design"]
+    },
+    {
+      "id": "paths-and-local-serving",
+      "label": "Paths & Local Serving",
+      "description": "Organize a project's files and reference them correctly with relative and absolute paths, and understand the difference between opening a file directly and serving it from a local HTTP server on localhost with a specific port.",
+      "icon": "dns",
+      "zone": "Browser & Web Fundamentals",
+      "resources": [
+        {
+          "id": "paths-and-local-serving-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["browser-rendering-and-devtools"]
+    },
+    {
+      "id": "http-and-hosting",
+      "label": "HTTP & Hosting",
+      "description": "Explain how HTTP/HTTPS requests and responses work — methods, status codes, headers — how DNS resolves a domain to a server, and the overall path from source files to a hosted, HTTPS-served website, including static versus dynamic architectures and browser caching.",
+      "icon": "cloud",
+      "zone": "Browser & Web Fundamentals",
+      "resources": [
+        {
+          "id": "http-and-hosting-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["paths-and-local-serving"]
+    },
+    {
+      "id": "light-javascript-dom-interaction",
+      "label": "Light JavaScript & DOM Interaction",
+      "description": "Use JavaScript to select and modify DOM elements and classes, listen for events, intercept and read form submissions with FormData, apply client-side validation as a UX layer only, and make basic GET/POST requests with fetch() as the bridge into full-stack development.",
+      "icon": "javascript",
+      "zone": "Browser & Web Fundamentals",
+      "resources": [
+        {
+          "id": "light-javascript-dom-interaction-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["http-and-hosting"]
+    },
+    {
+      "id": "security-and-origins",
+      "label": "Security & Origins",
+      "description": "Understand browser origin rules and why CORS can block a cross-origin request even when the backend is running, and internalize that all frontend source — HTML, CSS, JavaScript, and comments — is publicly inspectable and must never contain secrets or rely on client-side validation for security.",
+      "icon": "security",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "security-and-origins-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["light-javascript-dom-interaction"]
+    },
+    {
+      "id": "debugging-and-maintainability",
+      "label": "Debugging & Maintainability",
+      "description": "Systematically diagnose common HTML/CSS/HTTP problems — broken paths, non-applying styles, unexpected sizing, Flexbox/Grid confusion, overflow, missing form data, 404s, CORS errors — using a layer-by-layer debugging workflow, and write maintainable code through separation of concerns and progressive enhancement.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "debugging-and-maintainability-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["security-and-origins", "browser-rendering-and-devtools"]
+    }
+  ],
+  "edges": [
+    { "id": "e-web-fundamentals-orientation-html-document-structure", "source": "web-fundamentals-orientation", "target": "html-document-structure" },
+    { "id": "e-html-document-structure-text-content-and-media", "source": "html-document-structure", "target": "text-content-and-media" },
+    { "id": "e-text-content-and-media-semantic-html-and-tables", "source": "text-content-and-media", "target": "semantic-html-and-tables" },
+    { "id": "e-semantic-html-and-tables-forms-fundamentals", "source": "semantic-html-and-tables", "target": "forms-fundamentals" },
+    { "id": "e-forms-fundamentals-accessibility-fundamentals", "source": "forms-fundamentals", "target": "accessibility-fundamentals" },
+    { "id": "e-accessibility-fundamentals-css-syntax-and-selectors", "source": "accessibility-fundamentals", "target": "css-syntax-and-selectors" },
+    { "id": "e-css-syntax-and-selectors-cascade-and-box-model", "source": "css-syntax-and-selectors", "target": "cascade-and-box-model" },
+    { "id": "e-cascade-and-box-model-css-units-colors-typography", "source": "cascade-and-box-model", "target": "css-units-colors-typography" },
+    { "id": "e-css-units-colors-typography-layout-flow-and-positioning", "source": "css-units-colors-typography", "target": "layout-flow-and-positioning" },
+    { "id": "e-layout-flow-and-positioning-flexbox-and-grid", "source": "layout-flow-and-positioning", "target": "flexbox-and-grid" },
+    { "id": "e-flexbox-and-grid-css-frameworks", "source": "flexbox-and-grid", "target": "css-frameworks" },
+    { "id": "e-css-frameworks-responsive-design", "source": "css-frameworks", "target": "responsive-design" },
+    { "id": "e-responsive-design-browser-rendering-and-devtools", "source": "responsive-design", "target": "browser-rendering-and-devtools" },
+    { "id": "e-browser-rendering-and-devtools-paths-and-local-serving", "source": "browser-rendering-and-devtools", "target": "paths-and-local-serving" },
+    { "id": "e-paths-and-local-serving-http-and-hosting", "source": "paths-and-local-serving", "target": "http-and-hosting" },
+    { "id": "e-http-and-hosting-light-javascript-dom-interaction", "source": "http-and-hosting", "target": "light-javascript-dom-interaction" },
+    { "id": "e-light-javascript-dom-interaction-security-and-origins", "source": "light-javascript-dom-interaction", "target": "security-and-origins" },
+    { "id": "e-security-and-origins-debugging-and-maintainability", "source": "security-and-origins", "target": "debugging-and-maintainability" },
+    { "id": "e-browser-rendering-and-devtools-debugging-and-maintainability", "source": "browser-rendering-and-devtools", "target": "debugging-and-maintainability" }
+  ]
+}

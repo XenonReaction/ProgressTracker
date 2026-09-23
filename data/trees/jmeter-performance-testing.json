@@ -1,0 +1,315 @@
+{
+  "treeId": "jmeter-performance-testing",
+  "order": 21,
+  "title": "JMeter Performance Testing",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from HTTP/REST fundamentals to professional Apache JMeter proficiency for load, performance, and correctness-under-load testing of REST endpoints and gateway-fronted microservice architectures.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 15,
+  "icon": "speed",
+  "nodes": [
+    {
+      "id": "prerequisites-http-and-cli",
+      "label": "HTTP & CLI Prerequisites",
+      "description": "Confirm the HTTP/REST and command-line fluency JMeter assumes — request/response semantics, methods, status codes, headers, JSON payloads, and running scripts from a shell — before building any test plan.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "prerequisites-http-and-cli-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "performance-testing-fundamentals",
+      "label": "Performance Testing Fundamentals",
+      "description": "Distinguish functional testing from performance testing, and choose correctly among load, stress, soak, and spike testing based on the business question being asked.",
+      "icon": "insights",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "performance-testing-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["prerequisites-http-and-cli"]
+    },
+    {
+      "id": "jmeter-architecture",
+      "label": "JMeter Architecture & Mental Model",
+      "description": "Understand JMeter's test-plan tree model — Thread Groups, Samplers, Listeners, Config Elements, Assertions, Timers, and Logic Controllers — and predict exactly what runs and in what scope from a tree structure alone.",
+      "icon": "account_tree",
+      "zone": "Core Concepts",
+      "resources": [
+        {
+          "id": "jmeter-architecture-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["performance-testing-fundamentals"]
+    },
+    {
+      "id": "installing-and-running-jmeter",
+      "label": "Installing & Running JMeter",
+      "description": "Install JMeter and its JDK prerequisite, and internalize the critical operational rule that GUI mode is for authoring/debugging only while CLI (non-GUI) mode is required for any trustworthy load-generating run.",
+      "icon": "build",
+      "zone": "Core Concepts",
+      "resources": [
+        {
+          "id": "installing-and-running-jmeter-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["jmeter-architecture"]
+    },
+    {
+      "id": "building-basic-test-plans",
+      "label": "Building Basic Test Plans",
+      "description": "Configure a Thread Group's users/ramp-up/loop count and build an HTTP Request sampler against a real endpoint, using HTTP Request Defaults to centralize server/port configuration across samplers.",
+      "icon": "api",
+      "zone": "Test Construction",
+      "resources": [
+        {
+          "id": "building-basic-test-plans-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["installing-and-running-jmeter"]
+    },
+    {
+      "id": "listeners-and-reading-results",
+      "label": "Listeners & Reading Results",
+      "description": "Use View Results Tree to debug individual samplers during authoring, then read the Summary and Aggregate Reports for real run results, understanding that heavy listeners must be disabled before generating trustworthy load.",
+      "icon": "table_chart",
+      "zone": "Test Construction",
+      "resources": [
+        {
+          "id": "listeners-and-reading-results-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["building-basic-test-plans"]
+    },
+    {
+      "id": "assertions-for-correctness",
+      "label": "Assertions for Correctness",
+      "description": "Add Response, Duration, and JSON assertions to a sampler so a test plan verifies correctness under load, not just throughput and capacity — because a fast response can still be a wrong response.",
+      "icon": "verified",
+      "zone": "Test Construction",
+      "resources": [
+        {
+          "id": "assertions-for-correctness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["listeners-and-reading-results"]
+    },
+    {
+      "id": "parameterization",
+      "label": "Parameterization",
+      "description": "Drive a test plan with a CSV Data Set Config so different threads send different data, avoiding the unrealistic and cache-skewing effect of every virtual user sending identical requests.",
+      "icon": "table_view",
+      "zone": "Test Construction",
+      "resources": [
+        {
+          "id": "parameterization-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["assertions-for-correctness"]
+    },
+    {
+      "id": "correlation-and-chaining",
+      "label": "Correlation & Request Chaining",
+      "description": "Extract dynamic values such as login tokens with Regular Expression or JSON Extractors and feed them into subsequent requests, building realistic authenticated request chains instead of hardcoding stale tokens.",
+      "icon": "link",
+      "zone": "Advanced Test Design",
+      "resources": [
+        {
+          "id": "correlation-and-chaining-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["parameterization"]
+    },
+    {
+      "id": "headers-cookies-and-auth",
+      "label": "Headers, Cookies & Auth",
+      "description": "Configure an HTTP Header Manager for shared and per-request headers including correlated bearer tokens, and an HTTP Cookie Manager for per-thread session simulation, choosing correctly between the two auth models.",
+      "icon": "cookie",
+      "zone": "Advanced Test Design",
+      "resources": [
+        {
+          "id": "headers-cookies-and-auth-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["correlation-and-chaining"]
+    },
+    {
+      "id": "logic-controllers-and-timers",
+      "label": "Logic Controllers & Timers",
+      "description": "Use Loop, If, and Transaction Controllers to structure multi-step user journeys and report combined transaction timing, and add realistic think-time with timers so threads don't hammer the server unrealistically.",
+      "icon": "alt_route",
+      "zone": "Advanced Test Design",
+      "resources": [
+        {
+          "id": "logic-controllers-and-timers-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["headers-cookies-and-auth"]
+    },
+    {
+      "id": "cli-execution-and-reporting",
+      "label": "CLI Execution & Reporting",
+      "description": "Run a test plan from the command line with the -n -t -l -e -o flags to produce a reproducible HTML Dashboard Report, and understand how that exact invocation becomes a stage in a CI/CD pipeline.",
+      "icon": "terminal",
+      "zone": "Execution & Reporting",
+      "resources": [
+        {
+          "id": "cli-execution-and-reporting-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["logic-controllers-and-timers"]
+    },
+    {
+      "id": "interpreting-results",
+      "label": "Interpreting Results Like a Professional",
+      "description": "Read throughput, percentile (p90/p99), and error-rate figures together rather than in isolation, since averages hide tail latency and high throughput can mask a server that is failing fast under load.",
+      "icon": "query_stats",
+      "zone": "Execution & Reporting",
+      "resources": [
+        {
+          "id": "interpreting-results-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cli-execution-and-reporting"]
+    },
+    {
+      "id": "distributed-testing-and-strategy",
+      "label": "Distributed Testing & Test Strategy",
+      "description": "Recognize when a single machine cannot generate enough load and distributed controller/generator testing becomes necessary, and choose between single-endpoint and full-user-journey test design based on the question being asked.",
+      "icon": "lan",
+      "zone": "Advanced Topics",
+      "resources": [
+        {
+          "id": "distributed-testing-and-strategy-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["interpreting-results"]
+    },
+    {
+      "id": "microservices-and-landscape",
+      "label": "Microservices Testing & Tool Landscape",
+      "description": "Point a test plan at an API gateway rather than individual services to measure real client-visible performance, then localize any bottleneck via the target services' own logs — and compare JMeter to Gatling, k6, and Locust at an awareness level.",
+      "icon": "hub",
+      "zone": "Advanced Topics",
+      "resources": [
+        {
+          "id": "microservices-and-landscape-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["distributed-testing-and-strategy"]
+    }
+  ],
+  "edges": [
+    { "id": "e-prerequisites-http-and-cli-performance-testing-fundamentals", "source": "prerequisites-http-and-cli", "target": "performance-testing-fundamentals" },
+    { "id": "e-performance-testing-fundamentals-jmeter-architecture", "source": "performance-testing-fundamentals", "target": "jmeter-architecture" },
+    { "id": "e-jmeter-architecture-installing-and-running-jmeter", "source": "jmeter-architecture", "target": "installing-and-running-jmeter" },
+    { "id": "e-installing-and-running-jmeter-building-basic-test-plans", "source": "installing-and-running-jmeter", "target": "building-basic-test-plans" },
+    { "id": "e-building-basic-test-plans-listeners-and-reading-results", "source": "building-basic-test-plans", "target": "listeners-and-reading-results" },
+    { "id": "e-listeners-and-reading-results-assertions-for-correctness", "source": "listeners-and-reading-results", "target": "assertions-for-correctness" },
+    { "id": "e-assertions-for-correctness-parameterization", "source": "assertions-for-correctness", "target": "parameterization" },
+    { "id": "e-parameterization-correlation-and-chaining", "source": "parameterization", "target": "correlation-and-chaining" },
+    { "id": "e-correlation-and-chaining-headers-cookies-and-auth", "source": "correlation-and-chaining", "target": "headers-cookies-and-auth" },
+    { "id": "e-headers-cookies-and-auth-logic-controllers-and-timers", "source": "headers-cookies-and-auth", "target": "logic-controllers-and-timers" },
+    { "id": "e-logic-controllers-and-timers-cli-execution-and-reporting", "source": "logic-controllers-and-timers", "target": "cli-execution-and-reporting" },
+    { "id": "e-cli-execution-and-reporting-interpreting-results", "source": "cli-execution-and-reporting", "target": "interpreting-results" },
+    { "id": "e-interpreting-results-distributed-testing-and-strategy", "source": "interpreting-results", "target": "distributed-testing-and-strategy" },
+    { "id": "e-distributed-testing-and-strategy-microservices-and-landscape", "source": "distributed-testing-and-strategy", "target": "microservices-and-landscape" }
+  ]
+}

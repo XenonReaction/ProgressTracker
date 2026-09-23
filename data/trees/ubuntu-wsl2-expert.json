@@ -1,0 +1,376 @@
+{
+  "treeId": "ubuntu-wsl2-expert",
+  "order": 2,
+  "title": "Ubuntu on WSL2 Expert",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Become fluent operating Ubuntu under WSL2 for software development — from core command-line skills through Bash automation, Linux permissions/networking, and the Windows/WSL2 architecture — able to diagnose environment problems from first principles.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 18,
+  "icon": "terminal",
+  "nodes": [
+    {
+      "id": "essential-commands",
+      "label": "Essential Commands",
+      "description": "Navigate and manipulate the filesystem from memory with pwd, ls, cd, mkdir, touch, cp, mv, rm, cat, less, nano, history, and man, and manage packages with apt and sudo — the baseline vocabulary for daily Linux work.",
+      "icon": "terminal",
+      "zone": "Command-Line Foundations",
+      "resources": [
+        {
+          "id": "essential-commands-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "core-dev-commands",
+      "label": "Core Development Commands",
+      "description": "Extend the daily toolkit with find, grep, head/tail, sort/uniq, stat, ln, chmod/chown, ps/top/kill, curl/wget, tar/zip, df/du/free, and environment inspection commands such as uname, whoami, id, env, export, and source, used constantly in development work.",
+      "icon": "build",
+      "zone": "Command-Line Foundations",
+      "resources": [
+        {
+          "id": "core-dev-commands-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["essential-commands"]
+    },
+    {
+      "id": "shell-operators-and-syntax",
+      "label": "Shell Operators & Syntax",
+      "description": "Combine commands with pipes, output/input/error redirection, &&/||/;/&, command substitution, and wildcard globbing, and quote and escape arguments correctly so commands behave predictably.",
+      "icon": "code",
+      "zone": "Command-Line Foundations",
+      "resources": [
+        {
+          "id": "shell-operators-and-syntax-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["core-dev-commands"]
+    },
+    {
+      "id": "filesystem-hierarchy",
+      "label": "Filesystem Hierarchy",
+      "description": "Build a mental model of the single Linux filesystem tree rooted at /, know the purpose of key top-level directories such as /home, /etc, /usr, /var, /mnt, and /tmp, and distinguish absolute paths, relative paths, and hidden files.",
+      "icon": "account_tree",
+      "zone": "Filesystem & Permissions",
+      "resources": [
+        {
+          "id": "filesystem-hierarchy-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["shell-operators-and-syntax"]
+    },
+    {
+      "id": "file-operations-and-streams",
+      "label": "File Operations & Streams",
+      "description": "Create, copy, move, and delete files and directories safely, choose the right tool for viewing and searching file content such as cat/less/head/tail and find/grep, and understand the stdin/stdout/stderr model that pipes and redirection are built on.",
+      "icon": "sync",
+      "zone": "Filesystem & Permissions",
+      "resources": [
+        {
+          "id": "file-operations-and-streams-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["filesystem-hierarchy"]
+    },
+    {
+      "id": "users-permissions-ownership",
+      "label": "Users, Permissions & Ownership",
+      "description": "Understand Linux users, root, and sudo authorization, read and change file ownership and rwx permissions in both symbolic and numeric (chmod 755) form, and explain why a script needs execute permission to run directly.",
+      "icon": "security",
+      "zone": "Filesystem & Permissions",
+      "resources": [
+        {
+          "id": "users-permissions-ownership-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["file-operations-and-streams"]
+    },
+    {
+      "id": "path-and-environment",
+      "label": "$PATH & Environment",
+      "description": "Understand $PATH resolution, inspect and export environment and shell variables, and know how shell startup files like .bashrc and .profile configure a session — and why a command can work in one terminal but not another.",
+      "icon": "dns",
+      "zone": "Filesystem & Permissions",
+      "resources": [
+        {
+          "id": "path-and-environment-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["users-permissions-ownership"]
+    },
+    {
+      "id": "processes-and-jobs",
+      "label": "Processes & Jobs",
+      "description": "Inspect and manage running processes with ps/top/kill, control foreground and background jobs, understand signals like SIGINT/SIGTERM/SIGKILL, and read exit codes to drive &&/|| logic.",
+      "icon": "memory",
+      "zone": "Shell, Processes & Scripting",
+      "resources": [
+        {
+          "id": "processes-and-jobs-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["path-and-environment"]
+    },
+    {
+      "id": "package-management",
+      "label": "Package Management",
+      "description": "Manage Ubuntu packages with apt (update, upgrade, install, remove, search), understand why apt update precedes apt upgrade, recognize alternate software installation sources, and work with tar/zip archives.",
+      "icon": "storage",
+      "zone": "Shell, Processes & Scripting",
+      "resources": [
+        {
+          "id": "package-management-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["users-permissions-ownership"]
+    },
+    {
+      "id": "bash-scripting",
+      "label": "Bash Scripting",
+      "description": "Distinguish terminal from shell, write Bash scripts with a shebang, variables, arguments, conditionals, loops, and functions, and apply defensive scripting practices such as set -e and quoting variables to automate routine development tasks safely.",
+      "icon": "integration_instructions",
+      "zone": "Shell, Processes & Scripting",
+      "resources": [
+        {
+          "id": "bash-scripting-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["processes-and-jobs"]
+    },
+    {
+      "id": "networking-ssh-services",
+      "label": "Networking, SSH & Services",
+      "description": "Apply core networking concepts such as IP, port, localhost, and DNS with tools like ip, ss, curl, and ping, connect to remote hosts over SSH with key-based authentication, and manage services with systemctl where systemd is available.",
+      "icon": "lan",
+      "zone": "Shell, Processes & Scripting",
+      "resources": [
+        {
+          "id": "networking-ssh-services-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["package-management"]
+    },
+    {
+      "id": "wsl2-fundamentals",
+      "label": "WSL2 Fundamentals",
+      "description": "Explain what WSL is, the architectural difference between WSL1's syscall translation and WSL2's real virtualized Linux kernel, the distinction between WSL and a distribution like Ubuntu, and how to install, list, start, and stop WSL distributions.",
+      "icon": "hub",
+      "zone": "WSL2 Architecture",
+      "resources": [
+        {
+          "id": "wsl2-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["bash-scripting"]
+    },
+    {
+      "id": "windows-linux-filesystem-integration",
+      "label": "Windows/Linux Filesystem Integration",
+      "description": "Reason about where Windows and Linux filesystems meet under WSL2 — /mnt/c mounts, why development projects should generally live on the Linux filesystem, accessing WSL files from Windows and vice versa, and cross-platform case-sensitivity and line-ending issues.",
+      "icon": "sync",
+      "zone": "Windows-Linux Integration",
+      "resources": [
+        {
+          "id": "windows-linux-filesystem-integration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["wsl2-fundamentals"]
+    },
+    {
+      "id": "wsl-networking-and-configuration",
+      "label": "WSL Networking & Configuration",
+      "description": "Understand WSL2's integrated networking model for reasoning about localhost across Windows/WSL/Docker boundaries, configure WSL at the distribution level (wsl.conf) and Windows level (.wslconfig), and back up, export, and import distributions.",
+      "icon": "dns",
+      "zone": "Windows-Linux Integration",
+      "resources": [
+        {
+          "id": "wsl-networking-and-configuration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["windows-linux-filesystem-integration"]
+    },
+    {
+      "id": "dev-tool-integration",
+      "label": "Development Tool Integration",
+      "description": "Diagnose which side of the Windows/WSL boundary a development tool such as VS Code, Docker, Java, or Node is actually running on, its executable location, and its $PATH visibility, since misidentifying the layer is a leading cause of confusing tooling failures.",
+      "icon": "integration_instructions",
+      "zone": "Windows-Linux Integration",
+      "resources": [
+        {
+          "id": "dev-tool-integration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["wsl-networking-and-configuration"]
+    },
+    {
+      "id": "troubleshooting-and-diagnostics",
+      "label": "Troubleshooting & Diagnostics",
+      "description": "Systematically diagnose common Linux/WSL failures — command not found, permission denied, file not found, inconsistent terminals, wrong filesystem, networking failures, package errors, and disk space issues — by inspecting system state rather than copying unexplained fixes.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "troubleshooting-and-diagnostics-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["dev-tool-integration", "networking-ssh-services"]
+    },
+    {
+      "id": "advanced-linux-internals",
+      "label": "Advanced Linux Internals",
+      "description": "Use tab completion, history search, and aliases fluently, understand symbolic versus hard links and the inode/mount-point model underlying the filesystem, and apply the Unix philosophy of small composable tools to a repeatable troubleshooting method.",
+      "icon": "science",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "advanced-linux-internals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["troubleshooting-and-diagnostics"]
+    },
+    {
+      "id": "wsl2-mastery-capstone",
+      "label": "WSL2 Mastery Capstone",
+      "description": "Consolidate the full expertise ladder from basic navigation to advanced WSL2 internals into interview-ready explanations and hands-on exercises, demonstrating the ability to operate Ubuntu on WSL2 from memory and troubleshoot unfamiliar problems from first principles.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "wsl2-mastery-capstone-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["advanced-linux-internals"]
+    }
+  ],
+  "edges": [
+    { "id": "e-essential-commands-core-dev-commands", "source": "essential-commands", "target": "core-dev-commands" },
+    { "id": "e-core-dev-commands-shell-operators-and-syntax", "source": "core-dev-commands", "target": "shell-operators-and-syntax" },
+    { "id": "e-shell-operators-and-syntax-filesystem-hierarchy", "source": "shell-operators-and-syntax", "target": "filesystem-hierarchy" },
+    { "id": "e-filesystem-hierarchy-file-operations-and-streams", "source": "filesystem-hierarchy", "target": "file-operations-and-streams" },
+    { "id": "e-file-operations-and-streams-users-permissions-ownership", "source": "file-operations-and-streams", "target": "users-permissions-ownership" },
+    { "id": "e-users-permissions-ownership-path-and-environment", "source": "users-permissions-ownership", "target": "path-and-environment" },
+    { "id": "e-path-and-environment-processes-and-jobs", "source": "path-and-environment", "target": "processes-and-jobs" },
+    { "id": "e-users-permissions-ownership-package-management", "source": "users-permissions-ownership", "target": "package-management" },
+    { "id": "e-processes-and-jobs-bash-scripting", "source": "processes-and-jobs", "target": "bash-scripting" },
+    { "id": "e-package-management-networking-ssh-services", "source": "package-management", "target": "networking-ssh-services" },
+    { "id": "e-bash-scripting-wsl2-fundamentals", "source": "bash-scripting", "target": "wsl2-fundamentals" },
+    { "id": "e-wsl2-fundamentals-windows-linux-filesystem-integration", "source": "wsl2-fundamentals", "target": "windows-linux-filesystem-integration" },
+    { "id": "e-windows-linux-filesystem-integration-wsl-networking-and-configuration", "source": "windows-linux-filesystem-integration", "target": "wsl-networking-and-configuration" },
+    { "id": "e-wsl-networking-and-configuration-dev-tool-integration", "source": "wsl-networking-and-configuration", "target": "dev-tool-integration" },
+    { "id": "e-dev-tool-integration-troubleshooting-and-diagnostics", "source": "dev-tool-integration", "target": "troubleshooting-and-diagnostics" },
+    { "id": "e-networking-ssh-services-troubleshooting-and-diagnostics", "source": "networking-ssh-services", "target": "troubleshooting-and-diagnostics" },
+    { "id": "e-troubleshooting-and-diagnostics-advanced-linux-internals", "source": "troubleshooting-and-diagnostics", "target": "advanced-linux-internals" },
+    { "id": "e-advanced-linux-internals-wsl2-mastery-capstone", "source": "advanced-linux-internals", "target": "wsl2-mastery-capstone" }
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "treeId": "neo4j-graph-database",
+  "order": 36,
+  "title": "Neo4j Graph Database Developer",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from database and graph fundamentals to professional, application-level Neo4j proficiency, including Cypher, graph data modeling, performance tuning, transactions, and Java application integration.",
+  "version": "1.0",
+  "estimatedMonths": 1.5,
+  "totalNodes": 18,
+  "icon": "hub",
+  "nodes": [
+    {
+      "id": "database-graph-prerequisites",
+      "label": "Database & Graph Prerequisites",
+      "description": "Understand core database concepts — persistence, records, relationships, CRUD, indexes, constraints, and transactions — including relational vocabulary, as a foundation for comparing relational and graph data models.",
+      "icon": "storage",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "database-graph-prerequisites-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "neo4j-fundamentals",
+      "label": "Neo4j Concepts & Local Environment",
+      "description": "Explain Neo4j as a graph database management system built on the property graph model and Cypher, and set up a local Neo4j instance with appropriate tooling to execute queries and inspect results.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "neo4j-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["database-graph-prerequisites"]
+    },
+    {
+      "id": "property-graph-model",
+      "label": "Property Graph Model",
+      "description": "Model entities as nodes with labels and properties, connect them with typed, directed relationships that can themselves carry properties, and choose properties deliberately based on entity and relationship meaning.",
+      "icon": "account_tree",
+      "zone": "Cypher Basics",
+      "resources": [
+        {
+          "id": "property-graph-model-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["neo4j-fundamentals"]
+    },
+    {
+      "id": "cypher-fundamentals",
+      "label": "Cypher Fundamentals: MATCH & RETURN",
+      "description": "Read and write Cypher's pattern-based node and relationship syntax, and use MATCH, RETURN, and DISTINCT to retrieve nodes, relationships, and properties from a graph.",
+      "icon": "code",
+      "zone": "Cypher Basics",
+      "resources": [
+        {
+          "id": "cypher-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["property-graph-model"]
+    },
+    {
+      "id": "filtering-ordering-pagination",
+      "label": "Filtering, Ordering & Pagination",
+      "description": "Filter matched patterns with WHERE, sort results with ORDER BY, and paginate with SKIP and LIMIT while using deterministic ordering for correctness.",
+      "icon": "search",
+      "zone": "Cypher Basics",
+      "resources": [
+        {
+          "id": "filtering-ordering-pagination-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cypher-fundamentals"]
+    },
+    {
+      "id": "creating-modifying-data",
+      "label": "CREATE, MERGE, SET & DELETE",
+      "description": "Create, update, and remove nodes, relationships, properties, and labels with CREATE, MERGE, SET, REMOVE, and DELETE/DETACH DELETE, understanding MERGE's match-or-create semantics.",
+      "icon": "build",
+      "zone": "Cypher Basics",
+      "resources": [
+        {
+          "id": "creating-modifying-data-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["filtering-ordering-pagination"]
+    },
+    {
+      "id": "traversal-paths",
+      "label": "Relationship Traversal & Paths",
+      "description": "Traverse relationships across single and multiple hops, bind paths to variables, and use bounded variable-length patterns while recognizing path-explosion risk and leaving weighted-path algorithms to Graph Data Science.",
+      "icon": "lan",
+      "zone": "Cypher Querying",
+      "resources": [
+        {
+          "id": "traversal-paths-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["creating-modifying-data"]
+    },
+    {
+      "id": "aggregation-and-data-types",
+      "label": "Aggregation, Lists & Maps",
+      "description": "Use aggregation functions like count(), sum(), and collect() with grouping, and work with Cypher's list and map values, including UNWIND to convert lists into rows.",
+      "icon": "functions",
+      "zone": "Cypher Querying",
+      "resources": [
+        {
+          "id": "aggregation-and-data-types-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["traversal-paths"]
+    },
+    {
+      "id": "query-composition",
+      "label": "Optional Matching & Query Pipelines",
+      "description": "Use OPTIONAL MATCH to preserve unmatched rows, WITH to pass and transform values between query stages, and CALL subqueries to isolate and compose complex query logic.",
+      "icon": "layers",
+      "zone": "Cypher Querying",
+      "resources": [
+        {
+          "id": "query-composition-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["aggregation-and-data-types"]
+    },
+    {
+      "id": "graph-data-modeling",
+      "label": "Graph Data Modeling",
+      "description": "Design a graph model from a domain description by deciding what belongs as a node, relationship, or property, choosing meaningful labels and consistent relationship direction, and accounting for densely connected areas.",
+      "icon": "architecture",
+      "zone": "Graph Design",
+      "resources": [
+        {
+          "id": "graph-data-modeling-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["query-composition"]
+    },
+    {
+      "id": "constraints-indexes",
+      "label": "Constraints & Indexes",
+      "description": "Create uniqueness constraints and property indexes to protect identity and speed up lookups, and understand how constraints strengthen correctness around MERGE-based upserts.",
+      "icon": "verified",
+      "zone": "Graph Design",
+      "resources": [
+        {
+          "id": "constraints-indexes-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["graph-data-modeling"]
+    },
+    {
+      "id": "transactions-performance",
+      "label": "Transactions & Query Performance",
+      "description": "Explain transaction atomicity, commit, and rollback in Neo4j, reason about query performance from selective starting points through relationship expansion, and use EXPLAIN and PROFILE to diagnose and fix slow queries.",
+      "icon": "speed",
+      "zone": "Graph Design",
+      "resources": [
+        {
+          "id": "transactions-performance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["constraints-indexes"]
+    },
+    {
+      "id": "neo4j-java-driver",
+      "label": "Neo4j Java Driver",
+      "description": "Add the Neo4j Java driver via Maven, manage the driver/session/transaction lifecycle, execute parameterized queries, map results into domain objects, and handle driver errors appropriately.",
+      "icon": "coffee",
+      "zone": "Java Integration",
+      "resources": [
+        {
+          "id": "neo4j-java-driver-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["transactions-performance"]
+    },
+    {
+      "id": "parameters-security",
+      "label": "Parameters & Security",
+      "description": "Use parameterized Cypher to prevent injection, protect credentials and connection details outside source code, and validate inputs before they influence dynamically constructed queries.",
+      "icon": "security",
+      "zone": "Java Integration",
+      "resources": [
+        {
+          "id": "parameters-security-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["neo4j-java-driver"]
+    },
+    {
+      "id": "repository-architecture-testing",
+      "label": "Repository Architecture & Testing",
+      "description": "Separate Cypher and driver logic behind a repository/data-access layer with clear DTO/domain boundaries, and build unit and integration tests that exercise real Cypher, constraints, and transaction behavior.",
+      "icon": "integration_instructions",
+      "zone": "Java Integration",
+      "resources": [
+        {
+          "id": "repository-architecture-testing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["parameters-security"]
+    },
+    {
+      "id": "import-export-operations",
+      "label": "Import, Export & Operations",
+      "description": "Import structured data with LOAD CSV and batched UNWIND writes, and understand operational awareness including backup/restore and deployment considerations for local versus production Neo4j.",
+      "icon": "sync",
+      "zone": "Production & Ecosystem",
+      "resources": [
+        {
+          "id": "import-export-operations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["repository-architecture-testing"]
+    },
+    {
+      "id": "graph-data-science-and-db-comparison",
+      "label": "Graph Data Science & Database Comparison",
+      "description": "Recognize graph-algorithm use cases such as centrality and community detection at an awareness level, and justify choosing Neo4j versus PostgreSQL or MongoDB based on access patterns rather than habit.",
+      "icon": "hive",
+      "zone": "Production & Ecosystem",
+      "resources": [
+        {
+          "id": "graph-data-science-and-db-comparison-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["repository-architecture-testing"]
+    },
+    {
+      "id": "professional-practice-and-readiness",
+      "label": "Professional Practice & Spring Data Readiness",
+      "description": "Debug queries, connectivity, and application-layer failures systematically, apply professional query and modeling quality practices, and consolidate the Cypher/driver knowledge needed before adopting Spring Data Neo4j.",
+      "icon": "rocket_launch",
+      "zone": "Production & Ecosystem",
+      "resources": [
+        {
+          "id": "professional-practice-and-readiness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["import-export-operations", "graph-data-science-and-db-comparison"]
+    }
+  ],
+  "edges": [
+    { "id": "e-database-graph-prerequisites-neo4j-fundamentals", "source": "database-graph-prerequisites", "target": "neo4j-fundamentals" },
+    { "id": "e-neo4j-fundamentals-property-graph-model", "source": "neo4j-fundamentals", "target": "property-graph-model" },
+    { "id": "e-property-graph-model-cypher-fundamentals", "source": "property-graph-model", "target": "cypher-fundamentals" },
+    { "id": "e-cypher-fundamentals-filtering-ordering-pagination", "source": "cypher-fundamentals", "target": "filtering-ordering-pagination" },
+    { "id": "e-filtering-ordering-pagination-creating-modifying-data", "source": "filtering-ordering-pagination", "target": "creating-modifying-data" },
+    { "id": "e-creating-modifying-data-traversal-paths", "source": "creating-modifying-data", "target": "traversal-paths" },
+    { "id": "e-traversal-paths-aggregation-and-data-types", "source": "traversal-paths", "target": "aggregation-and-data-types" },
+    { "id": "e-aggregation-and-data-types-query-composition", "source": "aggregation-and-data-types", "target": "query-composition" },
+    { "id": "e-query-composition-graph-data-modeling", "source": "query-composition", "target": "graph-data-modeling" },
+    { "id": "e-graph-data-modeling-constraints-indexes", "source": "graph-data-modeling", "target": "constraints-indexes" },
+    { "id": "e-constraints-indexes-transactions-performance", "source": "constraints-indexes", "target": "transactions-performance" },
+    { "id": "e-transactions-performance-neo4j-java-driver", "source": "transactions-performance", "target": "neo4j-java-driver" },
+    { "id": "e-neo4j-java-driver-parameters-security", "source": "neo4j-java-driver", "target": "parameters-security" },
+    { "id": "e-parameters-security-repository-architecture-testing", "source": "parameters-security", "target": "repository-architecture-testing" },
+    { "id": "e-repository-architecture-testing-import-export-operations", "source": "repository-architecture-testing", "target": "import-export-operations" },
+    { "id": "e-repository-architecture-testing-graph-data-science-and-db-comparison", "source": "repository-architecture-testing", "target": "graph-data-science-and-db-comparison" },
+    { "id": "e-import-export-operations-professional-practice-and-readiness", "source": "import-export-operations", "target": "professional-practice-and-readiness" },
+    { "id": "e-graph-data-science-and-db-comparison-professional-practice-and-readiness", "source": "graph-data-science-and-db-comparison", "target": "professional-practice-and-readiness" }
+  ]
+}

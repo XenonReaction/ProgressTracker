@@ -1,0 +1,256 @@
+{
+  "treeId": "spring-boot-initializr",
+  "order": 13,
+  "title": "Spring Boot & Spring Initializr",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from Java/Maven/HTTP knowledge to independently creating, configuring, testing, debugging, and explaining a modern Spring Boot REST backend at professional full-stack developer competency.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 12,
+  "icon": "rocket_launch",
+  "nodes": [
+    {
+      "id": "spring-core-concepts",
+      "label": "Spring Core Concepts",
+      "description": "Understand what Spring Framework and Spring Boot each provide, distinguish convention-over-configuration and auto-configuration, and grasp Inversion of Control, Dependency Injection, beans, and the ApplicationContext that underlies every Spring application.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "spring-core-concepts-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "component-scanning-stereotypes",
+      "label": "Component Scanning & Application Bootstrap",
+      "description": "Use stereotype annotations (@Component, @Service, @Repository, @Controller, @RestController) to register beans through component scanning, and understand how @SpringBootApplication and SpringApplication.run() wire a project's entry point together.",
+      "icon": "account_tree",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "component-scanning-stereotypes-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["spring-core-concepts"]
+    },
+    {
+      "id": "project-bootstrapping",
+      "label": "Project Bootstrapping with Initializr",
+      "description": "Generate a Spring Boot project with start.spring.io by intentionally selecting build tool, language, version, and dependencies, then understand the generated pom.xml, source layout, and Maven integration (starters, BOM, spring-boot-maven-plugin) well enough to build, run, test, and package it.",
+      "icon": "build",
+      "zone": "Bootstrapping",
+      "resources": [
+        {
+          "id": "project-bootstrapping-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["component-scanning-stereotypes"]
+    },
+    {
+      "id": "configuration-management",
+      "label": "Configuration & Profiles",
+      "description": "Externalize application settings through application.properties/yml, environment variables, and placeholders; manage environment-specific behavior with profiles; and bind configuration into typed, validated @ConfigurationProperties classes instead of scattering @Value annotations.",
+      "icon": "settings",
+      "zone": "Bootstrapping",
+      "resources": [
+        {
+          "id": "configuration-management-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["project-bootstrapping"]
+    },
+    {
+      "id": "rest-controllers-json",
+      "label": "REST Controllers & JSON",
+      "description": "Build GET/POST/PUT/PATCH/DELETE endpoints with @RestController mapping annotations, path/query/body parameter binding, and ResponseEntity, and understand at a working level how Spring MVC uses Jackson to convert between JSON and Java objects.",
+      "icon": "api",
+      "zone": "Web Layer",
+      "resources": [
+        {
+          "id": "rest-controllers-json-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["configuration-management"]
+    },
+    {
+      "id": "dtos-validation",
+      "label": "DTOs, API Boundaries & Validation",
+      "description": "Design deliberate request/response DTOs that never expose persistence entities directly, map between API and domain representations, and enforce input correctness with Jakarta Bean Validation annotations and @Valid.",
+      "icon": "verified",
+      "zone": "Web Layer",
+      "resources": [
+        {
+          "id": "dtos-validation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rest-controllers-json"]
+    },
+    {
+      "id": "layered-architecture",
+      "label": "Controller-Service-Repository Architecture",
+      "description": "Separate HTTP handling, business/workflow logic, and persistence access into controller, service, and repository layers with correct dependency direction, and implement a stateless @Service layer with constructor injection and custom domain exceptions.",
+      "icon": "layers",
+      "zone": "Application Architecture",
+      "resources": [
+        {
+          "id": "layered-architecture-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["dtos-validation"]
+    },
+    {
+      "id": "exception-handling-cors",
+      "label": "Exception Handling & CORS",
+      "description": "Centralize error handling with @ExceptionHandler and @ControllerAdvice to map application failures to appropriate HTTP status codes and a consistent error response shape, and configure CORS deliberately instead of using unsafe wide-open defaults.",
+      "icon": "bug_report",
+      "zone": "Application Architecture",
+      "resources": [
+        {
+          "id": "exception-handling-cors-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["layered-architecture"]
+    },
+    {
+      "id": "testing-spring-boot",
+      "label": "Testing Spring Boot Applications",
+      "description": "Unit-test services with JUnit and Mockito by mocking repository collaborators without starting the Spring context, and use @SpringBootTest and web-layer slice tests with MockMvc when full or partial context testing is warranted.",
+      "icon": "science",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-spring-boot-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["layered-architecture"]
+    },
+    {
+      "id": "logging-observability",
+      "label": "Logging & Actuator",
+      "description": "Apply SLF4J logging with appropriate levels and parameterized, secret-free messages, and expose operational visibility through Spring Boot Actuator's health, info, and metrics endpoints while controlling what gets exposed.",
+      "icon": "timeline",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "logging-observability-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["exception-handling-cors"]
+    },
+    {
+      "id": "developer-workflow-debugging",
+      "label": "Developer Workflow & Diagnostics",
+      "description": "Run and iterate on a Boot application with DevTools and a debugger, read startup logs to reason about Boot's conditional auto-configuration, and systematically diagnose common failures such as missing beans, port conflicts, and configuration binding errors.",
+      "icon": "terminal",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "developer-workflow-debugging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["testing-spring-boot", "logging-observability"]
+    },
+    {
+      "id": "production-readiness",
+      "label": "Production Readiness & Boundaries",
+      "description": "Recognize the environment-specific configuration, secrets handling, graceful shutdown, and observability concerns relevant to running Boot in production, adopt modern Spring idioms (constructor injection, records, typed config), and understand which adjacent topics (Security, JPA, AOP, Docker, CI/CD) belong to separate skill trees.",
+      "icon": "cloud",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "production-readiness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["developer-workflow-debugging"]
+    }
+  ],
+  "edges": [
+    { "id": "e-spring-core-concepts-component-scanning-stereotypes", "source": "spring-core-concepts", "target": "component-scanning-stereotypes" },
+    { "id": "e-component-scanning-stereotypes-project-bootstrapping", "source": "component-scanning-stereotypes", "target": "project-bootstrapping" },
+    { "id": "e-project-bootstrapping-configuration-management", "source": "project-bootstrapping", "target": "configuration-management" },
+    { "id": "e-configuration-management-rest-controllers-json", "source": "configuration-management", "target": "rest-controllers-json" },
+    { "id": "e-rest-controllers-json-dtos-validation", "source": "rest-controllers-json", "target": "dtos-validation" },
+    { "id": "e-dtos-validation-layered-architecture", "source": "dtos-validation", "target": "layered-architecture" },
+    { "id": "e-layered-architecture-exception-handling-cors", "source": "layered-architecture", "target": "exception-handling-cors" },
+    { "id": "e-layered-architecture-testing-spring-boot", "source": "layered-architecture", "target": "testing-spring-boot" },
+    { "id": "e-exception-handling-cors-logging-observability", "source": "exception-handling-cors", "target": "logging-observability" },
+    { "id": "e-testing-spring-boot-developer-workflow-debugging", "source": "testing-spring-boot", "target": "developer-workflow-debugging" },
+    { "id": "e-logging-observability-developer-workflow-debugging", "source": "logging-observability", "target": "developer-workflow-debugging" },
+    { "id": "e-developer-workflow-debugging-production-readiness", "source": "developer-workflow-debugging", "target": "production-readiness" }
+  ]
+}

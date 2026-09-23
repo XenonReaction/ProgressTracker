@@ -1,0 +1,503 @@
+{
+  "treeId": "jdbc-fullstack",
+  "order": 7,
+  "title": "JDBC Full-Stack Data Access",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from basic Java and SQL knowledge to professional JDBC proficiency \u2014 connections, prepared statements, transactions, connection pooling, and the repository pattern \u2014 as the bridge to Spring Boot, JPA, and Spring Data.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 19,
+  "icon": "storage",
+  "nodes": [
+    {
+      "id": "jdbc-prerequisites",
+      "label": "JDBC Prerequisites",
+      "description": "Confirm the Java (collections, Optional, try-with-resources) and SQL/PostgreSQL (tables, keys, constraints, SELECT/INSERT/UPDATE/DELETE, joins) prerequisites needed before accessing a database from Java.",
+      "icon": "coffee",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "jdbc-prerequisites-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "jdbc-fundamentals",
+      "label": "JDBC Fundamentals",
+      "description": "Explain JDBC's role as the Java API sitting between application code and a database-specific driver, and understand the core object flow \u2014 Connection, PreparedStatement, execute, ResultSet, Java objects.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "jdbc-fundamentals-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "jdbc-prerequisites"
+      ]
+    },
+    {
+      "id": "postgresql-driver-setup",
+      "label": "PostgreSQL Driver Setup",
+      "description": "Add the PostgreSQL JDBC driver as a Maven dependency, and construct and read a JDBC URL (host, port, database, credentials), keeping credentials out of committed source.",
+      "icon": "cloud",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "postgresql-driver-setup-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "jdbc-fundamentals"
+      ]
+    },
+    {
+      "id": "connections",
+      "label": "Connections",
+      "description": "Open a database connection with DriverManager, understand what a connection represents as a limited resource, and close it safely, configuring auto-commit and other session-level behavior appropriately.",
+      "icon": "lan",
+      "zone": "Core JDBC",
+      "resources": [
+        {
+          "id": "connections-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "postgresql-driver-setup"
+      ]
+    },
+    {
+      "id": "statements-and-prepared-statements",
+      "label": "Statements & Prepared Statements",
+      "description": "Recognize why concatenating untrusted input into SQL via Statement is dangerous, and use PreparedStatement with ? placeholders and typed setters (setString, setLong, setBigDecimal, etc.) for ordinary application queries.",
+      "icon": "code",
+      "zone": "Core JDBC",
+      "resources": [
+        {
+          "id": "statements-and-prepared-statements-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "connections"
+      ]
+    },
+    {
+      "id": "executing-sql",
+      "label": "Executing SQL",
+      "description": "Choose the correct execution method \u2014 executeQuery() for SELECT, executeUpdate() for INSERT/UPDATE/DELETE, execute() for general cases \u2014 and interpret returned rows or affected-row counts.",
+      "icon": "terminal",
+      "zone": "Core JDBC",
+      "resources": [
+        {
+          "id": "executing-sql-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "statements-and-prepared-statements"
+      ]
+    },
+    {
+      "id": "resultset-basics",
+      "label": "ResultSet Basics",
+      "description": "Iterate a ResultSet's cursor with next(), read columns by label or index with typed getters, and understand the difference between forward-only and scrollable result sets.",
+      "icon": "database",
+      "zone": "Core JDBC",
+      "resources": [
+        {
+          "id": "resultset-basics-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "executing-sql"
+      ]
+    },
+    {
+      "id": "crud-operations",
+      "label": "CRUD Operations",
+      "description": "Implement full parameterized CRUD (create, read, update, delete) against a PostgreSQL table, checking affected-row counts and retrieving generated keys where needed.",
+      "icon": "build",
+      "zone": "Data Access",
+      "resources": [
+        {
+          "id": "crud-operations-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "resultset-basics"
+      ]
+    },
+    {
+      "id": "type-mapping-and-null-handling",
+      "label": "Type Mapping & NULL Handling",
+      "description": "Map common SQL types to their Java equivalents (NUMERIC to BigDecimal, TIMESTAMP to LocalDateTime, etc.), and correctly distinguish SQL NULL from Java null using wasNull() and setNull().",
+      "icon": "functions",
+      "zone": "Data Access",
+      "resources": [
+        {
+          "id": "type-mapping-and-null-handling-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "crud-operations"
+      ]
+    },
+    {
+      "id": "row-to-object-mapping",
+      "label": "Row-to-Object Mapping",
+      "description": "Manually map ResultSet rows into Java objects and collections, separating the database representation from business logic and avoiding scattered, duplicated mapping code.",
+      "icon": "account_tree",
+      "zone": "Data Access",
+      "resources": [
+        {
+          "id": "row-to-object-mapping-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "type-mapping-and-null-handling"
+      ]
+    },
+    {
+      "id": "resource-management-and-errors",
+      "label": "Resource Management & Error Handling",
+      "description": "Use try-with-resources to guarantee Connection/PreparedStatement/ResultSet are closed even on exceptions, and handle SQLException at appropriate boundaries without exposing raw database errors up the call stack.",
+      "icon": "health_and_safety",
+      "zone": "Reliability",
+      "resources": [
+        {
+          "id": "resource-management-and-errors-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "row-to-object-mapping"
+      ]
+    },
+    {
+      "id": "transactions",
+      "label": "Transactions",
+      "description": "Disable auto-commit to group multiple operations into one atomic transaction, commit or roll back correctly, and understand how PostgreSQL's isolation levels relate to concurrent transaction behavior.",
+      "icon": "verified",
+      "zone": "Reliability",
+      "resources": [
+        {
+          "id": "transactions-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "resource-management-and-errors"
+      ]
+    },
+    {
+      "id": "generated-keys-and-batching",
+      "label": "Generated Keys & Batch Operations",
+      "description": "Retrieve database-generated primary keys after an insert, and use addBatch()/executeBatch() to reduce round trips for bulk operations, understanding how batching interacts with transactions.",
+      "icon": "layers",
+      "zone": "Reliability",
+      "resources": [
+        {
+          "id": "generated-keys-and-batching-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "transactions"
+      ]
+    },
+    {
+      "id": "datasource-and-connection-pooling",
+      "label": "DataSource & Connection Pooling",
+      "description": "Move from DriverManager to a DataSource so connection configuration is separated from repository logic, and understand connection pooling (HikariCP) \u2014 checkout/return behavior, pool sizing, and pool exhaustion.",
+      "icon": "hive",
+      "zone": "Architecture",
+      "resources": [
+        {
+          "id": "datasource-and-connection-pooling-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "generated-keys-and-batching"
+      ]
+    },
+    {
+      "id": "repository-pattern-and-layering",
+      "label": "Repository Pattern & Layering",
+      "description": "Hide JDBC details behind a repository/DAO interface that returns domain objects instead of ResultSets, and keep business logic in a service layer that depends only on that repository abstraction.",
+      "icon": "architecture",
+      "zone": "Architecture",
+      "resources": [
+        {
+          "id": "repository-pattern-and-layering-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "datasource-and-connection-pooling"
+      ]
+    },
+    {
+      "id": "testing-jdbc-code",
+      "label": "Testing JDBC Code",
+      "description": "Test row-mapping and business logic independently of JDBC where practical, and write repository integration tests against a real database-compatible environment to verify actual SQL, constraints, and transactions.",
+      "icon": "science",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-jdbc-code-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "repository-pattern-and-layering"
+      ]
+    },
+    {
+      "id": "security-and-performance",
+      "label": "Security & Performance",
+      "description": "Prevent SQL injection by always binding parameters through PreparedStatement, manage credentials and least-privilege database permissions, and measure and improve connection and query performance before assuming JDBC tuning is the fix.",
+      "icon": "security",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "security-and-performance-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "testing-jdbc-code"
+      ]
+    },
+    {
+      "id": "metadata-and-debugging",
+      "label": "Metadata & Debugging",
+      "description": "Use DatabaseMetaData and ResultSetMetaData when a query's schema isn't known in advance, and systematically debug connection, SQL, mapping, and transaction failures using a structured troubleshooting process.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "metadata-and-debugging-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "security-and-performance"
+      ]
+    },
+    {
+      "id": "professional-jdbc-and-spring-readiness",
+      "label": "Professional JDBC & Spring Readiness",
+      "description": "Write maintainable SQL and repository code with clear separation of concerns, and understand exactly what Spring JDBC (JdbcTemplate) and JPA/Spring Data abstract away \u2014 so ORM-generated errors can still be diagnosed with JDBC-level understanding.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-jdbc-and-spring-readiness-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "metadata-and-debugging"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-jdbc-prerequisites-jdbc-fundamentals",
+      "source": "jdbc-prerequisites",
+      "target": "jdbc-fundamentals"
+    },
+    {
+      "id": "e-jdbc-fundamentals-postgresql-driver-setup",
+      "source": "jdbc-fundamentals",
+      "target": "postgresql-driver-setup"
+    },
+    {
+      "id": "e-postgresql-driver-setup-connections",
+      "source": "postgresql-driver-setup",
+      "target": "connections"
+    },
+    {
+      "id": "e-connections-statements-and-prepared-statements",
+      "source": "connections",
+      "target": "statements-and-prepared-statements"
+    },
+    {
+      "id": "e-statements-and-prepared-statements-executing-sql",
+      "source": "statements-and-prepared-statements",
+      "target": "executing-sql"
+    },
+    {
+      "id": "e-executing-sql-resultset-basics",
+      "source": "executing-sql",
+      "target": "resultset-basics"
+    },
+    {
+      "id": "e-resultset-basics-crud-operations",
+      "source": "resultset-basics",
+      "target": "crud-operations"
+    },
+    {
+      "id": "e-crud-operations-type-mapping-and-null-handling",
+      "source": "crud-operations",
+      "target": "type-mapping-and-null-handling"
+    },
+    {
+      "id": "e-type-mapping-and-null-handling-row-to-object-mapping",
+      "source": "type-mapping-and-null-handling",
+      "target": "row-to-object-mapping"
+    },
+    {
+      "id": "e-row-to-object-mapping-resource-management-and-errors",
+      "source": "row-to-object-mapping",
+      "target": "resource-management-and-errors"
+    },
+    {
+      "id": "e-resource-management-and-errors-transactions",
+      "source": "resource-management-and-errors",
+      "target": "transactions"
+    },
+    {
+      "id": "e-transactions-generated-keys-and-batching",
+      "source": "transactions",
+      "target": "generated-keys-and-batching"
+    },
+    {
+      "id": "e-generated-keys-and-batching-datasource-and-connection-pooling",
+      "source": "generated-keys-and-batching",
+      "target": "datasource-and-connection-pooling"
+    },
+    {
+      "id": "e-datasource-and-connection-pooling-repository-pattern-and-layering",
+      "source": "datasource-and-connection-pooling",
+      "target": "repository-pattern-and-layering"
+    },
+    {
+      "id": "e-repository-pattern-and-layering-testing-jdbc-code",
+      "source": "repository-pattern-and-layering",
+      "target": "testing-jdbc-code"
+    },
+    {
+      "id": "e-testing-jdbc-code-security-and-performance",
+      "source": "testing-jdbc-code",
+      "target": "security-and-performance"
+    },
+    {
+      "id": "e-security-and-performance-metadata-and-debugging",
+      "source": "security-and-performance",
+      "target": "metadata-and-debugging"
+    },
+    {
+      "id": "e-metadata-and-debugging-professional-jdbc-and-spring-readiness",
+      "source": "metadata-and-debugging",
+      "target": "professional-jdbc-and-spring-readiness"
+    }
+  ]
+}

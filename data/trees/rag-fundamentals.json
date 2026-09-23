@@ -1,0 +1,376 @@
+{
+  "treeId": "rag-fundamentals",
+  "order": 30,
+  "title": "RAG Fundamentals",
+  "category": "Technology",
+  "difficulty": "hard",
+  "description": "Learn Retrieval-Augmented Generation as a tool- and framework-independent architecture: ingest and index knowledge, retrieve relevant evidence for a query, construct grounded model context, generate and evaluate answers, and operate the system securely.",
+  "version": "1.0",
+  "estimatedMonths": 1.5,
+  "totalNodes": 18,
+  "icon": "auto_awesome",
+  "nodes": [
+    {
+      "id": "rag-foundations",
+      "label": "RAG Foundations",
+      "description": "Explain Retrieval-Augmented Generation as combining retrieval with generation to ground model answers in supplied evidence, and distinguish RAG from model training, long-prompt context stuffing, and plain semantic search.",
+      "icon": "auto_awesome",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "rag-foundations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "rag-system-architecture",
+      "label": "RAG System Architecture",
+      "description": "Identify the major components of a RAG system — from knowledge source through generation and evaluation — and separate the offline ingestion/indexing pipeline from the online query pipeline.",
+      "icon": "account_tree",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "rag-system-architecture-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rag-foundations"]
+    },
+    {
+      "id": "knowledge-sources-and-ingestion",
+      "label": "Knowledge Sources & Ingestion",
+      "description": "Evaluate knowledge-source authority, currency, and ownership, preserve provenance metadata, and build an ingestion pipeline that handles new, changed, deleted, and duplicate documents idempotently.",
+      "icon": "storage",
+      "zone": "Ingestion & Indexing",
+      "resources": [
+        {
+          "id": "knowledge-sources-and-ingestion-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rag-system-architecture"]
+    },
+    {
+      "id": "parsing-chunking-metadata",
+      "label": "Parsing, Chunking & Metadata",
+      "description": "Parse and clean source content while preserving meaningful structure, choose a chunking strategy and size/overlap tradeoff appropriate to the domain, and attach metadata that supports filtering during retrieval.",
+      "icon": "layers",
+      "zone": "Ingestion & Indexing",
+      "resources": [
+        {
+          "id": "parsing-chunking-metadata-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["knowledge-sources-and-ingestion"]
+    },
+    {
+      "id": "embeddings-and-vectors",
+      "label": "Embeddings & Vector Fundamentals",
+      "description": "Explain how embedding models convert text into vectors for semantic comparison, understand similarity measures and nearest-neighbor search at a practical level, and keep embedding models consistent between indexing and querying.",
+      "icon": "functions",
+      "zone": "Ingestion & Indexing",
+      "resources": [
+        {
+          "id": "embeddings-and-vectors-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["parsing-chunking-metadata"]
+    },
+    {
+      "id": "vector-stores-and-indexing",
+      "label": "Vector Stores & Indexing",
+      "description": "Understand what a vector store associates with each embedding, compare options from dedicated vector databases to relational extensions and search engines, and reason about how index design affects speed, accuracy, and filtering.",
+      "icon": "database",
+      "zone": "Ingestion & Indexing",
+      "resources": [
+        {
+          "id": "vector-stores-and-indexing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["embeddings-and-vectors"]
+    },
+    {
+      "id": "query-processing-and-retrieval",
+      "label": "Query Processing & Retrieval",
+      "description": "Transform user queries to improve retrieval while preserving intent, and tune top-K and similarity thresholds to balance missing evidence against noisy, token-expensive context.",
+      "icon": "search",
+      "zone": "Retrieval & Generation",
+      "resources": [
+        {
+          "id": "query-processing-and-retrieval-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["vector-stores-and-indexing"]
+    },
+    {
+      "id": "search-strategies-and-reranking",
+      "label": "Search Strategies & Reranking",
+      "description": "Compare keyword, semantic, and hybrid search for different query types, and apply a reranker to a smaller candidate set when improved relevance justifies the added latency and cost.",
+      "icon": "hub",
+      "zone": "Retrieval & Generation",
+      "resources": [
+        {
+          "id": "search-strategies-and-reranking-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["query-processing-and-retrieval"]
+    },
+    {
+      "id": "context-construction-and-generation",
+      "label": "Context Construction & Grounded Generation",
+      "description": "Assemble retrieved evidence into a token-budgeted prompt with relevance ordering, source labels, and deduplication, and prompt the model to ground its answer in that evidence or explicitly abstain.",
+      "icon": "integration_instructions",
+      "zone": "Retrieval & Generation",
+      "resources": [
+        {
+          "id": "context-construction-and-generation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["search-strategies-and-reranking"]
+    },
+    {
+      "id": "citations-and-hallucinations",
+      "label": "Citations & Hallucinations",
+      "description": "Return source attribution that genuinely supports each claim and preserves traceability from question to answer, and recognize that RAG reduces but does not eliminate hallucination, including grounded-but-wrong answers from bad sources.",
+      "icon": "verified",
+      "zone": "Retrieval & Generation",
+      "resources": [
+        {
+          "id": "citations-and-hallucinations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["context-construction-and-generation"]
+    },
+    {
+      "id": "rag-evaluation",
+      "label": "Retrieval & Generation Evaluation",
+      "description": "Evaluate retrieval and generation separately using recall/precision intuition and a golden dataset of representative questions, rather than judging quality from a handful of convenient demo questions.",
+      "icon": "science",
+      "zone": "Evaluation & Operations",
+      "resources": [
+        {
+          "id": "rag-evaluation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["citations-and-hallucinations"]
+    },
+    {
+      "id": "rag-debugging",
+      "label": "RAG Debugging",
+      "description": "Trace a failed answer through query transformation, filters, retrieved candidates, scores, final context, and prompt to identify the actual failure point, using a checklist of common failure causes.",
+      "icon": "bug_report",
+      "zone": "Evaluation & Operations",
+      "resources": [
+        {
+          "id": "rag-debugging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rag-evaluation"]
+    },
+    {
+      "id": "knowledge-updates-and-access-control",
+      "label": "Knowledge Updates & Access Control",
+      "description": "Handle document additions, updates, and deletions with re-indexing and versioning, and enforce authorization as a retrieval-time filter so users never receive documents they are not permitted to see.",
+      "icon": "sync",
+      "zone": "Evaluation & Operations",
+      "resources": [
+        {
+          "id": "knowledge-updates-and-access-control-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rag-debugging"]
+    },
+    {
+      "id": "security-privacy-and-performance",
+      "label": "Security, Privacy & Performance",
+      "description": "Treat retrieved content as untrusted data to prevent prompt injection, apply data-governance controls to sensitive knowledge and logs, and reason about the latency and cost components of a RAG pipeline.",
+      "icon": "security",
+      "zone": "Evaluation & Operations",
+      "resources": [
+        {
+          "id": "security-privacy-and-performance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["knowledge-updates-and-access-control"]
+    },
+    {
+      "id": "rag-architecture-and-design-choices",
+      "label": "RAG Architecture & Design Choices",
+      "description": "Build and evaluate a simple RAG baseline before adding hybrid search, query expansion, or reranking, and decide between RAG and fine-tuning based on whether the need is external knowledge or behavior adaptation.",
+      "icon": "architecture",
+      "zone": "Architecture & Integration",
+      "resources": [
+        {
+          "id": "rag-architecture-and-design-choices-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["security-privacy-and-performance"]
+    },
+    {
+      "id": "rag-for-code-and-databases",
+      "label": "RAG for Source Code & Databases",
+      "description": "Apply structure-aware chunking and hybrid retrieval to source-code corpora where exact symbols matter, and decide when structured data belongs in relational/vector storage versus document embeddings or tool queries.",
+      "icon": "code",
+      "zone": "Architecture & Integration",
+      "resources": [
+        {
+          "id": "rag-for-code-and-databases-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rag-architecture-and-design-choices"]
+    },
+    {
+      "id": "framework-integration-and-testing",
+      "label": "Framework Integration & Testing",
+      "description": "Recognize what a RAG framework abstracts without losing the underlying architecture, and write unit, integration, and evaluation tests appropriate to a RAG pipeline's deterministic and AI-generated components.",
+      "icon": "build",
+      "zone": "Architecture & Integration",
+      "resources": [
+        {
+          "id": "framework-integration-and-testing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rag-architecture-and-design-choices"]
+    },
+    {
+      "id": "professional-rag-workflow",
+      "label": "Professional RAG Workflow",
+      "description": "Follow a disciplined development loop of building simple ingestion and retrieval, creating an evaluation set, measuring failures, and improving one component at a time, culminating in a capstone document-grounded assistant.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-rag-workflow-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rag-for-code-and-databases", "framework-integration-and-testing"]
+    }
+  ],
+  "edges": [
+    { "id": "e-rag-foundations-rag-system-architecture", "source": "rag-foundations", "target": "rag-system-architecture" },
+    { "id": "e-rag-system-architecture-knowledge-sources-and-ingestion", "source": "rag-system-architecture", "target": "knowledge-sources-and-ingestion" },
+    { "id": "e-knowledge-sources-and-ingestion-parsing-chunking-metadata", "source": "knowledge-sources-and-ingestion", "target": "parsing-chunking-metadata" },
+    { "id": "e-parsing-chunking-metadata-embeddings-and-vectors", "source": "parsing-chunking-metadata", "target": "embeddings-and-vectors" },
+    { "id": "e-embeddings-and-vectors-vector-stores-and-indexing", "source": "embeddings-and-vectors", "target": "vector-stores-and-indexing" },
+    { "id": "e-vector-stores-and-indexing-query-processing-and-retrieval", "source": "vector-stores-and-indexing", "target": "query-processing-and-retrieval" },
+    { "id": "e-query-processing-and-retrieval-search-strategies-and-reranking", "source": "query-processing-and-retrieval", "target": "search-strategies-and-reranking" },
+    { "id": "e-search-strategies-and-reranking-context-construction-and-generation", "source": "search-strategies-and-reranking", "target": "context-construction-and-generation" },
+    { "id": "e-context-construction-and-generation-citations-and-hallucinations", "source": "context-construction-and-generation", "target": "citations-and-hallucinations" },
+    { "id": "e-citations-and-hallucinations-rag-evaluation", "source": "citations-and-hallucinations", "target": "rag-evaluation" },
+    { "id": "e-rag-evaluation-rag-debugging", "source": "rag-evaluation", "target": "rag-debugging" },
+    { "id": "e-rag-debugging-knowledge-updates-and-access-control", "source": "rag-debugging", "target": "knowledge-updates-and-access-control" },
+    { "id": "e-knowledge-updates-and-access-control-security-privacy-and-performance", "source": "knowledge-updates-and-access-control", "target": "security-privacy-and-performance" },
+    { "id": "e-security-privacy-and-performance-rag-architecture-and-design-choices", "source": "security-privacy-and-performance", "target": "rag-architecture-and-design-choices" },
+    { "id": "e-rag-architecture-and-design-choices-rag-for-code-and-databases", "source": "rag-architecture-and-design-choices", "target": "rag-for-code-and-databases" },
+    { "id": "e-rag-architecture-and-design-choices-framework-integration-and-testing", "source": "rag-architecture-and-design-choices", "target": "framework-integration-and-testing" },
+    { "id": "e-rag-for-code-and-databases-professional-rag-workflow", "source": "rag-for-code-and-databases", "target": "professional-rag-workflow" },
+    { "id": "e-framework-integration-and-testing-professional-rag-workflow", "source": "framework-integration-and-testing", "target": "professional-rag-workflow" }
+  ]
+}

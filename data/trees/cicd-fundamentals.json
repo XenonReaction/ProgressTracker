@@ -1,0 +1,477 @@
+{
+  "treeId": "cicd-fundamentals",
+  "order": 22,
+  "title": "CI/CD Fundamentals",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Build a tool-independent understanding of Continuous Integration, Continuous Delivery, and Continuous Deployment \u2014 pipelines, artifacts, environments, security, and reliability \u2014 before learning a specific platform such as Jenkins, GitHub Actions, or GitLab CI/CD.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "icon": "sync",
+  "totalNodes": 18,
+  "nodes": [
+    {
+      "id": "cicd-motivation",
+      "label": "Why CI/CD Exists",
+      "description": "Understand the failure modes of manual software delivery \u2014 forgotten steps, inconsistent environments, and fear of deploying \u2014 and articulate why automating a pipeline is meant to make changes smaller, repeatable, testable, and safer rather than merely faster.",
+      "icon": "timeline",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "cicd-motivation-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "continuous-integration",
+      "label": "Continuous Integration",
+      "description": "Explain Continuous Integration as frequent, small integrations validated by automated builds and tests, and recognize that installing a CI server does not by itself create the practice of fast, reliable integration feedback.",
+      "icon": "sync",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "continuous-integration-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "cicd-motivation"
+      ]
+    },
+    {
+      "id": "continuous-delivery",
+      "label": "Continuous Delivery",
+      "description": "Explain how Continuous Delivery extends CI so that every change produces a release candidate proven ready for deployment at any time, even when a human still decides when to actually release it.",
+      "icon": "verified",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "continuous-delivery-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "continuous-integration"
+      ]
+    },
+    {
+      "id": "continuous-deployment",
+      "label": "Continuous Deployment",
+      "description": "Distinguish Continuous Deployment from Continuous Delivery by recognizing that every qualifying change automatically reaches production with no manual release gate, and explain the tradeoffs of removing that gate.",
+      "icon": "auto_awesome",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "continuous-deployment-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "continuous-delivery"
+      ]
+    },
+    {
+      "id": "pipeline-fundamentals",
+      "label": "Pipeline Fundamentals",
+      "description": "Define the core vocabulary of a pipeline \u2014 pipeline, stage, step, and job \u2014 independent of any specific platform's terminology, so Jenkins, GitHub Actions, and GitLab CI/CD concepts can later be mapped onto the same model.",
+      "icon": "account_tree",
+      "zone": "Pipeline Mechanics",
+      "resources": [
+        {
+          "id": "pipeline-fundamentals-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "continuous-deployment"
+      ]
+    },
+    {
+      "id": "triggers-and-checkout",
+      "label": "Triggers & Source Checkout",
+      "description": "Identify the events (push, pull request, tag, schedule, webhook) that start a pipeline, design trigger strategies that run different work for different events, and check out a known source revision so artifacts stay traceable back to a commit.",
+      "icon": "api",
+      "zone": "Pipeline Mechanics",
+      "resources": [
+        {
+          "id": "triggers-and-checkout-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "pipeline-fundamentals"
+      ]
+    },
+    {
+      "id": "build-test-quality",
+      "label": "Build, Test & Quality Gates",
+      "description": "Automate build, unit, integration, and end-to-end testing by calling the application's own build tool, fail fast on compilation errors, and enforce quality gates using machine-readable test reports, linting, static analysis, and security scanning.",
+      "icon": "build",
+      "zone": "Pipeline Mechanics",
+      "resources": [
+        {
+          "id": "build-test-quality-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "triggers-and-checkout"
+      ]
+    },
+    {
+      "id": "packaging-and-artifacts",
+      "label": "Packaging & Artifacts",
+      "description": "Package a validated build into a distributable artifact such as a JAR or container image, apply the 'build once' principle, and manage artifact metadata, versioned tags, and registries.",
+      "icon": "layers",
+      "zone": "Pipeline Mechanics",
+      "resources": [
+        {
+          "id": "packaging-and-artifacts-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "build-test-quality"
+      ]
+    },
+    {
+      "id": "environments-config-secrets",
+      "label": "Environments, Configuration & Secrets",
+      "description": "Separate the same deployable artifact from environment-specific configuration across dev/test/stage/prod, manage secrets safely outside source control and logs, and apply least-privilege access to pipeline credentials.",
+      "icon": "security",
+      "zone": "Delivery Reliability",
+      "resources": [
+        {
+          "id": "environments-config-secrets-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "packaging-and-artifacts"
+      ]
+    },
+    {
+      "id": "branch-workflows-versioning",
+      "label": "Branch Workflows & Versioning",
+      "description": "Design pull-request validation and protected-branch policies that keep the main branch healthy, and give releases a recognizable, traceable version identity using tags, commit SHAs, or semantic versioning.",
+      "icon": "integration_instructions",
+      "zone": "Delivery Reliability",
+      "resources": [
+        {
+          "id": "branch-workflows-versioning-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "environments-config-secrets"
+      ]
+    },
+    {
+      "id": "deployment-and-approvals",
+      "label": "Deployment & Approvals",
+      "description": "Move a versioned artifact into a runtime environment with the right configuration, secrets, and health verification, and decide when a manual approval gate belongs in the pipeline versus fully automated promotion.",
+      "icon": "rocket_launch",
+      "zone": "Delivery Reliability",
+      "resources": [
+        {
+          "id": "deployment-and-approvals-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "branch-workflows-versioning"
+      ]
+    },
+    {
+      "id": "pipeline-optimization",
+      "label": "Conditions, Parallelism & Reproducibility",
+      "description": "Design conditional pipeline logic, parallelize independent jobs to reduce feedback time, cache dependencies without confusing a cache with an artifact, and keep builds reproducible and deployments idempotent.",
+      "icon": "speed",
+      "zone": "Delivery Reliability",
+      "resources": [
+        {
+          "id": "pipeline-optimization-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "deployment-and-approvals"
+      ]
+    },
+    {
+      "id": "failure-retry-rollback",
+      "label": "Failure Handling, Retry & Rollback",
+      "description": "Fail fast on essential checks, distinguish transient failures worth retrying from deterministic ones that are not, and design rollback procedures that account for database migration compatibility.",
+      "icon": "bug_report",
+      "zone": "Production Resilience",
+      "resources": [
+        {
+          "id": "failure-retry-rollback-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "pipeline-optimization"
+      ]
+    },
+    {
+      "id": "verification-observability",
+      "label": "Verification & Pipeline Observability",
+      "description": "Verify deployments with health checks and functional verification rather than assuming a started process is a working one, route pipeline notifications to the right people, and keep pipeline logs detailed while redacting secrets.",
+      "icon": "health_and_safety",
+      "zone": "Production Resilience",
+      "resources": [
+        {
+          "id": "verification-observability-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "failure-retry-rollback"
+      ]
+    },
+    {
+      "id": "pipeline-security-supply-chain",
+      "label": "Pipeline Security & Supply Chain",
+      "description": "Treat the CI/CD system as a privileged, high-value security target by applying least privilege, secret management, and careful handling of untrusted pull-request code, and reason about software supply-chain risk including dependency integrity and SBOMs.",
+      "icon": "hive",
+      "zone": "Production Resilience",
+      "resources": [
+        {
+          "id": "pipeline-security-supply-chain-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "verification-observability"
+      ]
+    },
+    {
+      "id": "pipeline-as-code-and-scale",
+      "label": "Pipeline as Code & Scaling Delivery",
+      "description": "Store pipeline definitions as reviewable, versioned code, recognize opportunities for reusable pipeline components, reason about monorepo vs multi-repo pipeline architecture, and coordinate database migrations and environment promotion of the same tested artifact.",
+      "icon": "code",
+      "zone": "Scaling & Mastery",
+      "resources": [
+        {
+          "id": "pipeline-as-code-and-scale-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "pipeline-security-supply-chain"
+      ]
+    },
+    {
+      "id": "deployment-strategies-and-metrics",
+      "label": "Deployment Strategies & Delivery Metrics",
+      "description": "Recognize recreate, rolling, blue/green, and canary deployment strategies and the distinction between deployment and feature release, then measure and improve pipeline performance and reliability using DORA metrics and flaky-pipeline diagnosis.",
+      "icon": "science",
+      "zone": "Scaling & Mastery",
+      "resources": [
+        {
+          "id": "deployment-strategies-and-metrics-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "pipeline-as-code-and-scale"
+      ]
+    },
+    {
+      "id": "professional-pipeline-design",
+      "label": "Professional Pipeline Design",
+      "description": "Troubleshoot pipeline failures stage by stage, debug 'works locally, fails in CI' and 'CI passes, deployment fails' scenarios, and design a complete, understandable, tool-independent full-stack CI/CD pipeline architecture.",
+      "icon": "architecture",
+      "zone": "Scaling & Mastery",
+      "resources": [
+        {
+          "id": "professional-pipeline-design-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "deployment-strategies-and-metrics"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-cicd-motivation-continuous-integration",
+      "source": "cicd-motivation",
+      "target": "continuous-integration"
+    },
+    {
+      "id": "e-continuous-integration-continuous-delivery",
+      "source": "continuous-integration",
+      "target": "continuous-delivery"
+    },
+    {
+      "id": "e-continuous-delivery-continuous-deployment",
+      "source": "continuous-delivery",
+      "target": "continuous-deployment"
+    },
+    {
+      "id": "e-continuous-deployment-pipeline-fundamentals",
+      "source": "continuous-deployment",
+      "target": "pipeline-fundamentals"
+    },
+    {
+      "id": "e-pipeline-fundamentals-triggers-and-checkout",
+      "source": "pipeline-fundamentals",
+      "target": "triggers-and-checkout"
+    },
+    {
+      "id": "e-triggers-and-checkout-build-test-quality",
+      "source": "triggers-and-checkout",
+      "target": "build-test-quality"
+    },
+    {
+      "id": "e-build-test-quality-packaging-and-artifacts",
+      "source": "build-test-quality",
+      "target": "packaging-and-artifacts"
+    },
+    {
+      "id": "e-packaging-and-artifacts-environments-config-secrets",
+      "source": "packaging-and-artifacts",
+      "target": "environments-config-secrets"
+    },
+    {
+      "id": "e-environments-config-secrets-branch-workflows-versioning",
+      "source": "environments-config-secrets",
+      "target": "branch-workflows-versioning"
+    },
+    {
+      "id": "e-branch-workflows-versioning-deployment-and-approvals",
+      "source": "branch-workflows-versioning",
+      "target": "deployment-and-approvals"
+    },
+    {
+      "id": "e-deployment-and-approvals-pipeline-optimization",
+      "source": "deployment-and-approvals",
+      "target": "pipeline-optimization"
+    },
+    {
+      "id": "e-pipeline-optimization-failure-retry-rollback",
+      "source": "pipeline-optimization",
+      "target": "failure-retry-rollback"
+    },
+    {
+      "id": "e-failure-retry-rollback-verification-observability",
+      "source": "failure-retry-rollback",
+      "target": "verification-observability"
+    },
+    {
+      "id": "e-verification-observability-pipeline-security-supply-chain",
+      "source": "verification-observability",
+      "target": "pipeline-security-supply-chain"
+    },
+    {
+      "id": "e-pipeline-security-supply-chain-pipeline-as-code-and-scale",
+      "source": "pipeline-security-supply-chain",
+      "target": "pipeline-as-code-and-scale"
+    },
+    {
+      "id": "e-pipeline-as-code-and-scale-deployment-strategies-and-metrics",
+      "source": "pipeline-as-code-and-scale",
+      "target": "deployment-strategies-and-metrics"
+    },
+    {
+      "id": "e-deployment-strategies-and-metrics-professional-pipeline-design",
+      "source": "deployment-strategies-and-metrics",
+      "target": "professional-pipeline-design"
+    }
+  ]
+}

@@ -1,0 +1,417 @@
+{
+  "treeId": "javascript-frontend-mastery",
+  "order": 16,
+  "title": "JavaScript for Frontend Development Mastery",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn JavaScript deeply enough that frontend frameworks never hide gaps in the underlying language — covering the type system, functions, closures, objects, classes, asynchronous programming, the DOM, and enough Node/npm to work with modern frontend tooling.",
+  "version": "1.0",
+  "estimatedMonths": 2,
+  "totalNodes": 20,
+  "icon": "javascript",
+  "nodes": [
+    {
+      "id": "javascript-orientation",
+      "label": "JavaScript Orientation",
+      "description": "Understand JavaScript as a language distinct from the browser and Node.js environments that provide APIs around it, and how JavaScript, HTML, and CSS divide responsibility for behavior, structure, and presentation.",
+      "icon": "javascript",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "javascript-orientation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "variables-and-types",
+      "label": "Variables & Types",
+      "description": "Declare variables with const/let/var, distinguish statements from expressions, and reason about JavaScript's primitive types, dynamic typing, type coercion, and truthy/falsy evaluation — including well-known quirks like typeof null and NaN.",
+      "icon": "data_object",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "variables-and-types-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["javascript-orientation"]
+    },
+    {
+      "id": "operators",
+      "label": "Operators",
+      "description": "Apply JavaScript's comparison (===, ==), logical (&&, ||, !), nullish coalescing (??), optional chaining (?.), arithmetic, and assignment operators correctly, and understand short-circuit evaluation and operator precedence.",
+      "icon": "calculate",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "operators-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["variables-and-types"]
+    },
+    {
+      "id": "control-flow",
+      "label": "Control Flow",
+      "description": "Control program execution with if/else, ternary expressions, switch statements, and the full family of loops — for, while, for...of, for...in — plus break and continue.",
+      "icon": "alt_route",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "control-flow-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["operators"]
+    },
+    {
+      "id": "functions-fundamentals",
+      "label": "Functions Fundamentals",
+      "description": "Define and call functions with function declarations, expressions, and arrow functions, distinguish parameters from arguments, and use functions as first-class values passed as callbacks.",
+      "icon": "code",
+      "zone": "Functions & Data Structures",
+      "resources": [
+        {
+          "id": "functions-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["control-flow"]
+    },
+    {
+      "id": "scope-and-closures",
+      "label": "Scope & Closures",
+      "description": "Reason about variable visibility through global/function/block scope and JavaScript's lexical scoping model, explain closures as a function retaining access to its defining environment, and understand hoisting and the temporal dead zone.",
+      "icon": "hub",
+      "zone": "Functions & Data Structures",
+      "resources": [
+        {
+          "id": "scope-and-closures-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["functions-fundamentals"]
+    },
+    {
+      "id": "arrays-and-iteration-methods",
+      "label": "Arrays & Iteration Methods",
+      "description": "Work with arrays using both mutating methods (push, pop, splice) and non-mutating transformation methods (map, filter, find, some, every, reduce), knowing which category each belongs to and when to reach for each.",
+      "icon": "layers",
+      "zone": "Functions & Data Structures",
+      "resources": [
+        {
+          "id": "arrays-and-iteration-methods-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["scope-and-closures"]
+    },
+    {
+      "id": "objects-and-destructuring",
+      "label": "Objects & Destructuring",
+      "description": "Create and access object properties with dot/bracket notation, destructure objects and arrays, use spread and rest syntax, and understand primitive-versus-reference assignment semantics including the shallow-copy pitfall of shared nested references.",
+      "icon": "data_object",
+      "zone": "Functions & Data Structures",
+      "resources": [
+        {
+          "id": "objects-and-destructuring-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["arrays-and-iteration-methods"]
+    },
+    {
+      "id": "maps-sets-and-data-modeling",
+      "label": "Maps, Sets & Data Modeling",
+      "description": "Choose between Array, Object, Map, and Set based on the operations a program needs, use Map/Set APIs for key/value and unique-value collections, and distinguish mutation from immutable-style updates.",
+      "icon": "database",
+      "zone": "Functions & Data Structures",
+      "resources": [
+        {
+          "id": "maps-sets-and-data-modeling-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["objects-and-destructuring"]
+    },
+    {
+      "id": "this-and-prototypes",
+      "label": "`this` & Prototypes",
+      "description": "Explain that the value of `this` depends on how a function is invoked, with arrow functions capturing it lexically instead, use call/apply/bind to control invocation context, and understand JavaScript's prototype-based inheritance and prototype chain.",
+      "icon": "account_tree",
+      "zone": "Object Model & Async",
+      "resources": [
+        {
+          "id": "this-and-prototypes-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["scope-and-closures"]
+    },
+    {
+      "id": "classes-and-oop",
+      "label": "Classes & OOP",
+      "description": "Write JavaScript classes with constructors, inheritance (extends/super), and private fields, understanding that class syntax is sugar over the underlying prototype model, and choose composition over inheritance when relationships aren't a true 'is-a' hierarchy.",
+      "icon": "architecture",
+      "zone": "Object Model & Async",
+      "resources": [
+        {
+          "id": "classes-and-oop-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["maps-sets-and-data-modeling", "this-and-prototypes"]
+    },
+    {
+      "id": "functional-programming-and-errors",
+      "label": "Functional Programming & Errors",
+      "description": "Apply functional programming concepts — higher-order functions and pure functions — and handle exceptional conditions with throw, try/catch, and finally rather than letting errors interrupt execution unmanaged.",
+      "icon": "science",
+      "zone": "Object Model & Async",
+      "resources": [
+        {
+          "id": "functional-programming-and-errors-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["classes-and-oop"]
+    },
+    {
+      "id": "async-fundamentals",
+      "label": "Async Fundamentals",
+      "description": "Explain JavaScript's single-threaded execution model, the call stack, and how the browser's Web APIs and event loop coordinate asynchronous work through tasks and microtasks, including why setTimeout(fn, 0) still runs after synchronous code.",
+      "icon": "schedule",
+      "zone": "Object Model & Async",
+      "resources": [
+        {
+          "id": "async-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["functional-programming-and-errors"]
+    },
+    {
+      "id": "promises-and-async-await",
+      "label": "Promises & Async/Await",
+      "description": "Consume and create Promises with .then/.catch/.finally, write equivalent logic with async/await and try/catch, coordinate concurrent operations with Promise.all and its combinators, and recognize unnecessary sequential awaits as a performance issue.",
+      "icon": "sync",
+      "zone": "Object Model & Async",
+      "resources": [
+        {
+          "id": "promises-and-async-await-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["async-fundamentals"]
+    },
+    {
+      "id": "dom-manipulation",
+      "label": "DOM Manipulation",
+      "description": "Select, read, create, and remove DOM elements and manage classes and attributes from JavaScript, and handle browser events — including the event object, bubbling, and delegation — while knowing when preventDefault() is appropriate.",
+      "icon": "web",
+      "zone": "Browser & DOM",
+      "resources": [
+        {
+          "id": "dom-manipulation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["promises-and-async-await"]
+    },
+    {
+      "id": "forms-and-http-requests",
+      "label": "Forms & HTTP Requests",
+      "description": "Read form submissions with FormData, apply native validation while treating it as UX only, and make GET/POST requests with fetch() — checking response.ok since fetch does not reject on HTTP error status — while understanding same-origin policy, CORS, browser storage, and why frontend code can never hide secrets.",
+      "icon": "api",
+      "zone": "Browser & DOM",
+      "resources": [
+        {
+          "id": "forms-and-http-requests-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["dom-manipulation"]
+    },
+    {
+      "id": "modules-and-project-organization",
+      "label": "Modules & Project Organization",
+      "description": "Split code into ES modules with named and default exports/imports, load them as browser module scripts, and organize a small multi-file frontend project around separated responsibilities.",
+      "icon": "integration_instructions",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "modules-and-project-organization-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["forms-and-http-requests"]
+    },
+    {
+      "id": "nodejs-and-npm",
+      "label": "Node.js & npm",
+      "description": "Understand Node.js as a JavaScript runtime distinct from the browser that powers frontend build tooling, and use npm and package.json to manage dependencies, scripts, and lock files even when the application code runs entirely in the browser.",
+      "icon": "build",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "nodejs-and-npm-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["modules-and-project-organization"]
+    },
+    {
+      "id": "debugging-and-common-problems",
+      "label": "Debugging & Common Problems",
+      "description": "Debug JavaScript with console methods, breakpoints, the debugger statement, and the Network panel, and systematically diagnose recurring problems — unexpected undefined, null DOM selection, shared-reference mutation, missing await, uncaught HTTP errors, and CORS failures.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "debugging-and-common-problems-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["forms-and-http-requests"]
+    },
+    {
+      "id": "code-quality-and-testing",
+      "label": "Code Quality & Testing",
+      "description": "Write testable JavaScript by separating pure business logic from DOM/API side effects, structure unit tests around arrange/act/assert, and apply code-quality habits — strict mode, consistent formatting/linting, and purposeful comments — that keep a codebase maintainable.",
+      "icon": "verified",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "code-quality-and-testing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["nodejs-and-npm", "debugging-and-common-problems"]
+    }
+  ],
+  "edges": [
+    { "id": "e-javascript-orientation-variables-and-types", "source": "javascript-orientation", "target": "variables-and-types" },
+    { "id": "e-variables-and-types-operators", "source": "variables-and-types", "target": "operators" },
+    { "id": "e-operators-control-flow", "source": "operators", "target": "control-flow" },
+    { "id": "e-control-flow-functions-fundamentals", "source": "control-flow", "target": "functions-fundamentals" },
+    { "id": "e-functions-fundamentals-scope-and-closures", "source": "functions-fundamentals", "target": "scope-and-closures" },
+    { "id": "e-scope-and-closures-arrays-and-iteration-methods", "source": "scope-and-closures", "target": "arrays-and-iteration-methods" },
+    { "id": "e-arrays-and-iteration-methods-objects-and-destructuring", "source": "arrays-and-iteration-methods", "target": "objects-and-destructuring" },
+    { "id": "e-objects-and-destructuring-maps-sets-and-data-modeling", "source": "objects-and-destructuring", "target": "maps-sets-and-data-modeling" },
+    { "id": "e-scope-and-closures-this-and-prototypes", "source": "scope-and-closures", "target": "this-and-prototypes" },
+    { "id": "e-maps-sets-and-data-modeling-classes-and-oop", "source": "maps-sets-and-data-modeling", "target": "classes-and-oop" },
+    { "id": "e-this-and-prototypes-classes-and-oop", "source": "this-and-prototypes", "target": "classes-and-oop" },
+    { "id": "e-classes-and-oop-functional-programming-and-errors", "source": "classes-and-oop", "target": "functional-programming-and-errors" },
+    { "id": "e-functional-programming-and-errors-async-fundamentals", "source": "functional-programming-and-errors", "target": "async-fundamentals" },
+    { "id": "e-async-fundamentals-promises-and-async-await", "source": "async-fundamentals", "target": "promises-and-async-await" },
+    { "id": "e-promises-and-async-await-dom-manipulation", "source": "promises-and-async-await", "target": "dom-manipulation" },
+    { "id": "e-dom-manipulation-forms-and-http-requests", "source": "dom-manipulation", "target": "forms-and-http-requests" },
+    { "id": "e-forms-and-http-requests-modules-and-project-organization", "source": "forms-and-http-requests", "target": "modules-and-project-organization" },
+    { "id": "e-modules-and-project-organization-nodejs-and-npm", "source": "modules-and-project-organization", "target": "nodejs-and-npm" },
+    { "id": "e-forms-and-http-requests-debugging-and-common-problems", "source": "forms-and-http-requests", "target": "debugging-and-common-problems" },
+    { "id": "e-nodejs-and-npm-code-quality-and-testing", "source": "nodejs-and-npm", "target": "code-quality-and-testing" },
+    { "id": "e-debugging-and-common-problems-code-quality-and-testing", "source": "debugging-and-common-problems", "target": "code-quality-and-testing" }
+  ]
+}

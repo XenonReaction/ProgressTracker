@@ -1,0 +1,377 @@
+{
+  "treeId": "kubernetes-fullstack",
+  "order": 28,
+  "title": "Kubernetes for Full-Stack Developers",
+  "category": "Technology",
+  "difficulty": "hard",
+  "description": "Learn Kubernetes at the developer level — architecture, manifests, networking, configuration, storage, health, scaling, rollouts, and troubleshooting — to independently deploy and operate a small-to-medium containerized application without becoming a cluster administrator.",
+  "version": "1.0",
+  "estimatedMonths": 2,
+  "totalNodes": 18,
+  "icon": "hub",
+  "nodes": [
+    {
+      "id": "why-kubernetes",
+      "label": "Why Kubernetes Exists",
+      "description": "Explain why container orchestration exists beyond what Docker alone provides, and understand Kubernetes's declarative desired-state model and the reconciliation loop that keeps actual state matching it.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "why-kubernetes-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "cluster-architecture",
+      "label": "Cluster Architecture & kind",
+      "description": "Understand the control plane / worker node structure of a Kubernetes cluster, then create and manage a local, disposable cluster with kind for safe hands-on learning.",
+      "icon": "account_tree",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "cluster-architecture-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["why-kubernetes"]
+    },
+    {
+      "id": "kubectl-and-context",
+      "label": "kubectl & Context",
+      "description": "Use kubectl as the primary interface to the Kubernetes API for getting, describing, applying, and deleting objects, and build the safety habit of checking the current context before any destructive operation.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "kubectl-and-context-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cluster-architecture"]
+    },
+    {
+      "id": "api-objects-and-yaml",
+      "label": "API Objects & YAML Manifests",
+      "description": "Read and write Kubernetes YAML manifests by understanding apiVersion/kind/metadata/spec, and apply them with kubectl to express desired state as version-controlled, declarative objects.",
+      "icon": "code",
+      "zone": "Core Concepts",
+      "resources": [
+        {
+          "id": "api-objects-and-yaml-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["kubectl-and-context"]
+    },
+    {
+      "id": "pods",
+      "label": "Pods & Labels",
+      "description": "Explain Pods as Kubernetes's smallest, disposable deployable unit, run and inspect a standalone Pod, and use labels to give stable logical identity to resources whose names and IPs can change.",
+      "icon": "layers",
+      "zone": "Core Concepts",
+      "resources": [
+        {
+          "id": "pods-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["api-objects-and-yaml"]
+    },
+    {
+      "id": "deployments-and-replicasets",
+      "label": "Deployments & Self-Healing",
+      "description": "Manage stateless application replicas with Deployments and understand the underlying ReplicaSet mechanism, then demonstrate Kubernetes's self-healing behavior by deleting a Pod and observing its replacement.",
+      "icon": "sync",
+      "zone": "Workloads",
+      "resources": [
+        {
+          "id": "deployments-and-replicasets-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["pods"]
+    },
+    {
+      "id": "services-and-networking",
+      "label": "Services & Networking",
+      "description": "Provide stable network access to a changing set of Pods using Services, and choose correctly among ClusterIP, NodePort, and LoadBalancer exposure while tracing traffic through Service port, target port, and container port.",
+      "icon": "lan",
+      "zone": "Networking",
+      "resources": [
+        {
+          "id": "services-and-networking-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["deployments-and-replicasets"]
+    },
+    {
+      "id": "namespaces-and-configuration",
+      "label": "Namespaces & Configuration",
+      "description": "Organize resources into namespaces, and separate non-sensitive configuration (ConfigMaps) from sensitive values (Secrets) so they can be injected into Pods as environment variables without hardcoding them into images.",
+      "icon": "settings",
+      "zone": "Configuration",
+      "resources": [
+        {
+          "id": "namespaces-and-configuration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["deployments-and-replicasets"]
+    },
+    {
+      "id": "storage-persistence",
+      "label": "Storage & Persistence",
+      "description": "Attach persistent storage to workloads using the PersistentVolume/PersistentVolumeClaim abstraction, understand StorageClasses at a conceptual level, and verify that data outlives Pod replacement using an educational PostgreSQL deployment.",
+      "icon": "database",
+      "zone": "Storage",
+      "resources": [
+        {
+          "id": "storage-persistence-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["namespaces-and-configuration"]
+    },
+    {
+      "id": "health-probes",
+      "label": "Health Probes",
+      "description": "Configure startup, readiness, and liveness probes so Kubernetes can make correct restart and traffic-routing decisions, connecting them to real application health signals such as Spring Boot Actuator endpoints.",
+      "icon": "health_and_safety",
+      "zone": "Health & Scaling",
+      "resources": [
+        {
+          "id": "health-probes-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["services-and-networking", "storage-persistence"]
+    },
+    {
+      "id": "scaling-and-resources",
+      "label": "Scaling & Resource Management",
+      "description": "Scale Deployment replica counts manually, configure CPU/memory requests and limits to inform scheduling and prevent instability, and understand at a high level how the scheduler places Pods onto nodes.",
+      "icon": "speed",
+      "zone": "Health & Scaling",
+      "resources": [
+        {
+          "id": "scaling-and-resources-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["health-probes"]
+    },
+    {
+      "id": "updates-and-rollbacks",
+      "label": "Rolling Updates & Rollbacks",
+      "description": "Perform a rolling update to a new application version with minimal disruption, roll back a bad release to the previous working revision, and understand how nodes obtain container images from a registry.",
+      "icon": "published_with_changes",
+      "zone": "Deployment Operations",
+      "resources": [
+        {
+          "id": "updates-and-rollbacks-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["scaling-and-resources"]
+    },
+    {
+      "id": "batch-and-specialized-workloads",
+      "label": "Batch & Specialized Workloads",
+      "description": "Run one-off and scheduled background work with Jobs and CronJobs, and recognize when StatefulSets or DaemonSets are the right workload type instead of an ordinary Deployment.",
+      "icon": "schedule",
+      "zone": "Deployment Operations",
+      "resources": [
+        {
+          "id": "batch-and-specialized-workloads-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["updates-and-rollbacks"]
+    },
+    {
+      "id": "ingress-and-service-discovery",
+      "label": "Ingress & Service Discovery",
+      "description": "Route external HTTP traffic to multiple backend Services using Ingress and an Ingress controller, and rely on Kubernetes's built-in DNS-based service discovery for stable internal service-to-service communication.",
+      "icon": "alt_route",
+      "zone": "Networking",
+      "resources": [
+        {
+          "id": "ingress-and-service-discovery-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["services-and-networking"]
+    },
+    {
+      "id": "troubleshooting",
+      "label": "Troubleshooting Workloads",
+      "description": "Diagnose failing workloads systematically using get/describe/logs/exec, and recognize the meaning of common failure states such as CrashLoopBackOff, ImagePullBackOff, OOMKilled, and PVC/mount or Service-selector misconfigurations.",
+      "icon": "bug_report",
+      "zone": "Troubleshooting & Security",
+      "resources": [
+        {
+          "id": "troubleshooting-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["batch-and-specialized-workloads", "ingress-and-service-discovery"]
+    },
+    {
+      "id": "autoscaling-and-security",
+      "label": "Autoscaling & Security",
+      "description": "Explain Horizontal Pod Autoscaling at a conceptual level, and apply baseline security practices — avoiding privileged containers, using ServiceAccounts/RBAC and NetworkPolicy awareness, and trusting only known images.",
+      "icon": "security",
+      "zone": "Troubleshooting & Security",
+      "resources": [
+        {
+          "id": "autoscaling-and-security-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["troubleshooting"]
+    },
+    {
+      "id": "ecosystem-awareness",
+      "label": "Ecosystem Awareness",
+      "description": "Understand why Helm, CI/CD pipelines, and Amazon EKS build on raw Kubernetes fundamentals rather than replacing them, so later specialization trees have the right foundation to build on.",
+      "icon": "hive",
+      "zone": "Ecosystem",
+      "resources": [
+        {
+          "id": "ecosystem-awareness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["autoscaling-and-security"]
+    },
+    {
+      "id": "capstone-kubernetes-fullstack",
+      "label": "Capstone: Kubernetes Full-Stack App",
+      "description": "Deploy a full Angular/React + Spring Boot + PostgreSQL application to a local Kubernetes cluster with Deployments, Services, ConfigMaps, Secrets, persistent storage, health probes, scaling, rolling updates, rollback, and Ingress, including deliberate failure drills and full cleanup.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "capstone-kubernetes-fullstack-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ecosystem-awareness"]
+    }
+  ],
+  "edges": [
+    { "id": "e-why-kubernetes-cluster-architecture", "source": "why-kubernetes", "target": "cluster-architecture" },
+    { "id": "e-cluster-architecture-kubectl-and-context", "source": "cluster-architecture", "target": "kubectl-and-context" },
+    { "id": "e-kubectl-and-context-api-objects-and-yaml", "source": "kubectl-and-context", "target": "api-objects-and-yaml" },
+    { "id": "e-api-objects-and-yaml-pods", "source": "api-objects-and-yaml", "target": "pods" },
+    { "id": "e-pods-deployments-and-replicasets", "source": "pods", "target": "deployments-and-replicasets" },
+    { "id": "e-deployments-and-replicasets-services-and-networking", "source": "deployments-and-replicasets", "target": "services-and-networking" },
+    { "id": "e-deployments-and-replicasets-namespaces-and-configuration", "source": "deployments-and-replicasets", "target": "namespaces-and-configuration" },
+    { "id": "e-namespaces-and-configuration-storage-persistence", "source": "namespaces-and-configuration", "target": "storage-persistence" },
+    { "id": "e-services-and-networking-health-probes", "source": "services-and-networking", "target": "health-probes" },
+    { "id": "e-storage-persistence-health-probes", "source": "storage-persistence", "target": "health-probes" },
+    { "id": "e-health-probes-scaling-and-resources", "source": "health-probes", "target": "scaling-and-resources" },
+    { "id": "e-scaling-and-resources-updates-and-rollbacks", "source": "scaling-and-resources", "target": "updates-and-rollbacks" },
+    { "id": "e-updates-and-rollbacks-batch-and-specialized-workloads", "source": "updates-and-rollbacks", "target": "batch-and-specialized-workloads" },
+    { "id": "e-services-and-networking-ingress-and-service-discovery", "source": "services-and-networking", "target": "ingress-and-service-discovery" },
+    { "id": "e-batch-and-specialized-workloads-troubleshooting", "source": "batch-and-specialized-workloads", "target": "troubleshooting" },
+    { "id": "e-ingress-and-service-discovery-troubleshooting", "source": "ingress-and-service-discovery", "target": "troubleshooting" },
+    { "id": "e-troubleshooting-autoscaling-and-security", "source": "troubleshooting", "target": "autoscaling-and-security" },
+    { "id": "e-autoscaling-and-security-ecosystem-awareness", "source": "autoscaling-and-security", "target": "ecosystem-awareness" },
+    { "id": "e-ecosystem-awareness-capstone-kubernetes-fullstack", "source": "ecosystem-awareness", "target": "capstone-kubernetes-fullstack" }
+  ]
+}

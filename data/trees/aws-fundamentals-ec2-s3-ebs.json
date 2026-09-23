@@ -1,0 +1,357 @@
+{
+  "treeId": "aws-fundamentals-ec2-s3-ebs",
+  "order": 29,
+  "title": "AWS Fundamentals — EC2, S3 & EBS",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Build an introductory, practical understanding of AWS through three foundational services — EC2, S3, and EBS — enough to deploy, troubleshoot, and safely clean up a simple Dockerized full-stack application without attempting to master the entire AWS platform.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 17,
+  "icon": "cloud",
+  "nodes": [
+    {
+      "id": "cloud-and-aws-basics",
+      "label": "Cloud & AWS Basics",
+      "description": "Understand cloud computing as consuming remote infrastructure rather than owning it, and place AWS in context as a large platform of many services, of which EC2, S3, and EBS are only a small part.",
+      "icon": "cloud",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "cloud-and-aws-basics-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "aws-console-and-regions",
+      "label": "Console, Regions & AZs",
+      "description": "Navigate the AWS Management Console by searching rather than memorizing menus, and understand the Region/Availability Zone hierarchy that determines where resources live and why the currently selected Region matters.",
+      "icon": "map",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "aws-console-and-regions-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cloud-and-aws-basics"]
+    },
+    {
+      "id": "resource-identity-and-cost",
+      "label": "Resource Identity & Cost",
+      "description": "Identify AWS resources by ID, name, and tags, and build the habit of treating every created resource as a potential cost that must be tracked, understood, and eventually cleaned up.",
+      "icon": "receipt_long",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "resource-identity-and-cost-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["aws-console-and-regions"]
+    },
+    {
+      "id": "shared-responsibility-and-iam",
+      "label": "Shared Responsibility & IAM",
+      "description": "Explain the AWS shared responsibility model and the IAM building blocks — users, roles, and policies — well enough to reason about least privilege for a given service like EC2 or S3.",
+      "icon": "verified_user",
+      "zone": "Security & Identity",
+      "resources": [
+        {
+          "id": "shared-responsibility-and-iam-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["resource-identity-and-cost"]
+    },
+    {
+      "id": "credentials-and-cli",
+      "label": "Credentials & AWS CLI",
+      "description": "Keep AWS credentials out of source code and containers, prefer IAM roles over long-lived access keys on EC2, and use the AWS CLI for identity checks and basic resource inspection/S3 operations.",
+      "icon": "key",
+      "zone": "Security & Identity",
+      "resources": [
+        {
+          "id": "credentials-and-cli-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["shared-responsibility-and-iam"]
+    },
+    {
+      "id": "aws-networking-basics",
+      "label": "AWS Networking Basics",
+      "description": "Understand the Region → VPC → Subnet → EC2 networking hierarchy, the distinction between public and private IP addresses, and how security groups act as a stateful firewall around EC2 instances.",
+      "icon": "lan",
+      "zone": "Networking",
+      "resources": [
+        {
+          "id": "aws-networking-basics-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["credentials-and-cli"]
+    },
+    {
+      "id": "ec2-fundamentals",
+      "label": "EC2 Fundamentals",
+      "description": "Explain EC2 as virtual compute instances, understand the instance components (AMI, instance type, network, storage, key pair, IAM role), and choose an AMI and instance type appropriate for a learning workload.",
+      "icon": "dns",
+      "zone": "Compute",
+      "resources": [
+        {
+          "id": "ec2-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["aws-networking-basics"]
+    },
+    {
+      "id": "s3-fundamentals",
+      "label": "S3 Fundamentals",
+      "description": "Explain S3 as an object storage service distinct from a mounted disk, and practice creating buckets and uploading, downloading, listing, and deleting objects through both the console and the AWS CLI.",
+      "icon": "inventory_2",
+      "zone": "Storage",
+      "resources": [
+        {
+          "id": "s3-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["credentials-and-cli"]
+    },
+    {
+      "id": "launching-and-connecting-ec2",
+      "label": "Launching & Connecting to EC2",
+      "description": "Launch an EC2 instance through the console with intentional choices about AMI, type, security group, and storage, then connect to it over SSH using a securely managed key pair.",
+      "icon": "terminal",
+      "zone": "Compute",
+      "resources": [
+        {
+          "id": "launching-and-connecting-ec2-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ec2-fundamentals"]
+    },
+    {
+      "id": "ec2-operations",
+      "label": "EC2 Operations",
+      "description": "Install and run Docker on an EC2 instance to reuse existing container knowledge, and manage the instance lifecycle (start/stop/reboot/terminate) while distinguishing 'stopped' from 'no longer costing money'.",
+      "icon": "settings",
+      "zone": "Compute",
+      "resources": [
+        {
+          "id": "ec2-operations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["launching-and-connecting-ec2"]
+    },
+    {
+      "id": "s3-permissions-and-management",
+      "label": "S3 Permissions & Management",
+      "description": "Keep S3 data private by default and grant EC2 applications least-privilege access through IAM roles, and understand versioning, lifecycle rules, and storage classes at a decision-making level.",
+      "icon": "lock",
+      "zone": "Storage",
+      "resources": [
+        {
+          "id": "s3-permissions-and-management-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["s3-fundamentals"]
+    },
+    {
+      "id": "ebs-fundamentals",
+      "label": "EBS Fundamentals",
+      "description": "Explain EBS as block storage distinct from S3's object model, understand the role of the root volume versus additional volumes, and create and attach a new EBS volume in the correct Availability Zone.",
+      "icon": "storage",
+      "zone": "Storage",
+      "resources": [
+        {
+          "id": "ebs-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ec2-operations"]
+    },
+    {
+      "id": "ebs-filesystem-operations",
+      "label": "EBS Filesystem Operations",
+      "description": "Discover attached block devices from Linux, safely format a new EBS volume with a filesystem, and mount it — understanding that AWS-level attachment and a usable Linux filesystem are two different things.",
+      "icon": "hard_drive",
+      "zone": "Storage",
+      "resources": [
+        {
+          "id": "ebs-filesystem-operations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ebs-fundamentals"]
+    },
+    {
+      "id": "ebs-lifecycle-management",
+      "label": "EBS Lifecycle Management",
+      "description": "Distinguish EBS volume types by workload fit, create and restore from EBS snapshots as point-in-time backups, and reason about the difference between growing an AWS volume and growing its filesystem.",
+      "icon": "history",
+      "zone": "Storage",
+      "resources": [
+        {
+          "id": "ebs-lifecycle-management-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ebs-filesystem-operations"]
+    },
+    {
+      "id": "integrating-ec2-s3-ebs",
+      "label": "Integrating EC2, S3 & EBS",
+      "description": "Deploy a Dockerized application to EC2 and wire it to both S3 (for object storage, accessed via an IAM role) and an EBS-backed mount (for persistent block storage), while treating a self-hosted database on EC2/EBS as educational rather than production architecture.",
+      "icon": "integration_instructions",
+      "zone": "Integration & Operations",
+      "resources": [
+        {
+          "id": "integrating-ec2-s3-ebs-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ec2-operations", "s3-permissions-and-management", "ebs-lifecycle-management"]
+    },
+    {
+      "id": "troubleshooting-and-cleanup",
+      "label": "Troubleshooting & Cleanup",
+      "description": "Systematically diagnose common EC2/S3/EBS failures (unreachable resources, SSH failures, permission errors, missing volumes), and close every exercise with a full resource inventory and cleanup to avoid unexpected charges.",
+      "icon": "bug_report",
+      "zone": "Integration & Operations",
+      "resources": [
+        {
+          "id": "troubleshooting-and-cleanup-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["integrating-ec2-s3-ebs"]
+    },
+    {
+      "id": "capstone-aws-deployment",
+      "label": "Capstone: AWS Deployment",
+      "description": "Independently plan, deploy, verify, and tear down a full Dockerized application on EC2 using S3 and EBS for clearly different storage purposes, including deliberate failure drills and a cost inspection before cleanup.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "capstone-aws-deployment-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["troubleshooting-and-cleanup"]
+    }
+  ],
+  "edges": [
+    { "id": "e-cloud-and-aws-basics-aws-console-and-regions", "source": "cloud-and-aws-basics", "target": "aws-console-and-regions" },
+    { "id": "e-aws-console-and-regions-resource-identity-and-cost", "source": "aws-console-and-regions", "target": "resource-identity-and-cost" },
+    { "id": "e-resource-identity-and-cost-shared-responsibility-and-iam", "source": "resource-identity-and-cost", "target": "shared-responsibility-and-iam" },
+    { "id": "e-shared-responsibility-and-iam-credentials-and-cli", "source": "shared-responsibility-and-iam", "target": "credentials-and-cli" },
+    { "id": "e-credentials-and-cli-aws-networking-basics", "source": "credentials-and-cli", "target": "aws-networking-basics" },
+    { "id": "e-credentials-and-cli-s3-fundamentals", "source": "credentials-and-cli", "target": "s3-fundamentals" },
+    { "id": "e-aws-networking-basics-ec2-fundamentals", "source": "aws-networking-basics", "target": "ec2-fundamentals" },
+    { "id": "e-ec2-fundamentals-launching-and-connecting-ec2", "source": "ec2-fundamentals", "target": "launching-and-connecting-ec2" },
+    { "id": "e-launching-and-connecting-ec2-ec2-operations", "source": "launching-and-connecting-ec2", "target": "ec2-operations" },
+    { "id": "e-s3-fundamentals-s3-permissions-and-management", "source": "s3-fundamentals", "target": "s3-permissions-and-management" },
+    { "id": "e-ec2-operations-ebs-fundamentals", "source": "ec2-operations", "target": "ebs-fundamentals" },
+    { "id": "e-ebs-fundamentals-ebs-filesystem-operations", "source": "ebs-fundamentals", "target": "ebs-filesystem-operations" },
+    { "id": "e-ebs-filesystem-operations-ebs-lifecycle-management", "source": "ebs-filesystem-operations", "target": "ebs-lifecycle-management" },
+    { "id": "e-ec2-operations-integrating-ec2-s3-ebs", "source": "ec2-operations", "target": "integrating-ec2-s3-ebs" },
+    { "id": "e-s3-permissions-and-management-integrating-ec2-s3-ebs", "source": "s3-permissions-and-management", "target": "integrating-ec2-s3-ebs" },
+    { "id": "e-ebs-lifecycle-management-integrating-ec2-s3-ebs", "source": "ebs-lifecycle-management", "target": "integrating-ec2-s3-ebs" },
+    { "id": "e-integrating-ec2-s3-ebs-troubleshooting-and-cleanup", "source": "integrating-ec2-s3-ebs", "target": "troubleshooting-and-cleanup" },
+    { "id": "e-troubleshooting-and-cleanup-capstone-aws-deployment", "source": "troubleshooting-and-cleanup", "target": "capstone-aws-deployment" }
+  ]
+}

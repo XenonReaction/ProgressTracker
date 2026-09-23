@@ -1,0 +1,503 @@
+{
+  "treeId": "docker-fullstack",
+  "order": 19,
+  "title": "Docker for Full-Stack Developers",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from Linux/container fundamentals to independently containerizing, running, debugging, and composing full-stack applications with Docker and Docker Compose.",
+  "version": "1.0",
+  "estimatedMonths": 1.5,
+  "icon": "storage",
+  "totalNodes": 19,
+  "nodes": [
+    {
+      "id": "docker-prerequisites",
+      "label": "Prerequisites",
+      "description": "Confirm comfort with Linux/WSL2 basics \u2014 files, processes, permissions, ports \u2014 and be able to run a target application such as Spring Boot, Angular/React, or PostgreSQL without Docker before attempting to containerize it.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "docker-prerequisites-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "containers-vs-vms",
+      "label": "Containers, VMs & Docker Architecture",
+      "description": "Explain why containers exist, how they differ from virtual machines by sharing the host kernel, and the critical distinction between a Dockerfile, an image, and a running container.",
+      "icon": "layers",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "containers-vs-vms-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "docker-prerequisites"
+      ]
+    },
+    {
+      "id": "installation-and-cli",
+      "label": "Installation & CLI Basics",
+      "description": "Verify a working Docker installation and daemon connection, run a first container end to end, and use core docker CLI commands to discover help and manage container/image lifecycles.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "installation-and-cli-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "containers-vs-vms"
+      ]
+    },
+    {
+      "id": "images-and-containers",
+      "label": "Images & Container Lifecycle",
+      "description": "Understand image fundamentals \u2014 repository, tag, ID, layers, base image \u2014 and manage the full container lifecycle from create through run, exec, stop, and remove.",
+      "icon": "hive",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "images-and-containers-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "installation-and-cli"
+      ]
+    },
+    {
+      "id": "layers-cache-dockerfiles",
+      "label": "Layers, Build Cache & Dockerfile Basics",
+      "description": "Explain how Dockerfile instructions create reusable, cacheable filesystem layers that affect rebuild speed and image size, and write a minimal Dockerfile end to end.",
+      "icon": "storage",
+      "zone": "Building Images",
+      "resources": [
+        {
+          "id": "layers-cache-dockerfiles-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "images-and-containers"
+      ]
+    },
+    {
+      "id": "dockerfile-instructions",
+      "label": "Dockerfile Instructions",
+      "description": "Use FROM, WORKDIR, COPY, RUN, ENV, ARG, EXPOSE, and USER correctly, understanding which instructions run at build time versus runtime and why EXPOSE alone does not publish a port.",
+      "icon": "code",
+      "zone": "Building Images",
+      "resources": [
+        {
+          "id": "dockerfile-instructions-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "layers-cache-dockerfiles"
+      ]
+    },
+    {
+      "id": "cmd-entrypoint-context",
+      "label": "CMD, ENTRYPOINT & Build Context",
+      "description": "Distinguish CMD from ENTRYPOINT and shell form from exec form, and control what files enter an image through the build context and a .dockerignore file.",
+      "icon": "integration_instructions",
+      "zone": "Building Images",
+      "resources": [
+        {
+          "id": "cmd-entrypoint-context-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "dockerfile-instructions"
+      ]
+    },
+    {
+      "id": "configuration-and-ports",
+      "label": "Configuration & Port Publishing",
+      "description": "Pass runtime configuration into a container through environment variables and env files without baking in secrets, and map container ports to host ports correctly with -p.",
+      "icon": "settings",
+      "zone": "Building Images",
+      "resources": [
+        {
+          "id": "configuration-and-ports-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "cmd-entrypoint-context"
+      ]
+    },
+    {
+      "id": "networking-and-dns",
+      "label": "Networking & Service DNS",
+      "description": "Create and inspect Docker networks, and understand why localhost inside a container refers to that container itself, so service-name DNS must be used for container-to-container communication.",
+      "icon": "lan",
+      "zone": "Networking & Storage",
+      "resources": [
+        {
+          "id": "networking-and-dns-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "configuration-and-ports"
+      ]
+    },
+    {
+      "id": "volumes-and-persistence",
+      "label": "Volumes & Persistence",
+      "description": "Use named volumes and bind mounts appropriately for persistent database data versus development file sharing, and decide what application state must survive container replacement.",
+      "icon": "database",
+      "zone": "Networking & Storage",
+      "resources": [
+        {
+          "id": "volumes-and-persistence-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "networking-and-dns"
+      ]
+    },
+    {
+      "id": "compose-fundamentals",
+      "label": "Docker Compose Fundamentals",
+      "description": "Describe a multi-container application declaratively with Docker Compose services, networks, and volumes instead of manually wiring containers together with individual docker run commands.",
+      "icon": "hive",
+      "zone": "Docker Compose",
+      "resources": [
+        {
+          "id": "compose-fundamentals-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "volumes-and-persistence"
+      ]
+    },
+    {
+      "id": "compose-configuration-and-health",
+      "label": "Compose Configuration & Health Checks",
+      "description": "Configure Compose environment variables and interpolation, define health checks that distinguish a running process from a ready one, and use depends_on alongside application-level retry/resilience rather than assuming strict startup order.",
+      "icon": "health_and_safety",
+      "zone": "Docker Compose",
+      "resources": [
+        {
+          "id": "compose-configuration-and-health-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "compose-fundamentals"
+      ]
+    },
+    {
+      "id": "multi-stage-and-app-containers",
+      "label": "Multi-Stage Builds & Application Containers",
+      "description": "Write multi-stage Dockerfiles that separate build-time tools from a minimal runtime image, and apply that pattern to containerize Spring Boot backends and production Angular/React frontend builds.",
+      "icon": "build",
+      "zone": "Application Containerization",
+      "resources": [
+        {
+          "id": "multi-stage-and-app-containers-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "compose-configuration-and-health"
+      ]
+    },
+    {
+      "id": "database-containers-and-fullstack-compose",
+      "label": "Database Containers & Full-Stack Compose",
+      "description": "Run PostgreSQL, MongoDB, or Neo4j as development containers with correct persistence and networking, and design a complete frontend/backend/database Compose architecture from application requirements rather than a copied template.",
+      "icon": "architecture",
+      "zone": "Application Containerization",
+      "resources": [
+        {
+          "id": "database-containers-and-fullstack-compose-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "multi-stage-and-app-containers"
+      ]
+    },
+    {
+      "id": "security-and-resources",
+      "label": "Container Security & Resource Management",
+      "description": "Apply container security practices \u2014 trusted base images, non-root users, least privilege, secret handling, Docker socket awareness \u2014 and reason about CPU, memory, and disk resource limits.",
+      "icon": "security",
+      "zone": "Production Readiness & Mastery",
+      "resources": [
+        {
+          "id": "security-and-resources-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "database-containers-and-fullstack-compose"
+      ]
+    },
+    {
+      "id": "logging-and-debugging",
+      "label": "Logging & Debugging",
+      "description": "Read and follow container and Compose logs for diagnosis, and work through a systematic debugging flow for containers that exit immediately, network failures, port conflicts, and volume problems.",
+      "icon": "bug_report",
+      "zone": "Production Readiness & Mastery",
+      "resources": [
+        {
+          "id": "logging-and-debugging-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "security-and-resources"
+      ]
+    },
+    {
+      "id": "registries-tags-production-images",
+      "label": "Registries, Tags & Production Image Practices",
+      "description": "Tag, push, and pull images through a container registry with intentional versioning instead of relying on latest, and apply production image practices such as small runtime images, reproducible builds, and graceful shutdown.",
+      "icon": "storage",
+      "zone": "Production Readiness & Mastery",
+      "resources": [
+        {
+          "id": "registries-tags-production-images-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "logging-and-debugging"
+      ]
+    },
+    {
+      "id": "cicd-cloud-kubernetes-readiness",
+      "label": "CI/CD, Cloud & Kubernetes Readiness",
+      "description": "Understand how Docker images and registries feed into CI/CD pipelines, cloud compute deployment, and the concepts \u2014 pods, services, ConfigMaps \u2014 that Kubernetes later builds on top of container fundamentals.",
+      "icon": "cloud",
+      "zone": "Production Readiness & Mastery",
+      "resources": [
+        {
+          "id": "cicd-cloud-kubernetes-readiness-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "registries-tags-production-images"
+      ]
+    },
+    {
+      "id": "professional-docker-workflow",
+      "label": "Professional Docker Workflow",
+      "description": "Containerize an unfamiliar application by reasoning from its build/run/network/storage requirements rather than copying a tutorial, building incrementally and verifying the environment can be rebuilt from source alone.",
+      "icon": "rocket_launch",
+      "zone": "Production Readiness & Mastery",
+      "resources": [
+        {
+          "id": "professional-docker-workflow-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "cicd-cloud-kubernetes-readiness"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-docker-prerequisites-containers-vs-vms",
+      "source": "docker-prerequisites",
+      "target": "containers-vs-vms"
+    },
+    {
+      "id": "e-containers-vs-vms-installation-and-cli",
+      "source": "containers-vs-vms",
+      "target": "installation-and-cli"
+    },
+    {
+      "id": "e-installation-and-cli-images-and-containers",
+      "source": "installation-and-cli",
+      "target": "images-and-containers"
+    },
+    {
+      "id": "e-images-and-containers-layers-cache-dockerfiles",
+      "source": "images-and-containers",
+      "target": "layers-cache-dockerfiles"
+    },
+    {
+      "id": "e-layers-cache-dockerfiles-dockerfile-instructions",
+      "source": "layers-cache-dockerfiles",
+      "target": "dockerfile-instructions"
+    },
+    {
+      "id": "e-dockerfile-instructions-cmd-entrypoint-context",
+      "source": "dockerfile-instructions",
+      "target": "cmd-entrypoint-context"
+    },
+    {
+      "id": "e-cmd-entrypoint-context-configuration-and-ports",
+      "source": "cmd-entrypoint-context",
+      "target": "configuration-and-ports"
+    },
+    {
+      "id": "e-configuration-and-ports-networking-and-dns",
+      "source": "configuration-and-ports",
+      "target": "networking-and-dns"
+    },
+    {
+      "id": "e-networking-and-dns-volumes-and-persistence",
+      "source": "networking-and-dns",
+      "target": "volumes-and-persistence"
+    },
+    {
+      "id": "e-volumes-and-persistence-compose-fundamentals",
+      "source": "volumes-and-persistence",
+      "target": "compose-fundamentals"
+    },
+    {
+      "id": "e-compose-fundamentals-compose-configuration-and-health",
+      "source": "compose-fundamentals",
+      "target": "compose-configuration-and-health"
+    },
+    {
+      "id": "e-compose-configuration-and-health-multi-stage-and-app-containers",
+      "source": "compose-configuration-and-health",
+      "target": "multi-stage-and-app-containers"
+    },
+    {
+      "id": "e-multi-stage-and-app-containers-database-containers-and-fullstack-compose",
+      "source": "multi-stage-and-app-containers",
+      "target": "database-containers-and-fullstack-compose"
+    },
+    {
+      "id": "e-database-containers-and-fullstack-compose-security-and-resources",
+      "source": "database-containers-and-fullstack-compose",
+      "target": "security-and-resources"
+    },
+    {
+      "id": "e-security-and-resources-logging-and-debugging",
+      "source": "security-and-resources",
+      "target": "logging-and-debugging"
+    },
+    {
+      "id": "e-logging-and-debugging-registries-tags-production-images",
+      "source": "logging-and-debugging",
+      "target": "registries-tags-production-images"
+    },
+    {
+      "id": "e-registries-tags-production-images-cicd-cloud-kubernetes-readiness",
+      "source": "registries-tags-production-images",
+      "target": "cicd-cloud-kubernetes-readiness"
+    },
+    {
+      "id": "e-cicd-cloud-kubernetes-readiness-professional-docker-workflow",
+      "source": "cicd-cloud-kubernetes-readiness",
+      "target": "professional-docker-workflow"
+    }
+  ]
+}

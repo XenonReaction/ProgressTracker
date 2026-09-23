@@ -1,0 +1,378 @@
+{
+  "treeId": "postgresql-fullstack",
+  "order": 6,
+  "title": "PostgreSQL Full-Stack Developer",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from no relational-database experience to professional PostgreSQL application development, covering SQL, relational design, performance, security, application integration, and production fundamentals for a full-stack developer.",
+  "version": "1.0",
+  "estimatedMonths": 2,
+  "totalNodes": 18,
+  "icon": "database",
+  "nodes": [
+    {
+      "id": "relational-foundations",
+      "label": "Relational Database Foundations",
+      "description": "Understand what a database and DBMS are, learn the relational vocabulary of databases, schemas, tables, rows, and columns, and translate simple application concepts like users, posts, and comments into relational entities.",
+      "icon": "storage",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "relational-foundations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "psql-environment",
+      "label": "PostgreSQL Environment & psql",
+      "description": "Connect to PostgreSQL with psql using connection parameters, learn essential meta-commands to inspect databases, schemas, tables, and roles, and read basic PostgreSQL error messages without relying on a GUI.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "psql-environment-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["relational-foundations"]
+    },
+    {
+      "id": "sql-query-fundamentals",
+      "label": "SQL Query Fundamentals",
+      "description": "Write SELECT queries with filtering, sorting, limiting, and DISTINCT, then perform INSERT, UPDATE, and DELETE operations safely, including PostgreSQL's RETURNING clause, to implement complete CRUD operations.",
+      "icon": "code",
+      "zone": "Core SQL",
+      "resources": [
+        {
+          "id": "sql-query-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["psql-environment"]
+    },
+    {
+      "id": "schema-data-types",
+      "label": "Tables, Schemas & Data Types",
+      "description": "Create and alter tables with CREATE TABLE and ALTER TABLE, organize objects with schemas, and choose appropriate PostgreSQL data types — numeric, text, boolean, date/time, identifiers, and structured types like JSONB and arrays — based on application requirements.",
+      "icon": "database",
+      "zone": "Core SQL",
+      "resources": [
+        {
+          "id": "schema-data-types-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["sql-query-fundamentals"]
+    },
+    {
+      "id": "keys-constraints",
+      "label": "Keys & Constraints",
+      "description": "Define primary keys, composite keys, and foreign keys with appropriate referential actions, and apply NOT NULL, UNIQUE, and CHECK constraints so the database makes invalid application state difficult to persist.",
+      "icon": "verified",
+      "zone": "Core SQL",
+      "resources": [
+        {
+          "id": "keys-constraints-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["schema-data-types"]
+    },
+    {
+      "id": "relationships-joins",
+      "label": "Relationships & Joins",
+      "description": "Model one-to-one, one-to-many, and many-to-many relationships with junction tables, then write INNER, LEFT, and multi-table joins to query across an application's relationships without trial and error.",
+      "icon": "hub",
+      "zone": "Core SQL",
+      "resources": [
+        {
+          "id": "relationships-joins-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["keys-constraints"]
+    },
+    {
+      "id": "aggregation-analysis",
+      "label": "Aggregation & Data Analysis",
+      "description": "Use aggregate functions with GROUP BY and HAVING, including conditional aggregation and PostgreSQL's FILTER clause, to generate application statistics and reporting queries.",
+      "icon": "functions",
+      "zone": "Core SQL",
+      "resources": [
+        {
+          "id": "aggregation-analysis-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["relationships-joins"]
+    },
+    {
+      "id": "database-design-normalization",
+      "label": "Database Design & Normalization",
+      "description": "Convert application requirements into entities and attributes, normalize schemas through 3NF (with BCNF awareness), and reason about legitimate denormalization tradeoffs and common design mistakes.",
+      "icon": "architecture",
+      "zone": "Core SQL",
+      "resources": [
+        {
+          "id": "database-design-normalization-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["relationships-joins"]
+    },
+    {
+      "id": "advanced-sql",
+      "label": "Intermediate & Advanced SQL",
+      "description": "Write subqueries, CTEs, and recursive CTEs, use set operations and conditional expressions, and apply window functions to build multi-stage queries that remain understandable.",
+      "icon": "layers",
+      "zone": "Advanced SQL",
+      "resources": [
+        {
+          "id": "advanced-sql-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["aggregation-analysis", "database-design-normalization"]
+    },
+    {
+      "id": "transactions-concurrency",
+      "label": "Transactions & Concurrency",
+      "description": "Use BEGIN/COMMIT/ROLLBACK and explain ACID properties, PostgreSQL's MVCC model, and how to recognize and prevent locking and deadlock problems in concurrent application operations.",
+      "icon": "sync",
+      "zone": "Advanced SQL",
+      "resources": [
+        {
+          "id": "transactions-concurrency-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["advanced-sql"]
+    },
+    {
+      "id": "indexes-performance",
+      "label": "Indexes & Query Performance",
+      "description": "Create B-tree, unique, composite, and specialized (GIN/GiST/BRIN/hash) indexes, then use EXPLAIN and EXPLAIN ANALYZE to diagnose slow queries and make evidence-based indexing decisions.",
+      "icon": "speed",
+      "zone": "Advanced SQL",
+      "resources": [
+        {
+          "id": "indexes-performance-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["advanced-sql"]
+    },
+    {
+      "id": "postgresql-features",
+      "label": "PostgreSQL Features, Views & Triggers",
+      "description": "Use PostgreSQL-specific capabilities including identity columns, ON CONFLICT upserts, JSONB, arrays, and full-text search, and build views, materialized views, functions, and triggers for database-side logic.",
+      "icon": "auto_awesome",
+      "zone": "PostgreSQL Features",
+      "resources": [
+        {
+          "id": "postgresql-features-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["transactions-concurrency", "indexes-performance"]
+    },
+    {
+      "id": "security-permissions",
+      "label": "Security & Permissions",
+      "description": "Manage roles and privileges with GRANT/REVOKE under least privilege, prevent SQL injection with parameterized queries, protect credentials, and understand row-level security and transport security.",
+      "icon": "security",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "security-permissions-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["postgresql-features"]
+    },
+    {
+      "id": "application-integration",
+      "label": "Application Integration",
+      "description": "Configure database drivers, connection pooling, and application-managed transactions, and understand how ORMs map objects to SQL, including recognizing N+1 queries and other ORM performance pitfalls.",
+      "icon": "integration_instructions",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "application-integration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["postgresql-features"]
+    },
+    {
+      "id": "schema-migrations",
+      "label": "Schema Migrations & Evolution",
+      "description": "Evolve a schema through versioned migrations using tools like Flyway or Liquibase, safely handling existing data and coordinating backward-compatible changes between application code and the database.",
+      "icon": "timeline",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "schema-migrations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["application-integration"]
+    },
+    {
+      "id": "testing-debugging",
+      "label": "Testing, Debugging & Data Integrity",
+      "description": "Test SQL and constraints independently of application code, verify transaction rollback behavior, and trace a bug through frontend, backend, ORM, and SQL layers to find its true origin.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-debugging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["schema-migrations", "security-permissions"]
+    },
+    {
+      "id": "production-fundamentals",
+      "label": "Production Fundamentals",
+      "description": "Understand backup and restore with pg_dump/pg_restore, the purpose of VACUUM/ANALYZE and autovacuum, key metrics to monitor, and awareness-level knowledge of partitioning and replication.",
+      "icon": "cloud",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "production-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["testing-debugging"]
+    },
+    {
+      "id": "professional-mastery",
+      "label": "Professional Full-Stack PostgreSQL Mastery",
+      "description": "Independently design a normalized schema, write non-trivial SQL, integrate with application code, diagnose performance and security issues, and evolve and operate a PostgreSQL-backed application in production.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-mastery-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["production-fundamentals"]
+    }
+  ],
+  "edges": [
+    { "id": "e-relational-foundations-psql-environment", "source": "relational-foundations", "target": "psql-environment" },
+    { "id": "e-psql-environment-sql-query-fundamentals", "source": "psql-environment", "target": "sql-query-fundamentals" },
+    { "id": "e-sql-query-fundamentals-schema-data-types", "source": "sql-query-fundamentals", "target": "schema-data-types" },
+    { "id": "e-schema-data-types-keys-constraints", "source": "schema-data-types", "target": "keys-constraints" },
+    { "id": "e-keys-constraints-relationships-joins", "source": "keys-constraints", "target": "relationships-joins" },
+    { "id": "e-relationships-joins-aggregation-analysis", "source": "relationships-joins", "target": "aggregation-analysis" },
+    { "id": "e-relationships-joins-database-design-normalization", "source": "relationships-joins", "target": "database-design-normalization" },
+    { "id": "e-aggregation-analysis-advanced-sql", "source": "aggregation-analysis", "target": "advanced-sql" },
+    { "id": "e-database-design-normalization-advanced-sql", "source": "database-design-normalization", "target": "advanced-sql" },
+    { "id": "e-advanced-sql-transactions-concurrency", "source": "advanced-sql", "target": "transactions-concurrency" },
+    { "id": "e-advanced-sql-indexes-performance", "source": "advanced-sql", "target": "indexes-performance" },
+    { "id": "e-transactions-concurrency-postgresql-features", "source": "transactions-concurrency", "target": "postgresql-features" },
+    { "id": "e-indexes-performance-postgresql-features", "source": "indexes-performance", "target": "postgresql-features" },
+    { "id": "e-postgresql-features-security-permissions", "source": "postgresql-features", "target": "security-permissions" },
+    { "id": "e-postgresql-features-application-integration", "source": "postgresql-features", "target": "application-integration" },
+    { "id": "e-application-integration-schema-migrations", "source": "application-integration", "target": "schema-migrations" },
+    { "id": "e-schema-migrations-testing-debugging", "source": "schema-migrations", "target": "testing-debugging" },
+    { "id": "e-security-permissions-testing-debugging", "source": "security-permissions", "target": "testing-debugging" },
+    { "id": "e-testing-debugging-production-fundamentals", "source": "testing-debugging", "target": "production-fundamentals" },
+    { "id": "e-production-fundamentals-professional-mastery", "source": "production-fundamentals", "target": "professional-mastery" }
+  ]
+}

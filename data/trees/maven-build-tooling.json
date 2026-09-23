@@ -1,0 +1,399 @@
+{
+  "treeId": "maven-build-tooling",
+  "order": 9,
+  "title": "Maven Build Tooling",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from basic Java project knowledge to professional Maven proficiency \u2014 POM configuration, dependency management, the build lifecycle, multi-module projects, and troubleshooting \u2014 as preparation for Spring Boot development.",
+  "version": "1.0",
+  "estimatedMonths": 0.5,
+  "totalNodes": 15,
+  "icon": "build",
+  "nodes": [
+    {
+      "id": "java-project-prerequisites",
+      "label": "Java Project Prerequisites",
+      "description": "Confirm the Java prerequisites \u2014 compiling and running multi-class programs, understanding packages, imports, and external libraries \u2014 needed before automating a build with Maven.",
+      "icon": "coffee",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "java-project-prerequisites-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "maven-foundations-and-setup",
+      "label": "Maven Foundations & Setup",
+      "description": "Explain Maven as a build-automation and dependency-management tool built on convention over configuration, install it, and verify its relationship to the JDK via JAVA_HOME and the local .m2 repository.",
+      "icon": "terminal",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "maven-foundations-and-setup-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-project-prerequisites"
+      ]
+    },
+    {
+      "id": "project-structure-and-pom",
+      "label": "Project Structure & POM Fundamentals",
+      "description": "Recognize Maven's standard project directory layout (src/main/java, src/test/java, target/) and read a pom.xml's groupId/artifactId/version coordinates that uniquely identify an artifact.",
+      "icon": "account_tree",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "project-structure-and-pom-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "maven-foundations-and-setup"
+      ]
+    },
+    {
+      "id": "dependencies-and-scopes",
+      "label": "Dependencies & Scopes",
+      "description": "Add dependencies to a POM and choose appropriate scopes \u2014 compile, runtime, test, provided \u2014 understanding how scope controls what's available at compile time, test time, and runtime.",
+      "icon": "layers",
+      "zone": "Dependency Management",
+      "resources": [
+        {
+          "id": "dependencies-and-scopes-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "project-structure-and-pom"
+      ]
+    },
+    {
+      "id": "repositories-and-resolution",
+      "label": "Repositories & Resolution",
+      "description": "Understand how Maven resolves dependencies through the local .m2 cache and remote repositories like Maven Central, and recognize when private/organizational repositories are configured.",
+      "icon": "cloud",
+      "zone": "Dependency Management",
+      "resources": [
+        {
+          "id": "repositories-and-resolution-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "dependencies-and-scopes"
+      ]
+    },
+    {
+      "id": "build-lifecycle-and-plugins",
+      "label": "Build Lifecycle & Plugins",
+      "description": "Understand the default build lifecycle (validate through deploy) and how invoking a later phase triggers earlier ones, and understand how plugins bind their goals to lifecycle phases to perform actual build work.",
+      "icon": "sync",
+      "zone": "Build Mechanics",
+      "resources": [
+        {
+          "id": "build-lifecycle-and-plugins-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "repositories-and-resolution"
+      ]
+    },
+    {
+      "id": "commands-and-compiler-config",
+      "label": "Common Commands & Compiler Configuration",
+      "description": "Run core Maven commands (compile, test, package, verify, install, clean) with correct reasoning about which phase accomplishes a given task, and configure the Java source/target version explicitly.",
+      "icon": "terminal",
+      "zone": "Build Mechanics",
+      "resources": [
+        {
+          "id": "commands-and-compiler-config-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "build-lifecycle-and-plugins"
+      ]
+    },
+    {
+      "id": "testing-integration",
+      "label": "Testing Integration",
+      "description": "Configure JUnit and Mockito as test-scoped dependencies, run and interpret test results through Maven via Surefire, and understand how Failsafe separates integration tests from unit tests.",
+      "icon": "verified",
+      "zone": "Build Mechanics",
+      "resources": [
+        {
+          "id": "testing-integration-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "commands-and-compiler-config"
+      ]
+    },
+    {
+      "id": "resources-and-packaging",
+      "label": "Resources & Packaging",
+      "description": "Manage application and test resources under src/main/resources and src/test/resources, and understand how Maven packages compiled code and resources into JAR or WAR artifacts.",
+      "icon": "build",
+      "zone": "Build Mechanics",
+      "resources": [
+        {
+          "id": "resources-and-packaging-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "testing-integration"
+      ]
+    },
+    {
+      "id": "dependency-management-and-transitive-deps",
+      "label": "Dependency Management & Transitive Dependencies",
+      "description": "Use dependencyManagement and BOMs to centralize and coordinate dependency versions, and read the dependency tree to trace transitive dependencies, identify version conflicts, and apply exclusions carefully.",
+      "icon": "hub",
+      "zone": "Advanced Dependency Management",
+      "resources": [
+        {
+          "id": "dependency-management-and-transitive-deps-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "resources-and-packaging"
+      ]
+    },
+    {
+      "id": "parent-poms-properties-and-profiles",
+      "label": "Parent POMs, Properties & Profiles",
+      "description": "Use parent POMs and the effective POM to understand inherited configuration, centralize values with Maven properties, and use profiles to change build configuration \u2014 distinct from Spring's runtime profiles.",
+      "icon": "architecture",
+      "zone": "Advanced Configuration",
+      "resources": [
+        {
+          "id": "parent-poms-properties-and-profiles-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "dependency-management-and-transitive-deps"
+      ]
+    },
+    {
+      "id": "multi-module-and-wrapper",
+      "label": "Multi-Module Projects & Wrapper",
+      "description": "Structure multi-module (reactor) projects with an aggregator POM and inter-module dependencies, and use the Maven Wrapper (mvnw) for reproducible, version-pinned builds across environments.",
+      "icon": "hive",
+      "zone": "Advanced Configuration",
+      "resources": [
+        {
+          "id": "multi-module-and-wrapper-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "parent-poms-properties-and-profiles"
+      ]
+    },
+    {
+      "id": "plugin-configuration-and-troubleshooting",
+      "label": "Plugin Configuration & Build Troubleshooting",
+      "description": "Configure plugins and pluginManagement deliberately, and systematically troubleshoot build failures by reading Maven output to find the true root cause across compilation, testing, plugin, and packaging failure categories.",
+      "icon": "bug_report",
+      "zone": "Troubleshooting & Hygiene",
+      "resources": [
+        {
+          "id": "plugin-configuration-and-troubleshooting-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "multi-module-and-wrapper"
+      ]
+    },
+    {
+      "id": "reproducibility-security-and-cicd",
+      "label": "Reproducibility, Security & CI/CD Readiness",
+      "description": "Diagnose dependency resolution failures and version conflicts, and apply security and reproducibility practices \u2014 pinned versions, trusted repositories, no committed secrets \u2014 that prepare a project for non-interactive CI/CD builds.",
+      "icon": "security",
+      "zone": "Troubleshooting & Hygiene",
+      "resources": [
+        {
+          "id": "reproducibility-security-and-cicd-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "plugin-configuration-and-troubleshooting"
+      ]
+    },
+    {
+      "id": "spring-boot-and-professional-workflow",
+      "label": "Spring Boot & Professional Workflow",
+      "description": "Explain Maven's specific role in a Spring Boot project \u2014 the Spring Boot parent POM, dependency management, and the Spring Boot Maven plugin \u2014 and confidently read, modify, and diagnose an unfamiliar project's build.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "spring-boot-and-professional-workflow-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "reproducibility-security-and-cicd"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-java-project-prerequisites-maven-foundations-and-setup",
+      "source": "java-project-prerequisites",
+      "target": "maven-foundations-and-setup"
+    },
+    {
+      "id": "e-maven-foundations-and-setup-project-structure-and-pom",
+      "source": "maven-foundations-and-setup",
+      "target": "project-structure-and-pom"
+    },
+    {
+      "id": "e-project-structure-and-pom-dependencies-and-scopes",
+      "source": "project-structure-and-pom",
+      "target": "dependencies-and-scopes"
+    },
+    {
+      "id": "e-dependencies-and-scopes-repositories-and-resolution",
+      "source": "dependencies-and-scopes",
+      "target": "repositories-and-resolution"
+    },
+    {
+      "id": "e-repositories-and-resolution-build-lifecycle-and-plugins",
+      "source": "repositories-and-resolution",
+      "target": "build-lifecycle-and-plugins"
+    },
+    {
+      "id": "e-build-lifecycle-and-plugins-commands-and-compiler-config",
+      "source": "build-lifecycle-and-plugins",
+      "target": "commands-and-compiler-config"
+    },
+    {
+      "id": "e-commands-and-compiler-config-testing-integration",
+      "source": "commands-and-compiler-config",
+      "target": "testing-integration"
+    },
+    {
+      "id": "e-testing-integration-resources-and-packaging",
+      "source": "testing-integration",
+      "target": "resources-and-packaging"
+    },
+    {
+      "id": "e-resources-and-packaging-dependency-management-and-transitive-deps",
+      "source": "resources-and-packaging",
+      "target": "dependency-management-and-transitive-deps"
+    },
+    {
+      "id": "e-dependency-management-and-transitive-deps-parent-poms-properties-and-profiles",
+      "source": "dependency-management-and-transitive-deps",
+      "target": "parent-poms-properties-and-profiles"
+    },
+    {
+      "id": "e-parent-poms-properties-and-profiles-multi-module-and-wrapper",
+      "source": "parent-poms-properties-and-profiles",
+      "target": "multi-module-and-wrapper"
+    },
+    {
+      "id": "e-multi-module-and-wrapper-plugin-configuration-and-troubleshooting",
+      "source": "multi-module-and-wrapper",
+      "target": "plugin-configuration-and-troubleshooting"
+    },
+    {
+      "id": "e-plugin-configuration-and-troubleshooting-reproducibility-security-and-cicd",
+      "source": "plugin-configuration-and-troubleshooting",
+      "target": "reproducibility-security-and-cicd"
+    },
+    {
+      "id": "e-reproducibility-security-and-cicd-spring-boot-and-professional-workflow",
+      "source": "reproducibility-security-and-cicd",
+      "target": "spring-boot-and-professional-workflow"
+    }
+  ]
+}

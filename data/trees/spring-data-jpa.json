@@ -1,0 +1,376 @@
+{
+  "treeId": "spring-data-jpa",
+  "order": 32,
+  "title": "Spring Data JPA",
+  "category": "Technology",
+  "difficulty": "hard",
+  "description": "Learn Spring Data JPA as the Spring repository abstraction built on top of JPA, reaching professional competency in designing repository layers, querying data cleanly, testing persistence behavior, and diagnosing performance problems without treating repository interfaces as magic.",
+  "version": "1.0",
+  "estimatedMonths": 1.5,
+  "totalNodes": 18,
+  "icon": "storage",
+  "nodes": [
+    {
+      "id": "prerequisites-and-stack",
+      "label": "Prerequisite Review & Abstraction Stack",
+      "description": "Confirm readiness in ORM/JPA/Hibernate fundamentals and Spring Boot basics, then map the layered relationship between Spring Data JPA, JPA, Hibernate, JDBC, and the database so each layer's responsibility stays distinct.",
+      "icon": "layers",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "prerequisites-and-stack-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "project-setup",
+      "label": "Project Setup",
+      "description": "Add the Spring Data JPA starter and the correct database driver, configure a datasource with externalized credentials, and ensure entities and repositories live where Spring Boot's scanning can discover them.",
+      "icon": "build",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "project-setup-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["prerequisites-and-stack"]
+    },
+    {
+      "id": "repository-fundamentals",
+      "label": "Repository Concept & Hierarchy",
+      "description": "Understand why the repository abstraction exists and what belongs in it versus the service layer, then trace the Repository/CrudRepository/PagingAndSortingRepository/JpaRepository interface hierarchy to explain why JpaRepository is the common practical choice.",
+      "icon": "account_tree",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "repository-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["project-setup"]
+    },
+    {
+      "id": "repository-generics-crud",
+      "label": "Generics, Inherited CRUD & Return Types",
+      "description": "Declare JpaRepository<Entity, Id> with correct generic types, use inherited save/findById/findAll/delete/exists/count methods with an accurate mental model of entity lifecycle, and choose appropriate return shapes (Optional, List, Page, Slice, projection) based on semantics.",
+      "icon": "database",
+      "zone": "Core Repository Skills",
+      "resources": [
+        {
+          "id": "repository-generics-crud-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["repository-fundamentals"]
+    },
+    {
+      "id": "derived-queries",
+      "label": "Derived Query Fundamentals & Keywords",
+      "description": "Write queries derived from method names using comparison, string, boolean/null, and collection keywords, combine conditions with And/Or, and traverse nested mapped properties, while recognizing when a derived name becomes too unwieldy to stay readable.",
+      "icon": "search",
+      "zone": "Core Repository Skills",
+      "resources": [
+        {
+          "id": "derived-queries-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["repository-generics-crud"]
+    },
+    {
+      "id": "ordering-limiting-sorting",
+      "label": "Ordering, Limiting & Sorting",
+      "description": "Apply static ordering in derived method names, limit results with First/Top keywords, handle null/optional results and parameters correctly, and use a dynamic Sort parameter instead of multiplying near-identical repository methods.",
+      "icon": "sort",
+      "zone": "Core Repository Skills",
+      "resources": [
+        {
+          "id": "ordering-limiting-sorting-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["derived-queries"]
+    },
+    {
+      "id": "pagination",
+      "label": "Pagination: Pageable, Page & Slice",
+      "description": "Replace unbounded result loading with Pageable-driven paging, and choose deliberately between Page (with total counts) and Slice (cheaper has-next-only paging) based on what the caller actually needs.",
+      "icon": "view_agenda",
+      "zone": "Core Repository Skills",
+      "resources": [
+        {
+          "id": "pagination-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ordering-limiting-sorting"]
+    },
+    {
+      "id": "custom-queries",
+      "label": "@Query, JPQL, Native SQL & Modifying Queries",
+      "description": "Write explicit @Query methods in JPQL and native SQL when derived names fall short, bind parameters safely without string concatenation, and implement @Modifying update/delete queries with correct transaction boundaries and persistence-context awareness.",
+      "icon": "code",
+      "zone": "Advanced Querying",
+      "resources": [
+        {
+          "id": "custom-queries-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["pagination"]
+    },
+    {
+      "id": "projections",
+      "label": "Interface & DTO Projections",
+      "description": "Return narrower interface-based or DTO/record projections instead of full entities when only a subset of fields is needed, and understand when projections earn their complexity over returning the entity directly.",
+      "icon": "filter_alt",
+      "zone": "Advanced Querying",
+      "resources": [
+        {
+          "id": "projections-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["custom-queries"]
+    },
+    {
+      "id": "dynamic-search",
+      "label": "Specifications & Dynamic Search",
+      "description": "Compose JpaSpecificationExecutor Specifications to handle search forms with many optional filters instead of writing a combinatorial explosion of repository methods, and validate sort/filter/page inputs so user-controlled search endpoints stay safe.",
+      "icon": "manage_search",
+      "zone": "Advanced Querying",
+      "resources": [
+        {
+          "id": "dynamic-search-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["custom-queries"]
+    },
+    {
+      "id": "transactions-boundaries",
+      "label": "Transactions & Layer Boundaries",
+      "description": "Place @Transactional at the service layer to group multiple repository calls into one unit of work, use readOnly and rollback semantics correctly, and keep business logic out of repositories while avoiding controller-to-repository shortcuts.",
+      "icon": "sync",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "transactions-boundaries-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["projections", "dynamic-search"]
+    },
+    {
+      "id": "relationships-fetching-nplus1",
+      "label": "Relationship Queries, N+1 & Fetch Plans",
+      "description": "Query mapped relationships through derived properties, JPQL joins, and Specifications, recognize the N+1 query problem and detect it with SQL logging, and correct fetch behavior deliberately with fetch joins or @EntityGraph rather than switching everything to eager loading.",
+      "icon": "hub",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "relationships-fetching-nplus1-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["transactions-boundaries"]
+    },
+    {
+      "id": "auditing-locking-batch",
+      "label": "Auditing, Locking & Batch Operations",
+      "description": "Populate createdAt/updatedAt/createdBy/updatedBy automatically with Spring Data auditing annotations and AuditorAware, understand optimistic and pessimistic locking at a practical level, and reason about the real database cost of bulk saveAll/deleteAll and modifying-query operations.",
+      "icon": "verified",
+      "zone": "Application Integration",
+      "resources": [
+        {
+          "id": "auditing-locking-batch-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["relationships-fetching-nplus1"]
+    },
+    {
+      "id": "exceptions-and-testing",
+      "label": "Exception Handling & Testing Strategy",
+      "description": "Translate low-level persistence exceptions into appropriate service/API responses instead of leaking them, and choose the right test type — @DataJpaTest for real repository/query behavior versus Mockito-mocked repositories for service logic, backed by production-like database testing where behavior matters.",
+      "icon": "science",
+      "zone": "Quality & Operations",
+      "resources": [
+        {
+          "id": "exceptions-and-testing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["auditing-locking-batch"]
+    },
+    {
+      "id": "schema-migrations",
+      "label": "Schema Migration Awareness",
+      "description": "Understand why ddl-auto schema generation is fine for early development but not a production strategy, and know at a conceptual level why tools like Flyway or Liquibase provide version-controlled, intentional schema evolution.",
+      "icon": "storage",
+      "zone": "Quality & Operations",
+      "resources": [
+        {
+          "id": "schema-migrations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["exceptions-and-testing"]
+    },
+    {
+      "id": "performance-and-debugging",
+      "label": "Performance & Debugging",
+      "description": "Recognize common Spring Data JPA performance problems — N+1, missing pagination, expensive counts, missing indexes — by measuring with SQL logs and query plans rather than judging by Java method appearance, and debug failures layer by layer from controller down through JDBC.",
+      "icon": "speed",
+      "zone": "Quality & Operations",
+      "resources": [
+        {
+          "id": "performance-and-debugging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["schema-migrations"]
+    },
+    {
+      "id": "production-practices",
+      "label": "Production Practices",
+      "description": "Keep persistence entities out of the public API contract, validate at every appropriate boundary, bound user-controlled query parameters like page size and sort fields, and avoid logging sensitive data or entire entities in production.",
+      "icon": "cloud",
+      "zone": "Quality & Operations",
+      "resources": [
+        {
+          "id": "production-practices-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["performance-and-debugging"]
+    },
+    {
+      "id": "mastery-architecture",
+      "label": "Query Technique Selection & Architecture Mastery",
+      "description": "Apply a decision framework for choosing the simplest appropriate query mechanism — inherited CRUD, derived query, @Query, native SQL, projection, or Specification — and hold the full request-to-database flow in mind well enough to locate a failure in the correct layer instead of blaming 'Spring' generically.",
+      "icon": "architecture",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "mastery-architecture-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["production-practices"]
+    }
+  ],
+  "edges": [
+    { "id": "e-prerequisites-and-stack-project-setup", "source": "prerequisites-and-stack", "target": "project-setup" },
+    { "id": "e-project-setup-repository-fundamentals", "source": "project-setup", "target": "repository-fundamentals" },
+    { "id": "e-repository-fundamentals-repository-generics-crud", "source": "repository-fundamentals", "target": "repository-generics-crud" },
+    { "id": "e-repository-generics-crud-derived-queries", "source": "repository-generics-crud", "target": "derived-queries" },
+    { "id": "e-derived-queries-ordering-limiting-sorting", "source": "derived-queries", "target": "ordering-limiting-sorting" },
+    { "id": "e-ordering-limiting-sorting-pagination", "source": "ordering-limiting-sorting", "target": "pagination" },
+    { "id": "e-pagination-custom-queries", "source": "pagination", "target": "custom-queries" },
+    { "id": "e-custom-queries-projections", "source": "custom-queries", "target": "projections" },
+    { "id": "e-custom-queries-dynamic-search", "source": "custom-queries", "target": "dynamic-search" },
+    { "id": "e-projections-transactions-boundaries", "source": "projections", "target": "transactions-boundaries" },
+    { "id": "e-dynamic-search-transactions-boundaries", "source": "dynamic-search", "target": "transactions-boundaries" },
+    { "id": "e-transactions-boundaries-relationships-fetching-nplus1", "source": "transactions-boundaries", "target": "relationships-fetching-nplus1" },
+    { "id": "e-relationships-fetching-nplus1-auditing-locking-batch", "source": "relationships-fetching-nplus1", "target": "auditing-locking-batch" },
+    { "id": "e-auditing-locking-batch-exceptions-and-testing", "source": "auditing-locking-batch", "target": "exceptions-and-testing" },
+    { "id": "e-exceptions-and-testing-schema-migrations", "source": "exceptions-and-testing", "target": "schema-migrations" },
+    { "id": "e-schema-migrations-performance-and-debugging", "source": "schema-migrations", "target": "performance-and-debugging" },
+    { "id": "e-performance-and-debugging-production-practices", "source": "performance-and-debugging", "target": "production-practices" },
+    { "id": "e-production-practices-mastery-architecture", "source": "production-practices", "target": "mastery-architecture" }
+  ]
+}

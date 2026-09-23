@@ -1,0 +1,397 @@
+{
+  "treeId": "typescript-frontend-mastery",
+  "order": 17,
+  "title": "TypeScript for Frontend Development Mastery",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn TypeScript as JavaScript plus a compile-time type system — covering type modeling, generics, narrowing, classes, tooling, and the runtime boundary — to prepare for Angular or React without TypeScript itself being the confusing part.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 19,
+  "icon": "code",
+  "nodes": [
+    {
+      "id": "typescript-orientation",
+      "label": "TypeScript Orientation",
+      "description": "Understand TypeScript as a typed superset of JavaScript that is transpiled away before the browser runs it, why it catches many mistakes at compile time but does not validate runtime input, and how its structural, erasable type system differs from Java's nominal, retained one.",
+      "icon": "code",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "typescript-orientation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "inference-and-primitives",
+      "label": "Inference & Primitive Types",
+      "description": "Read and write core TypeScript syntax from memory — variable/function annotations, arrays, tuples, and object types — and know when to rely on inference versus add an explicit annotation, plus optional and readonly properties.",
+      "icon": "data_object",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "inference-and-primitives-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["typescript-orientation"]
+    },
+    {
+      "id": "type-aliases-interfaces",
+      "label": "Type Aliases & Interfaces",
+      "description": "Model reusable shapes with interfaces and type aliases, choose between them appropriately, extend interfaces, and combine requirements with intersection types.",
+      "icon": "layers",
+      "zone": "Type Modeling",
+      "resources": [
+        {
+          "id": "type-aliases-interfaces-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["inference-and-primitives"]
+    },
+    {
+      "id": "unions-and-literals",
+      "label": "Unions & Literal Types",
+      "description": "Express a value as one of several possibilities with union and literal types, build literal unions for UI state, use discriminated unions to safely branch on a tag property, and know when enums or `as const` are the better fit.",
+      "icon": "call_split",
+      "zone": "Type Modeling",
+      "resources": [
+        {
+          "id": "unions-and-literals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["type-aliases-interfaces"]
+    },
+    {
+      "id": "type-queries-and-special-types",
+      "label": "Type Queries & Special Types",
+      "description": "Extract types from values and other types with `typeof` and `keyof`/indexed access, and use `any`, `unknown`, `never`, `void`, and strict null checking correctly instead of interchangeably.",
+      "icon": "science",
+      "zone": "Type Modeling",
+      "resources": [
+        {
+          "id": "type-queries-and-special-types-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["unions-and-literals"]
+    },
+    {
+      "id": "function-typing",
+      "label": "Function Typing",
+      "description": "Type function parameters, optional and default parameters, rest parameters, callbacks, and overloads, and recognize contextual typing so callback parameters don't need redundant annotations.",
+      "icon": "functions",
+      "zone": "Functions & Generics",
+      "resources": [
+        {
+          "id": "function-typing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["type-queries-and-special-types"]
+    },
+    {
+      "id": "generics",
+      "label": "Generics",
+      "description": "Write generic functions, interfaces, type aliases, and classes that preserve type relationships instead of collapsing to `any`, and constrain generics with `extends` and `keyof`.",
+      "icon": "hub",
+      "zone": "Functions & Generics",
+      "resources": [
+        {
+          "id": "generics-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["function-typing"]
+    },
+    {
+      "id": "utility-and-advanced-types",
+      "label": "Utility & Advanced Types",
+      "description": "Apply the built-in utility types — Partial, Required, Readonly, Pick, Omit, Record, and others — to transform existing types, and read mapped types, conditional types, and `infer` well enough to understand advanced library typings.",
+      "icon": "auto_awesome",
+      "zone": "Functions & Generics",
+      "resources": [
+        {
+          "id": "utility-and-advanced-types-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["generics"]
+    },
+    {
+      "id": "type-narrowing",
+      "label": "Type Narrowing",
+      "description": "Narrow broad or union types to specific ones at runtime using `typeof`, `instanceof`, `in`, truthiness, and equality checks, then write custom type guards, assertion functions, and exhaustive discriminated-union checks.",
+      "icon": "verified",
+      "zone": "Safety, OOP & Modules",
+      "resources": [
+        {
+          "id": "type-narrowing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["utility-and-advanced-types"]
+    },
+    {
+      "id": "assertions-and-structural-typing",
+      "label": "Assertions & Structural Typing",
+      "description": "Use type assertions and `satisfies` appropriately without mistaking them for runtime validation, and explain TypeScript's structural typing model — including excess property checks — versus nominal typing.",
+      "icon": "account_tree",
+      "zone": "Safety, OOP & Modules",
+      "resources": [
+        {
+          "id": "assertions-and-structural-typing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["type-narrowing"]
+    },
+    {
+      "id": "classes-and-oop",
+      "label": "Classes & OOP",
+      "description": "Write TypeScript classes with typed properties, access modifiers (public/private/protected), constructor parameter properties, `implements`, and abstract classes, and distinguish TypeScript's compile-time `private` from JavaScript's runtime `#private` fields.",
+      "icon": "architecture",
+      "zone": "Safety, OOP & Modules",
+      "resources": [
+        {
+          "id": "classes-and-oop-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["assertions-and-structural-typing"]
+    },
+    {
+      "id": "modules-and-type-erasure",
+      "label": "Modules & Type Erasure",
+      "description": "Use ES module import/export syntax including type-only imports, and internalize that most TypeScript syntax is erased at compile time — so runtime code, including data from response.json(), can never be trusted just because a type was declared for it.",
+      "icon": "hive",
+      "zone": "Safety, OOP & Modules",
+      "resources": [
+        {
+          "id": "modules-and-type-erasure-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["classes-and-oop"]
+    },
+    {
+      "id": "dom-and-event-typing",
+      "label": "DOM, Events & API Typing",
+      "description": "Type DOM elements, browser events, forms, and FormData with correct nullability handling, and type fetch/Promise-based API calls including typed response wrappers and DTO-style request/response models.",
+      "icon": "web",
+      "zone": "Frontend Application",
+      "resources": [
+        {
+          "id": "dom-and-event-typing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["modules-and-type-erasure"]
+    },
+    {
+      "id": "framework-preparation",
+      "label": "React & Angular Preparation",
+      "description": "Recognize how the same TypeScript fundamentals — typed props/state/events for React, typed classes/DI/decorators for Angular — will be applied once you begin a framework-specific skill tree, without treating decorators or JSX typing as core TypeScript concepts yet.",
+      "icon": "integration_instructions",
+      "zone": "Frontend Application",
+      "resources": [
+        {
+          "id": "framework-preparation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["dom-and-event-typing"]
+    },
+    {
+      "id": "compiler-and-tsconfig",
+      "label": "Compiler & tsconfig",
+      "description": "Install and run the TypeScript compiler, and configure tsconfig.json options such as target, module, lib, strict, noEmit, and source maps to control type checking and JavaScript output.",
+      "icon": "build",
+      "zone": "Tooling & Professional Practice",
+      "resources": [
+        {
+          "id": "compiler-and-tsconfig-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["type-queries-and-special-types"]
+    },
+    {
+      "id": "declaration-files-and-types-ecosystem",
+      "label": "Declaration Files & @types",
+      "description": "Understand why .d.ts declaration files and @types packages exist for typing plain JavaScript libraries, write ambient and module declarations, and manage TypeScript/framework version compatibility.",
+      "icon": "description",
+      "zone": "Tooling & Professional Practice",
+      "resources": [
+        {
+          "id": "declaration-files-and-types-ecosystem-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["compiler-and-tsconfig"]
+    },
+    {
+      "id": "diagnostics-and-debugging",
+      "label": "Diagnostics & Debugging",
+      "description": "Read and resolve common compiler diagnostics — not-assignable, possibly-null, implicit-any, and more — by fixing the underlying data model instead of reaching for `as any`, and debug both compile-time and runtime problems using source maps, tsc --noEmit, watch mode, and CI type checking.",
+      "icon": "bug_report",
+      "zone": "Tooling & Professional Practice",
+      "resources": [
+        {
+          "id": "diagnostics-and-debugging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["declaration-files-and-types-ecosystem"]
+    },
+    {
+      "id": "type-driven-design-and-runtime-boundaries",
+      "label": "Type-Driven Design & Runtime Boundaries",
+      "description": "Design types that make invalid states hard to represent, prefer narrow domain types over generic strings, and consistently treat runtime boundaries — JSON.parse, caught errors, localStorage — as untrusted unknown data requiring validation.",
+      "icon": "security",
+      "zone": "Tooling & Professional Practice",
+      "resources": [
+        {
+          "id": "type-driven-design-and-runtime-boundaries-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["modules-and-type-erasure"]
+    },
+    {
+      "id": "capstone-fullstack-readiness",
+      "label": "Capstone: Framework Readiness",
+      "description": "Convert a plain JavaScript frontend end-to-end into a strict, well-typed TypeScript project — covering type modeling, DOM/event typing, validated API calls, generics, utility types, and tsconfig — demonstrating readiness to begin a React or Angular skill tree.",
+      "icon": "rocket_launch",
+      "zone": "Tooling & Professional Practice",
+      "resources": [
+        {
+          "id": "capstone-fullstack-readiness-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["framework-preparation", "diagnostics-and-debugging", "type-driven-design-and-runtime-boundaries"]
+    }
+  ],
+  "edges": [
+    { "id": "e-typescript-orientation-inference-and-primitives", "source": "typescript-orientation", "target": "inference-and-primitives" },
+    { "id": "e-inference-and-primitives-type-aliases-interfaces", "source": "inference-and-primitives", "target": "type-aliases-interfaces" },
+    { "id": "e-type-aliases-interfaces-unions-and-literals", "source": "type-aliases-interfaces", "target": "unions-and-literals" },
+    { "id": "e-unions-and-literals-type-queries-and-special-types", "source": "unions-and-literals", "target": "type-queries-and-special-types" },
+    { "id": "e-type-queries-and-special-types-function-typing", "source": "type-queries-and-special-types", "target": "function-typing" },
+    { "id": "e-function-typing-generics", "source": "function-typing", "target": "generics" },
+    { "id": "e-generics-utility-and-advanced-types", "source": "generics", "target": "utility-and-advanced-types" },
+    { "id": "e-utility-and-advanced-types-type-narrowing", "source": "utility-and-advanced-types", "target": "type-narrowing" },
+    { "id": "e-type-narrowing-assertions-and-structural-typing", "source": "type-narrowing", "target": "assertions-and-structural-typing" },
+    { "id": "e-assertions-and-structural-typing-classes-and-oop", "source": "assertions-and-structural-typing", "target": "classes-and-oop" },
+    { "id": "e-classes-and-oop-modules-and-type-erasure", "source": "classes-and-oop", "target": "modules-and-type-erasure" },
+    { "id": "e-modules-and-type-erasure-dom-and-event-typing", "source": "modules-and-type-erasure", "target": "dom-and-event-typing" },
+    { "id": "e-dom-and-event-typing-framework-preparation", "source": "dom-and-event-typing", "target": "framework-preparation" },
+    { "id": "e-type-queries-and-special-types-compiler-and-tsconfig", "source": "type-queries-and-special-types", "target": "compiler-and-tsconfig" },
+    { "id": "e-compiler-and-tsconfig-declaration-files-and-types-ecosystem", "source": "compiler-and-tsconfig", "target": "declaration-files-and-types-ecosystem" },
+    { "id": "e-declaration-files-and-types-ecosystem-diagnostics-and-debugging", "source": "declaration-files-and-types-ecosystem", "target": "diagnostics-and-debugging" },
+    { "id": "e-modules-and-type-erasure-type-driven-design-and-runtime-boundaries", "source": "modules-and-type-erasure", "target": "type-driven-design-and-runtime-boundaries" },
+    { "id": "e-framework-preparation-capstone-fullstack-readiness", "source": "framework-preparation", "target": "capstone-fullstack-readiness" },
+    { "id": "e-diagnostics-and-debugging-capstone-fullstack-readiness", "source": "diagnostics-and-debugging", "target": "capstone-fullstack-readiness" },
+    { "id": "e-type-driven-design-and-runtime-boundaries-capstone-fullstack-readiness", "source": "type-driven-design-and-runtime-boundaries", "target": "capstone-fullstack-readiness" }
+  ]
+}

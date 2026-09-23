@@ -1,0 +1,503 @@
+{
+  "treeId": "java-multithreading-concurrency",
+  "order": 8,
+  "title": "Java Multithreading & Concurrency",
+  "category": "Technology",
+  "difficulty": "hard",
+  "description": "Progress from no concurrency experience to professional competence in Java multithreading \u2014 covering low-level thread mechanics, synchronization, high-level concurrency utilities, and modern virtual threads \u2014 sufficient to design, test, and debug concurrent full-stack applications.",
+  "version": "1.0",
+  "estimatedMonths": 2,
+  "totalNodes": 19,
+  "icon": "sync",
+  "nodes": [
+    {
+      "id": "concurrency-prerequisites",
+      "label": "Concurrency Prerequisites",
+      "description": "Confirm the Java fundamentals \u2014 collections, lambdas, generics, exceptions \u2014 needed before concurrency, and recognize helpful supporting skills like JUnit, Mockito, and JDBC that later concurrency topics will build on.",
+      "icon": "coffee",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "concurrency-prerequisites-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "processes-threads-and-parallelism",
+      "label": "Processes, Threads & Parallelism",
+      "description": "Distinguish processes from threads from tasks, and separate concurrency (overlapping progress) from parallelism (simultaneous execution on multiple cores) while accepting that thread scheduling is inherently nondeterministic.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "processes-threads-and-parallelism-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "concurrency-prerequisites"
+      ]
+    },
+    {
+      "id": "java-thread-fundamentals",
+      "label": "Java Thread Fundamentals",
+      "description": "Create and start Java threads with Thread and Runnable, understand why calling run() directly does not start a new thread, and use sleep() and join() to pause and coordinate execution.",
+      "icon": "code",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "java-thread-fundamentals-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "processes-threads-and-parallelism"
+      ]
+    },
+    {
+      "id": "thread-lifecycle-and-interruption",
+      "label": "Thread Lifecycle & Interruption",
+      "description": "Track a thread through its NEW/RUNNABLE/BLOCKED/WAITING/TIMED_WAITING/TERMINATED lifecycle, and implement cooperative interruption and cancellation so long-running tasks can shut down cleanly.",
+      "icon": "schedule",
+      "zone": "Core Mechanics",
+      "resources": [
+        {
+          "id": "thread-lifecycle-and-interruption-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "java-thread-fundamentals"
+      ]
+    },
+    {
+      "id": "shared-state-and-race-conditions",
+      "label": "Shared State & Race Conditions",
+      "description": "Identify shared mutable state as the root of concurrency hazards, and reproduce race conditions and unsafe check-then-act sequences experimentally to understand lost updates.",
+      "icon": "bug_report",
+      "zone": "Core Mechanics",
+      "resources": [
+        {
+          "id": "shared-state-and-race-conditions-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "thread-lifecycle-and-interruption"
+      ]
+    },
+    {
+      "id": "atomicity-visibility-and-memory-model",
+      "label": "Atomicity, Visibility & the Memory Model",
+      "description": "Distinguish atomicity from visibility from ordering, and understand the Java Memory Model's happens-before relationship and safe publication as the rules governing what one thread is guaranteed to see of another's writes.",
+      "icon": "memory",
+      "zone": "Core Mechanics",
+      "resources": [
+        {
+          "id": "atomicity-visibility-and-memory-model-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "shared-state-and-race-conditions"
+      ]
+    },
+    {
+      "id": "synchronized-and-volatile",
+      "label": "synchronized & volatile",
+      "description": "Use synchronized methods and blocks to establish mutual exclusion and visibility guarantees, and use volatile correctly for visibility/ordering while recognizing it does not make compound operations atomic.",
+      "icon": "lock",
+      "zone": "Synchronization",
+      "resources": [
+        {
+          "id": "synchronized-and-volatile-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "atomicity-visibility-and-memory-model"
+      ]
+    },
+    {
+      "id": "atomics-and-explicit-locks",
+      "label": "Atomics & Explicit Locks",
+      "description": "Apply AtomicInteger/AtomicLong/AtomicReference and compare-and-set for lock-free atomic updates, and use explicit Lock, ReentrantLock, and read/write locks when synchronized is insufficient.",
+      "icon": "functions",
+      "zone": "Synchronization",
+      "resources": [
+        {
+          "id": "atomics-and-explicit-locks-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "synchronized-and-volatile"
+      ]
+    },
+    {
+      "id": "thread-coordination-and-failures",
+      "label": "Thread Coordination & Concurrency Failures",
+      "description": "Coordinate threads with wait()/notify()/notifyAll() and Condition, and recognize deadlock, livelock, starvation, and contention so they can be diagnosed and avoided through consistent lock ordering.",
+      "icon": "warning",
+      "zone": "Synchronization",
+      "resources": [
+        {
+          "id": "thread-coordination-and-failures-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "atomics-and-explicit-locks"
+      ]
+    },
+    {
+      "id": "immutability-and-thread-confinement",
+      "label": "Immutability & Thread Confinement",
+      "description": "Prefer immutable objects and thread-confined state \u2014 including ThreadLocal \u2014 to eliminate synchronization needs entirely, following the principle that the best synchronization problem is shared mutable state that never existed.",
+      "icon": "health_and_safety",
+      "zone": "Synchronization",
+      "resources": [
+        {
+          "id": "immutability-and-thread-confinement-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "thread-coordination-and-failures"
+      ]
+    },
+    {
+      "id": "executors-and-thread-pools",
+      "label": "Executors & Thread Pools",
+      "description": "Submit work through ExecutorService instead of managing raw threads, choosing appropriate pool types and sizes and shutting executors down gracefully to avoid leaking resources.",
+      "icon": "hive",
+      "zone": "High-Level Concurrency",
+      "resources": [
+        {
+          "id": "executors-and-thread-pools-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "immutability-and-thread-confinement"
+      ]
+    },
+    {
+      "id": "futures-and-completablefuture",
+      "label": "Futures & CompletableFuture",
+      "description": "Use Callable and Future to retrieve results from asynchronous work, then compose and combine independent operations with CompletableFuture's transformation, composition, and error-handling stages.",
+      "icon": "auto_awesome",
+      "zone": "High-Level Concurrency",
+      "resources": [
+        {
+          "id": "futures-and-completablefuture-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "executors-and-thread-pools"
+      ]
+    },
+    {
+      "id": "concurrent-collections-and-queues",
+      "label": "Concurrent Collections & Queues",
+      "description": "Choose thread-safe collections \u2014 ConcurrentHashMap, CopyOnWriteArrayList, concurrent queues \u2014 based on access pattern, and implement producer/consumer pipelines with BlockingQueue instead of low-level wait/notify.",
+      "icon": "database",
+      "zone": "High-Level Concurrency",
+      "resources": [
+        {
+          "id": "concurrent-collections-and-queues-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "futures-and-completablefuture"
+      ]
+    },
+    {
+      "id": "coordination-utilities-and-fork-join",
+      "label": "Coordination Utilities & Fork/Join",
+      "description": "Use CountDownLatch, Semaphore, and CyclicBarrier for coordination problems that directly model the need, and apply the Fork/Join framework for CPU-bound divide-and-conquer workloads.",
+      "icon": "account_tree",
+      "zone": "High-Level Concurrency",
+      "resources": [
+        {
+          "id": "coordination-utilities-and-fork-join-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "concurrent-collections-and-queues"
+      ]
+    },
+    {
+      "id": "parallel-streams-and-virtual-threads",
+      "label": "Parallel Streams & Virtual Threads",
+      "description": "Evaluate when parallel streams help versus hurt, and understand Java's virtual threads \u2014 how they're scheduled onto carrier threads and why they make large numbers of blocking, I/O-bound tasks practical.",
+      "icon": "rocket_launch",
+      "zone": "Modern Concurrency",
+      "resources": [
+        {
+          "id": "parallel-streams-and-virtual-threads-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "coordination-utilities-and-fork-join"
+      ]
+    },
+    {
+      "id": "workload-and-resource-management",
+      "label": "Workload & Resource Management",
+      "description": "Distinguish CPU-bound from I/O-bound work, and recognize that concurrency is bounded by downstream resource limits \u2014 database connections, file handles, memory \u2014 requiring backpressure rather than unlimited concurrency.",
+      "icon": "speed",
+      "zone": "Modern Concurrency",
+      "resources": [
+        {
+          "id": "workload-and-resource-management-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "parallel-streams-and-virtual-threads"
+      ]
+    },
+    {
+      "id": "application-concurrency",
+      "label": "Application Concurrency",
+      "description": "Apply concurrency principles to database access (connection pooling, transaction boundaries) and web request handling, designing stateless services that keep request-specific state local rather than in shared singleton fields.",
+      "icon": "lan",
+      "zone": "Application Concurrency",
+      "resources": [
+        {
+          "id": "application-concurrency-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "workload-and-resource-management"
+      ]
+    },
+    {
+      "id": "testing-debugging-and-performance",
+      "label": "Testing, Debugging & Performance",
+      "description": "Reason about thread safety at the class/composition level, then write deterministic concurrent tests using coordination primitives instead of sleeps, and diagnose failures using thread dumps, logging, and profiling tools like JFR.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-debugging-and-performance-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "application-concurrency"
+      ]
+    },
+    {
+      "id": "professional-concurrency-practices",
+      "label": "Professional Concurrency Practices",
+      "description": "Prefer the highest-level concurrency abstraction that correctly models a problem, keep concurrency localized with clear lifecycle management and failure handling, and recognize how these principles carry into Spring Boot's singleton-bean concurrency model.",
+      "icon": "architecture",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-concurrency-practices-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "testing-debugging-and-performance"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-concurrency-prerequisites-processes-threads-and-parallelism",
+      "source": "concurrency-prerequisites",
+      "target": "processes-threads-and-parallelism"
+    },
+    {
+      "id": "e-processes-threads-and-parallelism-java-thread-fundamentals",
+      "source": "processes-threads-and-parallelism",
+      "target": "java-thread-fundamentals"
+    },
+    {
+      "id": "e-java-thread-fundamentals-thread-lifecycle-and-interruption",
+      "source": "java-thread-fundamentals",
+      "target": "thread-lifecycle-and-interruption"
+    },
+    {
+      "id": "e-thread-lifecycle-and-interruption-shared-state-and-race-conditions",
+      "source": "thread-lifecycle-and-interruption",
+      "target": "shared-state-and-race-conditions"
+    },
+    {
+      "id": "e-shared-state-and-race-conditions-atomicity-visibility-and-memory-model",
+      "source": "shared-state-and-race-conditions",
+      "target": "atomicity-visibility-and-memory-model"
+    },
+    {
+      "id": "e-atomicity-visibility-and-memory-model-synchronized-and-volatile",
+      "source": "atomicity-visibility-and-memory-model",
+      "target": "synchronized-and-volatile"
+    },
+    {
+      "id": "e-synchronized-and-volatile-atomics-and-explicit-locks",
+      "source": "synchronized-and-volatile",
+      "target": "atomics-and-explicit-locks"
+    },
+    {
+      "id": "e-atomics-and-explicit-locks-thread-coordination-and-failures",
+      "source": "atomics-and-explicit-locks",
+      "target": "thread-coordination-and-failures"
+    },
+    {
+      "id": "e-thread-coordination-and-failures-immutability-and-thread-confinement",
+      "source": "thread-coordination-and-failures",
+      "target": "immutability-and-thread-confinement"
+    },
+    {
+      "id": "e-immutability-and-thread-confinement-executors-and-thread-pools",
+      "source": "immutability-and-thread-confinement",
+      "target": "executors-and-thread-pools"
+    },
+    {
+      "id": "e-executors-and-thread-pools-futures-and-completablefuture",
+      "source": "executors-and-thread-pools",
+      "target": "futures-and-completablefuture"
+    },
+    {
+      "id": "e-futures-and-completablefuture-concurrent-collections-and-queues",
+      "source": "futures-and-completablefuture",
+      "target": "concurrent-collections-and-queues"
+    },
+    {
+      "id": "e-concurrent-collections-and-queues-coordination-utilities-and-fork-join",
+      "source": "concurrent-collections-and-queues",
+      "target": "coordination-utilities-and-fork-join"
+    },
+    {
+      "id": "e-coordination-utilities-and-fork-join-parallel-streams-and-virtual-threads",
+      "source": "coordination-utilities-and-fork-join",
+      "target": "parallel-streams-and-virtual-threads"
+    },
+    {
+      "id": "e-parallel-streams-and-virtual-threads-workload-and-resource-management",
+      "source": "parallel-streams-and-virtual-threads",
+      "target": "workload-and-resource-management"
+    },
+    {
+      "id": "e-workload-and-resource-management-application-concurrency",
+      "source": "workload-and-resource-management",
+      "target": "application-concurrency"
+    },
+    {
+      "id": "e-application-concurrency-testing-debugging-and-performance",
+      "source": "application-concurrency",
+      "target": "testing-debugging-and-performance"
+    },
+    {
+      "id": "e-testing-debugging-and-performance-professional-concurrency-practices",
+      "source": "testing-debugging-and-performance",
+      "target": "professional-concurrency-practices"
+    }
+  ]
+}

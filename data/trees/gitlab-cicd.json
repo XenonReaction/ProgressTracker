@@ -1,0 +1,529 @@
+{
+  "treeId": "gitlab-cicd",
+  "order": 25,
+  "title": "GitLab CI/CD for Full-Stack Delivery",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn to read, write, run, troubleshoot, and maintain practical GitLab CI/CD pipelines for Java/Spring Boot and modern frontend applications, implementing the concepts from CI/CD Fundamentals using GitLab's integrated automation platform.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "icon": "hub",
+  "totalNodes": 20,
+  "nodes": [
+    {
+      "id": "gitlab-cicd-overview",
+      "label": "What GitLab CI/CD Is",
+      "description": "Understand GitLab CI/CD as GitLab's integrated build/test/package/publish/deploy automation system and how it combines source hosting, merge requests, and pipelines in one platform.",
+      "icon": "hub",
+      "zone": "Platform Foundations",
+      "resources": [
+        {
+          "id": "gitlab-cicd-overview-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "pipeline-file-and-structure",
+      "label": "Pipeline File & Structure",
+      "description": "Author .gitlab-ci.yml as version-controlled pipeline-as-code, understand pipeline status and source, and organize work into meaningful stages that represent CI/CD phases.",
+      "icon": "integration_instructions",
+      "zone": "Platform Foundations",
+      "resources": [
+        {
+          "id": "pipeline-file-and-structure-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "gitlab-cicd-overview"
+      ]
+    },
+    {
+      "id": "jobs-and-scripts",
+      "label": "Jobs & Scripts",
+      "description": "Define GitLab CI/CD jobs with descriptive names and `script` commands, keeping actual build logic owned by Maven/npm/Docker rather than duplicated in the pipeline file.",
+      "icon": "terminal",
+      "zone": "Platform Foundations",
+      "resources": [
+        {
+          "id": "jobs-and-scripts-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "pipeline-file-and-structure"
+      ]
+    },
+    {
+      "id": "runners-and-tags",
+      "label": "Runners & Tags",
+      "description": "Understand what a GitLab Runner executes, route jobs to appropriately capable runners using tags, and use container images to give jobs a reproducible build environment.",
+      "icon": "dns",
+      "zone": "Platform Foundations",
+      "resources": [
+        {
+          "id": "runners-and-tags-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "jobs-and-scripts"
+      ]
+    },
+    {
+      "id": "checkout-and-variables",
+      "label": "Checkout & CI/CD Variables",
+      "description": "Trace a pipeline run to the exact source commit it operated on, and use GitLab's predefined CI/CD variables alongside custom non-secret variables to parameterize pipeline behavior.",
+      "icon": "api",
+      "zone": "Pipeline Configuration",
+      "resources": [
+        {
+          "id": "checkout-and-variables-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "runners-and-tags"
+      ]
+    },
+    {
+      "id": "protected-and-masked-variables",
+      "label": "Protected & Masked Variables",
+      "description": "Store sensitive values as protected and masked CI/CD variables outside the repository, restricting secret availability to protected branches/tags and never treating masking as a substitute for careful handling.",
+      "icon": "security",
+      "zone": "Pipeline Configuration",
+      "resources": [
+        {
+          "id": "protected-and-masked-variables-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "checkout-and-variables"
+      ]
+    },
+    {
+      "id": "maven-npm-testing",
+      "label": "Maven & npm Testing",
+      "description": "Run Maven backend builds and npm frontend builds through GitLab CI jobs, executing JUnit/Mockito and frontend tests so required failures block further pipeline progress.",
+      "icon": "build",
+      "zone": "Build, Test & Package",
+      "resources": [
+        {
+          "id": "maven-npm-testing-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "protected-and-masked-variables"
+      ]
+    },
+    {
+      "id": "test-reports-and-artifacts",
+      "label": "Test Reports, Artifacts & Cache",
+      "description": "Publish JUnit-style test reports for merge-request visibility, declare job artifacts for downstream consumption, and use caching for performance while keeping cache and artifact as distinct concepts.",
+      "icon": "bug_report",
+      "zone": "Build, Test & Package",
+      "resources": [
+        {
+          "id": "test-reports-and-artifacts-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "maven-npm-testing"
+      ]
+    },
+    {
+      "id": "needs-parallelism-rules",
+      "label": "needs, Parallelism & Rules",
+      "description": "Use `needs` to express direct job dependencies for DAG-style execution, run independent jobs in parallel, and control job inclusion with `rules` and pipeline-level `workflow: rules`.",
+      "icon": "account_tree",
+      "zone": "Build, Test & Package",
+      "resources": [
+        {
+          "id": "needs-parallelism-rules-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "test-reports-and-artifacts"
+      ]
+    },
+    {
+      "id": "mr-pipelines-and-branch-tag",
+      "label": "Merge Request, Branch & Tag Pipelines",
+      "description": "Validate merge requests with build/test/quality pipelines without exposing production secrets to untrusted code, and differentiate pipeline behavior between feature branches, main, and release tags.",
+      "icon": "hive",
+      "zone": "Merge Requests & Release Control",
+      "resources": [
+        {
+          "id": "mr-pipelines-and-branch-tag-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "needs-parallelism-rules"
+      ]
+    },
+    {
+      "id": "manual-scheduled-jobs",
+      "label": "Manual & Scheduled Jobs",
+      "description": "Gate production behind a when: manual job to support a Continuous Delivery model, run scheduled pipelines for periodic tasks, and accept controlled runtime variables without allowing arbitrary dangerous input.",
+      "icon": "verified",
+      "zone": "Merge Requests & Release Control",
+      "resources": [
+        {
+          "id": "manual-scheduled-jobs-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "mr-pipelines-and-branch-tag"
+      ]
+    },
+    {
+      "id": "docker-integration-gitlab",
+      "label": "Docker Integration",
+      "description": "Orchestrate Docker image builds from GitLab CI jobs using a capable runner, applying the Docker prerequisite knowledge while respecting the security sensitivity of Docker daemon access.",
+      "icon": "storage",
+      "zone": "Deployment & Production",
+      "resources": [
+        {
+          "id": "docker-integration-gitlab-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "manual-scheduled-jobs"
+      ]
+    },
+    {
+      "id": "registry-and-tagging",
+      "label": "Container Registry & Image Tagging",
+      "description": "Authenticate to and publish images to the GitLab Container Registry or an external registry, using traceable commit- or version-based tags instead of relying on latest.",
+      "icon": "layers",
+      "zone": "Deployment & Production",
+      "resources": [
+        {
+          "id": "registry-and-tagging-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "docker-integration-gitlab"
+      ]
+    },
+    {
+      "id": "environments-and-staging",
+      "label": "Environments & Staging Deployment",
+      "description": "Use GitLab environments to represent deployment targets such as staging and production, and deploy the published image to staging with environment-specific configuration and secrets.",
+      "icon": "cloud",
+      "zone": "Deployment & Production",
+      "resources": [
+        {
+          "id": "environments-and-staging-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "registry-and-tagging"
+      ]
+    },
+    {
+      "id": "verification-and-production",
+      "label": "Verification & Production Deployment",
+      "description": "Verify staging deployments with health checks and smoke tests before promoting, protect production jobs with branch/tag rules and protected credentials, and prevent overlapping production deployments with resource groups.",
+      "icon": "health_and_safety",
+      "zone": "Deployment & Production",
+      "resources": [
+        {
+          "id": "verification-and-production-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "environments-and-staging"
+      ]
+    },
+    {
+      "id": "job-controls-reuse",
+      "label": "Job Controls & Pipeline Reuse",
+      "description": "Control job failure behavior with required checks and allow_failure, apply retries and timeouts appropriately, and reduce pipeline duplication with before_script/after_script, extends, and include.",
+      "icon": "speed",
+      "zone": "Operations & Mastery",
+      "resources": [
+        {
+          "id": "job-controls-reuse-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "verification-and-production"
+      ]
+    },
+    {
+      "id": "services-and-layout",
+      "label": "Service Containers & Repository Layout",
+      "description": "Use PostgreSQL service containers for isolated integration testing, and structure a full-stack repository's pipeline so commands run in the correct backend/frontend working directories.",
+      "icon": "database",
+      "zone": "Operations & Mastery",
+      "resources": [
+        {
+          "id": "services-and-layout-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "job-controls-reuse"
+      ]
+    },
+    {
+      "id": "gitlab-security-and-supply-chain",
+      "label": "Pipeline Security & Supply Chain",
+      "description": "Treat .gitlab-ci.yml and sensitive runners as security-sensitive, apply least privilege to CI/CD variables, reason about pipeline dependency supply-chain risk, and prefer short-lived OIDC credentials over long-lived cloud keys.",
+      "icon": "shield",
+      "zone": "Operations & Mastery",
+      "resources": [
+        {
+          "id": "gitlab-security-and-supply-chain-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "services-and-layout"
+      ]
+    },
+    {
+      "id": "logs-troubleshooting-maintainability",
+      "label": "Logs, Troubleshooting & Maintainability",
+      "description": "Navigate the pipeline/job log UI to find the first point of failure, troubleshoot common problems like pending jobs or registry authentication failures, and keep .gitlab-ci.yml maintainable as production code.",
+      "icon": "architecture",
+      "zone": "Operations & Mastery",
+      "resources": [
+        {
+          "id": "logs-troubleshooting-maintainability-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "gitlab-security-and-supply-chain"
+      ]
+    },
+    {
+      "id": "platform-design-and-comparison",
+      "label": "Platform Comparison & Full-Stack Design",
+      "description": "Compare GitLab CI/CD's concepts to Jenkins and GitHub Actions equivalents, and design a complete full-stack GitLab pipeline for Spring Boot, a frontend framework, and PostgreSQL matching the same capstone architecture used in the sibling CI/CD trees.",
+      "icon": "timeline",
+      "zone": "Operations & Mastery",
+      "resources": [
+        {
+          "id": "platform-design-and-comparison-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "logs-troubleshooting-maintainability"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-gitlab-cicd-overview-pipeline-file-and-structure",
+      "source": "gitlab-cicd-overview",
+      "target": "pipeline-file-and-structure"
+    },
+    {
+      "id": "e-pipeline-file-and-structure-jobs-and-scripts",
+      "source": "pipeline-file-and-structure",
+      "target": "jobs-and-scripts"
+    },
+    {
+      "id": "e-jobs-and-scripts-runners-and-tags",
+      "source": "jobs-and-scripts",
+      "target": "runners-and-tags"
+    },
+    {
+      "id": "e-runners-and-tags-checkout-and-variables",
+      "source": "runners-and-tags",
+      "target": "checkout-and-variables"
+    },
+    {
+      "id": "e-checkout-and-variables-protected-and-masked-variables",
+      "source": "checkout-and-variables",
+      "target": "protected-and-masked-variables"
+    },
+    {
+      "id": "e-protected-and-masked-variables-maven-npm-testing",
+      "source": "protected-and-masked-variables",
+      "target": "maven-npm-testing"
+    },
+    {
+      "id": "e-maven-npm-testing-test-reports-and-artifacts",
+      "source": "maven-npm-testing",
+      "target": "test-reports-and-artifacts"
+    },
+    {
+      "id": "e-test-reports-and-artifacts-needs-parallelism-rules",
+      "source": "test-reports-and-artifacts",
+      "target": "needs-parallelism-rules"
+    },
+    {
+      "id": "e-needs-parallelism-rules-mr-pipelines-and-branch-tag",
+      "source": "needs-parallelism-rules",
+      "target": "mr-pipelines-and-branch-tag"
+    },
+    {
+      "id": "e-mr-pipelines-and-branch-tag-manual-scheduled-jobs",
+      "source": "mr-pipelines-and-branch-tag",
+      "target": "manual-scheduled-jobs"
+    },
+    {
+      "id": "e-manual-scheduled-jobs-docker-integration-gitlab",
+      "source": "manual-scheduled-jobs",
+      "target": "docker-integration-gitlab"
+    },
+    {
+      "id": "e-docker-integration-gitlab-registry-and-tagging",
+      "source": "docker-integration-gitlab",
+      "target": "registry-and-tagging"
+    },
+    {
+      "id": "e-registry-and-tagging-environments-and-staging",
+      "source": "registry-and-tagging",
+      "target": "environments-and-staging"
+    },
+    {
+      "id": "e-environments-and-staging-verification-and-production",
+      "source": "environments-and-staging",
+      "target": "verification-and-production"
+    },
+    {
+      "id": "e-verification-and-production-job-controls-reuse",
+      "source": "verification-and-production",
+      "target": "job-controls-reuse"
+    },
+    {
+      "id": "e-job-controls-reuse-services-and-layout",
+      "source": "job-controls-reuse",
+      "target": "services-and-layout"
+    },
+    {
+      "id": "e-services-and-layout-gitlab-security-and-supply-chain",
+      "source": "services-and-layout",
+      "target": "gitlab-security-and-supply-chain"
+    },
+    {
+      "id": "e-gitlab-security-and-supply-chain-logs-troubleshooting-maintainability",
+      "source": "gitlab-security-and-supply-chain",
+      "target": "logs-troubleshooting-maintainability"
+    },
+    {
+      "id": "e-logs-troubleshooting-maintainability-platform-design-and-comparison",
+      "source": "logs-troubleshooting-maintainability",
+      "target": "platform-design-and-comparison"
+    }
+  ]
+}

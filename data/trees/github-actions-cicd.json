@@ -1,0 +1,529 @@
+{
+  "treeId": "github-actions-cicd",
+  "order": 24,
+  "title": "GitHub Actions for Full-Stack CI/CD",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn to read, write, run, troubleshoot, and maintain practical GitHub Actions workflows for Java/Spring Boot and modern frontend applications, implementing the concepts from CI/CD Fundamentals on GitHub's native automation platform.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "icon": "hub",
+  "totalNodes": 20,
+  "nodes": [
+    {
+      "id": "github-actions-overview",
+      "label": "What GitHub Actions Is",
+      "description": "Understand GitHub Actions as GitHub's workflow automation platform implementing CI/CD concepts rather than defining them, and recognize which repository tasks beyond deployment pipelines it can automate.",
+      "icon": "hub",
+      "zone": "Platform Foundations",
+      "resources": [
+        {
+          "id": "github-actions-overview-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "workflow-files-and-structure",
+      "label": "Workflow Files & Structure",
+      "description": "Locate workflow YAML files under .github/workflows/, read basic YAML structure, and identify the workflow/job/step/runner vocabulary that GitHub Actions uses to express a pipeline.",
+      "icon": "integration_instructions",
+      "zone": "Platform Foundations",
+      "resources": [
+        {
+          "id": "workflow-files-and-structure-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "github-actions-overview"
+      ]
+    },
+    {
+      "id": "events-and-triggers",
+      "label": "Events & Triggers",
+      "description": "Trigger workflows from push, pull_request, workflow_dispatch, and schedule events, and use branch/path filters to run different work for different kinds of changes without overcomplicating trigger logic.",
+      "icon": "api",
+      "zone": "Platform Foundations",
+      "resources": [
+        {
+          "id": "events-and-triggers-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "workflow-files-and-structure"
+      ]
+    },
+    {
+      "id": "runners",
+      "label": "Runners",
+      "description": "Choose GitHub-hosted runner environments with `runs-on`, understand why fresh job environments reduce dirty-workspace problems, and recognize when a self-hosted runner exists and its basic security implications.",
+      "icon": "dns",
+      "zone": "Platform Foundations",
+      "resources": [
+        {
+          "id": "runners-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "events-and-triggers"
+      ]
+    },
+    {
+      "id": "steps-checkout-setup",
+      "label": "Steps, Checkout & Tool Setup",
+      "description": "Distinguish `run` from `uses`, check out repository code with the official checkout action, and configure known Java and Node tool versions with setup actions for reproducible builds.",
+      "icon": "terminal",
+      "zone": "Workflow Authoring",
+      "resources": [
+        {
+          "id": "steps-checkout-setup-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "runners"
+      ]
+    },
+    {
+      "id": "maven-npm-workflows",
+      "label": "Maven & npm Workflows",
+      "description": "Orchestrate an existing Maven backend build and npm frontend build from workflow steps, keeping dependency and build logic owned by pom.xml/package.json rather than duplicated in YAML.",
+      "icon": "build",
+      "zone": "Workflow Authoring",
+      "resources": [
+        {
+          "id": "maven-npm-workflows-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "steps-checkout-setup"
+      ]
+    },
+    {
+      "id": "jobs-dependencies-env",
+      "label": "Jobs, Dependencies & Environment Variables",
+      "description": "Split backend and frontend work into independently parallel jobs, use `needs` to express job dependencies, and define environment variables at workflow, job, or step scope.",
+      "icon": "account_tree",
+      "zone": "Workflow Authoring",
+      "resources": [
+        {
+          "id": "jobs-dependencies-env-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "maven-npm-workflows"
+      ]
+    },
+    {
+      "id": "contexts-expressions-conditions",
+      "label": "Contexts, Expressions & Conditions",
+      "description": "Use GitHub contexts and ${{ }} expressions to access runtime metadata and job outputs, and write `if` conditions that control step/job execution without turning YAML into a programming language.",
+      "icon": "functions",
+      "zone": "Workflow Authoring",
+      "resources": [
+        {
+          "id": "contexts-expressions-conditions-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "jobs-dependencies-env"
+      ]
+    },
+    {
+      "id": "secrets-and-token-permissions",
+      "label": "Secrets & Token Permissions",
+      "description": "Store and reference secrets safely, understand the automatic GITHUB_TOKEN, and set least-privilege workflow permissions so a test workflow does not receive more authority than it needs.",
+      "icon": "security",
+      "zone": "Security & Permissions",
+      "resources": [
+        {
+          "id": "secrets-and-token-permissions-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "contexts-expressions-conditions"
+      ]
+    },
+    {
+      "id": "third-party-actions-and-pr-security",
+      "label": "Third-Party Actions & PR Security",
+      "description": "Evaluate the trust and version pinning of third-party actions, and recognize why pull-request workflows from untrusted contributors must not automatically receive powerful secrets.",
+      "icon": "shield",
+      "zone": "Security & Permissions",
+      "resources": [
+        {
+          "id": "third-party-actions-and-pr-security-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "secrets-and-token-permissions"
+      ]
+    },
+    {
+      "id": "artifacts-and-caching",
+      "label": "Artifacts & Caching",
+      "description": "Upload and download workflow artifacts to pass build outputs between jobs, and use dependency caching for performance while keeping cache and artifact as distinct concepts.",
+      "icon": "layers",
+      "zone": "Build, Test & Package",
+      "resources": [
+        {
+          "id": "artifacts-and-caching-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "third-party-actions-and-pr-security"
+      ]
+    },
+    {
+      "id": "test-results-and-matrix",
+      "label": "Test Results & Matrix Strategy",
+      "description": "Gate the workflow on required JUnit/Mockito and frontend test results, produce useful job summaries, and use a basic matrix strategy to run a job across a small set of tool-version combinations.",
+      "icon": "bug_report",
+      "zone": "Build, Test & Package",
+      "resources": [
+        {
+          "id": "test-results-and-matrix-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "artifacts-and-caching"
+      ]
+    },
+    {
+      "id": "timeouts-retry-failure-handling",
+      "label": "Timeouts, Retry & Failure Handling",
+      "description": "Bound jobs and steps with realistic timeouts, retry only genuinely transient operations, and distinguish required failures from continue-on-error checks while preserving evidence when a job fails.",
+      "icon": "speed",
+      "zone": "Build, Test & Package",
+      "resources": [
+        {
+          "id": "timeouts-retry-failure-handling-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "test-results-and-matrix"
+      ]
+    },
+    {
+      "id": "docker-and-registry",
+      "label": "Docker Build & Registry Publish",
+      "description": "Build traceably tagged Docker images from a workflow and authenticate to push them to GitHub Container Registry or an external registry using the Docker prerequisite knowledge.",
+      "icon": "storage",
+      "zone": "Build, Test & Package",
+      "resources": [
+        {
+          "id": "docker-and-registry-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "timeouts-retry-failure-handling"
+      ]
+    },
+    {
+      "id": "environments-and-production-gate",
+      "label": "Environments & Production Gate",
+      "description": "Use GitHub environments to represent staging and production deployment targets with environment-specific secrets and protection rules, gating production behind a controlled promotion step.",
+      "icon": "verified",
+      "zone": "Deployment & Production Readiness",
+      "resources": [
+        {
+          "id": "environments-and-production-gate-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "docker-and-registry"
+      ]
+    },
+    {
+      "id": "deployment-verification-and-concurrency",
+      "label": "Deployment Verification & Concurrency",
+      "description": "Verify a deployment with health checks and smoke tests rather than trusting the deployment command alone, and use concurrency controls and job outputs to prevent overlapping production releases.",
+      "icon": "health_and_safety",
+      "zone": "Deployment & Production Readiness",
+      "resources": [
+        {
+          "id": "deployment-verification-and-concurrency-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "environments-and-production-gate"
+      ]
+    },
+    {
+      "id": "project-layout-and-service-containers",
+      "label": "Project Layout & Service Containers",
+      "description": "Run commands in the correct backend/frontend working directories of a monorepo, and use service containers such as PostgreSQL to support isolated integration testing in CI.",
+      "icon": "hive",
+      "zone": "Deployment & Production Readiness",
+      "resources": [
+        {
+          "id": "project-layout-and-service-containers-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "deployment-verification-and-concurrency"
+      ]
+    },
+    {
+      "id": "security-scanning-and-oidc",
+      "label": "Security Scanning & OIDC",
+      "description": "Orchestrate dependency, secret, static-analysis, and container scanning from a workflow, and explain why exchanging workflow identity for short-lived cloud credentials via OIDC is safer than storing long-lived cloud keys.",
+      "icon": "science",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "security-scanning-and-oidc-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "project-layout-and-service-containers"
+      ]
+    },
+    {
+      "id": "logs-debugging-maintainability",
+      "label": "Logs, Debugging & Maintainability",
+      "description": "Navigate workflow run logs to find the first failing step, debug common failure patterns like 'works locally, fails in Actions' or a trigger that never ran, and keep workflow YAML maintainable and readable.",
+      "icon": "architecture",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "logs-debugging-maintainability-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "security-scanning-and-oidc"
+      ]
+    },
+    {
+      "id": "workflow-architecture-and-reuse",
+      "label": "Workflow Architecture & Reuse",
+      "description": "Separate CI and deployment concerns into multiple workflow files, recognize reusable workflows and custom actions as duplication-reducing mechanisms, and design a complete full-stack GitHub Actions pipeline comparable to the Jenkins and GitLab CI/CD implementations.",
+      "icon": "timeline",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "workflow-architecture-and-reuse-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "logs-debugging-maintainability"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-github-actions-overview-workflow-files-and-structure",
+      "source": "github-actions-overview",
+      "target": "workflow-files-and-structure"
+    },
+    {
+      "id": "e-workflow-files-and-structure-events-and-triggers",
+      "source": "workflow-files-and-structure",
+      "target": "events-and-triggers"
+    },
+    {
+      "id": "e-events-and-triggers-runners",
+      "source": "events-and-triggers",
+      "target": "runners"
+    },
+    {
+      "id": "e-runners-steps-checkout-setup",
+      "source": "runners",
+      "target": "steps-checkout-setup"
+    },
+    {
+      "id": "e-steps-checkout-setup-maven-npm-workflows",
+      "source": "steps-checkout-setup",
+      "target": "maven-npm-workflows"
+    },
+    {
+      "id": "e-maven-npm-workflows-jobs-dependencies-env",
+      "source": "maven-npm-workflows",
+      "target": "jobs-dependencies-env"
+    },
+    {
+      "id": "e-jobs-dependencies-env-contexts-expressions-conditions",
+      "source": "jobs-dependencies-env",
+      "target": "contexts-expressions-conditions"
+    },
+    {
+      "id": "e-contexts-expressions-conditions-secrets-and-token-permissions",
+      "source": "contexts-expressions-conditions",
+      "target": "secrets-and-token-permissions"
+    },
+    {
+      "id": "e-secrets-and-token-permissions-third-party-actions-and-pr-security",
+      "source": "secrets-and-token-permissions",
+      "target": "third-party-actions-and-pr-security"
+    },
+    {
+      "id": "e-third-party-actions-and-pr-security-artifacts-and-caching",
+      "source": "third-party-actions-and-pr-security",
+      "target": "artifacts-and-caching"
+    },
+    {
+      "id": "e-artifacts-and-caching-test-results-and-matrix",
+      "source": "artifacts-and-caching",
+      "target": "test-results-and-matrix"
+    },
+    {
+      "id": "e-test-results-and-matrix-timeouts-retry-failure-handling",
+      "source": "test-results-and-matrix",
+      "target": "timeouts-retry-failure-handling"
+    },
+    {
+      "id": "e-timeouts-retry-failure-handling-docker-and-registry",
+      "source": "timeouts-retry-failure-handling",
+      "target": "docker-and-registry"
+    },
+    {
+      "id": "e-docker-and-registry-environments-and-production-gate",
+      "source": "docker-and-registry",
+      "target": "environments-and-production-gate"
+    },
+    {
+      "id": "e-environments-and-production-gate-deployment-verification-and-concurrency",
+      "source": "environments-and-production-gate",
+      "target": "deployment-verification-and-concurrency"
+    },
+    {
+      "id": "e-deployment-verification-and-concurrency-project-layout-and-service-containers",
+      "source": "deployment-verification-and-concurrency",
+      "target": "project-layout-and-service-containers"
+    },
+    {
+      "id": "e-project-layout-and-service-containers-security-scanning-and-oidc",
+      "source": "project-layout-and-service-containers",
+      "target": "security-scanning-and-oidc"
+    },
+    {
+      "id": "e-security-scanning-and-oidc-logs-debugging-maintainability",
+      "source": "security-scanning-and-oidc",
+      "target": "logs-debugging-maintainability"
+    },
+    {
+      "id": "e-logs-debugging-maintainability-workflow-architecture-and-reuse",
+      "source": "logs-debugging-maintainability",
+      "target": "workflow-architecture-and-reuse"
+    }
+  ]
+}

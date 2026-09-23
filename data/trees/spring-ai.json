@@ -1,0 +1,415 @@
+{
+  "treeId": "spring-ai",
+  "order": 31,
+  "title": "Spring AI",
+  "category": "Technology",
+  "difficulty": "hard",
+  "description": "Progress from practical generative-AI fundamentals to building, testing, securing, observing, and debugging AI-enabled Spring Boot applications with Spring AI — chat models, embeddings, vector stores, RAG, Advisors, tool calling, and MCP — at professional full-stack developer competency.",
+  "version": "1.0",
+  "estimatedMonths": 2,
+  "totalNodes": 20,
+  "icon": "auto_awesome",
+  "nodes": [
+    {
+      "id": "prerequisites-and-mental-model",
+      "label": "Prerequisites & Application Mental Model",
+      "description": "Confirm Java/Spring fluency — dependency injection, beans, REST, JUnit/Mockito — and adopt the layered mental model of controller to service to Spring AI layer to model/tool/RAG before introducing AI into an application.",
+      "icon": "coffee",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "prerequisites-and-mental-model-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "llm-fundamentals",
+      "label": "LLM Fundamentals, Tokens & Context",
+      "description": "Understand what a generative language model does at an application level — input/output, inference, probabilistic generation — and reason about tokens and the finite context window that instructions, history, retrieved content, and tool data must all share.",
+      "icon": "psychology",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "llm-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["prerequisites-and-mental-model"]
+    },
+    {
+      "id": "prompts-and-instructions",
+      "label": "Prompts, Messages & Instruction Trust",
+      "description": "Construct effective prompts with clear instructions, context, and constraints across system/user/assistant/tool message roles, and treat user input and retrieved content as untrusted rather than assuming instruction priority is a reliable security boundary.",
+      "icon": "chat",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "prompts-and-instructions-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["llm-fundamentals"]
+    },
+    {
+      "id": "nondeterminism-and-limitations",
+      "label": "Nondeterminism, Hallucinations & Appropriate Use",
+      "description": "Understand generation parameters like temperature and why identical prompts can yield different outputs, recognize hallucination and knowledge-limitation risk, and judge which tasks suit model-only decisions versus those requiring deterministic Java validation.",
+      "icon": "science",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "nondeterminism-and-limitations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["prompts-and-instructions"]
+    },
+    {
+      "id": "spring-ai-foundations",
+      "label": "Spring AI Purpose, Setup & Providers",
+      "description": "Understand what Spring AI abstracts — portable model APIs, chat/embedding models, vector stores, RAG, Advisors, tools, MCP — versus what remains provider-specific, set up a Spring Boot project with a configured model provider, and use provider abstractions deliberately without ignoring real capability, pricing, and context differences.",
+      "icon": "hub",
+      "zone": "Spring AI Setup",
+      "resources": [
+        {
+          "id": "spring-ai-foundations-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["nondeterminism-and-limitations"]
+    },
+    {
+      "id": "credentials-and-model-apis",
+      "label": "Credentials & Model API Abstractions",
+      "description": "Keep model-provider credentials in external configuration rather than source code or the frontend, and understand Spring AI's model input/output abstractions spanning chat, embeddings, and multimodal capabilities.",
+      "icon": "vpn_key",
+      "zone": "Spring AI Setup",
+      "resources": [
+        {
+          "id": "credentials-and-model-apis-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["spring-ai-foundations"]
+    },
+    {
+      "id": "chatmodel-and-chatclient",
+      "label": "ChatModel & ChatClient",
+      "description": "Use the low-level ChatModel for direct request/response control and the higher-level, fluent ChatClient for application-facing conversational interactions, calling it from a service layer rather than embedding prompt logic directly in controllers.",
+      "icon": "forum",
+      "zone": "Spring AI Setup",
+      "resources": [
+        {
+          "id": "chatmodel-and-chatclient-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["credentials-and-model-apis"]
+    },
+    {
+      "id": "templates-responses-streaming",
+      "label": "Prompt Templates, Responses & Streaming",
+      "description": "Build reusable, version-controlled prompt templates instead of string concatenation, inspect response metadata like token usage and finish reasons, and choose between synchronous and streaming responses based on UX needs.",
+      "icon": "stream",
+      "zone": "Spring AI Setup",
+      "resources": [
+        {
+          "id": "templates-responses-streaming-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["chatmodel-and-chatclient"]
+    },
+    {
+      "id": "structured-output",
+      "label": "Structured Output",
+      "description": "Convert free-form model output into validated Java records/DTOs with a clear schema, handle conversion failures gracefully, and never treat model-produced structured data as automatically trustworthy.",
+      "icon": "data_object",
+      "zone": "Spring AI Setup",
+      "resources": [
+        {
+          "id": "structured-output-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["templates-responses-streaming"]
+    },
+    {
+      "id": "embeddings-and-vectors",
+      "label": "Embeddings & Vector Fundamentals",
+      "description": "Understand how an embedding model converts content into a numeric vector capturing semantic meaning, use Spring AI's EmbeddingModel, and reason about vector similarity and distance well enough to support semantic search without needing advanced linear algebra.",
+      "icon": "scatter_plot",
+      "zone": "Retrieval & Knowledge",
+      "resources": [
+        {
+          "id": "embeddings-and-vectors-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["structured-output"]
+    },
+    {
+      "id": "vector-stores-and-search",
+      "label": "Vector Stores & Similarity Search",
+      "description": "Store embeddings with content and metadata in a Spring AI VectorStore (PGVector, Neo4j, MongoDB, and others), and perform top-K similarity search with metadata filtering — including enforcing authorization filters so retrieval never surfaces content a user isn't allowed to see.",
+      "icon": "storage",
+      "zone": "Retrieval & Knowledge",
+      "resources": [
+        {
+          "id": "vector-stores-and-search-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["embeddings-and-vectors"]
+    },
+    {
+      "id": "documents-and-ingestion",
+      "label": "Documents, ETL & Chunking",
+      "description": "Model source content as documents with rich, traceable metadata, build a repeatable ETL ingestion pipeline (read/transform/write) into a vector store, and chunk and transform content deliberately, since chunk size is a retrieval-quality tradeoff measured empirically rather than a fixed rule.",
+      "icon": "description",
+      "zone": "Retrieval & Knowledge",
+      "resources": [
+        {
+          "id": "documents-and-ingestion-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["vector-stores-and-search"]
+    },
+    {
+      "id": "rag-with-spring-ai",
+      "label": "RAG with Spring AI",
+      "description": "Building on prior RAG fundamentals, implement retrieval-augmented generation with Spring AI's ChatClient and VectorStore abstractions, test retrieval quality directly, and preserve and expose source attribution where the product requires it.",
+      "icon": "auto_awesome",
+      "zone": "Retrieval & Knowledge",
+      "resources": [
+        {
+          "id": "rag-with-spring-ai-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["documents-and-ingestion"]
+    },
+    {
+      "id": "memory-and-advisors",
+      "label": "Chat Memory & Advisors",
+      "description": "Implement conversation memory scoped and isolated per conversation/user — distinct from RAG's retrieved knowledge and the model's trained parameters — and use Advisors to intercept and augment request/response workflows for reusable cross-cutting AI behavior like memory and retrieval.",
+      "icon": "memory",
+      "zone": "Agentic Capabilities",
+      "resources": [
+        {
+          "id": "memory-and-advisors-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rag-with-spring-ai"]
+    },
+    {
+      "id": "tool-calling",
+      "label": "Tool Calling & Tool Security",
+      "description": "Give models controlled Java tools to access real data and actions, understanding that the model only requests a tool call while the application validates arguments and enforces authorization before executing it, and apply least-privilege, narrowly-scoped tools since prompt injection becomes more dangerous once tools exist.",
+      "icon": "build",
+      "zone": "Agentic Capabilities",
+      "resources": [
+        {
+          "id": "tool-calling-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["memory-and-advisors"]
+    },
+    {
+      "id": "mcp-integration",
+      "label": "MCP Fundamentals & Spring AI MCP",
+      "description": "Understand the Model Context Protocol as a standardized way to expose and discover external AI tools and resources, and implement a Spring AI application as an MCP client and/or server — reusing service-layer logic, enforcing security below the protocol layer, and never auto-connecting untrusted MCP servers to privileged applications.",
+      "icon": "integration_instructions",
+      "zone": "Agentic Capabilities",
+      "resources": [
+        {
+          "id": "mcp-integration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["tool-calling"]
+    },
+    {
+      "id": "evaluation-and-observability",
+      "label": "Evaluation & Observability",
+      "description": "Evaluate AI behavior against qualities like correctness, relevance, and groundedness rather than exact-string assertions using representative test datasets including adversarial cases, and instrument model calls, retrieval, and tool usage for latency/cost/error visibility without logging secrets or sensitive data.",
+      "icon": "visibility",
+      "zone": "Quality & Operations",
+      "resources": [
+        {
+          "id": "evaluation-and-observability-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["mcp-integration"]
+    },
+    {
+      "id": "testing-and-reliability",
+      "label": "Testing, Cost & Reliability",
+      "description": "Separate deterministic unit tests (prompt assembly, validation, authorization) from integration tests of real model/vector/tool boundaries, avoid brittle exact-output assertions, and account for token cost, latency, and provider reliability — timeouts, rate limits, retries — when choosing and calling models.",
+      "icon": "verified",
+      "zone": "Quality & Operations",
+      "resources": [
+        {
+          "id": "testing-and-reliability-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["evaluation-and-observability"]
+    },
+    {
+      "id": "production-architecture-and-security",
+      "label": "Production Architecture & AI Security",
+      "description": "Keep AI integration behind backend service boundaries rather than exposing provider credentials to the browser, plan for async/long-running AI workflows, and apply defense-in-depth security across the full threat surface — user input, retrieved data, model output, and tools — including data-privacy and tenant-isolation requirements.",
+      "icon": "cloud",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "production-architecture-and-security-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["testing-and-reliability"]
+    },
+    {
+      "id": "debugging-and-professional-practices",
+      "label": "Debugging & Professional Practices",
+      "description": "Debug AI failures by tracing the full pipeline — prompt, advisors, retrieval, tools, model, conversion — layer by layer instead of immediately rewriting the prompt, and follow professional practices: start simple, prefer deterministic Java where possible, keep AI integration replaceable, version prompts/configuration, and measure before optimizing.",
+      "icon": "terminal",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "debugging-and-professional-practices-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["production-architecture-and-security"]
+    }
+  ],
+  "edges": [
+    { "id": "e-prerequisites-and-mental-model-llm-fundamentals", "source": "prerequisites-and-mental-model", "target": "llm-fundamentals" },
+    { "id": "e-llm-fundamentals-prompts-and-instructions", "source": "llm-fundamentals", "target": "prompts-and-instructions" },
+    { "id": "e-prompts-and-instructions-nondeterminism-and-limitations", "source": "prompts-and-instructions", "target": "nondeterminism-and-limitations" },
+    { "id": "e-nondeterminism-and-limitations-spring-ai-foundations", "source": "nondeterminism-and-limitations", "target": "spring-ai-foundations" },
+    { "id": "e-spring-ai-foundations-credentials-and-model-apis", "source": "spring-ai-foundations", "target": "credentials-and-model-apis" },
+    { "id": "e-credentials-and-model-apis-chatmodel-and-chatclient", "source": "credentials-and-model-apis", "target": "chatmodel-and-chatclient" },
+    { "id": "e-chatmodel-and-chatclient-templates-responses-streaming", "source": "chatmodel-and-chatclient", "target": "templates-responses-streaming" },
+    { "id": "e-templates-responses-streaming-structured-output", "source": "templates-responses-streaming", "target": "structured-output" },
+    { "id": "e-structured-output-embeddings-and-vectors", "source": "structured-output", "target": "embeddings-and-vectors" },
+    { "id": "e-embeddings-and-vectors-vector-stores-and-search", "source": "embeddings-and-vectors", "target": "vector-stores-and-search" },
+    { "id": "e-vector-stores-and-search-documents-and-ingestion", "source": "vector-stores-and-search", "target": "documents-and-ingestion" },
+    { "id": "e-documents-and-ingestion-rag-with-spring-ai", "source": "documents-and-ingestion", "target": "rag-with-spring-ai" },
+    { "id": "e-rag-with-spring-ai-memory-and-advisors", "source": "rag-with-spring-ai", "target": "memory-and-advisors" },
+    { "id": "e-memory-and-advisors-tool-calling", "source": "memory-and-advisors", "target": "tool-calling" },
+    { "id": "e-tool-calling-mcp-integration", "source": "tool-calling", "target": "mcp-integration" },
+    { "id": "e-mcp-integration-evaluation-and-observability", "source": "mcp-integration", "target": "evaluation-and-observability" },
+    { "id": "e-evaluation-and-observability-testing-and-reliability", "source": "evaluation-and-observability", "target": "testing-and-reliability" },
+    { "id": "e-testing-and-reliability-production-architecture-and-security", "source": "testing-and-reliability", "target": "production-architecture-and-security" },
+    { "id": "e-production-architecture-and-security-debugging-and-professional-practices", "source": "production-architecture-and-security", "target": "debugging-and-professional-practices" }
+  ]
+}

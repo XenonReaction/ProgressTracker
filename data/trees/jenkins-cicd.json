@@ -1,0 +1,529 @@
+{
+  "treeId": "jenkins-cicd",
+  "order": 26,
+  "title": "Jenkins for Full-Stack Delivery",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn to read, write, run, troubleshoot, and maintain practical Jenkins Declarative Pipelines for Java/Spring Boot and modern frontend applications, implementing the concepts from CI/CD Fundamentals using Jenkins at a developer level.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "icon": "hub",
+  "totalNodes": 20,
+  "nodes": [
+    {
+      "id": "jenkins-overview",
+      "label": "Jenkins in the CI/CD Ecosystem",
+      "description": "Understand Jenkins as one automation-server implementation of CI/CD concepts rather than CI/CD itself, and recognize which fundamentals concepts \u2014 pipelines, stages, agents, credentials, triggers, artifacts \u2014 Jenkins exposes directly.",
+      "icon": "hub",
+      "zone": "Jenkins Foundations",
+      "resources": [
+        {
+          "id": "jenkins-overview-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "jenkins-architecture-ui",
+      "label": "Architecture & UI",
+      "description": "Understand the Jenkins controller/agent/executor/workspace model at a developer level and navigate the Jenkins dashboard, build numbers, and build statuses without needing to administer the installation.",
+      "icon": "dns",
+      "zone": "Jenkins Foundations",
+      "resources": [
+        {
+          "id": "jenkins-architecture-ui-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "jenkins-overview"
+      ]
+    },
+    {
+      "id": "jobs-and-jenkinsfile",
+      "label": "Jobs & the Jenkinsfile",
+      "description": "Distinguish Freestyle jobs from Pipeline jobs, understand why pipeline-as-code with a version-controlled Jenkinsfile is preferred, and read enough Groovy to work with Pipeline syntax.",
+      "icon": "integration_instructions",
+      "zone": "Jenkins Foundations",
+      "resources": [
+        {
+          "id": "jobs-and-jenkinsfile-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "jenkins-architecture-ui"
+      ]
+    },
+    {
+      "id": "declarative-pipeline-agents",
+      "label": "Declarative Pipeline & Agents",
+      "description": "Write Declarative Pipelines using the pipeline/agent/stages/steps model, recognize Scripted Pipeline, and choose global, per-stage, or labeled agents appropriately.",
+      "icon": "account_tree",
+      "zone": "Pipeline Authoring",
+      "resources": [
+        {
+          "id": "declarative-pipeline-agents-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "jobs-and-jenkinsfile"
+      ]
+    },
+    {
+      "id": "stages-steps-checkout",
+      "label": "Stages, Steps & Checkout",
+      "description": "Organize pipeline work into meaningful stages and steps, execute shell commands, and check out a known Git revision so every Jenkins build is traceable back to a commit.",
+      "icon": "terminal",
+      "zone": "Pipeline Authoring",
+      "resources": [
+        {
+          "id": "stages-steps-checkout-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "declarative-pipeline-agents"
+      ]
+    },
+    {
+      "id": "triggers-branches-prs",
+      "label": "Triggers, Branches & Pull Requests",
+      "description": "Trigger pipelines manually, via webhook, SCM polling, or schedule, and use Multibranch Pipeline and branch conditions to validate feature branches and pull requests without deploying from them.",
+      "icon": "api",
+      "zone": "Pipeline Authoring",
+      "resources": [
+        {
+          "id": "triggers-branches-prs-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "stages-steps-checkout"
+      ]
+    },
+    {
+      "id": "conditions-and-environment",
+      "label": "Conditions & Environment Variables",
+      "description": "Use `when` conditions to control stage execution and define pipeline- and stage-scoped environment variables while keeping ordinary configuration separate from secrets.",
+      "icon": "sync",
+      "zone": "Pipeline Authoring",
+      "resources": [
+        {
+          "id": "conditions-and-environment-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "triggers-branches-prs"
+      ]
+    },
+    {
+      "id": "credentials-and-parameters",
+      "label": "Credentials & Parameters",
+      "description": "Store and reference secrets safely through the Jenkins credential store using credential IDs, `credentials()`, and `withCredentials`, and accept controlled manual pipeline parameters without exposing sensitive values.",
+      "icon": "security",
+      "zone": "Pipeline Authoring",
+      "resources": [
+        {
+          "id": "credentials-and-parameters-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "conditions-and-environment"
+      ]
+    },
+    {
+      "id": "build-tool-integration",
+      "label": "Maven & npm Integration",
+      "description": "Orchestrate existing Maven and npm build commands from a Jenkinsfile for backend and frontend projects, keeping the actual dependency and build logic owned by pom.xml/package.json rather than duplicated in Jenkins.",
+      "icon": "build",
+      "zone": "Build & Delivery",
+      "resources": [
+        {
+          "id": "build-tool-integration-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "credentials-and-parameters"
+      ]
+    },
+    {
+      "id": "testing-and-reporting",
+      "label": "Automated Testing & Reporting",
+      "description": "Stop the pipeline on required test failure, run JUnit/Mockito and frontend tests through the project's build tool, and publish JUnit-format test results with the `junit` step for visibility.",
+      "icon": "bug_report",
+      "zone": "Build & Delivery",
+      "resources": [
+        {
+          "id": "testing-and-reporting-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "build-tool-integration"
+      ]
+    },
+    {
+      "id": "artifacts-and-docker",
+      "label": "Artifacts & Docker Integration",
+      "description": "Archive build artifacts with `archiveArtifacts`, and build, tag, authenticate, and push Docker images from a Docker-capable agent using the Docker prerequisite knowledge.",
+      "icon": "layers",
+      "zone": "Build & Delivery",
+      "resources": [
+        {
+          "id": "artifacts-and-docker-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "testing-and-reporting"
+      ]
+    },
+    {
+      "id": "parallelism-timeouts-retry",
+      "label": "Parallelism, Timeouts & Retry",
+      "description": "Run independent backend/frontend validation in parallel stages, bound long-running steps with timeouts, and retry only genuinely transient failures rather than deterministic ones.",
+      "icon": "speed",
+      "zone": "Build & Delivery",
+      "resources": [
+        {
+          "id": "parallelism-timeouts-retry-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "artifacts-and-docker"
+      ]
+    },
+    {
+      "id": "failure-handling-and-post",
+      "label": "Failure Handling & Post Actions",
+      "description": "Fail fast on build/test failure, preserve console logs and reports as evidence, and use Declarative `post` blocks to report, clean up, and notify regardless of pipeline outcome.",
+      "icon": "health_and_safety",
+      "zone": "Build & Delivery",
+      "resources": [
+        {
+          "id": "failure-handling-and-post-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "parallelism-timeouts-retry"
+      ]
+    },
+    {
+      "id": "delivery-orchestration",
+      "label": "Delivery Orchestration & Approval",
+      "description": "Send appropriately targeted notifications, gate production releases with `input` for a manual Continuous Delivery approval, and orchestrate staging deployment followed by health/smoke verification before promoting to production.",
+      "icon": "verified",
+      "zone": "Build & Delivery",
+      "resources": [
+        {
+          "id": "delivery-orchestration-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "failure-handling-and-post"
+      ]
+    },
+    {
+      "id": "pipeline-hygiene-and-tooling",
+      "label": "Caching, Workspace & Plugin Hygiene",
+      "description": "Manage build caching, workspace cleanliness, and controlled tool versions to keep builds reproducible, and use Jenkins plugins and pipeline syntax/documentation helpers responsibly.",
+      "icon": "storage",
+      "zone": "Operational Hygiene & Security",
+      "resources": [
+        {
+          "id": "pipeline-hygiene-and-tooling-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "delivery-orchestration"
+      ]
+    },
+    {
+      "id": "jenkins-security",
+      "label": "Jenkins Security",
+      "description": "Treat Jenkins as a security-sensitive system by scoping credentials narrowly, protecting production permissions, watching for secret exposure in logs and artifacts, and being cautious with untrusted pull-request code and pipeline dependencies.",
+      "icon": "shield",
+      "zone": "Operational Hygiene & Security",
+      "resources": [
+        {
+          "id": "jenkins-security-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "pipeline-hygiene-and-tooling"
+      ]
+    },
+    {
+      "id": "multibranch-fullstack-design",
+      "label": "Multibranch & Full-Stack Pipeline Design",
+      "description": "Use Multibranch Pipeline to discover branch-specific Jenkinsfiles, and design a full-stack pipeline that separates backend Maven and frontend npm work into parallel stages sharing one failure policy.",
+      "icon": "hive",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "multibranch-fullstack-design-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "jenkins-security"
+      ]
+    },
+    {
+      "id": "pipeline-examples-and-troubleshooting",
+      "label": "Pipeline Progression & Troubleshooting",
+      "description": "Progress a Declarative Pipeline from a single build stage through test/package/Docker/deployment stages, and troubleshoot common Jenkins failures stage by stage, including 'works locally, fails in Jenkins' and checkout/Docker permission problems.",
+      "icon": "science",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "pipeline-examples-and-troubleshooting-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "multibranch-fullstack-design"
+      ]
+    },
+    {
+      "id": "maintainability-reuse-performance",
+      "label": "Maintainability, Reuse & Performance",
+      "description": "Keep a Jenkinsfile maintainable by treating it as production code, avoid embedding application logic in Groovy strings, recognize Shared Libraries as a reuse mechanism, and improve pipeline performance without sacrificing reliability.",
+      "icon": "architecture",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "maintainability-reuse-performance-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "pipeline-examples-and-troubleshooting"
+      ]
+    },
+    {
+      "id": "operational-awareness-and-platforms",
+      "label": "Operational Awareness & Platform Translation",
+      "description": "Understand build queues, aborts, replay, and build history at a developer level, know when a problem belongs to Jenkins administration, and translate the same Jenkins pipeline design into GitHub Actions or GitLab CI/CD.",
+      "icon": "timeline",
+      "zone": "Mastery",
+      "resources": [
+        {
+          "id": "operational-awareness-and-platforms-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "maintainability-reuse-performance"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-jenkins-overview-jenkins-architecture-ui",
+      "source": "jenkins-overview",
+      "target": "jenkins-architecture-ui"
+    },
+    {
+      "id": "e-jenkins-architecture-ui-jobs-and-jenkinsfile",
+      "source": "jenkins-architecture-ui",
+      "target": "jobs-and-jenkinsfile"
+    },
+    {
+      "id": "e-jobs-and-jenkinsfile-declarative-pipeline-agents",
+      "source": "jobs-and-jenkinsfile",
+      "target": "declarative-pipeline-agents"
+    },
+    {
+      "id": "e-declarative-pipeline-agents-stages-steps-checkout",
+      "source": "declarative-pipeline-agents",
+      "target": "stages-steps-checkout"
+    },
+    {
+      "id": "e-stages-steps-checkout-triggers-branches-prs",
+      "source": "stages-steps-checkout",
+      "target": "triggers-branches-prs"
+    },
+    {
+      "id": "e-triggers-branches-prs-conditions-and-environment",
+      "source": "triggers-branches-prs",
+      "target": "conditions-and-environment"
+    },
+    {
+      "id": "e-conditions-and-environment-credentials-and-parameters",
+      "source": "conditions-and-environment",
+      "target": "credentials-and-parameters"
+    },
+    {
+      "id": "e-credentials-and-parameters-build-tool-integration",
+      "source": "credentials-and-parameters",
+      "target": "build-tool-integration"
+    },
+    {
+      "id": "e-build-tool-integration-testing-and-reporting",
+      "source": "build-tool-integration",
+      "target": "testing-and-reporting"
+    },
+    {
+      "id": "e-testing-and-reporting-artifacts-and-docker",
+      "source": "testing-and-reporting",
+      "target": "artifacts-and-docker"
+    },
+    {
+      "id": "e-artifacts-and-docker-parallelism-timeouts-retry",
+      "source": "artifacts-and-docker",
+      "target": "parallelism-timeouts-retry"
+    },
+    {
+      "id": "e-parallelism-timeouts-retry-failure-handling-and-post",
+      "source": "parallelism-timeouts-retry",
+      "target": "failure-handling-and-post"
+    },
+    {
+      "id": "e-failure-handling-and-post-delivery-orchestration",
+      "source": "failure-handling-and-post",
+      "target": "delivery-orchestration"
+    },
+    {
+      "id": "e-delivery-orchestration-pipeline-hygiene-and-tooling",
+      "source": "delivery-orchestration",
+      "target": "pipeline-hygiene-and-tooling"
+    },
+    {
+      "id": "e-pipeline-hygiene-and-tooling-jenkins-security",
+      "source": "pipeline-hygiene-and-tooling",
+      "target": "jenkins-security"
+    },
+    {
+      "id": "e-jenkins-security-multibranch-fullstack-design",
+      "source": "jenkins-security",
+      "target": "multibranch-fullstack-design"
+    },
+    {
+      "id": "e-multibranch-fullstack-design-pipeline-examples-and-troubleshooting",
+      "source": "multibranch-fullstack-design",
+      "target": "pipeline-examples-and-troubleshooting"
+    },
+    {
+      "id": "e-pipeline-examples-and-troubleshooting-maintainability-reuse-performance",
+      "source": "pipeline-examples-and-troubleshooting",
+      "target": "maintainability-reuse-performance"
+    },
+    {
+      "id": "e-maintainability-reuse-performance-operational-awareness-and-platforms",
+      "source": "maintainability-reuse-performance",
+      "target": "operational-awareness-and-platforms"
+    }
+  ]
+}

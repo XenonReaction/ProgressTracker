@@ -1,0 +1,375 @@
+{
+  "treeId": "spring-cloud-microservices",
+  "order": 33,
+  "title": "Spring Cloud & Microservices Fundamentals",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn microservices architecture and the Spring Cloud ecosystem at the developer level: why teams split systems into services, how independently deployed services communicate, what distributed-system problems appear, and which Spring Cloud tools address them — preparing for dedicated Eureka Service Discovery and Spring Cloud Gateway trees.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 18,
+  "icon": "hub",
+  "nodes": [
+    {
+      "id": "microservices-fundamentals",
+      "label": "Monoliths, Microservices & Tradeoffs",
+      "description": "Distinguish a monolith from a microservices architecture, understand why teams split systems for independent deployment, scaling, and team ownership, and weigh those benefits against the real complexity costs before deciding to split anything.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "microservices-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "spring-cloud-ecosystem",
+      "label": "The Spring Cloud Ecosystem",
+      "description": "Distinguish what Spring Boot provides from what Spring Cloud adds, understand Spring Cloud as a collection of projects solving different distributed-system problems rather than a single library, and maintain Spring Boot/Spring Cloud version compatibility discipline.",
+      "icon": "cloud",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "spring-cloud-ecosystem-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["microservices-fundamentals"]
+    },
+    {
+      "id": "service-boundaries",
+      "label": "Service Boundaries",
+      "description": "Design service boundaries around cohesive business capabilities with loose coupling and explicit contracts, and recognize bad boundaries such as the distributed monolith, excessive chattiness, and services that expose their internal tables or classes.",
+      "icon": "account_tree",
+      "zone": "Service Design",
+      "resources": [
+        {
+          "id": "service-boundaries-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["spring-cloud-ecosystem"]
+    },
+    {
+      "id": "independent-services-apis",
+      "label": "Independent Services & APIs",
+      "description": "Stand up each microservice as its own independently running Spring Boot application with its own port, configuration, and lifecycle, and expose its capabilities through an explicit REST/DTO API contract rather than shared implementation details.",
+      "icon": "api",
+      "zone": "Service Design",
+      "resources": [
+        {
+          "id": "independent-services-apis-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["service-boundaries"]
+    },
+    {
+      "id": "synchronous-communication",
+      "label": "Synchronous Service-to-Service Communication",
+      "description": "Implement request/response calls between services with a modern Spring HTTP client, model the expected remote response with a dedicated DTO rather than a shared entity class, and understand how contract changes can break the consuming service.",
+      "icon": "sync",
+      "zone": "Service Communication",
+      "resources": [
+        {
+          "id": "synchronous-communication-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["independent-services-apis"]
+    },
+    {
+      "id": "failure-handling",
+      "label": "Remote Failure, Timeouts & Cascading Failure",
+      "description": "Recognize that a remote call can fail for reasons a local call never would, design deliberate timeout behavior instead of waiting forever, understand the danger of blind retries under overload, grasp the circuit breaker pattern conceptually, and trace how one slow dependency can cascade failure upstream through a chain.",
+      "icon": "bug_report",
+      "zone": "Service Communication",
+      "resources": [
+        {
+          "id": "failure-handling-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["synchronous-communication"]
+    },
+    {
+      "id": "discovery-and-gateway-motivation",
+      "label": "Why Discovery & Gateway Exist",
+      "description": "Experience why hardcoded service locations break down once instances scale, move, or fail, understand the service registry pattern that Eureka will implement, and recognize why an API gateway becomes necessary once clients must reach many backend services.",
+      "icon": "dns",
+      "zone": "Platform Problems",
+      "resources": [
+        {
+          "id": "discovery-and-gateway-motivation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["failure-handling"]
+    },
+    {
+      "id": "configuration-and-secrets",
+      "label": "Multi-Service Configuration & Secrets",
+      "description": "Manage configuration that multiplies across many services with environment variables, understand the centralized-configuration pattern behind Spring Cloud Config, and keep secrets like credentials and API keys separate from ordinary configuration and out of source control.",
+      "icon": "settings",
+      "zone": "Platform Problems",
+      "resources": [
+        {
+          "id": "configuration-and-secrets-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["discovery-and-gateway-motivation"]
+    },
+    {
+      "id": "data-ownership-consistency",
+      "label": "Data Ownership & Distributed Consistency",
+      "description": "Apply the database-per-service ownership principle, recognize how a shared database tightly couples supposedly independent services, and understand why distributed transactions are hard and why some architectures accept eventual consistency instead.",
+      "icon": "storage",
+      "zone": "Data & Consistency",
+      "resources": [
+        {
+          "id": "data-ownership-consistency-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["configuration-and-secrets"]
+    },
+    {
+      "id": "async-and-idempotency",
+      "label": "Async Communication & Idempotency",
+      "description": "Compare synchronous request/response communication with asynchronous message/event-driven communication, and understand idempotency well enough to reason about safe behavior under retried or duplicated requests.",
+      "icon": "schedule",
+      "zone": "Data & Consistency",
+      "resources": [
+        {
+          "id": "async-and-idempotency-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["data-ownership-consistency"]
+    },
+    {
+      "id": "observability-fundamentals",
+      "label": "Logging, Correlation, Tracing & Health",
+      "description": "Recognize why logging becomes harder once a single request spans multiple services, propagate correlation IDs to connect related log entries, understand distributed tracing and spans, distinguish logs from metrics, and expose meaningful Actuator-based health information.",
+      "icon": "timeline",
+      "zone": "Observability & Scale",
+      "resources": [
+        {
+          "id": "observability-fundamentals-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["async-and-idempotency"]
+    },
+    {
+      "id": "scaling-and-load-balancing",
+      "label": "Instances, Scaling & Load Balancing",
+      "description": "Understand that one logical service can run as multiple physical instances, why consumers should address a logical service name rather than a fixed address, and where client-side, gateway, or platform load-balancing decisions can occur.",
+      "icon": "speed",
+      "zone": "Observability & Scale",
+      "resources": [
+        {
+          "id": "scaling-and-load-balancing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["observability-fundamentals"]
+    },
+    {
+      "id": "versioning-and-testing",
+      "label": "API Compatibility & Testing Strategy",
+      "description": "Design APIs for backward-compatible evolution since independently deployed services must coexist across versions, and layer unit tests with integration tests and contract-testing awareness to verify real communication boundaries rather than only local logic.",
+      "icon": "verified",
+      "zone": "Observability & Scale",
+      "resources": [
+        {
+          "id": "versioning-and-testing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["scaling-and-load-balancing"]
+    },
+    {
+      "id": "local-dev-and-containers",
+      "label": "Local Development & Containerization",
+      "description": "Manage the complexity of running multiple services locally with organized ports and startup awareness, containerize each service and orchestrate them with Docker Compose, and externalize service locations through environment configuration before introducing service discovery.",
+      "icon": "build",
+      "zone": "Deployment & Infrastructure",
+      "resources": [
+        {
+          "id": "local-dev-and-containers-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["versioning-and-testing"]
+    },
+    {
+      "id": "platform-comparisons",
+      "label": "Spring Cloud vs Kubernetes Platform Concepts",
+      "description": "Compare Spring Cloud's application-level service discovery (Eureka) and routing (Gateway) with Kubernetes' platform-level DNS-based discovery and Ingress, and avoid stacking redundant routing layers without architectural justification.",
+      "icon": "lan",
+      "zone": "Deployment & Infrastructure",
+      "resources": [
+        {
+          "id": "platform-comparisons-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["local-dev-and-containers"]
+    },
+    {
+      "id": "performance-and-deployment-independence",
+      "label": "Performance, Deployment Independence & Fault Isolation",
+      "description": "Use JMeter to observe how network hops and downstream latency shape client-perceived performance, verify that services can actually deploy independently rather than always together, and design for fault isolation so one capability's failure doesn't take down the whole system.",
+      "icon": "rocket_launch",
+      "zone": "Deployment & Infrastructure",
+      "resources": [
+        {
+          "id": "performance-and-deployment-independence-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["platform-comparisons"]
+    },
+    {
+      "id": "security-and-anti-patterns",
+      "label": "Security Boundaries & Anti-Patterns",
+      "description": "Recognize that every network boundary between services is a security boundary that should not be assumed trusted merely because traffic is internal, and identify common microservices anti-patterns such as nano-services, chattiness, hardcoded locations, and missing observability.",
+      "icon": "security",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "security-and-anti-patterns-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["performance-and-deployment-independence"]
+    },
+    {
+      "id": "architecture-synthesis",
+      "label": "Spring Cloud Architecture Synthesis",
+      "description": "Connect each distributed-system problem encountered in this tree — changing locations, many entry points, multiplying configuration, dependency failure, and cross-service observability — to the specific Spring Cloud tool designed to address it, and be ready to continue into Eureka Service Discovery and Spring Cloud Gateway.",
+      "icon": "architecture",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "architecture-synthesis-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["security-and-anti-patterns"]
+    }
+  ],
+  "edges": [
+    { "id": "e-microservices-fundamentals-spring-cloud-ecosystem", "source": "microservices-fundamentals", "target": "spring-cloud-ecosystem" },
+    { "id": "e-spring-cloud-ecosystem-service-boundaries", "source": "spring-cloud-ecosystem", "target": "service-boundaries" },
+    { "id": "e-service-boundaries-independent-services-apis", "source": "service-boundaries", "target": "independent-services-apis" },
+    { "id": "e-independent-services-apis-synchronous-communication", "source": "independent-services-apis", "target": "synchronous-communication" },
+    { "id": "e-synchronous-communication-failure-handling", "source": "synchronous-communication", "target": "failure-handling" },
+    { "id": "e-failure-handling-discovery-and-gateway-motivation", "source": "failure-handling", "target": "discovery-and-gateway-motivation" },
+    { "id": "e-discovery-and-gateway-motivation-configuration-and-secrets", "source": "discovery-and-gateway-motivation", "target": "configuration-and-secrets" },
+    { "id": "e-configuration-and-secrets-data-ownership-consistency", "source": "configuration-and-secrets", "target": "data-ownership-consistency" },
+    { "id": "e-data-ownership-consistency-async-and-idempotency", "source": "data-ownership-consistency", "target": "async-and-idempotency" },
+    { "id": "e-async-and-idempotency-observability-fundamentals", "source": "async-and-idempotency", "target": "observability-fundamentals" },
+    { "id": "e-observability-fundamentals-scaling-and-load-balancing", "source": "observability-fundamentals", "target": "scaling-and-load-balancing" },
+    { "id": "e-scaling-and-load-balancing-versioning-and-testing", "source": "scaling-and-load-balancing", "target": "versioning-and-testing" },
+    { "id": "e-versioning-and-testing-local-dev-and-containers", "source": "versioning-and-testing", "target": "local-dev-and-containers" },
+    { "id": "e-local-dev-and-containers-platform-comparisons", "source": "local-dev-and-containers", "target": "platform-comparisons" },
+    { "id": "e-platform-comparisons-performance-and-deployment-independence", "source": "platform-comparisons", "target": "performance-and-deployment-independence" },
+    { "id": "e-performance-and-deployment-independence-security-and-anti-patterns", "source": "performance-and-deployment-independence", "target": "security-and-anti-patterns" },
+    { "id": "e-security-and-anti-patterns-architecture-synthesis", "source": "security-and-anti-patterns", "target": "architecture-synthesis" }
+  ]
+}

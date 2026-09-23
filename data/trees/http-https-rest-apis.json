@@ -1,0 +1,215 @@
+{
+  "treeId": "http-https-rest-apis",
+  "order": 12,
+  "title": "HTTP, HTTPS & REST APIs",
+  "category": "Technology",
+  "difficulty": "easy",
+  "description": "Understand the web protocol and API concepts that connect browsers and frontends to backend services, independently of any particular frontend or backend framework.",
+  "version": "1.0",
+  "estimatedMonths": 0.25,
+  "totalNodes": 10,
+  "icon": "api",
+  "nodes": [
+    {
+      "id": "web-foundations-and-urls",
+      "label": "Web Foundations & URLs",
+      "description": "Understand the client-server request/response model, host/domain/port/DNS at a practical level, and the structure of URLs and URIs including path versus query parameters.",
+      "icon": "lan",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "web-foundations-and-urls-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "http-requests-and-responses",
+      "label": "HTTP Requests & Responses",
+      "description": "Identify the parts of an HTTP request — method, target, headers, and body — and an HTTP response — status code, headers, and body — including Content-Type, Accept, and cookie awareness.",
+      "icon": "sync",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "http-requests-and-responses-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["web-foundations-and-urls"]
+    },
+    {
+      "id": "http-methods-and-status-codes",
+      "label": "HTTP Methods & Status Codes",
+      "description": "Choose HTTP methods (GET, POST, PUT, PATCH, DELETE) based on safety and idempotency semantics, and select appropriate 2xx/3xx/4xx/5xx status codes rather than defaulting to habit.",
+      "icon": "api",
+      "zone": "HTTP Protocol",
+      "resources": [
+        {
+          "id": "http-methods-and-status-codes-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["http-requests-and-responses"]
+    },
+    {
+      "id": "headers-and-json-payloads",
+      "label": "Headers & JSON Payloads",
+      "description": "Use Content-Type, Accept, Location, Cache-Control, and CORS-related headers correctly, and shape JSON request/response payloads while understanding JSON as a representation format distinct from REST itself.",
+      "icon": "code",
+      "zone": "HTTP Protocol",
+      "resources": [
+        {
+          "id": "headers-and-json-payloads-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["http-methods-and-status-codes"]
+    },
+    {
+      "id": "rest-fundamentals-and-endpoint-design",
+      "label": "REST Fundamentals & Endpoint Design",
+      "description": "Apply REST's resource-oriented, stateless, uniform-interface principles to design collection and item endpoints with consistent naming, filtering, sorting, and pagination.",
+      "icon": "architecture",
+      "zone": "REST API Design",
+      "resources": [
+        {
+          "id": "rest-fundamentals-and-endpoint-design-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["headers-and-json-payloads"]
+    },
+    {
+      "id": "api-request-response-design",
+      "label": "API Request & Response Design",
+      "description": "Design consistent request/response DTO shapes and error-response structures, and distinguish empty results from missing resources, including proper Location headers for created resources.",
+      "icon": "integration_instructions",
+      "zone": "REST API Design",
+      "resources": [
+        {
+          "id": "api-request-response-design-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rest-fundamentals-and-endpoint-design"]
+    },
+    {
+      "id": "cors-and-same-origin-policy",
+      "label": "CORS & Same-Origin Policy",
+      "description": "Explain the browser's same-origin policy and how CORS relaxes it through simple and preflight requests, and configure Access-Control-Allow-Origin and allowed methods/headers correctly.",
+      "icon": "security",
+      "zone": "Web Security",
+      "resources": [
+        {
+          "id": "cors-and-same-origin-policy-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["api-request-response-design"]
+    },
+    {
+      "id": "auth-cookies-and-https",
+      "label": "Cookies, Tokens & HTTPS",
+      "description": "Understand cookie and bearer-token fundamentals, the distinction between authentication and authorization, and what HTTPS/TLS adds — encryption, integrity, and server authentication — without assuming it makes an application automatically secure.",
+      "icon": "verified",
+      "zone": "Web Security",
+      "resources": [
+        {
+          "id": "auth-cookies-and-https-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["cors-and-same-origin-policy"]
+    },
+    {
+      "id": "caching-versioning-documentation",
+      "label": "Caching, Versioning & Documentation",
+      "description": "Apply Cache-Control and ETag-based caching appropriately, evolve APIs through backward-compatible versioning, and document endpoints and contracts using OpenAPI/Swagger conventions.",
+      "icon": "timeline",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "caching-versioning-documentation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["auth-cookies-and-https"]
+    },
+    {
+      "id": "testing-debugging-and-professional-practices",
+      "label": "Testing, Debugging & Professional Practices",
+      "description": "Debug HTTP traffic with browser DevTools and curl by distinguishing DNS, network, TLS, and application-layer errors, and apply professional practices like boundary validation, rate limiting, and observability.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-debugging-and-professional-practices-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["caching-versioning-documentation"]
+    }
+  ],
+  "edges": [
+    { "id": "e-web-foundations-and-urls-http-requests-and-responses", "source": "web-foundations-and-urls", "target": "http-requests-and-responses" },
+    { "id": "e-http-requests-and-responses-http-methods-and-status-codes", "source": "http-requests-and-responses", "target": "http-methods-and-status-codes" },
+    { "id": "e-http-methods-and-status-codes-headers-and-json-payloads", "source": "http-methods-and-status-codes", "target": "headers-and-json-payloads" },
+    { "id": "e-headers-and-json-payloads-rest-fundamentals-and-endpoint-design", "source": "headers-and-json-payloads", "target": "rest-fundamentals-and-endpoint-design" },
+    { "id": "e-rest-fundamentals-and-endpoint-design-api-request-response-design", "source": "rest-fundamentals-and-endpoint-design", "target": "api-request-response-design" },
+    { "id": "e-api-request-response-design-cors-and-same-origin-policy", "source": "api-request-response-design", "target": "cors-and-same-origin-policy" },
+    { "id": "e-cors-and-same-origin-policy-auth-cookies-and-https", "source": "cors-and-same-origin-policy", "target": "auth-cookies-and-https" },
+    { "id": "e-auth-cookies-and-https-caching-versioning-documentation", "source": "auth-cookies-and-https", "target": "caching-versioning-documentation" },
+    { "id": "e-caching-versioning-documentation-testing-debugging-and-professional-practices", "source": "caching-versioning-documentation", "target": "testing-debugging-and-professional-practices" }
+  ]
+}

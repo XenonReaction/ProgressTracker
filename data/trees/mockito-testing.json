@@ -1,0 +1,399 @@
+{
+  "treeId": "mockito-testing",
+  "order": 11,
+  "title": "Mockito Testing",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from competent JUnit testing to professional Mockito usage \u2014 creating mocks, stubbing and verifying behavior, and exercising sound judgment about what to mock \u2014 as preparation for Spring Boot service testing.",
+  "version": "1.0",
+  "estimatedMonths": 0.5,
+  "totalNodes": 15,
+  "icon": "science",
+  "nodes": [
+    {
+      "id": "mockito-prerequisites",
+      "label": "Mockito Prerequisites",
+      "description": "Confirm the Java (classes, interfaces, dependency relationships) and JUnit (@Test, assertions, lifecycle, isolation) prerequisites needed before introducing Mockito.",
+      "icon": "coffee",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "mockito-prerequisites-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "why-mockito-and-test-doubles",
+      "label": "Why Mockito & Test Doubles",
+      "description": "Understand why real dependencies make unit tests slow or difficult, and learn the test-double vocabulary \u2014 dummy, stub, fake, mock, and spy \u2014 before learning any Mockito annotations.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "why-mockito-and-test-doubles-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "mockito-prerequisites"
+      ]
+    },
+    {
+      "id": "creating-and-stubbing-mocks",
+      "label": "Creating & Stubbing Mocks",
+      "description": "Create mocks with mock(), and stub method return values with when()/thenReturn(), including consecutive results for repeated invocations.",
+      "icon": "build",
+      "zone": "Core Mockito",
+      "resources": [
+        {
+          "id": "creating-and-stubbing-mocks-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "why-mockito-and-test-doubles"
+      ]
+    },
+    {
+      "id": "verification",
+      "label": "Verification",
+      "description": "Verify that a mock's method was called with verify(), using count modes like times(), never(), and atLeastOnce(), and understand when interaction verification is preferable to plain state assertions.",
+      "icon": "verified",
+      "zone": "Core Mockito",
+      "resources": [
+        {
+          "id": "verification-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "creating-and-stubbing-mocks"
+      ]
+    },
+    {
+      "id": "argument-matching-and-capturing",
+      "label": "Argument Matching & Capturing",
+      "description": "Use argument matchers (any(), eq(), argThat()) to stub and verify flexibly, and use ArgumentCaptor to capture and inspect the actual values a collaborator received.",
+      "icon": "functions",
+      "zone": "Core Mockito",
+      "resources": [
+        {
+          "id": "argument-matching-and-capturing-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "verification"
+      ]
+    },
+    {
+      "id": "mockito-junit-integration",
+      "label": "Mockito + JUnit Integration",
+      "description": "Integrate Mockito with JUnit Jupiter using MockitoExtension, @Mock, and @InjectMocks, and understand exactly how @InjectMocks differs from real Spring dependency injection.",
+      "icon": "integration_instructions",
+      "zone": "Core Mockito",
+      "resources": [
+        {
+          "id": "mockito-junit-integration-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "argument-matching-and-capturing"
+      ]
+    },
+    {
+      "id": "exceptions-and-void-methods",
+      "label": "Exceptions & Void Methods",
+      "description": "Stub exceptions with thenThrow() to test error-handling paths, and use doNothing()/doThrow()/doAnswer() for void methods where when().thenReturn() doesn't apply.",
+      "icon": "bug_report",
+      "zone": "Advanced Stubbing",
+      "resources": [
+        {
+          "id": "exceptions-and-void-methods-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "mockito-junit-integration"
+      ]
+    },
+    {
+      "id": "custom-answers",
+      "label": "Custom Answers",
+      "description": "Use thenAnswer() to generate dynamic, argument-dependent responses from a mock, keeping custom answers small rather than recreating production logic inside test setup.",
+      "icon": "auto_awesome",
+      "zone": "Advanced Stubbing",
+      "resources": [
+        {
+          "id": "custom-answers-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "exceptions-and-void-methods"
+      ]
+    },
+    {
+      "id": "spies-and-partial-mocking",
+      "label": "Spies & Partial Mocking",
+      "description": "Use spy() to wrap a real object and selectively stub behavior, using doReturn().when() to avoid triggering real methods accidentally, and recognize partial mocking as a possible design smell.",
+      "icon": "science",
+      "zone": "Advanced Stubbing",
+      "resources": [
+        {
+          "id": "spies-and-partial-mocking-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "custom-answers"
+      ]
+    },
+    {
+      "id": "mocking-design-decisions",
+      "label": "Mocking Design Decisions",
+      "description": "Identify which dependencies are good candidates for mocking \u2014 repositories, external APIs, clocks \u2014 and which should almost never be mocked, such as value objects, DTOs, and the class under test itself.",
+      "icon": "architecture",
+      "zone": "Test Design Judgment",
+      "resources": [
+        {
+          "id": "mocking-design-decisions-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "spies-and-partial-mocking"
+      ]
+    },
+    {
+      "id": "avoiding-over-mocking",
+      "label": "Avoiding Over-Mocking",
+      "description": "Recognize the warning signs of over-mocking, prefer testing observable behavior over verifying every internal call, and decide when a real object, a fake, or an actual integration test is the better tool than a mock.",
+      "icon": "health_and_safety",
+      "zone": "Test Design Judgment",
+      "resources": [
+        {
+          "id": "avoiding-over-mocking-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "mocking-design-decisions"
+      ]
+    },
+    {
+      "id": "service-layer-testing",
+      "label": "Service-Layer Testing",
+      "description": "Write a complete service-layer unit test \u2014 real service, mocked repository \u2014 combining JUnit assertions on returned state with Mockito verification of meaningful collaborator interactions in one Arrange/Act/Assert flow.",
+      "icon": "layers",
+      "zone": "Applied Testing",
+      "resources": [
+        {
+          "id": "service-layer-testing-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "avoiding-over-mocking"
+      ]
+    },
+    {
+      "id": "advanced-mockito-awareness",
+      "label": "Advanced Mockito Awareness",
+      "description": "Manage strict-stubbing warnings and unused stubs, recognize static/final mocking as specialized tools of last resort, and stub asynchronous Future/CompletableFuture results deterministically.",
+      "icon": "memory",
+      "zone": "Applied Testing",
+      "resources": [
+        {
+          "id": "advanced-mockito-awareness-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "service-layer-testing"
+      ]
+    },
+    {
+      "id": "professional-mockito-workflow",
+      "label": "Professional Mockito Workflow",
+      "description": "Keep mocks and stubbing readable and minimal, avoid duplicating implementation logic in verifications, and systematically debug common Mockito failures like unstubbed defaults and wanted-but-not-invoked errors.",
+      "icon": "timeline",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-mockito-workflow-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "advanced-mockito-awareness"
+      ]
+    },
+    {
+      "id": "spring-boot-testing-readiness",
+      "label": "Spring Boot Testing Readiness",
+      "description": "Understand the clear division of responsibility between Mockito (test doubles), JUnit (test execution), and Spring (application context and DI), and recognize the Spring-specific testing tools (@SpringBootTest, @WebMvcTest, @DataJpaTest, MockMvc) that lie ahead.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "spring-boot-testing-readiness-placeholder",
+          "title": "Placeholder resource \u2014 replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": [
+        "professional-mockito-workflow"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-mockito-prerequisites-why-mockito-and-test-doubles",
+      "source": "mockito-prerequisites",
+      "target": "why-mockito-and-test-doubles"
+    },
+    {
+      "id": "e-why-mockito-and-test-doubles-creating-and-stubbing-mocks",
+      "source": "why-mockito-and-test-doubles",
+      "target": "creating-and-stubbing-mocks"
+    },
+    {
+      "id": "e-creating-and-stubbing-mocks-verification",
+      "source": "creating-and-stubbing-mocks",
+      "target": "verification"
+    },
+    {
+      "id": "e-verification-argument-matching-and-capturing",
+      "source": "verification",
+      "target": "argument-matching-and-capturing"
+    },
+    {
+      "id": "e-argument-matching-and-capturing-mockito-junit-integration",
+      "source": "argument-matching-and-capturing",
+      "target": "mockito-junit-integration"
+    },
+    {
+      "id": "e-mockito-junit-integration-exceptions-and-void-methods",
+      "source": "mockito-junit-integration",
+      "target": "exceptions-and-void-methods"
+    },
+    {
+      "id": "e-exceptions-and-void-methods-custom-answers",
+      "source": "exceptions-and-void-methods",
+      "target": "custom-answers"
+    },
+    {
+      "id": "e-custom-answers-spies-and-partial-mocking",
+      "source": "custom-answers",
+      "target": "spies-and-partial-mocking"
+    },
+    {
+      "id": "e-spies-and-partial-mocking-mocking-design-decisions",
+      "source": "spies-and-partial-mocking",
+      "target": "mocking-design-decisions"
+    },
+    {
+      "id": "e-mocking-design-decisions-avoiding-over-mocking",
+      "source": "mocking-design-decisions",
+      "target": "avoiding-over-mocking"
+    },
+    {
+      "id": "e-avoiding-over-mocking-service-layer-testing",
+      "source": "avoiding-over-mocking",
+      "target": "service-layer-testing"
+    },
+    {
+      "id": "e-service-layer-testing-advanced-mockito-awareness",
+      "source": "service-layer-testing",
+      "target": "advanced-mockito-awareness"
+    },
+    {
+      "id": "e-advanced-mockito-awareness-professional-mockito-workflow",
+      "source": "advanced-mockito-awareness",
+      "target": "professional-mockito-workflow"
+    },
+    {
+      "id": "e-professional-mockito-workflow-spring-boot-testing-readiness",
+      "source": "professional-mockito-workflow",
+      "target": "spring-boot-testing-readiness"
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+{
+  "treeId": "ai-assisted-software-development",
+  "order": 1,
+  "title": "AI-Assisted Software Development",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Learn to use AI coding assistants, IDE copilots, and agentic coding tools as professional software-development tools while preserving developer understanding, verification, security, and ownership of the resulting code.",
+  "version": "1.0",
+  "estimatedMonths": 1,
+  "totalNodes": 15,
+  "icon": "auto_awesome",
+  "nodes": [
+    {
+      "id": "ai-tool-mental-model",
+      "label": "AI Tool Mental Model",
+      "description": "Adopt the mental model that AI assistants propose while the developer defines goals, evaluates tradeoffs, and owns the result, and recognize AI's genuine strengths (boilerplate, explanation, search) alongside its weaknesses (hallucinated APIs, overconfidence).",
+      "icon": "psychology",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "ai-tool-mental-model-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "ai-tool-categories",
+      "label": "AI Tool Categories",
+      "description": "Distinguish chat assistants, IDE-integrated copilots, and CLI/agentic coding tools, and choose the right one deliberately based on task size and risk — from a syntax question to a high-risk production change.",
+      "icon": "smart_toy",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "ai-tool-categories-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ai-tool-mental-model"]
+    },
+    {
+      "id": "prompt-construction",
+      "label": "Prompt Construction",
+      "description": "Write task prompts that state the goal, relevant context, constraints, non-goals, and a clear definition of done, and ask the assistant to investigate before proposing a large change to an uncertain problem.",
+      "icon": "edit_note",
+      "zone": "Working with AI",
+      "resources": [
+        {
+          "id": "prompt-construction-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["ai-tool-categories"]
+    },
+    {
+      "id": "context-engineering",
+      "label": "Context Engineering",
+      "description": "Treat context as a limited resource — supplying relevant files, tests, and error output progressively rather than dumping a whole repository — and keep context hygienic by correcting stale assumptions and starting fresh when a conversation becomes misleading.",
+      "icon": "memory",
+      "zone": "Working with AI",
+      "resources": [
+        {
+          "id": "context-engineering-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["prompt-construction"]
+    },
+    {
+      "id": "repository-exploration",
+      "label": "Repository Exploration",
+      "description": "Learn an unfamiliar repository before changing it by following entry points, structure, and tests, and use AI-assisted search and questioning to build an accurate local mental model rather than guessing.",
+      "icon": "travel_explore",
+      "zone": "Working with AI",
+      "resources": [
+        {
+          "id": "repository-exploration-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["context-engineering"]
+    },
+    {
+      "id": "task-decomposition",
+      "label": "Task Decomposition",
+      "description": "Break large work into small, independently verifiable units, separate planning from execution with an explicit review step, and keep diffs small enough to understand, test, and revert.",
+      "icon": "checklist",
+      "zone": "Working with AI",
+      "resources": [
+        {
+          "id": "task-decomposition-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["repository-exploration"]
+    },
+    {
+      "id": "explanation-and-learning",
+      "label": "Explanation & Learning",
+      "description": "Use AI as a tutor to explain unfamiliar code and translate terse documentation, while avoiding passive copying by explaining, predicting, and reproducing important patterns yourself.",
+      "icon": "school",
+      "zone": "Development Practices",
+      "resources": [
+        {
+          "id": "explanation-and-learning-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["task-decomposition"]
+    },
+    {
+      "id": "code-generation-and-refactoring",
+      "label": "Code Generation & Refactoring",
+      "description": "Generate bounded, well-scoped code that fits existing naming and architecture conventions, and use AI to refactor safely — establishing tests as a baseline first and requiring a diff-level explanation of behavioral impact.",
+      "icon": "code",
+      "zone": "Development Practices",
+      "resources": [
+        {
+          "id": "code-generation-and-refactoring-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["explanation-and-learning"]
+    },
+    {
+      "id": "debugging-and-testing-with-ai",
+      "label": "Debugging & Testing with AI",
+      "description": "Supply reproducible evidence (errors, stack traces, recent changes) for hypothesis-driven AI-assisted debugging instead of shotgun-fixing, and treat AI-generated tests with the same scrutiny as production code since they can assert the implementation instead of the requirement.",
+      "icon": "bug_report",
+      "zone": "Development Practices",
+      "resources": [
+        {
+          "id": "debugging-and-testing-with-ai-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["code-generation-and-refactoring"]
+    },
+    {
+      "id": "verification-and-git-safety",
+      "label": "Verification & Git Safety",
+      "description": "Climb a verification ladder from reading the diff through compiling, testing, and manual checks proportional to a change's impact, and use Git status/diff/commit as a safety boundary that makes AI-driven changes easy to inspect and revert.",
+      "icon": "verified",
+      "zone": "Verification",
+      "resources": [
+        {
+          "id": "verification-and-git-safety-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["debugging-and-testing-with-ai"]
+    },
+    {
+      "id": "agentic-coding",
+      "label": "Agentic Coding",
+      "description": "Understand the inspect-plan-edit-run-observe agent loop, grant only the permission level a task actually needs, and define explicit stop conditions for destructive, ambiguous, or high-risk decisions.",
+      "icon": "smart_toy",
+      "zone": "Agentic Workflows",
+      "resources": [
+        {
+          "id": "agentic-coding-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["verification-and-git-safety"]
+    },
+    {
+      "id": "retrieval-and-tool-calling",
+      "label": "Retrieval & Tool Calling",
+      "description": "Explain why coding tools retrieve repository context (search, indexing, RAG) beyond what fits in one request, and evaluate tool-calling and MCP integrations by what capability, data access, and permissions they actually grant.",
+      "icon": "hub",
+      "zone": "Agentic Workflows",
+      "resources": [
+        {
+          "id": "retrieval-and-tool-calling-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["agentic-coding"]
+    },
+    {
+      "id": "hallucinations-and-security",
+      "label": "Hallucinations & Security",
+      "description": "Recognize common coding hallucinations such as nonexistent methods or invented flags and demand evidence for claims, and apply security discipline — protecting secrets, treating repository content as untrusted, and scrutinizing destructive actions and suggested dependencies.",
+      "icon": "security",
+      "zone": "Trust & Safety",
+      "resources": [
+        {
+          "id": "hallucinations-and-security-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["retrieval-and-tool-calling"]
+    },
+    {
+      "id": "privacy-and-efficiency",
+      "label": "Privacy & Efficiency",
+      "description": "Respect organizational policy on what data and code a given AI tool is approved to see, and use AI where it has real leverage — repetitive, reviewable, testable work — while avoiding endless failing agent loops.",
+      "icon": "policy",
+      "zone": "Trust & Safety",
+      "resources": [
+        {
+          "id": "privacy-and-efficiency-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["hallucinations-and-security"]
+    },
+    {
+      "id": "professional-workflow",
+      "label": "Professional Workflow",
+      "description": "Follow a disciplined loop of clean Git state, AI investigation, plan review, small verified implementation, and diff inspection before committing, and be able to personally explain why, how, and how-tested every accepted change is.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "professional-workflow-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["privacy-and-efficiency"]
+    }
+  ],
+  "edges": [
+    { "id": "e-ai-tool-mental-model-ai-tool-categories", "source": "ai-tool-mental-model", "target": "ai-tool-categories" },
+    { "id": "e-ai-tool-categories-prompt-construction", "source": "ai-tool-categories", "target": "prompt-construction" },
+    { "id": "e-prompt-construction-context-engineering", "source": "prompt-construction", "target": "context-engineering" },
+    { "id": "e-context-engineering-repository-exploration", "source": "context-engineering", "target": "repository-exploration" },
+    { "id": "e-repository-exploration-task-decomposition", "source": "repository-exploration", "target": "task-decomposition" },
+    { "id": "e-task-decomposition-explanation-and-learning", "source": "task-decomposition", "target": "explanation-and-learning" },
+    { "id": "e-explanation-and-learning-code-generation-and-refactoring", "source": "explanation-and-learning", "target": "code-generation-and-refactoring" },
+    { "id": "e-code-generation-and-refactoring-debugging-and-testing-with-ai", "source": "code-generation-and-refactoring", "target": "debugging-and-testing-with-ai" },
+    { "id": "e-debugging-and-testing-with-ai-verification-and-git-safety", "source": "debugging-and-testing-with-ai", "target": "verification-and-git-safety" },
+    { "id": "e-verification-and-git-safety-agentic-coding", "source": "verification-and-git-safety", "target": "agentic-coding" },
+    { "id": "e-agentic-coding-retrieval-and-tool-calling", "source": "agentic-coding", "target": "retrieval-and-tool-calling" },
+    { "id": "e-retrieval-and-tool-calling-hallucinations-and-security", "source": "retrieval-and-tool-calling", "target": "hallucinations-and-security" },
+    { "id": "e-hallucinations-and-security-privacy-and-efficiency", "source": "hallucinations-and-security", "target": "privacy-and-efficiency" },
+    { "id": "e-privacy-and-efficiency-professional-workflow", "source": "privacy-and-efficiency", "target": "professional-workflow" }
+  ]
+}

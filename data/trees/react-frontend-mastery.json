@@ -1,0 +1,357 @@
+{
+  "treeId": "react-frontend-mastery",
+  "order": 34,
+  "title": "React Frontend Development Mastery",
+  "category": "Technology",
+  "difficulty": "medium",
+  "description": "Progress from zero React knowledge to building, testing, and reasoning about production React + TypeScript frontends that integrate with a REST API backend.",
+  "version": "1.0",
+  "estimatedMonths": 1.5,
+  "totalNodes": 17,
+  "icon": "widgets",
+  "nodes": [
+    {
+      "id": "react-orientation",
+      "label": "React Orientation",
+      "description": "Understand what React is and is not — a declarative UI library rather than a full framework — and how it relates to companion tools like React Router, Vite, and state libraries, distinguishing React from Angular's all-in-one approach.",
+      "icon": "hub",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "react-orientation-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": []
+    },
+    {
+      "id": "project-setup-tooling",
+      "label": "Project Setup & Tooling",
+      "description": "Scaffold a React + TypeScript project with Vite, recognize the purpose of package.json, tsconfig, and the src/public layout, and understand how source code is transformed into deployable HTML/CSS/JS assets.",
+      "icon": "build",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "project-setup-tooling-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["react-orientation"]
+    },
+    {
+      "id": "jsx-tsx",
+      "label": "JSX & TSX",
+      "description": "Write JSX/TSX to describe UI declaratively inside JavaScript/TypeScript, including expressions, attributes, className, fragments, conditional rendering, and keyed list rendering.",
+      "icon": "code",
+      "zone": "Foundations",
+      "resources": [
+        {
+          "id": "jsx-tsx-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["project-setup-tooling"]
+    },
+    {
+      "id": "components-composition",
+      "label": "Components & Composition",
+      "description": "Build function components, structure a component tree by responsibility and reuse, pass and type props including children and callback props, and choose stable keys that preserve component identity across renders.",
+      "icon": "widgets",
+      "zone": "Core Concepts",
+      "resources": [
+        {
+          "id": "components-composition-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["jsx-tsx"]
+    },
+    {
+      "id": "state-and-events",
+      "label": "State & Events",
+      "description": "Handle DOM events correctly, manage local state with useState and functional updates, update objects and arrays immutably, distinguish true state from derived state, and lift state to the nearest common ancestor to build controlled inputs.",
+      "icon": "bolt",
+      "zone": "Core Concepts",
+      "resources": [
+        {
+          "id": "state-and-events-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["components-composition"]
+    },
+    {
+      "id": "core-hooks",
+      "label": "Core Hooks",
+      "description": "Master the Rules of Hooks and apply useEffect to synchronize with external systems with correct dependencies and cleanup, recognize when an effect is unnecessary, and use useRef for DOM access and persistent mutable values.",
+      "icon": "sync",
+      "zone": "Hooks & State Management",
+      "resources": [
+        {
+          "id": "core-hooks-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["state-and-events"]
+    },
+    {
+      "id": "context-reducers-custom-hooks",
+      "label": "Context, Reducers & Custom Hooks",
+      "description": "Distribute values through a component tree with useContext to avoid prop drilling, model complex state transitions with useReducer, combine context and reducer as a shared-state pattern, and package reusable behavior into custom hooks.",
+      "icon": "account_tree",
+      "zone": "Hooks & State Management",
+      "resources": [
+        {
+          "id": "context-reducers-custom-hooks-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["core-hooks"]
+    },
+    {
+      "id": "rendering-model-strict-mode",
+      "label": "Rendering Model & Strict Mode",
+      "description": "Explain React's render/reconcile/commit cycle, how component identity and keys affect state preservation versus reset, why rendering must stay pure, and what Strict Mode reveals about unsafe effects.",
+      "icon": "layers",
+      "zone": "Hooks & State Management",
+      "resources": [
+        {
+          "id": "rendering-model-strict-mode-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["core-hooks"]
+    },
+    {
+      "id": "async-data-fetching",
+      "label": "Async Data Fetching",
+      "description": "Fetch data with the browser fetch API, model async request state as idle/loading/success/error, isolate transport logic into API modules, understand the gap between TypeScript types and runtime validation, and prevent race conditions with AbortController.",
+      "icon": "api",
+      "zone": "Data & Integration",
+      "resources": [
+        {
+          "id": "async-data-fetching-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["context-reducers-custom-hooks"]
+    },
+    {
+      "id": "forms-and-routing",
+      "label": "Forms & Routing",
+      "description": "Build controlled and uncontrolled forms with validation, submission, and error states, then add client-side routing with paths, params, nested routes, and lazy-loaded routes — while treating frontend route guards as UX only, not security.",
+      "icon": "alt_route",
+      "zone": "Data & Integration",
+      "resources": [
+        {
+          "id": "forms-and-routing-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["async-data-fetching"]
+    },
+    {
+      "id": "state-architecture",
+      "label": "Shared State Architecture",
+      "description": "Choose the right level of state ownership by progressing from local state through lifting, context, and reducers before reaching for an external state library, and distinguish client state from server state.",
+      "icon": "hive",
+      "zone": "Architecture & Performance",
+      "resources": [
+        {
+          "id": "state-architecture-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["forms-and-routing"]
+    },
+    {
+      "id": "performance-optimization",
+      "label": "Performance Optimization",
+      "description": "Apply useMemo, useCallback, and React.memo only after measuring a real problem, and understand lazy loading, code splitting, and Suspense for deferring work until it is needed.",
+      "icon": "speed",
+      "zone": "Architecture & Performance",
+      "resources": [
+        {
+          "id": "performance-optimization-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rendering-model-strict-mode"]
+    },
+    {
+      "id": "legacy-react-and-angular-comparison",
+      "label": "Legacy React & Angular Comparison",
+      "description": "Recognize legacy class-component patterns such as lifecycle methods, higher-order components, and render props well enough to read old code, and map React's concepts against Angular's component/service/DI model.",
+      "icon": "history",
+      "zone": "Architecture & Performance",
+      "resources": [
+        {
+          "id": "legacy-react-and-angular-comparison-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["rendering-model-strict-mode"]
+    },
+    {
+      "id": "security-and-networking",
+      "label": "Security & Networking",
+      "description": "Apply frontend security boundaries — output escaping versus dangerouslySetInnerHTML, never shipping secrets to the browser, authentication versus authorization — and understand development proxies versus CORS when calling a backend API.",
+      "icon": "security",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "security-and-networking-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["async-data-fetching"]
+    },
+    {
+      "id": "testing-and-accessibility",
+      "label": "Testing & Accessibility",
+      "description": "Test components by rendering them and interacting as a user would with React Testing Library, covering async states and mocked API boundaries, and build accessible UI with semantic HTML, labels, and keyboard support.",
+      "icon": "verified",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "testing-and-accessibility-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["forms-and-routing"]
+    },
+    {
+      "id": "debugging",
+      "label": "Debugging React Apps",
+      "description": "Diagnose React problems — infinite renders/effects, stale closures, unstable keys, unexpected state resets, duplicate API calls — using browser and React DevTools, and localize failed network requests to the right layer of the stack.",
+      "icon": "bug_report",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "debugging-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["testing-and-accessibility"]
+    },
+    {
+      "id": "fullstack-architecture-capstone",
+      "label": "Full-Stack Architecture Capstone",
+      "description": "Explain the full request flow from a React component through a custom hook and API module across the HTTP boundary to a Spring Boot controller/service/repository, and build a complete React + TypeScript guestbook capstone against a REST API.",
+      "icon": "rocket_launch",
+      "zone": "Professional Practice",
+      "resources": [
+        {
+          "id": "fullstack-architecture-capstone-placeholder",
+          "title": "Placeholder resource — replace with a curated link",
+          "url": "https://www.geeksforgeeks.org/",
+          "type": "article",
+          "author": "TBD",
+          "estimatedHours": 1,
+          "isFree": true
+        }
+      ],
+      "requires": ["state-architecture", "security-and-networking", "debugging"]
+    }
+  ],
+  "edges": [
+    { "id": "e-react-orientation-project-setup-tooling", "source": "react-orientation", "target": "project-setup-tooling" },
+    { "id": "e-project-setup-tooling-jsx-tsx", "source": "project-setup-tooling", "target": "jsx-tsx" },
+    { "id": "e-jsx-tsx-components-composition", "source": "jsx-tsx", "target": "components-composition" },
+    { "id": "e-components-composition-state-and-events", "source": "components-composition", "target": "state-and-events" },
+    { "id": "e-state-and-events-core-hooks", "source": "state-and-events", "target": "core-hooks" },
+    { "id": "e-core-hooks-context-reducers-custom-hooks", "source": "core-hooks", "target": "context-reducers-custom-hooks" },
+    { "id": "e-core-hooks-rendering-model-strict-mode", "source": "core-hooks", "target": "rendering-model-strict-mode" },
+    { "id": "e-context-reducers-custom-hooks-async-data-fetching", "source": "context-reducers-custom-hooks", "target": "async-data-fetching" },
+    { "id": "e-async-data-fetching-forms-and-routing", "source": "async-data-fetching", "target": "forms-and-routing" },
+    { "id": "e-forms-and-routing-state-architecture", "source": "forms-and-routing", "target": "state-architecture" },
+    { "id": "e-rendering-model-strict-mode-performance-optimization", "source": "rendering-model-strict-mode", "target": "performance-optimization" },
+    { "id": "e-rendering-model-strict-mode-legacy-react-and-angular-comparison", "source": "rendering-model-strict-mode", "target": "legacy-react-and-angular-comparison" },
+    { "id": "e-async-data-fetching-security-and-networking", "source": "async-data-fetching", "target": "security-and-networking" },
+    { "id": "e-forms-and-routing-testing-and-accessibility", "source": "forms-and-routing", "target": "testing-and-accessibility" },
+    { "id": "e-testing-and-accessibility-debugging", "source": "testing-and-accessibility", "target": "debugging" },
+    { "id": "e-state-architecture-fullstack-architecture-capstone", "source": "state-architecture", "target": "fullstack-architecture-capstone" },
+    { "id": "e-security-and-networking-fullstack-architecture-capstone", "source": "security-and-networking", "target": "fullstack-architecture-capstone" },
+    { "id": "e-debugging-fullstack-architecture-capstone", "source": "debugging", "target": "fullstack-architecture-capstone" }
+  ]
+}
