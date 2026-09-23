@@ -42,6 +42,24 @@ them, so after renaming a field, reset the local database with
 Stop the database with `docker compose down`. The data is kept in a Docker
 volume; add `-v` to delete it too.
 
+## API
+
+All endpoints are under `/api/v1` and exchange JSON. There's no login yet: every
+request acts as a single default user (`demo`). Errors are returned as
+[RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) problem responses
+(`application/problem+json`).
+
+| Method & path | Purpose |
+|---|---|
+| `GET/POST /nodes`, `GET/PUT/DELETE /nodes/{id}` | Node library. Deleting a node that a tree still uses returns 409 and lists those trees. |
+| `GET/POST /trees`, `GET/PUT/DELETE /trees/{id}` | Tree metadata. Deleting a tree also removes its placements and edges, but not library nodes. |
+| `GET/POST /trees/{treeId}/nodes`, `GET/PUT/DELETE /trees/{treeId}/nodes/{treeNodeId}` | Library nodes placed in a tree, with position and readiness thresholds. |
+| `GET/POST /trees/{treeId}/prerequisites`, `DELETE /trees/{treeId}/prerequisites/{id}` | Prerequisite edges. Self-edges (400), duplicates (409) and cycles (409) are refused. |
+
+Tree node ids and library node ids are different: `/trees/{treeId}/nodes/{treeNodeId}`
+and prerequisite edges use tree node ids, and each tree node response includes the
+library `nodeId`.
+
 ## Tests
 
 ```bash

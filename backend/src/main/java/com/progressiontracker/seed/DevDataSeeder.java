@@ -2,9 +2,6 @@ package com.progressiontracker.seed;
 
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -15,62 +12,77 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.progressiontracker.node.Node;
 import com.progressiontracker.node.NodeLink;
+import com.progressiontracker.node.NodeRepository;
 import com.progressiontracker.tree.Prerequisite;
+import com.progressiontracker.tree.PrerequisiteRepository;
 import com.progressiontracker.tree.Tree;
 import com.progressiontracker.tree.TreeNode;
+import com.progressiontracker.tree.TreeNodeRepository;
+import com.progressiontracker.tree.TreeRepository;
+import com.progressiontracker.user.CurrentUserService;
 import com.progressiontracker.user.User;
 
 /**
- * Loads a small hand-written data set for local development. Runs only with the
- * {@code dev} profile, and does nothing if the demo user already exists, so restarting
- * against the persistent docker-compose database doesn't duplicate data.
+ * Loads a small hand-written data set for local development, owned by the default user
+ * the API acts as. Runs only with the {@code dev} profile, and does nothing if that user
+ * already has any nodes or trees, so restarting against the persistent docker-compose
+ * database doesn't duplicate data.
  * <p>
- * Contents: one user, a seven-node library (one node not in any tree), and two trees
- * that share the "Object-Oriented Programming" node.
+ * Contents: a seven-node library (one node not in any tree), and two trees that share the
+ * "Object-Oriented Programming" node.
  */
 @Component
 @Profile("dev")
 public class DevDataSeeder implements ApplicationRunner {
 
-	public static final String DEMO_USERNAME = "demo";
-
 	private static final Logger log = LoggerFactory.getLogger(DevDataSeeder.class);
 
-	@PersistenceContext
-	private EntityManager em;
+	private final CurrentUserService currentUser;
+
+	private final NodeRepository nodes;
+
+	private final TreeRepository trees;
+
+	private final TreeNodeRepository treeNodes;
+
+	private final PrerequisiteRepository prerequisites;
+
+	public DevDataSeeder(CurrentUserService currentUser, NodeRepository nodes, TreeRepository trees,
+			TreeNodeRepository treeNodes, PrerequisiteRepository prerequisites) {
+		this.currentUser = currentUser;
+		this.nodes = nodes;
+		this.trees = trees;
+		this.treeNodes = treeNodes;
+		this.prerequisites = prerequisites;
+	}
 
 	@Override
 	@Transactional
 	public void run(ApplicationArguments args) {
-		boolean alreadySeeded = !em.createQuery("select u.id from User u where u.username = :username", Long.class)
-			.setParameter("username", DEMO_USERNAME)
-			.getResultList()
-			.isEmpty();
-		if (alreadySeeded) {
-			log.info("Dev seed data already present; skipping");
+		User user = currentUser.getCurrentUser();
+		if (nodes.existsByOwner(user) || trees.existsByOwner(user)) {
+			log.info("User '{}' already has data; skipping dev seed", user.getUsername());
 			return;
 		}
 
-		User demo = persist(new User(DEMO_USERNAME));
-
-		Node syntax = node(demo, "Java Syntax Basics", "Variables, types, operators and control flow.", 95,
+		Node syntax = node(user, "Java Syntax Basics", "Variables, types, operators and control flow.", 95,
 				new NodeLink("https://dev.java/learn/language-basics/", "dev.java: Language Basics"));
-		Node oop = node(demo, "Object-Oriented Programming", "Classes, interfaces, inheritance and polymorphism.", 80,
+		Node oop = node(user, "Object-Oriented Programming", "Classes, interfaces, inheritance and polymorphism.", 80,
 				new NodeLink("https://dev.java/learn/classes-objects/", "dev.java: Classes and Objects"));
-		Node collections = node(demo, "Collections Framework", "List, Set, Map and their common implementations.", 65);
-		Node generics = node(demo, "Generics", "Type parameters, bounded types and wildcards.", 40);
-		Node streams = node(demo, "Streams API", "Functional-style operations on sequences of elements.", 15);
-		Node springCore = node(demo, "Spring Core", "Dependency injection and the application context.", 30,
+		Node collections = node(user, "Collections Framework", "List, Set, Map and their common implementations.", 65);
+		Node generics = node(user, "Generics", "Type parameters, bounded types and wildcards.", 40);
+		Node streams = node(user, "Streams API", "Functional-style operations on sequences of elements.", 15);
+		Node springCore = node(user, "Spring Core", "Dependency injection and the application context.", 30,
 				new NodeLink("https://docs.spring.io/spring-framework/reference/core.html", "Spring Framework: Core"));
-		node(demo, "Maven Basics", "Library-only node: not placed in any tree.", 50);
+		node(user, "Maven Basics", "Library-only node: not placed in any tree.", 50);
 
-		Tree javaTree = tree(demo, "Java Fundamentals", "Core language skills, in rough learning order.",
+		Tree javaTree = tree(user, "Java Fundamentals", "Core language skills, in rough learning order.",
 				"Technology", "java", "backend");
-		TreeNode jSyntax = persist(new TreeNode(javaTree, syntax, 0, 0));
-		TreeNode jOop = persist(new TreeNode(javaTree, oop, 0, 150));
-		TreeNode jCollections = persist(new TreeNode(javaTree, collections, -150, 300));
-		TreeNode jGenerics = persist(new TreeNode(javaTree, generics, 150, 300));
-		TreeNode jStreams = persist(new TreeNode(javaTree, streams, 0, 450));
+		TreeNode jSyntax = place(javaTree, syntax, 0, 0);
+		TreeNode jOop = place(javaTree, oop, 0, 150);
+		TreeNode jCollections = place(javaTree, collections, -150, 300);
+		TreeNode jGenerics = place(javaTree, generics, 150, 300);
+		TreeNode jStreams = place(javaTree, streams, 0, 450);
 		// Stricter than the 80/70 defaults, to exercise per-node thresholds
 		jStreams.setAggregateThreshold(85);
 		jStreams.setIndividualThreshold(75);
@@ -80,13 +92,13 @@ public class DevDataSeeder implements ApplicationRunner {
 		edge(jCollections, jStreams);
 		edge(jGenerics, jStreams);
 
-		Tree springTree = tree(demo, "Spring Basics", "Getting started with the Spring Framework.", "Technology",
+		Tree springTree = tree(user, "Spring Basics", "Getting started with the Spring Framework.", "Technology",
 				"spring", "backend");
-		TreeNode sOop = persist(new TreeNode(springTree, oop, 0, 0));
-		TreeNode sSpringCore = persist(new TreeNode(springTree, springCore, 0, 150));
+		TreeNode sOop = place(springTree, oop, 0, 0);
+		TreeNode sSpringCore = place(springTree, springCore, 0, 150);
 		edge(sOop, sSpringCore);
 
-		log.info("Seeded dev data for user '{}'", DEMO_USERNAME);
+		log.info("Seeded dev data for user '{}'", user.getUsername());
 	}
 
 	private Node node(User owner, String title, String description, int readiness, NodeLink... links) {
@@ -94,7 +106,7 @@ public class DevDataSeeder implements ApplicationRunner {
 		node.setDescription(description);
 		node.setReadiness(readiness);
 		node.getLinks().addAll(List.of(links));
-		return persist(node);
+		return nodes.save(node);
 	}
 
 	private Tree tree(User owner, String title, String description, String category, String... tags) {
@@ -102,16 +114,15 @@ public class DevDataSeeder implements ApplicationRunner {
 		tree.setDescription(description);
 		tree.setCategory(category);
 		tree.getTags().addAll(List.of(tags));
-		return persist(tree);
+		return trees.save(tree);
+	}
+
+	private TreeNode place(Tree tree, Node node, double x, double y) {
+		return treeNodes.save(new TreeNode(tree, node, x, y));
 	}
 
 	private void edge(TreeNode prerequisite, TreeNode dependent) {
-		persist(new Prerequisite(prerequisite, dependent));
-	}
-
-	private <T> T persist(T entity) {
-		em.persist(entity);
-		return entity;
+		prerequisites.save(new Prerequisite(prerequisite, dependent));
 	}
 
 }
