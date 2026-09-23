@@ -85,7 +85,7 @@ A new system for creating and editing skill trees, in the same spirit as the exi
 **Database:** PostgreSQL
 **Schema management:** Hibernate `ddl-auto=update` (no Flyway for v1 — see Persistence above)
 **Frontend:** Angular, no component library for now (plain Angular features only)
-**Testing (frontend):** Jasmine, Karma
+**Testing (frontend):** Vitest (Angular's default runner since v21, running in jsdom). Chosen in Phase 3 over the originally planned Jasmine/Karma, since Karma is deprecated.
 **Testing (integration):** Real local PostgreSQL via Docker/Testcontainers — not an in-memory substitute.
 
 **API style — resolved this round (was round-5 Q3):** REST endpoints are prefixed **`/api/v1/...`** from day one (e.g. `GET /api/v1/trees/{id}/nodes`), rather than adding the prefix later.
@@ -140,7 +140,7 @@ Rebuilt from v5's draft, reflecting: Flyway dropped in favor of Hibernate `ddl-a
 - Angular project skeleton, plain Angular (no component library).
 - Node library CRUD: list/create/edit/delete nodes, manual readiness entry.
 - **Read-only** tree view: render an existing tree's nodes at their stored positions with prerequisite edges drawn, two-state (locked/ready) styling based on readiness thresholds. No drag, no edge creation yet.
-- Jasmine/Karma tests for components/services as they're built.
+- Vitest tests for components/services as they're built.
 
 ### Phase 4 — Frontend Tree Editing
 - Toolbar-driven canvas interaction model (per the UI decision above) so click-to-place isn't hardcoded.

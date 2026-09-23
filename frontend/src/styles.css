@@ -1,0 +1,25 @@
+/* Deliberately plain: UI polish is deferred for the proof of concept. */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.4;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.35rem 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.error {
+  color: #b00020;
+}
+
+.muted {
+  color: #666;
+}

@@ -1,0 +1,56 @@
+<h1>{{ id() ? 'Edit node' : 'New node' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <p>
+    <label>
+      Title<br />
+      <input formControlName="title" size="50" />
+    </label>
+    @if (form.controls.title.touched && form.controls.title.invalid) {
+      <br /><span class="error">Title is required (max 200 characters).</span>
+    }
+  </p>
+
+  <p>
+    <label>
+      Description<br />
+      <textarea formControlName="description" rows="3" cols="50"></textarea>
+    </label>
+  </p>
+
+  <p>
+    <label>
+      Readiness (0–100)<br />
+      <input type="range" min="0" max="100" formControlName="readiness" aria-label="Readiness slider" />
+      <input type="number" min="0" max="100" formControlName="readiness" />
+    </label>
+    @if (form.controls.readiness.invalid) {
+      <br /><span class="error">Readiness must be a whole number from 0 to 100.</span>
+    }
+  </p>
+
+  <fieldset formArrayName="links">
+    <legend>Links</legend>
+    @for (link of links.controls; track link; let i = $index) {
+      <div [formGroupName]="i">
+        <input formControlName="url" placeholder="https://…" size="40" [attr.aria-label]="'Link ' + (i + 1) + ' URL'" />
+        <input formControlName="label" placeholder="Label (optional)" [attr.aria-label]="'Link ' + (i + 1) + ' label'" />
+        <button type="button" (click)="removeLink(i)">Remove</button>
+        @if (link.controls.url.touched && link.controls.url.invalid) {
+          <span class="error">Enter an http(s) URL.</span>
+        }
+      </div>
+    }
+    <button type="button" (click)="addLink()">+ Add link</button>
+  </fieldset>
+
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  <p>
+    <button type="submit" [disabled]="saving()">Save</button>
+    &nbsp;
+    <a [routerLink]="safeReturnUrl()">Cancel</a>
+  </p>
+</form>

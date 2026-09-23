@@ -9,7 +9,7 @@ into trees with prerequisite edges, and record a readiness value for each node.
 | Path        | Contents                                                           |
 |-------------|--------------------------------------------------------------------|
 | `backend/`  | Spring Boot REST API (Java 21, Maven, Spring Data JPA, PostgreSQL) |
-| `frontend/` | Angular app (added in a later phase)                               |
+| `frontend/` | Angular 22 app (plain Angular, Vitest)                             |
 | `plans/`    | Project plan and reference skill-tree write-ups                    |
 | `data/`     | Reference skill-tree JSON files from the older app (not loaded at runtime) |
 
@@ -17,6 +17,7 @@ into trees with prerequisite edges, and record a readiness value for each node.
 
 - Java 21
 - Docker (for the local database and for integration tests)
+- Node.js 22+ and npm (for the frontend)
 
 Maven does not need to be installed; use the included wrapper, `./mvnw`.
 
@@ -33,6 +34,16 @@ cd backend
 # Or start it with sample data (a demo user, 7 nodes, 2 trees)
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
+
+Then, in another terminal, start the frontend (http://localhost:4200):
+
+```bash
+cd frontend
+npm install   # first time only
+npm start
+```
+
+The Angular dev server forwards `/api` requests to the backend on port 8080.
 
 Hibernate creates and updates the tables from the entity classes on startup
 (`ddl-auto=update`). It adds new tables and columns but never renames or drops
@@ -70,3 +81,8 @@ cd backend
 Integration tests use [Testcontainers](https://testcontainers.com/) to start a
 throwaway PostgreSQL container, so Docker must be running. They do not touch the
 database started by `docker compose`.
+
+```bash
+cd frontend
+npm test -- --watch=false   # Vitest specs, run once in a simulated browser (jsdom)
+```

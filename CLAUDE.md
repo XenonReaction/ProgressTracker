@@ -25,12 +25,22 @@ cd backend
 ./mvnw package                                           # build the jar into backend/target/
 ```
 
-There's no linter or formatter configured yet.
+Frontend, from `frontend/` (the backend must be running for `npm start` to show data):
+
+```bash
+npm install                                    # first time only
+npm start                                      # dev server on :4200; proxies /api to :8080 (proxy.conf.json)
+npm test -- --watch=false                      # all Vitest specs, once
+npm test -- --watch=false --include src/app/trees/readiness.spec.ts   # a single spec file
+npm run build                                  # production build into frontend/dist/
+```
+
+No linter is configured. The frontend has a Prettier config (`frontend/.prettierrc`); the backend has no formatter.
 
 ## Layout
 
 - `backend/`: Spring Boot 4.1 on Java 21, built with Maven (wrapper included). Base package is `com.progressiontracker`. Maven covers only the backend.
-- `frontend/`: the Angular app, which doesn't exist yet. The plan adds it in Phase 3. It will use npm and the Angular CLI with plain Angular (no component library) and Jasmine/Karma tests, and will be kept separate from the Maven build.
+- `frontend/`: Angular 22 app built with npm and the Angular CLI, separate from the Maven build. It uses plain Angular with no component library, and UI polish is deliberately deferred.
 - `plans/`: the project plan, plus `skill_tree_plans/*.md` as reference content.
 - `data/trees/*.json`, `data/schema.json`: skill trees in the format of the older SkillTreeOSS app. They're reference material only. The app doesn't load them, and they don't map directly onto the new model. Phase 1 seed data is written by hand.
 
@@ -54,10 +64,21 @@ Code is organized by feature package (`user`, `node`, `tree`), each with its own
 - **Errors:** throw `NotFoundException` (404), `BadRequestException` (400) or `ConflictException` (409, with optional extra properties such as the `trees` list when a node delete is refused). `ApiExceptionHandler` turns them into `ProblemDetail`, and bean-validation failures come back with an `errors` list of `{field, message}`. Database constraint violations are a 409 backstop, not the main way rules are checked.
 - **Edges:** `PrerequisiteService` checks self-edges, same-tree membership, duplicates and cycles (`PrerequisiteGraph`) in that order.
 
+## Frontend structure
+
+Standalone components, zoneless change detection, signals for state, reactive forms, and the 2025 file naming (`node-list.ts`, not `node-list.component.ts`).
+
+- `core/`: `api.models.ts` mirrors the backend's response and request records and must be kept in sync with them by hand. `NodeApi` and `TreeApi` are thin `HttpClient` wrappers using relative `/api/v1` URLs. `problem.ts` turns problem responses into messages. `test-data.ts` has `aNode()`/`aTreeNode()` builders for specs.
+- `nodes/`: the library list and a create/edit form. The form honours a `returnTo` query param, restricted to in-app paths, so "Edit readiness" from a tree comes back to that tree.
+- `trees/`: the tree list and the read-only `TreeView`, an inline SVG of boxes centred on the stored positions. `readiness.ts` holds the ready/locked rule and `tree-layout.ts` the view-box and edge geometry, both pure functions with their own specs.
+- **Routing:** route and query params bind to component `input()`s (`withComponentInputBinding`), so components read `id()` and never inject `ActivatedRoute`.
+- **Tests:** Vitest in jsdom through `ng test`, with Jasmine-style `describe`/`it`/`expect` globals and `vi` for spies. HTTP goes through `HttpTestingController`. Because the app is zoneless, call `await fixture.whenStable()` after flushing a request or changing inputs.
+
 ## Domain model (from the plan)
 
 - The schema supports multiple users from the start: data is owned by a `user_id`. The v1 experience is still single-user.
 - **Node:** lives in a per-user library, independent of any tree. It has a title, description, external links, a manual readiness value (integer 0–100) and `readiness_source_type` (only `'manual'` in Milestone 1, a hook with no logic behind it yet). Node detail views show both its prerequisites and the nodes that depend on it.
 - **Tree:** an arrangement of library nodes, with category, tags and description. The same node can appear in several trees.
+- **Ready vs locked** (computed client-side in `trees/readiness.ts`): a tree node is ready when it has no prerequisites, or when its prerequisites' readiness averages at least its `aggregateThreshold` and each one is at least its `individualThreshold`. Its own readiness doesn't count.
 - **TreeNode:** the tree-to-node association. It holds the x/y position and the node's two readiness thresholds for that tree: `aggregateThreshold` (default 80, the minimum average of its prerequisites) and `individualThreshold` (default 70, the minimum for each prerequisite). The thresholds are per node, not per edge; the user decided this in Phase 1. A node shows as "ready" only when both are met.
 - **Prerequisite:** a directed edge (`prerequisite` → `dependent`) between two TreeNodes in the same tree. The database blocks self-edges and duplicate edges. The same-tree rule and cycle prevention are enforced in `PrerequisiteService`, and the client checks for cycles too.

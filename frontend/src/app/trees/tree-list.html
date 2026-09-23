@@ -1,0 +1,32 @@
+<h1>Trees</h1>
+
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+@if (trees(); as trees) {
+  @if (trees.length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Tags</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (tree of trees; track tree.id) {
+          <tr>
+            <td><a [routerLink]="['/trees', tree.id]">{{ tree.title }}</a></td>
+            <td>{{ tree.category }}</td>
+            <td>{{ tree.tags.join(', ') }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No trees yet. Creating trees in the UI comes with tree editing (Phase 4).</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

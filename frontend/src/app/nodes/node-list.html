@@ -1,0 +1,48 @@
+<h1>Node library</h1>
+<p><a routerLink="/nodes/new">+ New node</a></p>
+
+@if (error(); as message) {
+  <div class="error" role="alert">
+    <p>{{ message }}</p>
+    @if (blockingTrees().length) {
+      <ul>
+        @for (tree of blockingTrees(); track tree.id) {
+          <li><a [routerLink]="['/trees', tree.id]">{{ tree.title }}</a></li>
+        }
+      </ul>
+    }
+  </div>
+}
+
+@if (nodes(); as nodes) {
+  @if (nodes.length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Readiness</th>
+          <th>Links</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (node of nodes; track node.id) {
+          <tr>
+            <td>{{ node.title }}</td>
+            <td><progress max="100" [value]="node.readiness"></progress> {{ node.readiness }}%</td>
+            <td>{{ node.links.length }}</td>
+            <td>
+              <a [routerLink]="['/nodes', node.id, 'edit']">Edit</a>
+              &nbsp;
+              <button type="button" (click)="delete(node)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No nodes yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

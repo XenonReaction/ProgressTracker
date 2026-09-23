@@ -1,0 +1,81 @@
+.layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+svg {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+}
+
+.edge {
+  stroke: #555;
+  stroke-width: 1.5;
+}
+
+marker path {
+  fill: #555;
+}
+
+.node {
+  cursor: pointer;
+}
+
+.node rect {
+  stroke-width: 2;
+}
+
+.node.ready rect {
+  fill: #e6f4ea;
+  stroke: #2e7d32;
+}
+
+.node.locked rect {
+  fill: #f1f1f1;
+  stroke: #999;
+  stroke-dasharray: 5 3;
+}
+
+.node.locked text {
+  fill: #777;
+}
+
+.node.selected rect {
+  stroke-width: 4;
+}
+
+.node:focus-visible {
+  outline: 2px solid #1565c0;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.readiness {
+  font-size: 12px;
+}
+
+.details {
+  min-width: 16rem;
+}
+
+.legend {
+  padding: 0 0.3rem;
+  border: 2px solid;
+  border-radius: 4px;
+}
+
+.legend.ready {
+  background: #e6f4ea;
+  border-color: #2e7d32;
+}
+
+.legend.locked {
+  background: #f1f1f1;
+  border-color: #999;
+  border-style: dashed;
+}
