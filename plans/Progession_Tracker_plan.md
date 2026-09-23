@@ -156,6 +156,13 @@ Added after Phase 3: the backend already supported tree CRUD (Phase 2), but no f
 - "Reset to auto-layout," gated behind a confirmation warning.
 - **Decided while building Phase 4:** every edit is saved to the backend immediately (no Save button; undo/redo stays with Milestone 2's revision history). The "Add node" tool either places an existing library node or creates a new library node (readiness 0) and places it in one step. Auto-layout positions are saved through one bulk backend endpoint, so either every node moves or none does.
 
+### Phase 4b — Containerized local run
+Added after Phase 4 so the whole app can be started with one command, without installing Java or Node. It's infrastructure, not a feature, and a first step toward the longer-term deployment goal under Hosting.
+- A Dockerfile for each layer. The backend builds the jar with Maven and runs it on a Java 21 runtime image. The frontend builds the Angular app with Node and serves it from nginx, which also forwards `/api` to the backend so the app keeps a single address.
+- `docker-compose.yml` gains `backend` and `frontend` services behind a Compose profile, so `docker compose --profile app up` starts everything. Plain `docker compose up` still starts only the database, for day-to-day development with live reload.
+- Everything runs against the same Postgres service and data volume as local development.
+- Still on `ddl-auto=update`. That's fine for a container on your own machine, but deploying anywhere else waits for the migration tool (Phase 5).
+
 ### Phase 5 — Milestone 2 candidates (not started yet)
 Deferred features that build on the Milestone 1 foundation, to be scoped in detail once Phases 1–4 are done:
 - Tree revision history (explicit commit action + in-session undo/redo).

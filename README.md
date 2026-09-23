@@ -13,7 +13,26 @@ into trees with prerequisite edges, and record a readiness value for each node.
 | `plans/`    | Project plan and reference skill-tree write-ups                    |
 | `data/`     | Reference skill-tree JSON files from the older app (not loaded at runtime) |
 
-## Prerequisites
+## Quick start (Docker only)
+
+With just Docker installed, one command builds and starts the database, backend and
+frontend:
+
+```bash
+docker compose --profile app up -d --build
+```
+
+Then open http://localhost:8081. The first build takes a minute or two; later ones are
+cached. Add `--build` again after changing code so the images are rebuilt.
+
+- To load the sample data into an empty database, start it with
+  `SPRING_PROFILES_ACTIVE=dev docker compose --profile app up -d --build`.
+- To stop everything, run `docker compose --profile app down`. Without `--profile app`,
+  only the database stops. Your data is kept in a Docker volume; add `-v` to delete it.
+
+The containers use the same database and data as the development setup below.
+
+## Prerequisites for development
 
 - Java 21
 - Docker (for the local database and for integration tests)
@@ -21,7 +40,7 @@ into trees with prerequisite edges, and record a readiness value for each node.
 
 Maven does not need to be installed; use the included wrapper, `./mvnw`.
 
-## Running locally
+## Running locally for development
 
 ```bash
 # 1. Start PostgreSQL

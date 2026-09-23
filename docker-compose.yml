@@ -1,4 +1,6 @@
-# Local development database. Start with: docker compose up -d
+# Local development database only:   docker compose up -d
+# Whole app (database, backend, UI):  docker compose --profile app up -d --build
+#   then open http://localhost:8081
 # Credentials are local-only; replace them before deploying anywhere.
 services:
   postgres:
@@ -12,6 +14,35 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U progressiontracker -d progressiontracker"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  backend:
+    profiles: [app]
+    build: ./backend
+    container_name: progression-tracker-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/progressiontracker
+      # Set to "dev" to load the sample data into an empty database:
+      #   SPRING_PROFILES_ACTIVE=dev docker compose --profile app up -d --build
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # No published port: the frontend's nginx forwards /api here. That keeps port 8080
+    # free for running the backend from the host with ./mvnw spring-boot:run.
+
+  frontend:
+    profiles: [app]
+    build: ./frontend
+    container_name: progression-tracker-frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
 
 volumes:
   postgres-data:

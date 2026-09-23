@@ -16,6 +16,9 @@ Everything runs from the repo root unless noted. Docker must be running.
 docker compose up -d          # local Postgres 18 on :5432 (db/user/password: progressiontracker)
 docker compose down           # stop it (add -v to delete the data volume)
 
+docker compose --profile app up -d --build   # whole app in containers at http://localhost:8081
+docker compose --profile app down            # stop it; plain `down` leaves the app containers running
+
 cd backend
 ./mvnw spring-boot:run                                   # run the API on :8080 against the compose DB
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev    # same, plus hand-written seed data (seed/DevDataSeeder)
@@ -36,6 +39,10 @@ npm run build                                  # production build into frontend/
 ```
 
 No linter is configured. The frontend has a Prettier config (`frontend/.prettierrc`); the backend has no formatter.
+
+## Containers (Phase 4b)
+
+`backend/Dockerfile` and `frontend/Dockerfile` are two-stage builds: Maven then a JRE, and Node then nginx. The `backend` and `frontend` Compose services sit behind the `app` profile so plain `docker compose up` stays database-only for development. The backend container gets its database URL from `SPRING_DATASOURCE_URL` and publishes no port (8080 stays free for `./mvnw spring-boot:run`). `frontend/nginx.conf` forwards `/api` to `backend:8080` and falls back to `index.html` for Angular routes, the same job `proxy.conf.json` does for `npm start`. Image builds skip tests because Testcontainers can't run inside a build.
 
 ## Layout
 
