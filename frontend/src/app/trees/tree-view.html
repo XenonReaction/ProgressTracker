@@ -7,6 +7,24 @@
   @if (tree.description) {
     <p>{{ tree.description }}</p>
   }
+  @if (tree.category || tree.tags.length) {
+    <p class="muted">
+      @if (tree.category) {
+        Category: {{ tree.category }}
+      }
+      @if (tree.category && tree.tags.length) {
+        ·
+      }
+      @if (tree.tags.length) {
+        Tags: {{ tree.tags.join(', ') }}
+      }
+    </p>
+  }
+  <p class="actions">
+    <a [routerLink]="['/trees', tree.id, 'edit']">Edit details</a>
+    &nbsp;
+    <button type="button" (click)="delete(tree)">Delete tree</button>
+  </p>
   <p class="muted">
     <span class="legend ready">Ready</span>: prerequisites meet this node's thresholds.
     <span class="legend locked">Locked</span>: not yet. Click a node for details.
@@ -88,7 +106,7 @@
       }
     </div>
   } @else {
-    <p class="muted">This tree has no nodes yet.</p>
+    <p class="muted">This tree has no nodes yet. Placing nodes comes with tree editing (Phase 4).</p>
   }
 } @else if (!error()) {
   <p class="muted">Loading…</p>

@@ -1,0 +1,50 @@
+<h1>{{ id() ? 'Edit tree' : 'New tree' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <p>
+    <label>
+      Title<br />
+      <input formControlName="title" size="50" />
+    </label>
+    @if (form.controls.title.touched && form.controls.title.invalid) {
+      <br /><span class="error">Title is required (max 200 characters).</span>
+    }
+  </p>
+
+  <p>
+    <label>
+      Description<br />
+      <textarea formControlName="description" rows="3" cols="50"></textarea>
+    </label>
+  </p>
+
+  <p>
+    <label>
+      Category<br />
+      <input formControlName="category" size="30" />
+    </label>
+    @if (form.controls.category.invalid) {
+      <br /><span class="error">Category can be at most 100 characters.</span>
+    }
+  </p>
+
+  <p>
+    <label>
+      Tags (comma-separated)<br />
+      <input formControlName="tags" size="50" placeholder="java, backend" />
+    </label>
+    @if (form.controls.tags.invalid) {
+      <br /><span class="error">Each tag can be at most {{ maxTagLength }} characters.</span>
+    }
+  </p>
+
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  <p>
+    <button type="submit" [disabled]="saving()">Save</button>
+    &nbsp;
+    <a [routerLink]="cancelUrl()">Cancel</a>
+  </p>
+</form>

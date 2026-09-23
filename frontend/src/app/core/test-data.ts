@@ -1,4 +1,4 @@
-import { Node, TreeNode } from './api.models';
+import { Node, Tree, TreeNode } from './api.models';
 
 /** Builders for specs; override only the fields a test cares about. */
 export function aNode(overrides: Partial<Node> = {}): Node {
@@ -9,6 +9,19 @@ export function aNode(overrides: Partial<Node> = {}): Node {
     readiness: 50,
     readinessSourceType: 'manual',
     links: [],
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
+export function aTree(overrides: Partial<Tree> = {}): Tree {
+  return {
+    id: 1,
+    title: 'Java Fundamentals',
+    description: null,
+    category: null,
+    tags: [],
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,

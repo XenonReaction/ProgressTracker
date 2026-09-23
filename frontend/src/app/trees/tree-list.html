@@ -1,4 +1,5 @@
 <h1>Trees</h1>
+<p><a routerLink="/trees/new">+ New tree</a></p>
 
 @if (error(); as message) {
   <p class="error" role="alert">{{ message }}</p>
@@ -12,6 +13,7 @@
           <th>Title</th>
           <th>Category</th>
           <th>Tags</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -20,12 +22,17 @@
             <td><a [routerLink]="['/trees', tree.id]">{{ tree.title }}</a></td>
             <td>{{ tree.category }}</td>
             <td>{{ tree.tags.join(', ') }}</td>
+            <td>
+              <a [routerLink]="['/trees', tree.id, 'edit']">Edit</a>
+              &nbsp;
+              <button type="button" (click)="delete(tree)">Delete</button>
+            </td>
           </tr>
         }
       </tbody>
     </table>
   } @else {
-    <p class="muted">No trees yet. Creating trees in the UI comes with tree editing (Phase 4).</p>
+    <p class="muted">No trees yet.</p>
   }
 } @else if (!error()) {
   <p class="muted">Loading…</p>

@@ -70,7 +70,7 @@ Standalone components, zoneless change detection, signals for state, reactive fo
 
 - `core/`: `api.models.ts` mirrors the backend's response and request records and must be kept in sync with them by hand. `NodeApi` and `TreeApi` are thin `HttpClient` wrappers using relative `/api/v1` URLs. `problem.ts` turns problem responses into messages. `test-data.ts` has `aNode()`/`aTreeNode()` builders for specs.
 - `nodes/`: the library list and a create/edit form. The form honours a `returnTo` query param, restricted to in-app paths, so "Edit readiness" from a tree comes back to that tree.
-- `trees/`: the tree list and the read-only `TreeView`, an inline SVG of boxes centred on the stored positions. `readiness.ts` holds the ready/locked rule and `tree-layout.ts` the view-box and edge geometry, both pure functions with their own specs.
+- `trees/`: the tree list, `TreeForm` for tree metadata CRUD (Phase 3b; comma-separated tags parsed in `tags.ts`), and the read-only `TreeView`, an inline SVG of boxes centred on the stored positions. `readiness.ts` holds the ready/locked rule and `tree-layout.ts` the view-box and edge geometry, both pure functions with their own specs.
 - **Routing:** route and query params bind to component `input()`s (`withComponentInputBinding`), so components read `id()` and never inject `ActivatedRoute`.
 - **Tests:** Vitest in jsdom through `ng test`, with Jasmine-style `describe`/`it`/`expect` globals and `vi` for spies. HTTP goes through `HttpTestingController`. Because the app is zoneless, call `await fixture.whenStable()` after flushing a request or changing inputs.
 

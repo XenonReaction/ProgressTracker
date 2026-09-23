@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { NodeForm } from './nodes/node-form';
 import { NodeList } from './nodes/node-list';
+import { TreeForm } from './trees/tree-form';
 import { TreeList } from './trees/tree-list';
 import { TreeView } from './trees/tree-view';
 
@@ -11,6 +12,8 @@ export const routes: Routes = [
   { path: 'nodes/new', component: NodeForm, title: 'New node' },
   { path: 'nodes/:id/edit', component: NodeForm, title: 'Edit node' },
   { path: 'trees', component: TreeList, title: 'Trees' },
+  { path: 'trees/new', component: TreeForm, title: 'New tree' },
+  { path: 'trees/:id/edit', component: TreeForm, title: 'Edit tree' },
   { path: 'trees/:id', component: TreeView, title: 'Tree' },
   { path: '**', redirectTo: 'nodes' },
 ];

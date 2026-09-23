@@ -33,6 +33,13 @@ export interface Tree {
   updatedAt: string;
 }
 
+export interface TreeRequest {
+  title: string;
+  description: string | null;
+  category: string | null;
+  tags: string[];
+}
+
 /**
  * A library node placed in a tree. `id` is the tree node id; `nodeId` is the library node.
  * `prerequisiteIds` / `dependentIds` are tree node ids in the same tree.

@@ -1,10 +1,11 @@
 import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 import { Tree, TreeNode } from '../core/api.models';
 import { errorMessage } from '../core/problem';
 import { TreeApi } from '../core/tree-api';
+import { confirmTreeDelete } from './confirm-delete';
 import { ReadinessState, readinessState } from './readiness';
 import { NODE_HEIGHT, NODE_WIDTH, edgeLines, viewBoxFor } from './tree-layout';
 
@@ -20,6 +21,7 @@ import { NODE_HEIGHT, NODE_WIDTH, edgeLines, viewBoxFor } from './tree-layout';
 })
 export class TreeView implements OnInit {
   private readonly treeApi = inject(TreeApi);
+  private readonly router = inject(Router);
 
   /** Route param. */
   readonly id = input.required<string>();
@@ -51,6 +53,17 @@ export class TreeView implements OnInit {
         this.tree.set(tree);
         this.treeNodes.set(treeNodes);
       },
+      error: (error) => this.error.set(errorMessage(error)),
+    });
+  }
+
+  protected delete(tree: Tree): void {
+    if (!confirmTreeDelete(tree.title)) {
+      return;
+    }
+    this.error.set(null);
+    this.treeApi.delete(tree.id).subscribe({
+      next: () => this.router.navigateByUrl('/trees'),
       error: (error) => this.error.set(errorMessage(error)),
     });
   }

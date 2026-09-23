@@ -109,7 +109,7 @@ Milestone 1 stays **pure CRUD**:
 - Trees, nodes, tree-node associations (positions, per-node thresholds, prerequisite edges).
 - Manually entered readiness values only — no derived/linked-tree readiness yet.
 - No revision history yet.
-- Backend CRUD + unit tests, plus a minimal frontend pass (node-library CRUD, manual readiness entry, read-only tree viewing — canvas editing is its own later phase).
+- Backend CRUD + unit tests, plus a minimal frontend pass (node-library CRUD, manual readiness entry, tree CRUD for metadata, read-only tree viewing — canvas editing is its own later phase).
 
 Revision history and tree-linking/readiness-aggregation are real, wanted features, but are pushed to **Milestone 2+** once basic CRUD is proven out. The data model should still be *shaped* to accommodate them later, without actually building them now.
 
@@ -141,6 +141,14 @@ Rebuilt from v5's draft, reflecting: Flyway dropped in favor of Hibernate `ddl-a
 - Node library CRUD: list/create/edit/delete nodes, manual readiness entry.
 - **Read-only** tree view: render an existing tree's nodes at their stored positions with prerequisite edges drawn, two-state (locked/ready) styling based on readiness thresholds. No drag, no edge creation yet.
 - Vitest tests for components/services as they're built.
+
+### Phase 3b — Frontend Tree CRUD
+Added after Phase 3: the backend already supported tree CRUD (Phase 2), but no frontend phase covered it, and Phase 4 assumes a tree already exists to edit.
+- Create a tree: title, description, category and tags.
+- Edit a tree's metadata (not its contents; placing nodes and edges is Phase 4).
+- Delete a tree, behind a confirmation warning that it also removes the tree's node placements and prerequisite edges. Library nodes are kept.
+- Reachable from the tree list and from the read-only tree view.
+- Vitest tests for the new form and actions.
 
 ### Phase 4 — Frontend Tree Editing
 - Toolbar-driven canvas interaction model (per the UI decision above) so click-to-place isn't hardcoded.

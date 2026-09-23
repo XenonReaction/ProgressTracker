@@ -1,9 +1,9 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 
-import { aTreeNode } from '../core/test-data';
+import { aTree, aTreeNode } from '../core/test-data';
 import { TreeView } from './tree-view';
 
 describe('TreeView', () => {
@@ -23,12 +23,17 @@ describe('TreeView', () => {
     page = fixture.nativeElement;
     fixture.componentRef.setInput('id', '4');
     await fixture.whenStable();
-    http.expectOne('/api/v1/trees/4').flush({ id: 4, title: 'Java Fundamentals', description: 'Core skills', category: null, tags: [], createdAt: '', updatedAt: '' });
+    http.expectOne('/api/v1/trees/4').flush(
+      aTree({ id: 4, title: 'Java Fundamentals', description: 'Core skills', category: 'Technology', tags: ['java'] }),
+    );
     http.expectOne('/api/v1/trees/4/nodes').flush([syntax, oop, streams]);
     await fixture.whenStable();
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.verify();
+    vi.restoreAllMocks();
+  });
 
   it('draws every node at its position and every edge', () => {
     expect(page.querySelector('h1')?.textContent).toBe('Java Fundamentals');
@@ -65,6 +70,35 @@ describe('TreeView', () => {
 
     expect(page.querySelector('aside')).toBeNull();
   });
+
+  it('shows the tree metadata with a link to edit it', () => {
+    expect(page.textContent).toContain('Category: Technology');
+    expect(page.textContent).toContain('Tags: java');
+    const edit = Array.from(page.querySelectorAll('a')).find((a) => a.textContent === 'Edit details');
+    expect(edit?.getAttribute('href')).toBe('/trees/4/edit');
+  });
+
+  it('deletes the tree after confirmation and returns to the tree list', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+
+    deleteButton().click();
+    http.expectOne({ method: 'DELETE', url: '/api/v1/trees/4' }).flush(null, { status: 204, statusText: 'No Content' });
+
+    expect(navigate).toHaveBeenCalledWith('/trees');
+  });
+
+  it('keeps the tree when the user cancels the delete', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    deleteButton().click();
+
+    http.expectNone({ method: 'DELETE' });
+  });
+
+  function deleteButton(): HTMLButtonElement {
+    return Array.from(page.querySelectorAll('button')).find((b) => b.textContent === 'Delete tree') as HTMLButtonElement;
+  }
 
   function nodes(): SVGGElement[] {
     return Array.from(page.querySelectorAll('g.node'));
