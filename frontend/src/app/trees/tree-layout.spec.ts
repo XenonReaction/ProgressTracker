@@ -11,17 +11,19 @@ describe('tree layout', () => {
     expect(box.y + box.height).toBeGreaterThanOrEqual(300 + NODE_HEIGHT / 2);
   });
 
-  it('has an empty view box for an empty tree', () => {
-    expect(viewBoxFor([])).toEqual({ x: 0, y: 0, width: 0, height: 0 });
+  it('gives an empty tree a canvas to click on', () => {
+    const box = viewBoxFor([]);
+    expect(box.width).toBeGreaterThan(0);
+    expect(box.height).toBeGreaterThan(0);
   });
 
   it('draws each edge between box edges, from prerequisite to dependent', () => {
-    const top = aTreeNode({ id: 1, positionX: 0, positionY: 0, dependentIds: [2] });
-    const bottom = aTreeNode({ id: 2, positionX: 0, positionY: 200, prerequisiteIds: [1] });
+    const top = aTreeNode({ id: 1, positionX: 0, positionY: 0 });
+    const bottom = aTreeNode({ id: 2, positionX: 0, positionY: 200 });
 
-    const [edge] = edgeLines([top, bottom], new Map([[1, top], [2, bottom]]));
+    const [edge] = edgeLines([{ id: 7, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 2 }], new Map([[1, top], [2, bottom]]));
 
-    expect(edge.key).toBe('1-2');
+    expect(edge.id).toBe(7);
     expect(edge.from.x).toBe(0);
     expect(edge.from.y).toBeCloseTo(NODE_HEIGHT / 2);
     expect(edge.to.x).toBe(0);
@@ -30,12 +32,17 @@ describe('tree layout', () => {
 
   it('clips diagonal edges to the box outline', () => {
     const a = aTreeNode({ id: 1, positionX: 0, positionY: 0 });
-    const b = aTreeNode({ id: 2, positionX: 400, positionY: 100, prerequisiteIds: [1] });
+    const b = aTreeNode({ id: 2, positionX: 400, positionY: 100 });
 
-    const [edge] = edgeLines([a, b], new Map([[1, a], [2, b]]));
+    const [edge] = edgeLines([{ id: 7, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 2 }], new Map([[1, a], [2, b]]));
 
     // Leaves through the right-hand side of the first box
     expect(edge.from.x).toBeCloseTo(NODE_WIDTH / 2);
     expect(Math.abs(edge.from.y)).toBeLessThanOrEqual(NODE_HEIGHT / 2);
+  });
+
+  it('skips edges whose ends are not in the tree', () => {
+    const a = aTreeNode({ id: 1 });
+    expect(edgeLines([{ id: 7, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 99 }], new Map([[1, a]]))).toEqual([]);
   });
 });

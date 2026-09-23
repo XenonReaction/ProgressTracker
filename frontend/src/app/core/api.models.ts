@@ -58,6 +58,34 @@ export interface TreeNode {
   dependentIds: number[];
 }
 
+export interface TreeNodeCreateRequest {
+  nodeId: number;
+  positionX: number;
+  positionY: number;
+  aggregateThreshold?: number;
+  individualThreshold?: number;
+}
+
+export interface TreeNodeUpdateRequest {
+  positionX: number;
+  positionY: number;
+  aggregateThreshold: number;
+  individualThreshold: number;
+}
+
+export interface TreeNodePosition {
+  treeNodeId: number;
+  positionX: number;
+  positionY: number;
+}
+
+/** A prerequisite edge; both ids are tree node ids. */
+export interface Prerequisite {
+  id: number;
+  prerequisiteTreeNodeId: number;
+  dependentTreeNodeId: number;
+}
+
 /** RFC 9457 problem response body, plus the extra properties the backend adds. */
 export interface Problem {
   status: number;

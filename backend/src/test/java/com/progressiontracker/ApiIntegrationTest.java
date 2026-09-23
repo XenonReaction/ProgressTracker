@@ -157,6 +157,28 @@ class ApiIntegrationTest {
 		assertThat(addEdge(tree, treeNode, treeNode)).hasStatus(HttpStatus.BAD_REQUEST);
 	}
 
+	@Test
+	void savesManyPositionsAtOnceOrNoneAtAll() {
+		long tree = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
+		long first = placeNode(tree, createNode("OOP", 50), "");
+		long second = placeNode(tree, createNode("Generics", 50), "");
+
+		MvcTestResult moved = put("/api/v1/trees/" + tree + "/nodes/positions", """
+				{"positions": [{"treeNodeId": %d, "positionX": 100, "positionY": 0},
+				               {"treeNodeId": %d, "positionX": 100, "positionY": 150}]}""".formatted(first, second));
+		assertThat(moved).hasStatusOk();
+		assertThat(moved).bodyJson().extractingPath("$[*].positionY").asArray().containsExactly(0.0, 150.0);
+
+		// One unknown id: nothing moves
+		MvcTestResult rejected = put("/api/v1/trees/" + tree + "/nodes/positions", """
+				{"positions": [{"treeNodeId": %d, "positionX": 999, "positionY": 999},
+				               {"treeNodeId": 999999, "positionX": 0, "positionY": 0}]}""".formatted(first));
+		assertThat(rejected).hasStatus(HttpStatus.NOT_FOUND);
+		assertThat(mvc.get().uri("/api/v1/trees/{tree}/nodes/{id}", tree, first)).bodyJson()
+			.extractingPath("$.positionX")
+			.isEqualTo(100.0);
+	}
+
 	private long createNode(String title, int readiness) {
 		return id(post("/api/v1/nodes", """
 				{"title": "%s", "readiness": %d}""".formatted(title, readiness)));

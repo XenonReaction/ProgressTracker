@@ -25,89 +25,136 @@
     &nbsp;
     <button type="button" (click)="delete(tree)">Delete tree</button>
   </p>
-  <p class="muted">
-    <span class="legend ready">Ready</span>: prerequisites meet this node's thresholds.
-    <span class="legend locked">Locked</span>: not yet. Click a node for details.
+
+  <div class="toolbar" role="toolbar" aria-label="Tree editing tools">
+    @for (t of tools; track t.id) {
+      <button type="button" [class.active]="tool() === t.id" [attr.aria-pressed]="tool() === t.id" (click)="setTool(t.id)">
+        {{ t.label }}
+      </button>
+    }
+    <span class="spacer"></span>
+    <button type="button" (click)="resetLayout()" [disabled]="!treeNodes().length">Reset to auto-layout</button>
+  </div>
+  <p class="muted hint">
+    {{ hint() }}
+    <span class="legend ready">Ready</span> = prerequisites meet the node's thresholds,
+    <span class="legend locked">Locked</span> = not yet.
   </p>
 
-  @if (treeNodes().length) {
-    <div class="layout">
-      <svg
-        [attr.viewBox]="viewBox().x + ' ' + viewBox().y + ' ' + viewBox().width + ' ' + viewBox().height"
-        [attr.width]="viewBox().width"
-        role="img"
-        [attr.aria-label]="'Skill tree ' + tree.title"
-      >
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" />
-          </marker>
-        </defs>
-        @for (edge of edges(); track edge.key) {
-          <line class="edge" [attr.x1]="edge.from.x" [attr.y1]="edge.from.y" [attr.x2]="edge.to.x" [attr.y2]="edge.to.y" marker-end="url(#arrow)" />
-        }
-        @for (treeNode of treeNodes(); track treeNode.id) {
-          <g
-            class="node"
-            [class]="stateOf(treeNode)"
-            [class.selected]="selectedId() === treeNode.id"
-            [attr.transform]="'translate(' + (treeNode.positionX - nodeWidth / 2) + ' ' + (treeNode.positionY - nodeHeight / 2) + ')'"
-            [attr.data-tree-node-id]="treeNode.id"
-            role="button"
-            tabindex="0"
-            [attr.aria-label]="treeNode.title + ', ' + treeNode.readiness + '% ready, ' + stateOf(treeNode)"
-            (click)="select(treeNode)"
-            (keydown.enter)="select(treeNode)"
-          >
-            <title>{{ treeNode.title }}</title>
-            <rect [attr.width]="nodeWidth" [attr.height]="nodeHeight" rx="6" />
-            <text [attr.x]="nodeWidth / 2" y="23" text-anchor="middle" class="title">{{ shortTitle(treeNode.title) }}</text>
-            <text [attr.x]="nodeWidth / 2" y="43" text-anchor="middle" class="readiness">{{ treeNode.readiness }}% · {{ stateOf(treeNode) }}</text>
-          </g>
-        }
-      </svg>
-
-      @if (selected(); as node) {
-        <aside class="details" aria-live="polite">
-          <h2>{{ node.title }}</h2>
-          <p>
-            Readiness: <strong>{{ node.readiness }}%</strong><br />
-            State: <strong>{{ stateOf(node) }}</strong><br />
-            Thresholds: prerequisites average ≥ {{ node.aggregateThreshold }}%, each ≥ {{ node.individualThreshold }}%
-          </p>
-          <h3>Needs</h3>
-          @if (titlesOf(node.prerequisiteIds); as needs) {
-            @if (needs.length) {
-              <ul>
-                @for (n of needs; track n.id) {
-                  <li>{{ n.title }} ({{ n.readiness }}%)</li>
-                }
-              </ul>
-            } @else {
-              <p class="muted">Nothing; this is a starting point.</p>
-            }
-          }
-          <h3>Unlocks</h3>
-          @if (titlesOf(node.dependentIds); as unlocks) {
-            @if (unlocks.length) {
-              <ul>
-                @for (n of unlocks; track n.id) {
-                  <li>{{ n.title }}</li>
-                }
-              </ul>
-            } @else {
-              <p class="muted">Nothing yet.</p>
-            }
-          }
-          <p>
-            <a [routerLink]="['/nodes', node.nodeId, 'edit']" [queryParams]="{ returnTo: '/trees/' + tree.id }">Edit readiness</a>
-          </p>
-        </aside>
+  <div class="layout">
+    <svg
+      #canvas
+      [class]="'tool-' + tool()"
+      [attr.viewBox]="viewBox().x + ' ' + viewBox().y + ' ' + viewBox().width + ' ' + viewBox().height"
+      [attr.width]="viewBox().width"
+      role="img"
+      [attr.aria-label]="'Skill tree ' + tree.title"
+      (click)="onCanvasClick($event)"
+      (mousemove)="onCanvasMouseMove($event)"
+      (mouseup)="onCanvasMouseUp()"
+      (mouseleave)="onCanvasMouseUp()"
+    >
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" />
+        </marker>
+      </defs>
+      <rect class="background" [attr.x]="viewBox().x" [attr.y]="viewBox().y" [attr.width]="viewBox().width" [attr.height]="viewBox().height" />
+      @for (edge of edgeLines(); track edge.id) {
+        <g class="edge" [attr.data-edge-id]="edge.id" (click)="onEdgeClick($event, edge.id)">
+          <line class="edge-line" [attr.x1]="edge.from.x" [attr.y1]="edge.from.y" [attr.x2]="edge.to.x" [attr.y2]="edge.to.y" marker-end="url(#arrow)" />
+          <!-- Wider invisible line so thin arrows are easy to click -->
+          <line class="edge-hit" [attr.x1]="edge.from.x" [attr.y1]="edge.from.y" [attr.x2]="edge.to.x" [attr.y2]="edge.to.y" />
+        </g>
       }
-    </div>
-  } @else {
-    <p class="muted">This tree has no nodes yet. Placing nodes comes with tree editing (Phase 4).</p>
-  }
+      @for (treeNode of treeNodes(); track treeNode.id) {
+        <g
+          class="node"
+          [class]="stateOf(treeNode)"
+          [class.selected]="selectedId() === treeNode.id"
+          [class.connect-from]="connectFromId() === treeNode.id"
+          [attr.transform]="'translate(' + (treeNode.positionX - nodeWidth / 2) + ' ' + (treeNode.positionY - nodeHeight / 2) + ')'"
+          [attr.data-tree-node-id]="treeNode.id"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="treeNode.title + ', ' + treeNode.readiness + '% ready, ' + stateOf(treeNode)"
+          (mousedown)="onNodeMouseDown($event, treeNode)"
+          (click)="onNodeActivate($event, treeNode)"
+          (keydown.enter)="onNodeActivate($event, treeNode)"
+        >
+          <title>{{ treeNode.title }}</title>
+          <rect [attr.width]="nodeWidth" [attr.height]="nodeHeight" rx="6" />
+          <text [attr.x]="nodeWidth / 2" y="23" text-anchor="middle" class="title">{{ shortTitle(treeNode.title) }}</text>
+          <text [attr.x]="nodeWidth / 2" y="43" text-anchor="middle" class="readiness">{{ treeNode.readiness }}% · {{ stateOf(treeNode) }}</text>
+        </g>
+      }
+      @if (pendingPoint(); as point) {
+        <circle class="pending" [attr.cx]="point.x" [attr.cy]="point.y" r="6" />
+      }
+    </svg>
+
+    @if (pendingPoint(); as point) {
+      <aside class="details">
+        <app-add-node-panel
+          [point]="point"
+          [nodes]="availableNodes()"
+          (placeExisting)="placeExisting($event)"
+          (createNew)="createAndPlace($event)"
+          (dismiss)="cancelPending()"
+        />
+      </aside>
+    } @else if (selected(); as node) {
+      <aside class="details" aria-live="polite">
+        <h2>{{ node.title }}</h2>
+        <p>
+          Readiness: <strong>{{ node.readiness }}%</strong><br />
+          State: <strong>{{ stateOf(node) }}</strong>
+        </p>
+
+        <form [formGroup]="thresholdForm" (ngSubmit)="saveThresholds(node)">
+          <p>
+            Ready when its prerequisites<br />
+            <label>average at least <input type="number" min="0" max="100" formControlName="aggregateThreshold" />%</label><br />
+            <label>and each is at least <input type="number" min="0" max="100" formControlName="individualThreshold" />%</label>
+          </p>
+          @if (thresholdForm.invalid) {
+            <p class="error">Thresholds must be whole numbers from 0 to 100.</p>
+          }
+          <button type="submit">Save thresholds</button>
+        </form>
+
+        <h3>Needs</h3>
+        @if (titlesOf(node.prerequisiteIds); as needs) {
+          @if (needs.length) {
+            <ul>
+              @for (n of needs; track n.id) {
+                <li>{{ n.title }} ({{ n.readiness }}%)</li>
+              }
+            </ul>
+          } @else {
+            <p class="muted">Nothing; this is a starting point.</p>
+          }
+        }
+        <h3>Unlocks</h3>
+        @if (titlesOf(node.dependentIds); as unlocks) {
+          @if (unlocks.length) {
+            <ul>
+              @for (n of unlocks; track n.id) {
+                <li>{{ n.title }}</li>
+              }
+            </ul>
+          } @else {
+            <p class="muted">Nothing yet.</p>
+          }
+        }
+        <p>
+          <a [routerLink]="['/nodes', node.nodeId, 'edit']" [queryParams]="{ returnTo: '/trees/' + tree.id }">Edit readiness</a>
+          &nbsp;
+          <button type="button" (click)="removeTreeNode(node)">Remove from tree</button>
+        </p>
+      </aside>
+    }
+  </div>
 } @else if (!error()) {
   <p class="muted">Loading…</p>
 }

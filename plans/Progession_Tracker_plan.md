@@ -154,6 +154,7 @@ Added after Phase 3: the backend already supported tree CRUD (Phase 2), but no f
 - Toolbar-driven canvas interaction model (per the UI decision above) so click-to-place isn't hardcoded.
 - Drag-to-position nodes on the canvas; draw/remove prerequisite edges; set per-node thresholds.
 - "Reset to auto-layout," gated behind a confirmation warning.
+- **Decided while building Phase 4:** every edit is saved to the backend immediately (no Save button; undo/redo stays with Milestone 2's revision history). The "Add node" tool either places an existing library node or creates a new library node (readiness 0) and places it in one step. Auto-layout positions are saved through one bulk backend endpoint, so either every node moves or none does.
 
 ### Phase 5 — Milestone 2 candidates (not started yet)
 Deferred features that build on the Milestone 1 foundation, to be scoped in detail once Phases 1–4 are done:

@@ -10,9 +10,51 @@ svg {
   border: 1px solid #ddd;
 }
 
-.edge {
+.edge-line {
   stroke: #555;
   stroke-width: 1.5;
+}
+
+.edge-hit {
+  stroke: transparent;
+  stroke-width: 14;
+}
+
+.tool-delete .edge:hover .edge-line {
+  stroke: #b00020;
+  stroke-width: 3;
+}
+
+.background {
+  fill: #fff;
+}
+
+.tool-add .background {
+  cursor: crosshair;
+}
+
+.pending {
+  fill: #1565c0;
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: 60rem;
+}
+
+.toolbar button.active {
+  font-weight: bold;
+  outline: 2px solid #1565c0;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.hint {
+  margin-top: 0.4rem;
 }
 
 marker path {
@@ -21,6 +63,23 @@ marker path {
 
 .node {
   cursor: pointer;
+}
+
+.tool-select .node {
+  cursor: grab;
+}
+
+.tool-delete .node:hover rect {
+  stroke: #b00020;
+}
+
+.node.connect-from rect {
+  stroke: #1565c0;
+  stroke-width: 4;
+}
+
+.details input[type='number'] {
+  width: 4rem;
 }
 
 .node rect {

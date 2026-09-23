@@ -1,10 +1,16 @@
 package com.progressiontracker.tree;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.node.Node;
@@ -71,6 +77,34 @@ public class TreeNodeService {
 		treeNode.setAggregateThreshold(request.aggregateThreshold());
 		treeNode.setIndividualThreshold(request.individualThreshold());
 		return TreeNodeResponse.from(treeNode, prerequisites.findByTree(tree));
+	}
+
+	/**
+	 * Moves several tree nodes in one transaction. Every id is checked before anything
+	 * changes, so an unknown id (404) or a repeated id (400) leaves the whole tree as it was.
+	 */
+	public List<TreeNodeResponse> updatePositions(Long treeId, TreeLayoutRequest request) {
+		Tree tree = treeService.findOwned(treeId);
+		Set<Long> seen = new HashSet<>();
+		for (TreeLayoutRequest.Position position : request.positions()) {
+			if (!seen.add(position.treeNodeId())) {
+				throw new BadRequestException("Tree node " + position.treeNodeId() + " is listed more than once");
+			}
+		}
+		List<TreeNode> all = treeNodes.findByTreeOrderByIdAsc(tree);
+		Map<Long, TreeNode> byId = all.stream().collect(Collectors.toMap(TreeNode::getId, Function.identity()));
+		for (TreeLayoutRequest.Position position : request.positions()) {
+			if (!byId.containsKey(position.treeNodeId())) {
+				throw new NotFoundException("Tree node", position.treeNodeId());
+			}
+		}
+		for (TreeLayoutRequest.Position position : request.positions()) {
+			TreeNode treeNode = byId.get(position.treeNodeId());
+			treeNode.setPositionX(position.positionX());
+			treeNode.setPositionY(position.positionY());
+		}
+		List<Prerequisite> edges = prerequisites.findByTree(tree);
+		return all.stream().map(treeNode -> TreeNodeResponse.from(treeNode, edges)).toList();
 	}
 
 	/** Removes the node from this tree along with its edges. The library node stays. */

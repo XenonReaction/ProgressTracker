@@ -1,0 +1,29 @@
+<h2>Add a node</h2>
+<p class="muted">At ({{ point().x }}, {{ point().y }})</p>
+
+@if (nodes().length) {
+  <p>
+    <label>
+      From your library<br />
+      <select #existing>
+        <option value="">Choose a node…</option>
+        @for (node of nodes(); track node.id) {
+          <option [value]="node.id">{{ node.title }} ({{ node.readiness }}%)</option>
+        }
+      </select>
+    </label>
+    <button type="button" (click)="place(existing.value)">Place</button>
+  </p>
+} @else {
+  <p class="muted">Every library node is already in this tree.</p>
+}
+
+<form (submit)="create($event, title.value)">
+  <label>
+    Or create a new node<br />
+    <input #title maxlength="200" placeholder="Title" />
+  </label>
+  <button type="submit">Create and place</button>
+</form>
+
+<p><button type="button" (click)="dismiss.emit()">Cancel</button></p>

@@ -44,6 +44,13 @@ public class TreeNodeController {
 			.body(created);
 	}
 
+	/** Saves many positions at once (auto-layout). Returns every node in the tree. */
+	@PutMapping("/positions")
+	public List<TreeNodeResponse> updatePositions(@PathVariable Long treeId,
+			@Valid @RequestBody TreeLayoutRequest request) {
+		return treeNodeService.updatePositions(treeId, request);
+	}
+
 	@PutMapping("/{treeNodeId}")
 	public TreeNodeResponse update(@PathVariable Long treeId, @PathVariable Long treeNodeId,
 			@Valid @RequestBody TreeNodeUpdateRequest request) {

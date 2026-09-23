@@ -2,9 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Tree, TreeNode, TreeRequest } from './api.models';
+import {
+  Prerequisite,
+  Tree,
+  TreeNode,
+  TreeNodeCreateRequest,
+  TreeNodePosition,
+  TreeNodeUpdateRequest,
+  TreeRequest,
+} from './api.models';
 
-/** Tree metadata CRUD, plus reading a tree's contents. Editing contents arrives in Phase 4. */
+/** Trees, the nodes placed in them, and their prerequisite edges. */
 @Injectable({ providedIn: 'root' })
 export class TreeApi {
   private readonly http = inject(HttpClient);
@@ -33,5 +41,38 @@ export class TreeApi {
 
   nodes(treeId: number): Observable<TreeNode[]> {
     return this.http.get<TreeNode[]>(`${this.baseUrl}/${treeId}/nodes`);
+  }
+
+  addNode(treeId: number, request: TreeNodeCreateRequest): Observable<TreeNode> {
+    return this.http.post<TreeNode>(`${this.baseUrl}/${treeId}/nodes`, request);
+  }
+
+  updateNode(treeId: number, treeNodeId: number, request: TreeNodeUpdateRequest): Observable<TreeNode> {
+    return this.http.put<TreeNode>(`${this.baseUrl}/${treeId}/nodes/${treeNodeId}`, request);
+  }
+
+  /** Saves many positions in one transaction; returns every node in the tree. */
+  updatePositions(treeId: number, positions: TreeNodePosition[]): Observable<TreeNode[]> {
+    return this.http.put<TreeNode[]>(`${this.baseUrl}/${treeId}/nodes/positions`, { positions });
+  }
+
+  /** Removes the node from this tree along with its edges; the library node stays. */
+  removeNode(treeId: number, treeNodeId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${treeId}/nodes/${treeNodeId}`);
+  }
+
+  prerequisites(treeId: number): Observable<Prerequisite[]> {
+    return this.http.get<Prerequisite[]>(`${this.baseUrl}/${treeId}/prerequisites`);
+  }
+
+  addPrerequisite(treeId: number, prerequisiteTreeNodeId: number, dependentTreeNodeId: number): Observable<Prerequisite> {
+    return this.http.post<Prerequisite>(`${this.baseUrl}/${treeId}/prerequisites`, {
+      prerequisiteTreeNodeId,
+      dependentTreeNodeId,
+    });
+  }
+
+  removePrerequisite(treeId: number, prerequisiteId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${treeId}/prerequisites/${prerequisiteId}`);
   }
 }

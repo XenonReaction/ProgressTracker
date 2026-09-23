@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.node.Node;
@@ -100,6 +101,41 @@ class TreeNodeServiceTest {
 		assertThatThrownBy(() -> service.add(10L, new TreeNodeCreateRequest(99L, 0.0, 0.0, null, null)))
 			.isInstanceOf(NotFoundException.class);
 		verify(treeNodes, never()).save(any());
+	}
+
+	@Test
+	void updatePositionsMovesListedNodesAndReturnsTheWholeTree() {
+		TreeNode first = withId(new TreeNode(tree, node, 0, 0), 31L);
+		TreeNode second = withId(new TreeNode(tree, withId(new Node(user, "Streams"), 21L), 5, 5), 32L);
+		when(treeNodes.findByTreeOrderByIdAsc(tree)).thenReturn(List.of(first, second));
+
+		List<TreeNodeResponse> response = service.updatePositions(10L,
+				new TreeLayoutRequest(List.of(new TreeLayoutRequest.Position(31L, 100.0, 200.0))));
+
+		assertThat(first.getPositionX()).isEqualTo(100.0);
+		assertThat(first.getPositionY()).isEqualTo(200.0);
+		assertThat(second.getPositionX()).isEqualTo(5.0);
+		assertThat(response).extracting(TreeNodeResponse::id).containsExactly(31L, 32L);
+	}
+
+	@Test
+	void updatePositionsChangesNothingWhenAnyIdIsNotInTheTree() {
+		TreeNode first = withId(new TreeNode(tree, node, 0, 0), 31L);
+		when(treeNodes.findByTreeOrderByIdAsc(tree)).thenReturn(List.of(first));
+
+		assertThatThrownBy(() -> service.updatePositions(10L,
+				new TreeLayoutRequest(List.of(new TreeLayoutRequest.Position(31L, 100.0, 100.0),
+						new TreeLayoutRequest.Position(99L, 1.0, 1.0)))))
+			.isInstanceOf(NotFoundException.class);
+		assertThat(first.getPositionX()).isZero();
+	}
+
+	@Test
+	void updatePositionsRejectsRepeatedIds() {
+		assertThatThrownBy(() -> service.updatePositions(10L,
+				new TreeLayoutRequest(List.of(new TreeLayoutRequest.Position(31L, 1.0, 1.0),
+						new TreeLayoutRequest.Position(31L, 2.0, 2.0)))))
+			.isInstanceOf(BadRequestException.class);
 	}
 
 	@Test

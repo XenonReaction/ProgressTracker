@@ -1,25 +1,36 @@
-import { TreeNode } from '../core/api.models';
+import { Prerequisite, TreeNode } from '../core/api.models';
 
 /** Node boxes are drawn centred on their stored (positionX, positionY). */
 export const NODE_WIDTH = 180;
 export const NODE_HEIGHT = 56;
-const PADDING = 40;
+/** Room around the nodes, so there's empty canvas to click on when adding nodes. */
+const PADDING = 120;
+/** Canvas shown for a tree with no nodes yet. */
+const EMPTY_CANVAS = { x: -400, y: -150, width: 800, height: 450 };
 
 export interface Point {
   x: number;
   y: number;
 }
 
+export interface ViewBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export interface EdgeLine {
-  key: string;
+  /** The prerequisite edge's id, used to delete it. */
+  id: number;
   from: Point;
   to: Point;
 }
 
 /** SVG viewBox that fits every node box plus padding. */
-export function viewBoxFor(treeNodes: TreeNode[]): { x: number; y: number; width: number; height: number } {
+export function viewBoxFor(treeNodes: TreeNode[]): ViewBox {
   if (treeNodes.length === 0) {
-    return { x: 0, y: 0, width: 0, height: 0 };
+    return EMPTY_CANVAS;
   }
   const xs = treeNodes.map((n) => n.positionX);
   const ys = treeNodes.map((n) => n.positionY);
@@ -37,17 +48,17 @@ export function viewBoxFor(treeNodes: TreeNode[]): { x: number; y: number; width
  * One line per prerequisite edge, from the prerequisite's box edge to the dependent's box
  * edge, so arrowheads aren't hidden under the boxes.
  */
-export function edgeLines(treeNodes: TreeNode[], byId: Map<number, TreeNode>): EdgeLine[] {
-  return treeNodes.flatMap((dependent) =>
-    dependent.prerequisiteIds
-      .map((id) => byId.get(id))
-      .filter((prerequisite): prerequisite is TreeNode => prerequisite !== undefined)
-      .map((prerequisite) => {
-        const from = center(prerequisite);
-        const to = center(dependent);
-        return { key: `${prerequisite.id}-${dependent.id}`, from: boxEdge(from, to), to: boxEdge(to, from) };
-      }),
-  );
+export function edgeLines(edges: Prerequisite[], byId: Map<number, TreeNode>): EdgeLine[] {
+  return edges.flatMap((edge) => {
+    const prerequisite = byId.get(edge.prerequisiteTreeNodeId);
+    const dependent = byId.get(edge.dependentTreeNodeId);
+    if (!prerequisite || !dependent) {
+      return [];
+    }
+    const from = center(prerequisite);
+    const to = center(dependent);
+    return [{ id: edge.id, from: boxEdge(from, to), to: boxEdge(to, from) }];
+  });
 }
 
 function center(node: TreeNode): Point {
