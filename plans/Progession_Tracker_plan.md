@@ -31,7 +31,7 @@ A new system for creating and editing skill trees, in the same spirit as the exi
   - Two conditions both need to hold before a dependent node flips from locked to ready:
     1. The **sum/aggregate of its prerequisites'** readiness crosses a threshold, **and**
     2. **Each individual prerequisite**, on its own, also crosses its own threshold.
-  - **Thresholds (decided):** the two thresholds are **not** the same number, and are **configurable per node** rather than one global value. **Defaults:** a tree's overall readiness defaults to needing an **80% average across its nodes**, with **no individual node below 70%**.
+  - **Thresholds (decided):** the two thresholds are **not** the same number, and are **configurable per node** (stored on the tree-node association, so the same library node can have different thresholds in different trees) rather than one global value or one pair per prerequisite edge. **Defaults:** a tree's overall readiness defaults to needing an **80% average across its nodes**, with **no individual node below 70%**.
 - Cycle prevention (no cycles in the prerequisite graph) is validated **both client-side and server-side**.
 
 ## Decided: Node & Tree Fields
@@ -47,7 +47,8 @@ A new system for creating and editing skill trees, in the same spirit as the exi
 
 **Tree-node association (per tree):**
 - Position (x/y)
-- Prerequisite edges, each with its own pair of readiness thresholds (sum/aggregate threshold and individual threshold — see above)
+- Per-node readiness thresholds: an aggregate threshold and an individual threshold that this node's prerequisites must meet (see above)
+- Prerequisite edges (to other tree nodes in the same tree)
 
 **Tree metadata:**
 - Category, Tags, Description
@@ -105,7 +106,7 @@ Start with Spring Boot's default, **SLF4J + Logback** — no extra setup, nothin
 ## Decided: Milestone 1 Scope
 
 Milestone 1 stays **pure CRUD**:
-- Trees, nodes, tree-node associations (positions, prerequisite edges, per-edge thresholds).
+- Trees, nodes, tree-node associations (positions, per-node thresholds, prerequisite edges).
 - Manually entered readiness values only — no derived/linked-tree readiness yet.
 - No revision history yet.
 - Backend CRUD + unit tests, plus a minimal frontend pass (node-library CRUD, manual readiness entry, read-only tree viewing — canvas editing is its own later phase).
@@ -125,13 +126,13 @@ Rebuilt from v5's draft, reflecting: Flyway dropped in favor of Hibernate `ddl-a
 - Baseline README describing the project (separate from this plans doc) and a `.gitignore` appropriate for Java/Maven + Angular.
 
 ### Phase 1 — Database Design
-- Finalize the Milestone-1 schema as JPA entities: `User`, `Node` (library-level, includes `readiness_source_type` defaulted to `'manual'`), `Tree`, `TreeNode` (association: tree_id, node_id, position x/y, per-edge prerequisite thresholds), `Prerequisite` (edges between tree_nodes within a tree).
+- Finalize the Milestone-1 schema as JPA entities: `User`, `Node` (library-level, includes `readiness_source_type` defaulted to `'manual'`), `Tree`, `TreeNode` (association: tree_id, node_id, position x/y, per-node prerequisite thresholds), `Prerequisite` (edges between tree_nodes within a tree).
 - Configure `spring.jpa.hibernate.ddl-auto=update` — Hibernate creates/updates the schema from the entity mappings directly; no migration files.
 - Seed/test data for local development.
 
 ### Phase 2 — Backend (Milestone 1: CRUD)
 - Entities + **Spring Data JPA repositories** (`UserRepository`, `NodeRepository`, `TreeRepository`, `TreeNodeRepository`, `PrerequisiteRepository`).
-- Service layer: business rules on top of repositories — e.g. cycle-prevention validation on prerequisite edges, enforcing per-node/per-edge readiness thresholds as data (not yet evaluated dynamically, since aggregation is Milestone 2+).
+- Service layer: business rules on top of repositories — e.g. cycle-prevention validation on prerequisite edges, enforcing per-node readiness thresholds as data (not yet evaluated dynamically, since aggregation is Milestone 2+).
 - Controller layer: REST endpoints under **`/api/v1/...`** for CRUD on nodes, trees, tree-node associations, and prerequisite edges.
 - Unit tests (JUnit + Mockito) for service-layer logic; integration tests (Testcontainers) for the repository layer against real Postgres.
 
@@ -143,7 +144,7 @@ Rebuilt from v5's draft, reflecting: Flyway dropped in favor of Hibernate `ddl-a
 
 ### Phase 4 — Frontend Tree Editing
 - Toolbar-driven canvas interaction model (per the UI decision above) so click-to-place isn't hardcoded.
-- Drag-to-position nodes on the canvas; draw/remove prerequisite edges; set per-edge thresholds.
+- Drag-to-position nodes on the canvas; draw/remove prerequisite edges; set per-node thresholds.
 - "Reset to auto-layout," gated behind a confirmation warning.
 
 ### Phase 5 — Milestone 2 candidates (not started yet)

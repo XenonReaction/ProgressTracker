@@ -29,7 +29,15 @@ docker compose up -d
 # 2. Start the backend (http://localhost:8080)
 cd backend
 ./mvnw spring-boot:run
+
+# Or start it with sample data (a demo user, 7 nodes, 2 trees)
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
+
+Hibernate creates and updates the tables from the entity classes on startup
+(`ddl-auto=update`). It adds new tables and columns but never renames or drops
+them, so after renaming a field, reset the local database with
+`docker compose down -v`.
 
 Stop the database with `docker compose down`. The data is kept in a Docker
 volume; add `-v` to delete it too.
