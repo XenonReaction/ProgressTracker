@@ -4,6 +4,7 @@ import jakarta.persistence.CheckConstraint;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,12 +47,12 @@ public class TreeNode {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "tree_id", nullable = false)
+	@JoinColumn(name = "tree_id", nullable = false, foreignKey = @ForeignKey(name = "tree_nodes_tree_id_fk"))
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Tree tree;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "node_id", nullable = false)
+	@JoinColumn(name = "node_id", nullable = false, foreignKey = @ForeignKey(name = "tree_nodes_node_id_fk"))
 	private Node node;
 
 	@Column(name = "position_x", nullable = false)

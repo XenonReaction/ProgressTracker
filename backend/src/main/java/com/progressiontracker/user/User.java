@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -16,14 +17,15 @@ import org.hibernate.annotations.CreationTimestamp;
  * owned row carries a user_id so the schema is multi-user ready.
  */
 @Entity
-@Table(name = "users") // "user" is a reserved word in PostgreSQL
+@Table(name = "users", // "user" is a reserved word in PostgreSQL
+		uniqueConstraints = @UniqueConstraint(name = "users_username_unique", columnNames = "username"))
 public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, unique = true, length = 100)
+	@Column(nullable = false, length = 100)
 	private String username;
 
 	@CreationTimestamp

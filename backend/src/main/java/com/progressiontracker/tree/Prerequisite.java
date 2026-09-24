@@ -3,6 +3,7 @@ package com.progressiontracker.tree;
 import jakarta.persistence.CheckConstraint;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,12 +33,14 @@ public class Prerequisite {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "prerequisite_tree_node_id", nullable = false)
+	@JoinColumn(name = "prerequisite_tree_node_id", nullable = false,
+			foreignKey = @ForeignKey(name = "prerequisites_prerequisite_tree_node_id_fk"))
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private TreeNode prerequisite;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "dependent_tree_node_id", nullable = false)
+	@JoinColumn(name = "dependent_tree_node_id", nullable = false,
+			foreignKey = @ForeignKey(name = "prerequisites_dependent_tree_node_id_fk"))
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private TreeNode dependent;
 

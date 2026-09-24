@@ -64,10 +64,27 @@ npm start
 
 The Angular dev server forwards `/api` requests to the backend on port 8080.
 
-Hibernate creates and updates the tables from the entity classes on startup
-(`ddl-auto=update`). It adds new tables and columns but never renames or drops
-them, so after renaming a field, reset the local database with
-`docker compose down -v`.
+### Database migrations
+
+The schema is created and changed by [Flyway](https://documentation.red-gate.com/fd)
+migrations: numbered SQL files in `backend/src/main/resources/db/migration/`. When the
+backend starts (locally, in Docker or in tests), Flyway runs any the database hasn't had
+yet, in order, and records them in its `flyway_schema_history` table. Hibernate then
+checks that the entity classes match the schema, and the backend refuses to start if they
+don't.
+
+To change the schema:
+
+1. Add the next file, for example `V3__add_linked_tree_to_nodes.sql`: two underscores
+   after the version, then what it does.
+2. Update the entity classes to match.
+3. Restart the backend. `./mvnw test` also runs every migration on a fresh database.
+
+Never edit a migration that has already run: Flyway notices the change and refuses to
+start. Write a new migration instead.
+
+A database created before Flyway was added (Phase 5.1) is recognised as already having
+`V1`'s tables, and only the later migrations are run on it.
 
 Stop the database with `docker compose down`. The data is kept in a Docker
 volume; add `-v` to delete it too.

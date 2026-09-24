@@ -8,8 +8,8 @@ Milestone 1 (Phases 0–4b) is done: node library and tree CRUD, a tree editor w
 
 | Sub-phase | State |
 |---|---|
-| 5.0 Browser tests | **Built**, awaiting review. |
-| 5.1 Migration tool | **Fully decided**, ready to approve. |
+| 5.0 Browser tests | **Done** (committed). |
+| 5.1 Migration tool | **Built**, awaiting review. |
 | 5.2 Linked-tree readiness | **Fully decided**, ready to approve. |
 | 5.3a View/edit modes, restore point, node pages | **Fully decided**, ready to approve. |
 | 5.3b Undo/redo | **Fully decided**, ready to approve. |
@@ -119,6 +119,14 @@ We've already hit this once. When the `positionx` column needed renaming, the on
 - **Your database is backed up first** with `pg_dump`, to a file outside the repo (Q7). If the switch goes wrong, it's restored from that file.
 
 **Scope:** back up, add Flyway, write V1 and V2, switch to `validate`, make the tests build their schema from the migrations, and document how to add a migration. No other schema changes.
+
+**Built:**
+- **Backup:** `~/progressiontracker-backups/progressiontracker-before-flyway-20260924-142945.dump` (restore with `pg_restore`), plus a readable `.sql` copy.
+- **V1** was checked against both your live schema and a fresh Hibernate-built one: all three are identical.
+- **V2** renames the 9 generated names (`fk...`, `uk...`) to readable ones such as `tree_nodes_tree_id_fk` and `users_username_unique`. The entities declare the same names.
+- **Your database** was baselined at V1 and migrated to V2 with all its data (13 nodes, 3 trees, 13 placements, 13 edges).
+- **Tests:** `MigrationTest` runs the migrations on an empty database and on one Hibernate created before Flyway. All backend tests and browser tests now build their schema from the migrations.
+- **Found along the way:** Hibernate had generated `nodes_readiness_source_type_check`, which allows only `'manual'`, even though the enum converter was meant to prevent that. V1 keeps it as it is. 5.2's migration widens it to allow `'linked_tree'`.
 
 **Depends on:** nothing. **Enables:** 5.2, 5.3 and 5.4.
 

@@ -36,7 +36,9 @@ class UserMappingTest {
 		em.persistAndFlush(new User("alice"));
 
 		assertThatThrownBy(() -> em.persistAndFlush(new User("alice")))
-			.isInstanceOf(ConstraintViolationException.class);
+			.isInstanceOf(ConstraintViolationException.class)
+			.extracting("constraintName")
+			.isEqualTo("users_username_unique");
 	}
 
 }

@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +39,7 @@ public class Node {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "nodes_user_id_fk"))
 	private User owner;
 
 	@Column(nullable = false, length = 200)
@@ -54,7 +55,8 @@ public class Node {
 	private ReadinessSourceType readinessSourceType = ReadinessSourceType.MANUAL;
 
 	@ElementCollection
-	@CollectionTable(name = "node_links", joinColumns = @JoinColumn(name = "node_id"))
+	@CollectionTable(name = "node_links", joinColumns = @JoinColumn(name = "node_id"),
+			foreignKey = @ForeignKey(name = "node_links_node_id_fk"))
 	@OrderColumn(name = "position")
 	private List<NodeLink> links = new ArrayList<>();
 

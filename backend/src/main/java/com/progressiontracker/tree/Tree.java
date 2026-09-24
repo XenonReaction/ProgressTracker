@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +33,7 @@ public class Tree {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "trees_user_id_fk"))
 	private User owner;
 
 	@Column(nullable = false, length = 200)
@@ -45,7 +46,8 @@ public class Tree {
 	private String category;
 
 	@ElementCollection
-	@CollectionTable(name = "tree_tags", joinColumns = @JoinColumn(name = "tree_id"))
+	@CollectionTable(name = "tree_tags", joinColumns = @JoinColumn(name = "tree_id"),
+			foreignKey = @ForeignKey(name = "tree_tags_tree_id_fk"))
 	@OrderColumn(name = "position")
 	@Column(name = "tag", nullable = false, length = 50)
 	private List<String> tags = new ArrayList<>();

@@ -62,6 +62,7 @@ A new system for creating and editing skill trees, in the same spirit as the exi
 - **Spring Data JPA + Hibernate** for data access, end-to-end, from Milestone 1 — **confirmed this round** (was round-5 Q1). No hand-rolled JDBC layer at any point; the JDBC-first plan from v3/v4 is fully superseded.
 - **Repositories are Spring Data JPA interfaces** (e.g. `TreeRepository extends JpaRepository<Tree, UUID>`), one per entity — Spring generates the implementation.
 - **Schema management — resolved this round (was round-5 Q2): Flyway is dropped.** Hibernate manages schema directly via `ddl-auto=update` for local/v1 development. No separate migration files to hand-write or keep in sync.
+  - **Superseded in Phase 5.1:** Flyway was introduced after all; see `plans/Phase_5_plan.md`.
   - **Worth flagging, not blocking:** `ddl-auto=update` is a v1/local-dev convenience — it can silently make lossy or unexpected schema changes and isn't considered safe for a real deployed environment. v4/v5 both noted a longer-term goal of actually deploying this app (via the CI/CD content in `SkillTreeOSS`'s skill trees). When that becomes real, this plan should revisit introducing a migration tool (Flyway or otherwise) rather than shipping `ddl-auto=update` to anything beyond your own machine. Not an open question — just context for future-you.
 
 ## Decided: Layout & UI Behavior
@@ -83,7 +84,7 @@ A new system for creating and editing skill trees, in the same spirit as the exi
 
 **Backend:** Spring Boot, Java, Maven, Spring Data JPA + Hibernate, JUnit, Mockito
 **Database:** PostgreSQL
-**Schema management:** Hibernate `ddl-auto=update` (no Flyway for v1 — see Persistence above)
+**Schema management:** Flyway migrations since Phase 5.1, with Hibernate on `ddl-auto=validate`. Milestone 1 used `ddl-auto=update` (see Persistence above).
 **Frontend:** Angular, no component library for now (plain Angular features only)
 **Testing (frontend):** Vitest (Angular's default runner since v21, running in jsdom). Chosen in Phase 3 over the originally planned Jasmine/Karma, since Karma is deprecated.
 **Testing (integration):** Real local PostgreSQL via Docker/Testcontainers — not an in-memory substitute.
