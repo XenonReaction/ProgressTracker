@@ -11,8 +11,8 @@ Milestone 1 (Phases 0–4b) is done: node library and tree CRUD, a tree editor w
 | 5.0 Browser tests | **Done** (committed). |
 | 5.1 Migration tool | **Done** (committed). |
 | 5.2 Linked-tree readiness | **Done** (committed). |
-| 5.3a View/edit modes, restore point, node pages | **Built**, awaiting review. |
-| 5.3b Undo/redo | **Fully decided**, ready to approve. |
+| 5.3a View/edit modes, restore point, node pages | **Done** (committed). |
+| 5.3b Undo/redo | **Built**, awaiting review. |
 | 5.4 Right-angle edges | **Fully decided**, ready to approve. |
 | 5.5 Readiness gradient | **Fully decided**, ready to approve. |
 
@@ -240,6 +240,14 @@ We've already hit this once. When the `positionx` column needed renaming, the on
 
 **5.3b: undo/redo**
 - Undo and Redo buttons and keyboard shortcuts in edit mode, covering the changes listed above.
+
+**5.3b built:**
+- **Frontend only:** no backend or schema changes. Each edit records a command once its save succeeds; undo and redo call the same API endpoints and then reload the tree.
+- **Covers** moves, thresholds, placing existing nodes, creating nodes, removing nodes (with their arrows), adding and removing arrows, and auto-layout. Edge routes join in 5.4.
+- **Behavior as decided:** 50 steps, Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z (not while typing in a field), a new change clears redo, and the history ends with Done, Discard or leaving. Button tooltips name the step, e.g. "Undo move "OOP"".
+- **Choices made while building:**
+  - If an undo or redo can't be saved (for example because the tree was changed elsewhere), the error is shown and the history is cleared, so it never drifts from what's saved.
+  - A key pressed while an undo or redo is still saving is ignored.
 
 **Depends on:** 5.1 (the restore-point table and node tags, added through migrations), 5.2 (view mode shows linked trees), and 5.0 (browser tests for the new modes, warnings and undo/redo). 5.3b depends on 5.3a.
 

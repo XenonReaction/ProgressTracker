@@ -159,6 +159,189 @@ describe('TreeView', () => {
     });
   });
 
+  describe('undo and redo', () => {
+    const noContent = { status: 204, statusText: 'No Content' };
+
+    beforeEach(async () => {
+      await enterEditMode();
+    });
+
+    it('starts with nothing to undo or redo', () => {
+      expect(button('Undo').disabled).toBe(true);
+      expect(button('Redo').disabled).toBe(true);
+    });
+
+    it('undoes and redoes a move', async () => {
+      mouse('mousedown', nodeEl(2), 0, 0);
+      mouse('mousemove', canvas(), 50, 20);
+      mouse('mouseup', canvas(), 50, 20);
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush({ ...oop, positionX: 50, positionY: 170 });
+      await fixture.whenStable();
+      expect(button('Undo').getAttribute('title')).toBe('Undo move "OOP" (Ctrl+Z)');
+
+      button('Undo').click();
+      const undo = http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' });
+      expect(undo.request.body).toEqual({ positionX: 0, positionY: 150, aggregateThreshold: 80, individualThreshold: 70 });
+      undo.flush(oop);
+      expectReload();
+      await fixture.whenStable();
+      expect(button('Redo').disabled).toBe(false);
+
+      button('Redo').click();
+      const redo = http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' });
+      expect(redo.request.body).toEqual({ positionX: 50, positionY: 170, aggregateThreshold: 80, individualThreshold: 70 });
+      redo.flush({ ...oop, positionX: 50, positionY: 170 });
+      expectReload();
+    });
+
+    it('undoes a new arrow by deleting it, and redo adds it again', async () => {
+      button('Connect').click();
+      await fixture.whenStable();
+      click(nodeEl(1));
+      click(nodeEl(3));
+      http.expectOne({ method: 'POST', url: '/api/v1/trees/4/prerequisites' }).flush({ id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 });
+      const withNewEdge = [...edges, { id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 }];
+      expectReload([syntax, oop, streams], withNewEdge);
+      await fixture.whenStable();
+
+      button('Undo').click();
+      http.expectOne({ method: 'DELETE', url: '/api/v1/trees/4/prerequisites/23' }).flush(null, noContent);
+      expectReload();
+      await fixture.whenStable();
+
+      button('Redo').click();
+      const redo = http.expectOne({ method: 'POST', url: '/api/v1/trees/4/prerequisites' });
+      expect(redo.request.body).toEqual({ prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 });
+      redo.flush({ id: 24, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 });
+      expectReload();
+    });
+
+    it('undoing a removal places the node again with its arrows', async () => {
+      vi.spyOn(window, 'confirm').mockReturnValue(true);
+      button('Delete').click();
+      await fixture.whenStable();
+      click(nodeEl(2));
+      http.expectOne({ method: 'DELETE', url: '/api/v1/trees/4/nodes/2' }).flush(null, noContent);
+      expectReload([syntax, streams], []);
+      await fixture.whenStable();
+
+      button('Undo').click();
+      const place = http.expectOne({ method: 'POST', url: '/api/v1/trees/4/nodes' });
+      expect(place.request.body).toEqual({ nodeId: 12, positionX: 0, positionY: 150, aggregateThreshold: 80, individualThreshold: 70 });
+      place.flush({ ...oop, id: 8 });
+      const arrows = http.match({ method: 'POST', url: '/api/v1/trees/4/prerequisites' });
+      expect(arrows.map((r) => r.request.body)).toEqual([
+        { prerequisiteTreeNodeId: 1, dependentTreeNodeId: 8 },
+        { prerequisiteTreeNodeId: 8, dependentTreeNodeId: 3 },
+      ]);
+      arrows.forEach((r, i) => r.flush({ id: 30 + i, ...r.request.body }));
+      expectReload();
+    });
+
+    it('undoing a created node deletes it from the library, and redo creates it again', async () => {
+      button('Add node').click();
+      http.expectOne({ method: 'GET', url: '/api/v1/nodes' }).flush([]);
+      await fixture.whenStable();
+      mouse('click', page.querySelector('rect.background')!, 10, 20);
+      await fixture.whenStable();
+      (page.querySelector('app-add-node-panel input') as HTMLInputElement).value = 'Spring Core';
+      page.querySelector('app-add-node-panel form')!.dispatchEvent(new Event('submit'));
+      http.expectOne({ method: 'POST', url: '/api/v1/nodes' }).flush(aNode({ id: 15, title: 'Spring Core' }));
+      const created = aTreeNode({ id: 5, nodeId: 15, title: 'Spring Core', positionX: -200, positionY: -128 });
+      http.expectOne({ method: 'POST', url: '/api/v1/trees/4/nodes' }).flush(created);
+      expectReload([syntax, oop, streams, created]);
+      await fixture.whenStable();
+
+      button('Undo').click();
+      http.expectOne({ method: 'DELETE', url: '/api/v1/trees/4/nodes/5' }).flush(null, noContent);
+      http.expectOne({ method: 'GET', url: '/api/v1/nodes/15/trees' }).flush([]);
+      http.expectOne({ method: 'DELETE', url: '/api/v1/nodes/15' }).flush(null, noContent);
+      expectReload();
+      await fixture.whenStable();
+
+      button('Redo').click();
+      const recreate = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
+      expect(recreate.request.body).toEqual({ title: 'Spring Core', description: null, readiness: 0, links: [] });
+      recreate.flush(aNode({ id: 16, title: 'Spring Core' }));
+      const place = http.expectOne({ method: 'POST', url: '/api/v1/trees/4/nodes' });
+      expect(place.request.body).toEqual({ nodeId: 16, positionX: -200, positionY: -128, aggregateThreshold: 80, individualThreshold: 70 });
+      place.flush({ ...created, id: 6, nodeId: 16 });
+      expectReload([syntax, oop, streams, { ...created, id: 6, nodeId: 16 }]);
+      await fixture.whenStable();
+
+      // Undo again finds the recreated node under its new ids
+      button('Undo').click();
+      http.expectOne({ method: 'DELETE', url: '/api/v1/trees/4/nodes/6' }).flush(null, noContent);
+      http.expectOne({ method: 'GET', url: '/api/v1/nodes/16/trees' }).flush([]);
+      http.expectOne({ method: 'DELETE', url: '/api/v1/nodes/16' }).flush(null, noContent);
+      expectReload();
+    });
+
+    it('undoes with Ctrl+Z and redoes with Ctrl+Y or Ctrl+Shift+Z, but not while typing', async () => {
+      await dragOopAndSave();
+
+      const input = document.createElement('input');
+      page.appendChild(input);
+      input.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, bubbles: true }));
+      http.expectNone({ method: 'PUT' });
+
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true }));
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush(oop);
+      expectReload();
+      await fixture.whenStable();
+
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, shiftKey: true }));
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush(oop);
+      expectReload();
+      await fixture.whenStable();
+
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true }));
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush(oop);
+      expectReload();
+      await fixture.whenStable();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'y', ctrlKey: true }));
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush(oop);
+      expectReload();
+    });
+
+    it('clears the history and says why when an undo fails', async () => {
+      await dragOopAndSave();
+
+      button('Undo').click();
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush(
+        { status: 404, title: 'Not Found', detail: 'Tree node 2 not found' },
+        { status: 404, statusText: 'Not Found' },
+      );
+      expectReload();
+      await fixture.whenStable();
+
+      expect(page.querySelector('[role=alert]')?.textContent).toContain(
+        "Couldn't undo: Tree node 2 not found. The undo history has been cleared.",
+      );
+      expect(button('Undo').disabled).toBe(true);
+      expect(button('Redo').disabled).toBe(true);
+    });
+
+    it('ends the history when edit mode ends', async () => {
+      await dragOopAndSave();
+
+      button('Done').click();
+      http.expectOne({ method: 'DELETE', url: '/api/v1/trees/4/edit-session' }).flush(null, noContent);
+      await fixture.whenStable();
+      await enterEditMode();
+
+      expect(button('Undo').disabled).toBe(true);
+    });
+
+    async function dragOopAndSave(): Promise<void> {
+      mouse('mousedown', nodeEl(2), 0, 0);
+      mouse('mousemove', canvas(), 50, 20);
+      mouse('mouseup', canvas(), 50, 20);
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush({ ...oop, positionX: 50, positionY: 170 });
+      await fixture.whenStable();
+    }
+  });
+
   describe('an unfinished edit session', () => {
     beforeEach(async () => {
       fixture.componentRef.setInput('id', '6');

@@ -11,8 +11,11 @@ import { TreeApi } from '../core/tree-api';
 import { AddNodePanel } from './add-node-panel';
 import { autoLayout } from './auto-layout';
 import { confirmTreeDelete } from './confirm-delete';
+import * as commands from './edit-commands';
+import { EdgeEnds, EditContext, NodeState } from './edit-commands';
 import { ReadinessState, readinessState } from './readiness';
 import { NODE_HEIGHT, NODE_WIDTH, Point, ViewBox, edgeLines, viewBoxFor } from './tree-layout';
+import { EditCommand, UndoHistory } from './undo-history';
 
 /**
  * What a click on the canvas does. The toolbar switches between them, so new tools can be
@@ -46,6 +49,7 @@ interface Drag {
   host: {
     '(document:keydown.escape)': 'cancelPending()',
     '(window:beforeunload)': 'onBeforeUnload($event)',
+    '(document:keydown)': 'onKeydown($event)',
   },
 })
 export class TreeView {
@@ -79,6 +83,35 @@ export class TreeView {
   /** The tree has an edit session that this page didn't start or resume (V9). */
   protected readonly unfinishedSession = signal(false);
   protected readonly tool = signal<Tool>('select');
+  /** Undo and redo for the current edit session (5.3b). */
+  protected readonly history = new UndoHistory();
+  /** An undo or redo is being saved; the buttons wait for it. */
+  protected readonly historyBusy = signal(false);
+  /** Library nodes deleted by undo and recreated by redo: original id → current id. */
+  private readonly nodeAliases = new Map<number, number>();
+  private readonly editContext: EditContext = {
+    treeApi: this.treeApi,
+    nodeApi: this.nodeApi,
+    treeId: () => this.treeId(),
+    resolve: (nodeId) => this.resolveNode(nodeId),
+    alias: (oldNodeId, newNodeId) => this.nodeAliases.set(oldNodeId, newNodeId),
+    placed: (nodeId) => {
+      const current = this.resolveNode(nodeId);
+      const found = this.treeNodes().find((n) => n.nodeId === current);
+      if (!found) {
+        throw new Error('That node is no longer in the tree');
+      }
+      return found;
+    },
+    edgeBetween: (prerequisiteNodeId, dependentNodeId) => {
+      const byId = this.byId();
+      return this.edges().find(
+        (e) =>
+          byId.get(e.prerequisiteTreeNodeId)?.nodeId === this.resolveNode(prerequisiteNodeId) &&
+          byId.get(e.dependentTreeNodeId)?.nodeId === this.resolveNode(dependentNodeId),
+      );
+    },
+  };
   protected readonly selectedId = signal<number | null>(null);
   /** Connect tool: the prerequisite picked by the first click. */
   protected readonly connectFromId = signal<number | null>(null);
@@ -147,6 +180,7 @@ export class TreeView {
     this.error.set(null);
     this.mode.set('view');
     this.unfinishedSession.set(false);
+    this.clearHistory();
     this.tool.set('select');
     this.selectedId.set(null);
     this.cancelPending();
@@ -177,6 +211,7 @@ export class TreeView {
 
   protected startEditing(): void {
     this.run(this.treeApi.startEditSession(this.treeId()), () => {
+      this.clearHistory();
       this.mode.set('edit');
       this.selectedId.set(null);
     });
@@ -238,11 +273,87 @@ export class TreeView {
   }
 
   private leaveEditMode(): void {
+    this.clearHistory();
     this.mode.set('view');
     this.tool.set('select');
     this.selectedId.set(null);
     this.cancelPending();
     this.tree.update((tree) => (tree ? { ...tree, editSessionStartedAt: null } : tree));
+  }
+
+  // ---- Undo and redo ----
+
+  protected undo(): void {
+    const command = this.history.nextUndo();
+    if (command && !this.historyBusy()) {
+      this.runHistory('undo', command.undo(), () => this.history.undid(command));
+    }
+  }
+
+  protected redo(): void {
+    const command = this.history.nextRedo();
+    if (command && !this.historyBusy()) {
+      this.runHistory('redo', command.redo(), () => this.history.redid(command));
+    }
+  }
+
+  /** Ctrl+Z undoes; Ctrl+Y or Ctrl+Shift+Z redoes. Text fields keep their own undo. */
+  protected onKeydown(event: KeyboardEvent): void {
+    if (this.mode() !== 'edit' || !(event.ctrlKey || event.metaKey)) {
+      return;
+    }
+    if (event.target instanceof Element && event.target.closest('input, textarea, select')) {
+      return;
+    }
+    const key = event.key.toLowerCase();
+    if (key === 'z' && !event.shiftKey) {
+      event.preventDefault();
+      this.undo();
+    } else if (key === 'y' || (key === 'z' && event.shiftKey)) {
+      event.preventDefault();
+      this.redo();
+    }
+  }
+
+  /**
+   * Saves an undo or redo, then re-reads the tree. If it fails (the tree has changed in a way
+   * the step can't follow), the history is cleared so it can't drift from what's saved.
+   */
+  private runHistory(action: 'undo' | 'redo', step: Observable<unknown>, onDone: () => void): void {
+    this.historyBusy.set(true);
+    this.error.set(null);
+    this.cancelPending();
+    step.subscribe({
+      error: (error) => {
+        this.historyBusy.set(false);
+        const reason = error instanceof Error ? error.message : errorMessage(error);
+        this.error.set(`Couldn't ${action}: ${reason}. The undo history has been cleared.`);
+        this.history.clear();
+        this.reloadContents();
+      },
+      complete: () => {
+        onDone();
+        this.historyBusy.set(false);
+        this.reloadContents();
+      },
+    });
+  }
+
+  private record(command: EditCommand): void {
+    this.history.record(command);
+  }
+
+  private clearHistory(): void {
+    this.history.clear();
+    this.nodeAliases.clear();
+  }
+
+  private resolveNode(nodeId: number): number {
+    let current = nodeId;
+    while (this.nodeAliases.has(current)) {
+      current = this.nodeAliases.get(current)!;
+    }
+    return current;
   }
 
   // ---- Toolbar ----
@@ -270,9 +381,13 @@ export class TreeView {
     if (!confirm('Reset to auto-layout? Every node will be moved, replacing the positions you set by hand.')) {
       return;
     }
-    this.run(this.treeApi.updatePositions(this.treeId(), autoLayout(this.treeNodes())), (treeNodes) =>
-      this.treeNodes.set(treeNodes),
-    );
+    const positionsOf = (nodes: TreeNode[]) =>
+      nodes.map((n) => ({ nodeId: n.nodeId, positionX: n.positionX, positionY: n.positionY }));
+    const before = positionsOf(this.treeNodes());
+    this.run(this.treeApi.updatePositions(this.treeId(), autoLayout(this.treeNodes())), (treeNodes) => {
+      this.treeNodes.set(treeNodes);
+      this.record(commands.layout(this.editContext, before, positionsOf(treeNodes)));
+    });
   }
 
   protected delete(tree: Tree): void {
@@ -346,7 +461,8 @@ export class TreeView {
       return;
     }
     if (drag.moved) {
-      this.saveTreeNode(treeNode);
+      const before = { ...commands.stateOf(treeNode), positionX: drag.startPosition.x, positionY: drag.startPosition.y };
+      this.saveTreeNode(treeNode, `move "${treeNode.title}"`, before);
     } else {
       this.toggleSelected(treeNode);
     }
@@ -381,7 +497,13 @@ export class TreeView {
   protected onEdgeClick(event: Event, edgeId: number): void {
     event.stopPropagation();
     if (this.mode() === 'edit' && this.tool() === 'delete') {
-      this.run(this.treeApi.removePrerequisite(this.treeId(), edgeId), () => this.reloadContents());
+      const ends = this.endsOf(edgeId);
+      this.run(this.treeApi.removePrerequisite(this.treeId(), edgeId), () => {
+        if (ends) {
+          this.record(commands.removeEdge(this.editContext, `delete arrow ${ends.label}`, ends.ends));
+        }
+        this.reloadContents();
+      });
     }
   }
 
@@ -397,7 +519,11 @@ export class TreeView {
       this.thresholdForm.markAllAsTouched();
       return;
     }
-    this.saveTreeNode({ ...treeNode, ...this.thresholdForm.getRawValue() });
+    this.saveTreeNode(
+      { ...treeNode, ...this.thresholdForm.getRawValue() },
+      `thresholds of "${treeNode.title}"`,
+      commands.stateOf(treeNode),
+    );
   }
 
   protected removeTreeNode(treeNode: TreeNode): void {
@@ -409,10 +535,20 @@ export class TreeView {
     ) {
       return;
     }
+    const byId = this.byId();
+    const edges: EdgeEnds[] = this.edges()
+      .filter((e) => e.prerequisiteTreeNodeId === treeNode.id || e.dependentTreeNodeId === treeNode.id)
+      .map((e) => ({
+        prerequisiteNodeId: byId.get(e.prerequisiteTreeNodeId)!.nodeId,
+        dependentNodeId: byId.get(e.dependentTreeNodeId)!.nodeId,
+      }));
     this.run(this.treeApi.removeNode(this.treeId(), treeNode.id), () => {
       if (this.selectedId() === treeNode.id) {
         this.selectedId.set(null);
       }
+      this.record(
+        commands.removeNode(this.editContext, `remove "${treeNode.title}"`, treeNode.nodeId, commands.stateOf(treeNode), edges),
+      );
       this.reloadContents();
     });
   }
@@ -422,8 +558,9 @@ export class TreeView {
     if (!point) {
       return;
     }
-    this.run(this.treeApi.addNode(this.treeId(), { nodeId, positionX: point.x, positionY: point.y }), () => {
+    this.run(this.treeApi.addNode(this.treeId(), { nodeId, positionX: point.x, positionY: point.y }), (added) => {
       this.pendingPoint.set(null);
+      this.record(commands.placeNode(this.editContext, `add "${added.title}"`, nodeId, commands.stateOf(added)));
       this.reloadContents();
     });
   }
@@ -441,8 +578,9 @@ export class TreeView {
           return this.treeApi.addNode(this.treeId(), { nodeId: node.id, positionX: point.x, positionY: point.y });
         }),
       );
-    this.run(placed, () => {
+    this.run(placed, (added) => {
       this.pendingPoint.set(null);
+      this.record(commands.createNode(this.editContext, `create "${title}"`, added.nodeId, title, commands.stateOf(added)));
       this.reloadContents();
     });
   }
@@ -495,24 +633,46 @@ export class TreeView {
     if (fromId === treeNode.id) {
       return;
     }
-    this.run(this.treeApi.addPrerequisite(this.treeId(), fromId, treeNode.id), () => this.reloadContents());
+    const from = this.byId().get(fromId)!;
+    this.run(this.treeApi.addPrerequisite(this.treeId(), fromId, treeNode.id), () => {
+      this.record(
+        commands.addEdge(this.editContext, `connect "${from.title}" to "${treeNode.title}"`, {
+          prerequisiteNodeId: from.nodeId,
+          dependentNodeId: treeNode.nodeId,
+        }),
+      );
+      this.reloadContents();
+    });
   }
 
-  private saveTreeNode(treeNode: TreeNode): void {
-    const request = {
-      positionX: treeNode.positionX,
-      positionY: treeNode.positionY,
-      aggregateThreshold: treeNode.aggregateThreshold,
-      individualThreshold: treeNode.individualThreshold,
-    };
+  /** Saves a move or a threshold change, and records it for undo with the state it replaced. */
+  private saveTreeNode(treeNode: TreeNode, label: string, before: NodeState): void {
+    const request = commands.stateOf(treeNode);
     this.error.set(null);
     this.treeApi.updateNode(this.treeId(), treeNode.id, request).subscribe({
-      next: (saved) => this.treeNodes.update((nodes) => nodes.map((n) => (n.id === saved.id ? saved : n))),
+      next: (saved) => {
+        this.treeNodes.update((nodes) => nodes.map((n) => (n.id === saved.id ? saved : n)));
+        this.record(commands.updateNode(this.editContext, label, treeNode.nodeId, before, request));
+      },
       error: (error) => {
         this.error.set(errorMessage(error));
         this.reloadContents(); // put the node back where the server has it
       },
     });
+  }
+
+  /** An edge by the library nodes at its ends, for undo, with a label like `"A" → "B"`. */
+  private endsOf(edgeId: number): { ends: EdgeEnds; label: string } | null {
+    const edge = this.edges().find((e) => e.id === edgeId);
+    const from = edge && this.byId().get(edge.prerequisiteTreeNodeId);
+    const to = edge && this.byId().get(edge.dependentTreeNodeId);
+    if (!from || !to) {
+      return null;
+    }
+    return {
+      ends: { prerequisiteNodeId: from.nodeId, dependentNodeId: to.nodeId },
+      label: `"${from.title}" → "${to.title}"`,
+    };
   }
 
   /** Re-reads the tree's nodes and edges after a change to its structure. */

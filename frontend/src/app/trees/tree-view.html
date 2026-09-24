@@ -52,6 +52,25 @@
           {{ t.label }}
         </button>
       }
+      <span class="separator"></span>
+      <button
+        type="button"
+        (click)="undo()"
+        [disabled]="!history.nextUndo() || historyBusy()"
+        [attr.title]="history.nextUndo() ? 'Undo ' + history.nextUndo()!.label + ' (Ctrl+Z)' : null"
+        aria-keyshortcuts="Control+Z"
+      >
+        Undo
+      </button>
+      <button
+        type="button"
+        (click)="redo()"
+        [disabled]="!history.nextRedo() || historyBusy()"
+        [attr.title]="history.nextRedo() ? 'Redo ' + history.nextRedo()!.label + ' (Ctrl+Y)' : null"
+        aria-keyshortcuts="Control+Y Control+Shift+Z"
+      >
+        Redo
+      </button>
       <span class="spacer"></span>
       <button type="button" (click)="resetLayout()" [disabled]="!treeNodes().length">Reset to auto-layout</button>
     </div>

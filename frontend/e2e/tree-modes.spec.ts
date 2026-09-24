@@ -71,8 +71,12 @@ test.describe('Tree view and edit modes', () => {
     await expect
       .poll(async () => (await api.treeNodes(tree.id)).find((n) => n.id === basics.id)!.positionX)
       .toBeGreaterThan(50);
+    // The page has handled the saved move once it can be undone
+    await expect(page.getByRole('button', { name: 'Undo' })).toBeEnabled();
     await page.getByRole('toolbar').getByRole('button', { name: 'Delete', exact: true }).click();
-    await page.locator('svg g.edge .edge-hit').click({ force: true });
+    // The new hint can reflow the page, so let it settle before aiming at the arrow
+    await expect(page.getByText('click an arrow to remove that prerequisite')).toBeVisible();
+    await page.locator('svg g.edge .edge-hit').click();
     await expect(page.locator('svg g.edge')).toHaveCount(0);
     await page.getByRole('toolbar').getByRole('button', { name: 'Add node', exact: true }).click();
     await page.getByRole('img', { name: /^Skill tree / }).click({ position: { x: 20, y: 20 } });

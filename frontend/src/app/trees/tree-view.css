@@ -53,6 +53,12 @@ svg {
   flex: 1;
 }
 
+.separator {
+  width: 1px;
+  align-self: stretch;
+  background: #ccc;
+}
+
 .hint {
   margin-top: 0.4rem;
 }
