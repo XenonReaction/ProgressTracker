@@ -67,7 +67,7 @@ test.describe('Tree editor', () => {
     await openTree(page, tree.id);
 
     const box = nodeBox(page, advanced.title);
-    await expect(box).toHaveAttribute('aria-label', /, locked$/);
+    await expect(box).toHaveAttribute('aria-label', /, early$/);
 
     await box.click();
     const details = page.locator('aside.details');

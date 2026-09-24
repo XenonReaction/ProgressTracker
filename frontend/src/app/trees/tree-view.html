@@ -77,8 +77,10 @@
   }
   <p class="muted hint">
     {{ hint() }}
-    <span class="legend ready">Ready</span> = prerequisites meet the node's thresholds,
-    <span class="legend locked">Locked</span> = not yet.
+    How close each node is to being ready to start, from its prerequisites' readiness and its thresholds:
+    @for (level of readinessLevels; track level.state) {
+      <span class="legend" [class]="level.state">{{ level.label }}</span>
+    }
   </p>
 
   <div class="layout">
@@ -141,7 +143,7 @@
           <title>{{ treeNode.title }}</title>
           <rect [attr.width]="nodeWidth" [attr.height]="nodeHeight" rx="6" />
           <text [attr.x]="nodeWidth / 2" y="23" text-anchor="middle" class="title">{{ shortTitle(treeNode.title) }}</text>
-          <text [attr.x]="nodeWidth / 2" y="43" text-anchor="middle" class="readiness">{{ treeNode.readiness }}% · {{ stateOf(treeNode) }}</text>
+          <text [attr.x]="nodeWidth / 2" y="43" text-anchor="middle" class="readiness">{{ treeNode.readiness }}% · {{ levelOf(treeNode) }}</text>
           @if (treeNode.linkedTree) {
             <!-- Marks a node whose readiness comes from another tree -->
             <text [attr.x]="nodeWidth - 6" y="12" text-anchor="end" class="linked-marker">linked</text>
@@ -182,7 +184,7 @@
         } @else {
           <p>Readiness: <strong>{{ node.readiness }}%</strong></p>
         }
-        <p>State: <strong>{{ stateOf(node) }}</strong></p>
+        <p>Ready to start: <strong>{{ levelOf(node) }}</strong></p>
 
         @if (mode() === 'edit') {
           <form [formGroup]="thresholdForm" (ngSubmit)="saveThresholds(node)">

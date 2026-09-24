@@ -27,7 +27,7 @@ A new system for creating and editing skill trees, in the same spirit as the exi
   - Swapping the linked-tree aggregate from "plain average" to something smarter later (weighted, threshold-based, etc.) doesn't require redesigning how nodes consume external readiness — only the function registered for that source type changes.
 - **Readiness source hook:** `nodes` gets a `readiness_source_type` column (default/only value for Milestone 1: `'manual'`), even though nothing reads it yet — a cheap forward-compatibility hook, not a Milestone-2 feature pulled forward. No service logic, no UI, no readiness-function registry yet; that's still Milestone 2+ work.
 - Readiness styling (how a node visually signals whether it's worth starting):
-  - **Gradient step count:** **two states only for v1** (locked-looking vs. ready-looking). A more granular multi-band gradient (4–5 steps) is a **future option to explore**, not committed to, and not scheduled into any milestone yet.
+  - **Gradient step count:** **two states only for v1** (locked-looking vs. ready-looking). **Superseded in Phase 5.5:** four levels (not started, early, close, ready); see `plans/Phase_5_plan.md`.
   - Two conditions both need to hold before a dependent node flips from locked to ready:
     1. The **sum/aggregate of its prerequisites'** readiness crosses a threshold, **and**
     2. **Each individual prerequisite**, on its own, also crosses its own threshold.

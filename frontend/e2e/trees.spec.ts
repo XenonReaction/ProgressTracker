@@ -8,10 +8,11 @@ test.describe('Trees', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Java Fundamentals' })).toBeVisible();
     await expect(page.locator('svg g.node')).toHaveCount(5);
     await expect(page.locator('svg g.edge')).toHaveCount(5);
-    // Collections needs OOP (80%), which meets its default 80/70 thresholds; Streams needs
-    // Collections (65%) and Generics (40%), which don't
+    // Collections needs OOP (80%), which meets its default 80/70 thresholds. Streams needs
+    // Collections (70%, from its linked tree) and Generics (40%) against 85/75: the weakest is
+    // 40 / 75 = 0.53 of the way, so it's early
     await expect(nodeBox(page, 'Collections Framework')).toHaveAttribute('aria-label', /, ready$/);
-    await expect(nodeBox(page, 'Streams API')).toHaveAttribute('aria-label', /, locked$/);
+    await expect(nodeBox(page, 'Streams API')).toHaveAttribute('aria-label', /, early$/);
   });
 
   test('creates a tree, edits its details, then deletes it', async ({ page, api, unique }) => {

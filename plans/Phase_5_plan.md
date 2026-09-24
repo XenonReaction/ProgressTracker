@@ -13,8 +13,8 @@ Milestone 1 (Phases 0–4b) is done: node library and tree CRUD, a tree editor w
 | 5.2 Linked-tree readiness | **Done** (committed). |
 | 5.3a View/edit modes, restore point, node pages | **Done** (committed). |
 | 5.3b Undo/redo | **Done** (committed). |
-| 5.4 Right-angle edges | **Built**, awaiting review. |
-| 5.5 Readiness gradient | **Fully decided**, ready to approve. |
+| 5.4 Right-angle edges | **Done** (committed). |
+| 5.5 Readiness gradient | **Done** (committed). |
 
 **What changed in round 4:**
 - **Order confirmed** (O-Q1b).
@@ -307,6 +307,12 @@ Example, with the default thresholds (average at least 80%, each at least 70%):
 - **The gradient replaces the two-state look** (Q4). There's no toggle.
 - **Each level differs in more than color** (border style and a text label), so it stays readable for color-blind users. A legend explains the levels.
 - **Linked nodes' derived readiness (5.2) counts like any other readiness.** A prerequisite's readiness is its effective value.
+
+**Built:**
+- **Frontend only** (`trees/readiness.ts`). Progress = min(average / aggregate threshold, weakest / individual threshold). Ready is unchanged: progress of 1 or more, exactly today's rule.
+- **Cut-offs chosen while building** (the plan's examples fit them): **not started** below 25%, **early** from 25%, **close** from 75%.
+- **Look:** ready is green and solid (unchanged); close is pale green with long dashes; early is light grey and dotted; not started is grey with medium dashes. Each box shows its level in words ("15% · close"), and the tree page has a legend of all four.
+- **Also:** node details say "Ready to start: close", and screen readers hear the level in each node's label.
 
 **Depends on:** nothing technically (frontend only). It comes last so it can use 5.2's derived readiness, and 5.0's browser tests check the levels on screen.
 

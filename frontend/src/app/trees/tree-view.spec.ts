@@ -12,7 +12,8 @@ describe('TreeView', () => {
   let http: HttpTestingController;
   let page: HTMLElement;
 
-  // syntax (95) -> oop (60) -> streams (15); oop is ready (95 meets 80/70), streams is locked
+  // syntax (95) -> oop (60) -> streams (15); oop is ready (95 meets 80/70), and streams is
+  // close (OOP's 60 is 0.75 of the 80 average it needs)
   const syntax = aTreeNode({ id: 1, nodeId: 11, title: 'Java Syntax', readiness: 95, positionY: 0, dependentIds: [2] });
   const oop = aTreeNode({ id: 2, nodeId: 12, title: 'OOP', readiness: 60, positionY: 150, prerequisiteIds: [1], dependentIds: [3] });
   const streams = aTreeNode({ id: 3, nodeId: 13, title: 'Streams', readiness: 15, positionY: 300, prerequisiteIds: [2] });
@@ -49,11 +50,23 @@ describe('TreeView', () => {
       expect(page.querySelectorAll('g.edge').length).toBe(2);
     });
 
-    it('styles nodes as ready or locked from their prerequisites', () => {
+    it('styles nodes by how close they are to ready, with a label in each box', () => {
       expect(nodeEl(1).classList).toContain('ready'); // no prerequisites
       expect(nodeEl(2).classList).toContain('ready'); // syntax 95 meets 80/70
-      expect(nodeEl(3).classList).toContain('locked'); // oop 60 is below 80/70
+      expect(nodeEl(3).classList).toContain('close'); // oop 60: 60 / 80 = 0.75 of the way
       expect(nodeEl(3).classList).toContain('node');
+      expect(nodeEl(3).querySelector('text.readiness')?.textContent).toBe('15% · close');
+      expect(nodeEl(3).getAttribute('aria-label')).toBe('Streams, 15% ready, close');
+    });
+
+    it('explains the four levels in a legend', () => {
+      const legend = Array.from(page.querySelectorAll('.hint .legend')).map((el) => [el.textContent, el.classList[1]]);
+      expect(legend).toEqual([
+        ['not started', 'not-started'],
+        ['early', 'early'],
+        ['close', 'close'],
+        ['ready', 'ready'],
+      ]);
     });
 
     it('shows the tree metadata and opens in view mode, without editing tools', () => {

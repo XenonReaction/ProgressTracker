@@ -14,7 +14,7 @@ import { confirmTreeDelete } from './confirm-delete';
 import { RoutedEdge, SegmentHandle, pointsAttr, routeEdges, routeOutgrown } from './edge-routes';
 import * as commands from './edit-commands';
 import { EdgeEnds, EditContext, NodeState } from './edit-commands';
-import { ReadinessState, readinessState } from './readiness';
+import { READINESS_LEVELS, ReadinessState, readinessLabel, readinessState } from './readiness';
 import { NODE_HEIGHT, NODE_WIDTH, Point, ViewBox, viewBoxFor } from './tree-layout';
 import { EditCommand, UndoHistory } from './undo-history';
 
@@ -73,6 +73,7 @@ export class TreeView {
   /** Query param set by the tree details form, to come back into the edit session it was opened from. */
   readonly resumeEdit = input<string>();
 
+  protected readonly readinessLevels = READINESS_LEVELS;
   protected readonly nodeWidth = NODE_WIDTH;
   protected readonly nodeHeight = NODE_HEIGHT;
   protected readonly tools: { id: Tool; label: string }[] = [
@@ -643,7 +644,12 @@ export class TreeView {
   // ---- Template helpers ----
 
   protected stateOf(treeNode: TreeNode): ReadinessState {
-    return this.states().get(treeNode.id) ?? 'locked';
+    return this.states().get(treeNode.id) ?? 'not-started';
+  }
+
+  /** The node's readiness level as words, e.g. "not started". */
+  protected levelOf(treeNode: TreeNode): string {
+    return readinessLabel(this.stateOf(treeNode));
   }
 
   protected titlesOf(ids: number[]): TreeNode[] {
@@ -652,7 +658,7 @@ export class TreeView {
 
   protected ariaLabel(treeNode: TreeNode): string {
     const linked = treeNode.linkedTree ? `, from linked tree ${treeNode.linkedTree.title}` : '';
-    return `${treeNode.title}, ${treeNode.readiness}% ready${linked}, ${this.stateOf(treeNode)}`;
+    return `${treeNode.title}, ${treeNode.readiness}% ready${linked}, ${this.levelOf(treeNode)}`;
   }
 
   /** SVG text doesn't wrap, so long titles are shortened to fit the box. */

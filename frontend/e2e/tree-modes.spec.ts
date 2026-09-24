@@ -39,7 +39,7 @@ test.describe('Tree view and edit modes', () => {
 
     await expect(editButton(page)).toBeVisible();
     await expect(page.getByRole('toolbar')).toHaveCount(0);
-    await expect(nodeBox(page, advanced.title)).toHaveAttribute('aria-label', /, locked$/);
+    await expect(nodeBox(page, advanced.title)).toHaveAttribute('aria-label', /, early$/);
 
     // Dragging does nothing in view mode
     await dragBy(page, basics.title, 100, 0);

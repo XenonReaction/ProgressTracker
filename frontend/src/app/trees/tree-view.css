@@ -116,14 +116,28 @@ marker path {
   stroke: #2e7d32;
 }
 
-.node.locked rect {
+/* The four readiness levels differ in border style and label as well as colour (5.5) */
+.node.close rect {
+  fill: #f1f8e9;
+  stroke: #7cb342;
+  stroke-dasharray: 10 3;
+}
+
+.node.early rect {
+  fill: #fafafa;
+  stroke: #9e9e9e;
+  stroke-dasharray: 2 3;
+}
+
+.node.not-started rect {
   fill: #f1f1f1;
   stroke: #999;
   stroke-dasharray: 5 3;
 }
 
-.node.locked text {
-  fill: #777;
+.node.early text,
+.node.not-started text {
+  fill: #666;
 }
 
 .node.selected rect {
@@ -158,7 +172,19 @@ marker path {
   border-color: #2e7d32;
 }
 
-.legend.locked {
+.legend.close {
+  background: #f1f8e9;
+  border-color: #7cb342;
+  border-style: dashed;
+}
+
+.legend.early {
+  background: #fafafa;
+  border-color: #9e9e9e;
+  border-style: dotted;
+}
+
+.legend.not-started {
   background: #f1f1f1;
   border-color: #999;
   border-style: dashed;
