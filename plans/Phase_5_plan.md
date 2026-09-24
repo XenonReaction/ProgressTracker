@@ -9,8 +9,8 @@ Milestone 1 (Phases 0–4b) is done: node library and tree CRUD, a tree editor w
 | Sub-phase | State |
 |---|---|
 | 5.0 Browser tests | **Done** (committed). |
-| 5.1 Migration tool | **Built**, awaiting review. |
-| 5.2 Linked-tree readiness | **Fully decided**, ready to approve. |
+| 5.1 Migration tool | **Done** (committed). |
+| 5.2 Linked-tree readiness | **Built**, awaiting review. |
 | 5.3a View/edit modes, restore point, node pages | **Fully decided**, ready to approve. |
 | 5.3b Undo/redo | **Fully decided**, ready to approve. |
 | 5.4 Right-angle edges | **Fully decided**, ready to approve. |
@@ -149,6 +149,13 @@ We've already hit this once. When the `positionx` column needed renaming, the on
 - **Prerequisites don't feed into readiness** (Q10, option A). A node's readiness is your progress on that topic. Prerequisites only decide whether it looks ready or locked (or its gradient level, 5.5). Readiness comes from other nodes only when the node is linked to a whole tree.
 - **Tree canvas:** a linked node shows a small "linked" marker. Its details show the linked tree's name with an "Open linked tree" link (Q9).
 - **Rounding:** derived readiness is rounded to a whole percent, matching hand-entered values.
+
+**Built:**
+- **Migration `V3`** adds `nodes.linked_tree_id` (foreign key and index), widens the source-type check to `'manual'` and `'linked_tree'`, and adds `nodes_linked_tree_matches_source`, so a link and its source type always agree.
+- **Backend:** a `readiness` package with one calculator per source type and a per-request `ReadinessContext` that computes values on read, caching each tree's average. `TreeLinks` refuses loops both when a node is linked and when a linked node is placed in a tree. Node and tree-node responses carry the effective `readiness` and `linkedTree`, and node responses also carry `manualReadiness`.
+- **Frontend:** the node form has a readiness source choice ("Enter it myself" or "From a linked tree", with a tree picker). The node library shows "from <tree>" beside derived values. The tree canvas marks linked nodes, and their details name the tree with an "Open linked tree" link.
+- **Sample data:** Collections Framework is linked to a new "Collections in Depth" tree (70% derived, replacing its hand-entered 65%).
+- **Not in the plan, but needed:** placing a linked node in a tree can close a loop just as linking can, so both are checked. The node edit form stays the place to set the link for now; 5.3 moves hand-entered readiness to the view page.
 
 **Depends on:** 5.1 (a new column and constraint, added through a migration).
 

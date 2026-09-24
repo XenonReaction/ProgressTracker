@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, computed, inject, input, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Observable, forkJoin, switchMap } from 'rxjs';
@@ -40,7 +40,7 @@ interface Drag {
   styleUrl: './tree-view.css',
   host: { '(document:keydown.escape)': 'cancelPending()' },
 })
-export class TreeView implements OnInit {
+export class TreeView {
   private readonly treeApi = inject(TreeApi);
   private readonly nodeApi = inject(NodeApi);
   private readonly router = inject(Router);
@@ -118,8 +118,20 @@ export class TreeView implements OnInit {
     }
   });
 
-  ngOnInit(): void {
-    const id = this.treeId();
+  constructor() {
+    // "Open linked tree" reuses this component for another tree, so load on every id change
+    effect(() => {
+      const id = Number(this.id());
+      untracked(() => this.load(id));
+    });
+  }
+
+  private load(id: number): void {
+    this.tree.set(null);
+    this.error.set(null);
+    this.tool.set('select');
+    this.selectedId.set(null);
+    this.cancelPending();
     forkJoin({
       tree: this.treeApi.get(id),
       treeNodes: this.treeApi.nodes(id),
@@ -330,6 +342,11 @@ export class TreeView implements OnInit {
 
   protected titlesOf(ids: number[]): TreeNode[] {
     return ids.map((id) => this.byId().get(id)).filter((n): n is TreeNode => n !== undefined);
+  }
+
+  protected ariaLabel(treeNode: TreeNode): string {
+    const linked = treeNode.linkedTree ? `, from linked tree ${treeNode.linkedTree.title}` : '';
+    return `${treeNode.title}, ${treeNode.readiness}% ready${linked}, ${this.stateOf(treeNode)}`;
   }
 
   /** SVG text doesn't wrap, so long titles are shortened to fit the box. */

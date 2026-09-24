@@ -1,12 +1,16 @@
 package com.progressiontracker.node;
 
 /**
- * Where a node's readiness value comes from. Milestone 1 only supports manual entry;
- * derived sources (e.g. a linked tree's aggregate) are Milestone 2+.
+ * Where a node's readiness value comes from. Each type has a
+ * {@link com.progressiontracker.readiness.ReadinessCalculator}.
  */
 public enum ReadinessSourceType {
 
-	MANUAL("manual");
+	/** Entered by hand. */
+	MANUAL("manual"),
+
+	/** The average readiness of the nodes in the node's linked tree. */
+	LINKED_TREE("linked_tree");
 
 	private final String dbValue;
 

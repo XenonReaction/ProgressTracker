@@ -68,6 +68,44 @@ describe('TreeView', () => {
     });
   });
 
+  describe('linked nodes', () => {
+    const collections = aTreeNode({
+      id: 7,
+      nodeId: 17,
+      title: 'Collections',
+      readiness: 57,
+      linkedTree: { id: 9, title: 'Collections in Depth' },
+    });
+
+    beforeEach(async () => {
+      // Going to another tree reuses the component, as "Open linked tree" does
+      fixture.componentRef.setInput('id', '5');
+      await fixture.whenStable();
+      http.expectOne('/api/v1/trees/5').flush(aTree({ id: 5, title: 'Java' }));
+      http.expectOne('/api/v1/trees/5/nodes').flush([collections]);
+      http.expectOne('/api/v1/trees/5/prerequisites').flush([]);
+      await fixture.whenStable();
+    });
+
+    it('loads the new tree when the id changes', () => {
+      expect(page.querySelector('h1')?.textContent).toBe('Java');
+      expect(page.querySelectorAll('g.node').length).toBe(1);
+    });
+
+    it('marks a linked node on the canvas', () => {
+      expect(nodeEl(7).querySelector('.linked-marker')?.textContent).toBe('linked');
+      expect(nodeEl(7).getAttribute('aria-label')).toBe('Collections, 57% ready, from linked tree Collections in Depth, ready');
+    });
+
+    it('names the linked tree in the details, with a link to open it', async () => {
+      await pressAndRelease(7);
+
+      expect(page.querySelector('aside')?.textContent).toContain('Readiness comes from the linked tree Collections in Depth');
+      expect(link('Open linked tree').getAttribute('href')).toBe('/trees/9');
+      expect(link('Change readiness source').getAttribute('href')).toBe('/nodes/17/edit?returnTo=%2Ftrees%2F5');
+    });
+  });
+
   describe('select tool', () => {
     it('shows what a clicked node needs and unlocks, with its thresholds', async () => {
       await pressAndRelease(2);

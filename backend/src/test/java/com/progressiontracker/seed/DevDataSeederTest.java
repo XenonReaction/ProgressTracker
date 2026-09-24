@@ -46,10 +46,11 @@ class DevDataSeederTest {
 
 	private void assertSeededCounts() {
 		assertThat(count("select count(u) from User u")).isEqualTo(1);
-		assertThat(count("select count(n) from Node n")).isEqualTo(7);
-		assertThat(count("select count(t) from Tree t")).isEqualTo(2);
-		assertThat(count("select count(tn) from TreeNode tn")).isEqualTo(7);
-		assertThat(count("select count(p) from Prerequisite p")).isEqualTo(6);
+		assertThat(count("select count(n) from Node n")).isEqualTo(10);
+		assertThat(count("select count(t) from Tree t")).isEqualTo(3);
+		assertThat(count("select count(tn) from TreeNode tn")).isEqualTo(10);
+		assertThat(count("select count(p) from Prerequisite p")).isEqualTo(8);
+		assertThat(count("select count(n) from Node n where n.linkedTree is not null")).isEqualTo(1);
 	}
 
 	private long count(String jpql) {

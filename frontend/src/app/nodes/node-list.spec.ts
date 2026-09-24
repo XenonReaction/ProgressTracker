@@ -21,6 +21,7 @@ describe('NodeList', () => {
     http.expectOne('/api/v1/nodes').flush([
       aNode({ id: 1, title: 'Generics', readiness: 40 }),
       aNode({ id: 2, title: 'OOP', readiness: 80, links: [{ url: 'https://example.com', label: null }] }),
+      aNode({ id: 3, title: 'Collections', readiness: 70, linkedTree: { id: 9, title: 'Collections in Depth' } }),
     ]);
     await fixture.whenStable();
   });
@@ -32,10 +33,16 @@ describe('NodeList', () => {
 
   it('shows each node with its readiness and an edit link', () => {
     const rows = page.querySelectorAll('tbody tr');
-    expect(rows.length).toBe(2);
+    expect(rows.length).toBe(3);
     expect(rows[1].textContent).toContain('OOP');
     expect(rows[1].textContent).toContain('80%');
     expect(rows[1].querySelector('a')?.getAttribute('href')).toBe('/nodes/2/edit');
+  });
+
+  it('names the tree a linked node takes its readiness from', () => {
+    const row = page.querySelectorAll('tbody tr')[2];
+    expect(row.textContent).toContain('70% from Collections in Depth');
+    expect(row.querySelector('a')?.getAttribute('href')).toBe('/trees/9');
   });
 
   it('deletes after confirmation and reloads the list', async () => {

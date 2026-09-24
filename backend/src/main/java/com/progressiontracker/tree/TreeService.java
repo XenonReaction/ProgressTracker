@@ -1,11 +1,17 @@
 package com.progressiontracker.tree;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
+import com.progressiontracker.node.Node;
+import com.progressiontracker.node.NodeRef;
+import com.progressiontracker.node.NodeRepository;
 import com.progressiontracker.user.CurrentUserService;
 
 /** CRUD for the current user's trees (metadata only; see TreeNodeService for contents). */
@@ -15,10 +21,13 @@ public class TreeService {
 
 	private final TreeRepository trees;
 
+	private final NodeRepository nodes;
+
 	private final CurrentUserService currentUser;
 
-	public TreeService(TreeRepository trees, CurrentUserService currentUser) {
+	public TreeService(TreeRepository trees, NodeRepository nodes, CurrentUserService currentUser) {
 		this.trees = trees;
+		this.nodes = nodes;
 		this.currentUser = currentUser;
 	}
 
@@ -45,9 +54,21 @@ public class TreeService {
 		return TreeResponse.from(tree);
 	}
 
-	/** Deletes the tree with its tree nodes and edges (database cascade). Library nodes stay. */
+	/**
+	 * Deletes the tree with its tree nodes and edges (database cascade). Library nodes stay.
+	 * A tree that nodes take their readiness from is refused with 409, listing those nodes.
+	 */
 	public void delete(Long id) {
-		trees.delete(findOwned(id));
+		Tree tree = findOwned(id);
+		List<Node> linking = nodes.findByLinkedTreeOrderByTitleAsc(tree);
+		if (!linking.isEmpty()) {
+			String titles = linking.stream().map(node -> "\"" + node.getTitle() + "\"").collect(Collectors.joining(", "));
+			throw new ConflictException(
+					"Tree " + id + " is linked from " + linking.size() + " node(s): " + titles
+							+ ". Unlink them before deleting it",
+					Map.of("nodes", linking.stream().map(NodeRef::of).toList()));
+		}
+		trees.delete(tree);
 	}
 
 	/** Looks up one of the current user's trees, or throws 404. */

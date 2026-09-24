@@ -18,16 +18,53 @@
     </label>
   </p>
 
-  <p>
-    <label>
-      Readiness (0–100)<br />
-      <input type="range" min="0" max="100" formControlName="readiness" aria-label="Readiness slider" />
-      <input type="number" min="0" max="100" formControlName="readiness" />
-    </label>
-    @if (form.controls.readiness.invalid) {
-      <br /><span class="error">Readiness must be a whole number from 0 to 100.</span>
+  <fieldset>
+    <legend>Readiness</legend>
+    <label><input type="radio" formControlName="source" value="manual" /> Enter it myself</label>
+    &nbsp;
+    <label><input type="radio" formControlName="source" value="linked_tree" /> From a linked tree</label>
+
+    @if (form.controls.source.value === 'manual') {
+      <p>
+        <label>
+          Readiness (0–100)<br />
+          <input type="range" min="0" max="100" formControlName="readiness" aria-label="Readiness slider" />
+          <input type="number" min="0" max="100" formControlName="readiness" />
+        </label>
+        @if (form.controls.readiness.invalid) {
+          <br /><span class="error">Readiness must be a whole number from 0 to 100.</span>
+        }
+      </p>
+    } @else {
+      <p>
+        <label>
+          Linked tree<br />
+          @if (trees(); as trees) {
+            <select formControlName="linkedTreeId">
+              <option [ngValue]="null">Choose a tree…</option>
+              @for (tree of trees; track tree.id) {
+                <option [ngValue]="tree.id">{{ tree.title }}</option>
+              }
+            </select>
+          } @else {
+            <span class="muted">Loading trees…</span>
+          }
+        </label>
+        @if (form.hasError('linkedTreeRequired') && form.touched) {
+          <br /><span class="error">Choose the tree this node's readiness comes from.</span>
+        }
+      </p>
+      <p class="muted">
+        Readiness will be the average of that tree's nodes.
+        @if (savedLink(); as link) {
+          @if (link.treeId === form.controls.linkedTreeId.value) {
+            It's {{ link.readiness }}% now.
+          }
+        }
+        Your hand-entered value ({{ form.controls.readiness.value }}%) is kept for if you unlink it.
+      </p>
     }
-  </p>
+  </fieldset>
 
   <fieldset formArrayName="links">
     <legend>Links</legend>

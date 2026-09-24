@@ -5,12 +5,26 @@ export interface NodeLink {
   label: string | null;
 }
 
+/** A tree named in another response, e.g. the tree a node takes its readiness from. */
+export interface TreeRef {
+  id: number;
+  title: string;
+}
+
+export type ReadinessSourceType = 'manual' | 'linked_tree';
+
+/**
+ * `readiness` is the value to show: `manualReadiness` (entered by hand), or the average of
+ * `linkedTree`'s nodes when the node is linked. The hand-entered value is kept while linked.
+ */
 export interface Node {
   id: number;
   title: string;
   description: string | null;
   readiness: number;
-  readinessSourceType: string;
+  manualReadiness: number;
+  readinessSourceType: ReadinessSourceType;
+  linkedTree: TreeRef | null;
   links: NodeLink[];
   createdAt: string;
   updatedAt: string;
@@ -19,8 +33,11 @@ export interface Node {
 export interface NodeRequest {
   title: string;
   description: string | null;
+  /** The hand-entered value, kept even while the node is linked. */
   readiness: number;
   links: NodeLink[];
+  /** Take readiness from this tree instead; null or omitted for the hand-entered value. */
+  linkedTreeId?: number | null;
 }
 
 export interface Tree {
@@ -49,7 +66,9 @@ export interface TreeNode {
   treeId: number;
   nodeId: number;
   title: string;
+  /** Effective readiness: derived from `linkedTree` when the node is linked. */
   readiness: number;
+  linkedTree: TreeRef | null;
   positionX: number;
   positionY: number;
   aggregateThreshold: number;
@@ -92,5 +111,8 @@ export interface Problem {
   title: string;
   detail?: string;
   errors?: { field: string; message: string }[];
-  trees?: { id: number; title: string }[];
+  /** Trees still using a node that couldn't be deleted. */
+  trees?: TreeRef[];
+  /** Nodes linked to a tree that couldn't be deleted. */
+  nodes?: { id: number; title: string }[];
 }

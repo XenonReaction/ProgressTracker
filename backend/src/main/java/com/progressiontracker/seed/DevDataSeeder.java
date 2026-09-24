@@ -98,6 +98,17 @@ public class DevDataSeeder implements ApplicationRunner {
 		TreeNode sSpringCore = place(springTree, springCore, 0, 150);
 		edge(sOop, sSpringCore);
 
+		// Collections Framework takes its readiness from a tree of its own: (90 + 70 + 50) / 3 = 70,
+		// in place of its hand-entered 65
+		Tree collectionsTree = tree(user, "Collections in Depth", "The main collection types, one by one.",
+				"Technology", "java");
+		TreeNode cList = place(collectionsTree, node(user, "Lists", "ArrayList and LinkedList.", 90), 0, 0);
+		TreeNode cMap = place(collectionsTree, node(user, "Maps", "HashMap, TreeMap and LinkedHashMap.", 70), -150, 150);
+		TreeNode cSet = place(collectionsTree, node(user, "Sets", "HashSet and TreeSet.", 50), 150, 150);
+		edge(cList, cMap);
+		edge(cList, cSet);
+		collections.setLinkedTree(collectionsTree);
+
 		log.info("Seeded dev data for user '{}'", user.getUsername());
 	}
 

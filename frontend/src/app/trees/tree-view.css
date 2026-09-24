@@ -138,3 +138,9 @@ marker path {
   border-color: #999;
   border-style: dashed;
 }
+
+.linked-marker {
+  font-size: 10px;
+  font-style: italic;
+  fill: #1565c0;
+}

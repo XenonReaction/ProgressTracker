@@ -179,6 +179,86 @@ class ApiIntegrationTest {
 			.isEqualTo(100.0);
 	}
 
+	@Test
+	void linkedNodeTakesItsReadinessFromTheTreeThroughEveryLevel() {
+		long concurrency = id(post("/api/v1/trees", "{\"title\": \"Concurrency\"}"));
+		placeNode(concurrency, createNode("Threads", 20), "");
+		placeNode(concurrency, createNode("Locks", 40), "");
+		long collections = id(post("/api/v1/trees", "{\"title\": \"Collections\"}"));
+		placeNode(collections, createNode("List", 80), "");
+		placeNode(collections, createNode("Map", 60), "");
+		long concurrent = createNode("Concurrent collections", 99);
+		assertThat(link(concurrent, "Concurrent collections", 99, concurrency)).hasStatusOk();
+		placeNode(collections, concurrent, "");
+		long collectionsNode = createNode("Collections", 10);
+
+		// (80 + 60 + 30) / 3 = 56.67, where 30 is Concurrency's average, not the hidden 99
+		MvcTestResult linked = link(collectionsNode, "Collections", 10, collections);
+		assertThat(linked).hasStatusOk();
+		assertThat(linked).bodyJson().extractingPath("$.readiness").isEqualTo(57);
+		assertThat(linked).bodyJson().extractingPath("$.manualReadiness").isEqualTo(10);
+		assertThat(linked).bodyJson().extractingPath("$.readinessSourceType").isEqualTo("linked_tree");
+		assertThat(linked).bodyJson().extractingPath("$.linkedTree.title").isEqualTo("Collections");
+
+		// A tree using the linked node sees the derived value too
+		long java = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
+		placeNode(java, collectionsNode, "");
+		MvcTestResult inJava = mvc.get().uri("/api/v1/trees/{tree}/nodes", java).exchange();
+		assertThat(inJava).bodyJson().extractingPath("$[0].readiness").isEqualTo(57);
+		assertThat(inJava).bodyJson().extractingPath("$[0].linkedTree.id").isEqualTo((int) collections);
+
+		// Unlinking brings back the hand-entered value
+		MvcTestResult unlinked = put("/api/v1/nodes/" + collectionsNode, """
+				{"title": "Collections", "readiness": 10}""");
+		assertThat(unlinked).bodyJson().extractingPath("$.readiness").isEqualTo(10);
+		assertThat(unlinked).bodyJson().extractingPath("$.readinessSourceType").isEqualTo("manual");
+	}
+
+	@Test
+	void refusesLinksThatWouldMakeReadinessDependOnItself() {
+		long java = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
+		long collections = id(post("/api/v1/trees", "{\"title\": \"Collections\"}"));
+		long collectionsNode = createNode("Collections", 0);
+		placeNode(java, collectionsNode, "");
+
+		// A node can't take its readiness from a tree it's in
+		assertThat(link(collectionsNode, "Collections", 0, java)).hasStatus(HttpStatus.CONFLICT);
+
+		// Collections → Java is fine on its own...
+		long back = createNode("Back to Java", 0);
+		placeNode(collections, back, "");
+		assertThat(link(back, "Back to Java", 0, java)).hasStatusOk();
+		// ...but then Java → Collections would close the loop
+		assertThat(link(collectionsNode, "Collections", 0, collections)).hasStatus(HttpStatus.CONFLICT);
+
+		// Placing a linked node can close a loop too
+		long linkedToJava = createNode("Java overview", 0);
+		assertThat(link(linkedToJava, "Java overview", 0, java)).hasStatusOk();
+		assertThat(post("/api/v1/trees/" + java + "/nodes", """
+				{"nodeId": %d, "positionX": 0, "positionY": 0}""".formatted(linkedToJava)))
+			.hasStatus(HttpStatus.CONFLICT);
+	}
+
+	@Test
+	void refusesToDeleteATreeThatNodesTakeTheirReadinessFrom() {
+		long collections = id(post("/api/v1/trees", "{\"title\": \"Collections\"}"));
+		long node = createNode("Collections", 0);
+		assertThat(link(node, "Collections", 0, collections)).hasStatusOk();
+
+		MvcTestResult refused = mvc.delete().uri("/api/v1/trees/{id}", collections).exchange();
+		assertThat(refused).hasStatus(HttpStatus.CONFLICT);
+		assertThat(refused).bodyJson().extractingPath("$.nodes[0].title").isEqualTo("Collections");
+		assertThat(refused).bodyJson().extractingPath("$.detail").asString().contains("\"Collections\"");
+
+		put("/api/v1/nodes/" + node, "{\"title\": \"Collections\", \"readiness\": 0}");
+		assertThat(mvc.delete().uri("/api/v1/trees/{id}", collections)).hasStatus(HttpStatus.NO_CONTENT);
+	}
+
+	private MvcTestResult link(long node, String title, int readiness, long tree) {
+		return put("/api/v1/nodes/" + node, """
+				{"title": "%s", "readiness": %d, "linkedTreeId": %d}""".formatted(title, readiness, tree));
+	}
+
 	private long createNode(String title, int readiness) {
 		return id(post("/api/v1/nodes", """
 				{"title": "%s", "readiness": %d}""".formatted(title, readiness)));

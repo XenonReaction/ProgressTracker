@@ -29,7 +29,12 @@
         @for (node of nodes; track node.id) {
           <tr>
             <td>{{ node.title }}</td>
-            <td><progress max="100" [value]="node.readiness"></progress> {{ node.readiness }}%</td>
+            <td>
+              <progress max="100" [value]="node.readiness"></progress> {{ node.readiness }}%
+              @if (node.linkedTree; as linked) {
+                <span class="muted">from <a [routerLink]="['/trees', linked.id]">{{ linked.title }}</a></span>
+              }
+            </td>
             <td>{{ node.links.length }}</td>
             <td>
               <a [routerLink]="['/nodes', node.id, 'edit']">Edit</a>

@@ -15,6 +15,8 @@ import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.node.Node;
 import com.progressiontracker.node.NodeService;
+import com.progressiontracker.readiness.ReadinessContext;
+import com.progressiontracker.readiness.ReadinessService;
 
 /** Places library nodes in a tree, moves them, sets their thresholds and removes them. */
 @Service
@@ -29,28 +31,36 @@ public class TreeNodeService {
 
 	private final NodeService nodeService;
 
+	private final TreeLinks treeLinks;
+
+	private final ReadinessService readiness;
+
 	public TreeNodeService(TreeNodeRepository treeNodes, PrerequisiteRepository prerequisites,
-			TreeService treeService, NodeService nodeService) {
+			TreeService treeService, NodeService nodeService, TreeLinks treeLinks, ReadinessService readiness) {
 		this.treeNodes = treeNodes;
 		this.prerequisites = prerequisites;
 		this.treeService = treeService;
 		this.nodeService = nodeService;
+		this.treeLinks = treeLinks;
+		this.readiness = readiness;
 	}
 
 	@Transactional(readOnly = true)
 	public List<TreeNodeResponse> list(Long treeId) {
 		Tree tree = treeService.findOwned(treeId);
 		List<Prerequisite> edges = prerequisites.findByTree(tree);
+		ReadinessContext context = readiness.context();
 		return treeNodes.findByTreeOrderByIdAsc(tree)
 			.stream()
-			.map(treeNode -> TreeNodeResponse.from(treeNode, edges))
+			.map(treeNode -> TreeNodeResponse.from(treeNode, edges, context))
 			.toList();
 	}
 
 	@Transactional(readOnly = true)
 	public TreeNodeResponse get(Long treeId, Long treeNodeId) {
 		Tree tree = treeService.findOwned(treeId);
-		return TreeNodeResponse.from(findInTree(tree, treeNodeId), prerequisites.findByTree(tree));
+		return TreeNodeResponse.from(findInTree(tree, treeNodeId), prerequisites.findByTree(tree),
+				readiness.context());
 	}
 
 	public TreeNodeResponse add(Long treeId, TreeNodeCreateRequest request) {
@@ -59,6 +69,9 @@ public class TreeNodeService {
 		if (treeNodes.existsByTreeAndNode(tree, node)) {
 			throw new ConflictException("Node " + node.getId() + " is already in tree " + treeId);
 		}
+		if (node.getLinkedTree() != null) {
+			treeLinks.checkNoLoop(node, List.of(tree), node.getLinkedTree());
+		}
 		TreeNode treeNode = new TreeNode(tree, node, request.positionX(), request.positionY());
 		if (request.aggregateThreshold() != null) {
 			treeNode.setAggregateThreshold(request.aggregateThreshold());
@@ -66,7 +79,7 @@ public class TreeNodeService {
 		if (request.individualThreshold() != null) {
 			treeNode.setIndividualThreshold(request.individualThreshold());
 		}
-		return TreeNodeResponse.from(treeNodes.save(treeNode), List.of());
+		return TreeNodeResponse.from(treeNodes.save(treeNode), List.of(), readiness.context());
 	}
 
 	public TreeNodeResponse update(Long treeId, Long treeNodeId, TreeNodeUpdateRequest request) {
@@ -76,7 +89,7 @@ public class TreeNodeService {
 		treeNode.setPositionY(request.positionY());
 		treeNode.setAggregateThreshold(request.aggregateThreshold());
 		treeNode.setIndividualThreshold(request.individualThreshold());
-		return TreeNodeResponse.from(treeNode, prerequisites.findByTree(tree));
+		return TreeNodeResponse.from(treeNode, prerequisites.findByTree(tree), readiness.context());
 	}
 
 	/**
@@ -104,7 +117,8 @@ public class TreeNodeService {
 			treeNode.setPositionY(position.positionY());
 		}
 		List<Prerequisite> edges = prerequisites.findByTree(tree);
-		return all.stream().map(treeNode -> TreeNodeResponse.from(treeNode, edges)).toList();
+		ReadinessContext context = readiness.context();
+		return all.stream().map(treeNode -> TreeNodeResponse.from(treeNode, edges, context)).toList();
 	}
 
 	/** Removes the node from this tree along with its edges. The library node stays. */

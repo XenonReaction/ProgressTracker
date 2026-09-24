@@ -22,6 +22,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.progressiontracker.tree.Tree;
 import com.progressiontracker.user.User;
 
 /**
@@ -30,8 +31,12 @@ import com.progressiontracker.user.User;
  * appear in several trees. Position and prerequisites live on the tree side, not here.
  */
 @Entity
-@Table(name = "nodes", check = @CheckConstraint(name = "nodes_readiness_range",
-		constraint = "readiness between 0 and 100"))
+@Table(name = "nodes", check = {
+		@CheckConstraint(name = "nodes_readiness_range", constraint = "readiness between 0 and 100"),
+		@CheckConstraint(name = "nodes_readiness_source_type_check",
+				constraint = "readiness_source_type in ('manual', 'linked_tree')"),
+		@CheckConstraint(name = "nodes_linked_tree_matches_source",
+				constraint = "(readiness_source_type = 'linked_tree') = (linked_tree_id is not null)") })
 public class Node {
 
 	@Id
@@ -48,11 +53,17 @@ public class Node {
 	@Column(columnDefinition = "text")
 	private String description;
 
+	/** The hand-entered value. It's kept, but not used, while the node is linked to a tree. */
 	@Column(nullable = false)
 	private int readiness = 0;
 
 	@Column(nullable = false, length = 50)
 	private ReadinessSourceType readinessSourceType = ReadinessSourceType.MANUAL;
+
+	/** The tree this node's readiness comes from, or null for a hand-entered value. */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "linked_tree_id", foreignKey = @ForeignKey(name = "nodes_linked_tree_id_fk"))
+	private Tree linkedTree;
 
 	@ElementCollection
 	@CollectionTable(name = "node_links", joinColumns = @JoinColumn(name = "node_id"),
@@ -112,8 +123,14 @@ public class Node {
 		return readinessSourceType;
 	}
 
-	public void setReadinessSourceType(ReadinessSourceType readinessSourceType) {
-		this.readinessSourceType = readinessSourceType;
+	public Tree getLinkedTree() {
+		return linkedTree;
+	}
+
+	/** Links the node to a tree, or back to its hand-entered value with {@code null}. */
+	public void setLinkedTree(Tree linkedTree) {
+		this.linkedTree = linkedTree;
+		this.readinessSourceType = linkedTree == null ? ReadinessSourceType.MANUAL : ReadinessSourceType.LINKED_TREE;
 	}
 
 	public List<NodeLink> getLinks() {

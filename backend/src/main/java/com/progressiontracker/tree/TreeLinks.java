@@ -1,0 +1,66 @@
+package com.progressiontracker.tree;
+
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.springframework.stereotype.Component;
+
+import com.progressiontracker.common.ConflictException;
+import com.progressiontracker.node.Node;
+
+/**
+ * Keeps links between trees free of loops. Tree A "links to" tree B when a node placed in A
+ * takes its readiness from B. A loop would make a tree's readiness depend on itself, so a
+ * change that would close one is refused with 409. Both linking a node and placing a linked
+ * node in a tree can close a loop, so both check here.
+ */
+@Component
+public class TreeLinks {
+
+	private final TreeNodeRepository treeNodes;
+
+	public TreeLinks(TreeNodeRepository treeNodes) {
+		this.treeNodes = treeNodes;
+	}
+
+	/**
+	 * Throws 409 if {@code node}, placed in the {@code containing} trees, can't take its
+	 * readiness from {@code linkedTree}: that is, if following links from
+	 * {@code linkedTree} (itself included) reaches one of the containing trees.
+	 */
+	public void checkNoLoop(Node node, Collection<Tree> containing, Tree linkedTree) {
+		Set<Long> reachable = reachableFrom(linkedTree.getId());
+		for (Tree tree : containing) {
+			if (tree.getId().equals(linkedTree.getId())) {
+				throw new ConflictException(
+						"\"" + node.getTitle() + "\" can't take its readiness from \"" + tree.getTitle()
+								+ "\" because it's in that tree");
+			}
+			if (reachable.contains(tree.getId())) {
+				throw new ConflictException("\"" + node.getTitle() + "\" can't take its readiness from \""
+						+ linkedTree.getTitle() + "\": that tree's links lead back to \"" + tree.getTitle()
+						+ "\", which contains it, so its readiness would depend on itself");
+			}
+		}
+	}
+
+	/** Every tree reachable by following links from {@code start}, including {@code start}. */
+	Set<Long> reachableFrom(Long start) {
+		Set<Long> seen = new LinkedHashSet<>();
+		Deque<Long> queue = new ArrayDeque<>();
+		seen.add(start);
+		queue.add(start);
+		while (!queue.isEmpty()) {
+			for (Long next : treeNodes.findLinkedTreeIds(queue.remove())) {
+				if (seen.add(next)) {
+					queue.add(next);
+				}
+			}
+		}
+		return seen;
+	}
+
+}

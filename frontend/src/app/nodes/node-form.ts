@@ -1,14 +1,32 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { NodeLink, NodeRequest } from '../core/api.models';
+import { NodeLink, NodeRequest, ReadinessSourceType, TreeRef } from '../core/api.models';
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
+import { TreeApi } from '../core/tree-api';
 
 type LinkGroup = FormGroup<{ url: FormControl<string>; label: FormControl<string> }>;
 
-/** Create (`/nodes/new`) or edit (`/nodes/:id/edit`) a library node, including its readiness. */
+/** A linked node needs a tree to link to. */
+function linkedTreeChosen(group: AbstractControl): ValidationErrors | null {
+  const { source, linkedTreeId } = group.value;
+  return source === 'linked_tree' && linkedTreeId == null ? { linkedTreeRequired: true } : null;
+}
+
+/**
+ * Create (`/nodes/new`) or edit (`/nodes/:id/edit`) a library node, including where its
+ * readiness comes from: a hand-entered value, or the average of a linked tree.
+ */
 @Component({
   selector: 'app-node-form',
   imports: [ReactiveFormsModule, RouterLink],
@@ -16,6 +34,7 @@ type LinkGroup = FormGroup<{ url: FormControl<string>; label: FormControl<string
 })
 export class NodeForm implements OnInit {
   private readonly nodeApi = inject(NodeApi);
+  private readonly treeApi = inject(TreeApi);
   private readonly router = inject(Router);
 
   /** Route param; absent when creating. */
@@ -34,10 +53,24 @@ export class NodeForm implements OnInit {
       validators: [Validators.required, Validators.min(0), Validators.max(100)],
     }),
     links: new FormArray<LinkGroup>([]),
-  });
+    source: new FormControl<ReadinessSourceType>('manual', { nonNullable: true }),
+    linkedTreeId: new FormControl<number | null>(null),
+  }, { validators: linkedTreeChosen });
 
   protected readonly error = signal<string | null>(null);
   protected readonly saving = signal(false);
+  /** Trees to link to; loaded the first time "From a linked tree" is chosen. */
+  protected readonly trees = signal<TreeRef[] | null>(null);
+  /** The linked tree and derived readiness as last saved, shown while that link is chosen. */
+  protected readonly savedLink = signal<{ treeId: number; readiness: number } | null>(null);
+
+  constructor() {
+    this.form.controls.source.valueChanges.subscribe((source) => {
+      if (source === 'linked_tree') {
+        this.loadTrees();
+      }
+    });
+  }
 
   ngOnInit(): void {
     const id = this.id();
@@ -47,8 +80,13 @@ export class NodeForm implements OnInit {
           this.form.patchValue({
             title: node.title,
             description: node.description ?? '',
-            readiness: node.readiness,
+            readiness: node.manualReadiness,
+            source: node.readinessSourceType,
+            linkedTreeId: node.linkedTree?.id ?? null,
           });
+          if (node.linkedTree) {
+            this.savedLink.set({ treeId: node.linkedTree.id, readiness: node.readiness });
+          }
           node.links.forEach((link) => this.addLink(link));
         },
         error: (error) => this.error.set(errorMessage(error)),
@@ -87,6 +125,7 @@ export class NodeForm implements OnInit {
       description: value.description.trim() || null,
       readiness: value.readiness,
       links: value.links.map((link) => ({ url: link.url.trim(), label: link.label.trim() || null })),
+      linkedTreeId: value.source === 'linked_tree' ? value.linkedTreeId : null,
     };
     const id = this.id();
     const save$ = id ? this.nodeApi.update(Number(id), request) : this.nodeApi.create(request);
@@ -98,6 +137,16 @@ export class NodeForm implements OnInit {
         this.saving.set(false);
         this.error.set(errorMessage(error));
       },
+    });
+  }
+
+  private loadTrees(): void {
+    if (this.trees()) {
+      return;
+    }
+    this.treeApi.list().subscribe({
+      next: (trees) => this.trees.set(trees.map(({ id, title }) => ({ id, title }))),
+      error: (error) => this.error.set(errorMessage(error)),
     });
   }
 

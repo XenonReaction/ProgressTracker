@@ -37,6 +37,21 @@ export class Api {
     });
   }
 
+  /** Makes the node take its readiness from the tree (keeping its hand-entered value). */
+  async link(node: Node, treeId: number): Promise<Node> {
+    const response = await this.request.put(`/api/v1/nodes/${node.id}`, {
+      data: {
+        title: node.title,
+        description: node.description,
+        readiness: node.manualReadiness,
+        links: node.links,
+        linkedTreeId: treeId,
+      },
+    });
+    expect(response.ok(), `link node ${node.id}: ${await response.text()}`).toBeTruthy();
+    return response.json();
+  }
+
   async treeNodes(treeId: number): Promise<TreeNode[]> {
     return this.get(`/api/v1/trees/${treeId}/nodes`);
   }

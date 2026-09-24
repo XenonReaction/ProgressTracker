@@ -4,6 +4,7 @@ import static com.progressiontracker.TestEntities.withId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,7 +14,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,6 +22,7 @@ import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.node.Node;
 import com.progressiontracker.node.NodeService;
+import com.progressiontracker.readiness.TestReadiness;
 import com.progressiontracker.user.User;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +40,9 @@ class TreeNodeServiceTest {
 	@Mock
 	private NodeService nodeService;
 
-	@InjectMocks
+	@Mock
+	private TreeLinks treeLinks;
+
 	private TreeNodeService service;
 
 	private final User user = withId(new User("demo"), 1L);
@@ -51,6 +54,8 @@ class TreeNodeServiceTest {
 	@BeforeEach
 	void setUp() {
 		when(treeService.findOwned(10L)).thenReturn(tree);
+		service = new TreeNodeService(treeNodes, prerequisites, treeService, nodeService, treeLinks,
+				TestReadiness.service(treeNodes));
 	}
 
 	@Test
@@ -81,6 +86,18 @@ class TreeNodeServiceTest {
 
 		assertThat(response.aggregateThreshold()).isEqualTo(90);
 		assertThat(response.individualThreshold()).isEqualTo(60);
+	}
+
+	@Test
+	void addChecksThatALinkedNodeDoesNotMakeALoop() {
+		Tree linked = withId(new Tree(user, "Collections"), 11L);
+		node.setLinkedTree(linked);
+		when(nodeService.findOwned(20L)).thenReturn(node);
+		doThrow(new ConflictException("loop")).when(treeLinks).checkNoLoop(node, List.of(tree), linked);
+
+		assertThatThrownBy(() -> service.add(10L, new TreeNodeCreateRequest(20L, 0.0, 0.0, null, null)))
+			.isInstanceOf(ConflictException.class);
+		verify(treeNodes, never()).save(any());
 	}
 
 	@Test

@@ -34,9 +34,9 @@ class MigrationTest {
 	@Container
 	static final PostgreSQLContainer postgres = new PostgreSQLContainer(DockerImageName.parse("postgres:18"));
 
-	/** Every named foreign key and unique constraint after V2. */
-	private static final List<String> READABLE_NAMES = List.of("node_links_node_id_fk", "nodes_user_id_fk",
-			"prerequisites_dependent_tree_node_id_fk", "prerequisites_edge_unique",
+	/** Every named foreign key and unique constraint after the latest migration. */
+	private static final List<String> READABLE_NAMES = List.of("node_links_node_id_fk", "nodes_linked_tree_id_fk",
+			"nodes_user_id_fk", "prerequisites_dependent_tree_node_id_fk", "prerequisites_edge_unique",
 			"prerequisites_prerequisite_tree_node_id_fk", "tree_nodes_node_id_fk", "tree_nodes_tree_id_fk",
 			"tree_nodes_tree_node_unique", "tree_tags_tree_id_fk", "trees_user_id_fk", "users_username_unique");
 
@@ -44,8 +44,8 @@ class MigrationTest {
 	void emptyDatabaseRunsEveryMigration() throws Exception {
 		MigrateResult result = flyway("fresh").migrate();
 
-		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2");
-		assertThat(result.targetSchemaVersion).isEqualTo("2");
+		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3");
+		assertThat(result.targetSchemaVersion).isEqualTo("3");
 		assertThat(foreignKeyAndUniqueNames("fresh")).containsExactlyElementsOf(READABLE_NAMES);
 	}
 
@@ -61,7 +61,7 @@ class MigrationTest {
 
 		MigrateResult result = flyway("legacy").migrate();
 
-		assertThat(result.migrations).extracting(m -> m.version).containsExactly("2");
+		assertThat(result.migrations).extracting(m -> m.version).containsExactly("2", "3");
 		assertThat(foreignKeyAndUniqueNames("legacy")).containsExactlyElementsOf(READABLE_NAMES);
 		try (Connection connection = connect(); Statement statement = connection.createStatement();
 				ResultSet rows = statement.executeQuery("select username from legacy.users")) {

@@ -50,7 +50,7 @@ docker compose up -d
 cd backend
 ./mvnw spring-boot:run
 
-# Or start it with sample data (a demo user, 7 nodes, 2 trees)
+# Or start it with sample data (a demo user, 10 nodes, 3 trees, one node linked to a tree)
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
@@ -98,11 +98,19 @@ request acts as a single default user (`demo`). Errors are returned as
 
 | Method & path | Purpose |
 |---|---|
-| `GET/POST /nodes`, `GET/PUT/DELETE /nodes/{id}` | Node library. Deleting a node that a tree still uses returns 409 and lists those trees. |
-| `GET/POST /trees`, `GET/PUT/DELETE /trees/{id}` | Tree metadata. Deleting a tree also removes its placements and edges, but not library nodes. |
+| `GET/POST /nodes`, `GET/PUT/DELETE /nodes/{id}` | Node library. Deleting a node that a tree still uses returns 409 and lists those trees. Setting `linkedTreeId` makes the node take its readiness from that tree (see below). |
+| `GET/POST /trees`, `GET/PUT/DELETE /trees/{id}` | Tree metadata. Deleting a tree also removes its placements and edges, but not library nodes. A tree that nodes are linked to can't be deleted (409, listing those nodes). |
 | `GET/POST /trees/{treeId}/nodes`, `GET/PUT/DELETE /trees/{treeId}/nodes/{treeNodeId}` | Library nodes placed in a tree, with position and readiness thresholds. |
 | `PUT /trees/{treeId}/nodes/positions` | Moves many tree nodes in one transaction (used by auto-layout). An unknown id changes nothing. |
 | `GET/POST /trees/{treeId}/prerequisites`, `DELETE /trees/{treeId}/prerequisites/{id}` | Prerequisite edges. Self-edges (400), duplicates (409) and cycles (409) are refused. |
+
+**Linked trees.** A node's `readiness` in every response is its effective value. With
+`linkedTreeId` set, that's the average readiness of the linked tree's nodes, rounded to a
+whole percent (0 for an empty tree), and a linked node inside that tree counts with its own
+derived value. The hand-entered value is still sent as `readiness` in requests, returned as
+`manualReadiness`, and used again when the node is unlinked. A link that would make a
+tree's readiness depend on itself is refused with 409, whether it comes from linking a node
+or placing a linked node in a tree.
 
 Tree node ids and library node ids are different: `/trees/{treeId}/nodes/{treeNodeId}`
 and prerequisite edges use tree node ids, and each tree node response includes the

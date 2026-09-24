@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 
-import { aNode } from '../core/test-data';
+import { aNode, aTree } from '../core/test-data';
 import { NodeForm } from './node-form';
 
 describe('NodeForm', () => {
@@ -43,6 +43,7 @@ describe('NodeForm', () => {
         description: 'Type parameters',
         readiness: 45,
         links: [{ url: 'https://dev.java/learn/generics/', label: 'dev.java' }],
+        linkedTreeId: null,
       });
       request.flush(aNode());
       expect(navigate).toHaveBeenCalledWith('/nodes');
@@ -68,6 +69,32 @@ describe('NodeForm', () => {
       expect(page.textContent).toContain('Enter an http(s) URL');
     });
 
+    it('links the node to a chosen tree instead of a hand-entered value', async () => {
+      type(input('title'), 'Collections');
+      await chooseSource('linked_tree');
+      http.expectOne({ method: 'GET', url: '/api/v1/trees' }).flush([aTree({ id: 3, title: 'Collections in Depth' })]);
+      await fixture.whenStable();
+
+      expect(input('readiness', 'number')).toBeNull();
+      chooseTree(1);
+      submit();
+
+      const request = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
+      expect(request.request.body.linkedTreeId).toBe(3);
+      request.flush(aNode());
+    });
+
+    it('requires a tree when the linked source is chosen', async () => {
+      type(input('title'), 'Collections');
+      await chooseSource('linked_tree');
+      http.expectOne('/api/v1/trees').flush([aTree({ id: 3 })]);
+      submit();
+      await fixture.whenStable();
+
+      http.expectNone('/api/v1/nodes');
+      expect(page.textContent).toContain("Choose the tree this node's readiness comes from");
+    });
+
     it('shows validation problems returned by the backend', async () => {
       type(input('title'), 'Generics');
       submit();
@@ -88,7 +115,7 @@ describe('NodeForm', () => {
       fixture.componentRef.setInput('returnTo', '/trees/2');
       await fixture.whenStable();
       http.expectOne({ method: 'GET', url: '/api/v1/nodes/5' }).flush(
-        aNode({ id: 5, title: 'OOP', readiness: 60, links: [{ url: 'https://example.com', label: 'Docs' }] }),
+        aNode({ id: 5, title: 'OOP', readiness: 60, manualReadiness: 60, links: [{ url: 'https://example.com', label: 'Docs' }] }),
       );
       await fixture.whenStable();
     });
@@ -108,6 +135,42 @@ describe('NodeForm', () => {
       expect(request.request.body.links).toEqual([{ url: 'https://example.com', label: 'Docs' }]);
       request.flush(aNode());
       expect(navigate).toHaveBeenCalledWith('/trees/2');
+    });
+  });
+
+  describe('editing a linked node', () => {
+    beforeEach(async () => {
+      fixture.componentRef.setInput('id', '5');
+      await fixture.whenStable();
+      http.expectOne('/api/v1/nodes/5').flush(
+        aNode({
+          id: 5,
+          title: 'Collections',
+          readiness: 57,
+          manualReadiness: 25,
+          readinessSourceType: 'linked_tree',
+          linkedTree: { id: 3, title: 'Collections in Depth' },
+        }),
+      );
+      http.expectOne('/api/v1/trees').flush([aTree({ id: 2, title: 'Java' }), aTree({ id: 3, title: 'Collections in Depth' })]);
+      await fixture.whenStable();
+    });
+
+    it('shows the linked tree with its current readiness and keeps the hand-entered value', () => {
+      expect(select().selectedOptions[0].textContent).toBe('Collections in Depth');
+      expect(page.textContent).toContain("It's 57% now.");
+      expect(page.textContent).toContain('Your hand-entered value (25%) is kept');
+    });
+
+    it('unlinking sends the hand-entered value and no tree', async () => {
+      await chooseSource('manual');
+      expect(input('readiness', 'number').value).toBe('25');
+      submit();
+
+      const request = http.expectOne({ method: 'PUT', url: '/api/v1/nodes/5' });
+      expect(request.request.body.linkedTreeId).toBeNull();
+      expect(request.request.body.readiness).toBe(25);
+      request.flush(aNode());
     });
   });
 
@@ -133,6 +196,20 @@ describe('NodeForm', () => {
     const row = links[links.length - 1];
     type(row.querySelector('input[formControlName=url]') as HTMLInputElement, url);
     type(row.querySelector('input[formControlName=label]') as HTMLInputElement, label);
+  }
+
+  async function chooseSource(source: 'manual' | 'linked_tree'): Promise<void> {
+    (page.querySelector(`input[type=radio][value=${source}]`) as HTMLInputElement).click();
+    await fixture.whenStable();
+  }
+
+  function select(): HTMLSelectElement {
+    return page.querySelector('select[formControlName=linkedTreeId]') as HTMLSelectElement;
+  }
+
+  function chooseTree(index: number): void {
+    select().selectedIndex = index;
+    select().dispatchEvent(new Event('change'));
   }
 
   function submit(): void {
