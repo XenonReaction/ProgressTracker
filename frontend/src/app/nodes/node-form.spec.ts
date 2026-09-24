@@ -29,10 +29,10 @@ describe('NodeForm', () => {
       await fixture.whenStable();
     });
 
-    it('posts the entered values and returns to the library', async () => {
+    it('posts the entered values and opens the new node', async () => {
       type(input('title'), '  Generics  ');
       type(page.querySelector('textarea')!, 'Type parameters');
-      type(input('readiness', 'number'), '45');
+      type(input('tags'), 'java, types,');
       await addLink('https://dev.java/learn/generics/', 'dev.java');
 
       submit();
@@ -41,22 +41,28 @@ describe('NodeForm', () => {
       expect(request.request.body).toEqual({
         title: 'Generics',
         description: 'Type parameters',
-        readiness: 45,
+        readiness: 0,
         links: [{ url: 'https://dev.java/learn/generics/', label: 'dev.java' }],
         linkedTreeId: null,
+        tags: ['java', 'types'],
       });
-      request.flush(aNode());
-      expect(navigate).toHaveBeenCalledWith('/nodes');
+      request.flush(aNode({ id: 8 }));
+      expect(navigate).toHaveBeenCalledWith('/nodes/8');
+    });
+
+    it('does not ask for readiness, which is set on the node page', () => {
+      expect(input('readiness', 'number')).toBeNull();
+      expect(page.textContent).toContain('It starts at 0%');
     });
 
     it('does not submit an invalid form', async () => {
-      type(input('readiness', 'number'), '150');
+      type(input('tags'), 'x'.repeat(51));
       submit();
       await fixture.whenStable();
 
       http.expectNone('/api/v1/nodes');
       expect(page.textContent).toContain('Title is required');
-      expect(page.textContent).toContain('Readiness must be a whole number from 0 to 100');
+      expect(page.textContent).toContain('Each tag can be at most 50 characters');
     });
 
     it('rejects links that are not http(s) URLs', async () => {
@@ -75,7 +81,6 @@ describe('NodeForm', () => {
       http.expectOne({ method: 'GET', url: '/api/v1/trees' }).flush([aTree({ id: 3, title: 'Collections in Depth' })]);
       await fixture.whenStable();
 
-      expect(input('readiness', 'number')).toBeNull();
       chooseTree(1);
       submit();
 
@@ -115,23 +120,33 @@ describe('NodeForm', () => {
       fixture.componentRef.setInput('returnTo', '/trees/2');
       await fixture.whenStable();
       http.expectOne({ method: 'GET', url: '/api/v1/nodes/5' }).flush(
-        aNode({ id: 5, title: 'OOP', readiness: 60, manualReadiness: 60, links: [{ url: 'https://example.com', label: 'Docs' }] }),
+        aNode({
+          id: 5,
+          title: 'OOP',
+          readiness: 60,
+          manualReadiness: 60,
+          tags: ['java'],
+          links: [{ url: 'https://example.com', label: 'Docs' }],
+        }),
       );
       await fixture.whenStable();
     });
 
     it('loads the existing node into the form', () => {
       expect(input('title').value).toBe('OOP');
-      expect(input('readiness', 'number').value).toBe('60');
+      expect(input('tags').value).toBe('java');
+      expect(page.textContent).toContain("You enter this node's readiness yourself (60%), on its page");
       expect((page.querySelector('input[formControlName=url]') as HTMLInputElement).value).toBe('https://example.com');
     });
 
-    it('puts the updated node and goes back to where the user came from', () => {
-      type(input('readiness', 'number'), '85');
+    it('puts the updated node, keeping its readiness, and goes back to where the user came from', () => {
+      type(input('title'), 'Object-oriented programming');
       submit();
 
       const request = http.expectOne({ method: 'PUT', url: '/api/v1/nodes/5' });
-      expect(request.request.body.readiness).toBe(85);
+      expect(request.request.body.title).toBe('Object-oriented programming');
+      expect(request.request.body.readiness).toBe(60);
+      expect(request.request.body.tags).toEqual(['java']);
       expect(request.request.body.links).toEqual([{ url: 'https://example.com', label: 'Docs' }]);
       request.flush(aNode());
       expect(navigate).toHaveBeenCalledWith('/trees/2');
@@ -164,7 +179,7 @@ describe('NodeForm', () => {
 
     it('unlinking sends the hand-entered value and no tree', async () => {
       await chooseSource('manual');
-      expect(input('readiness', 'number').value).toBe('25');
+      expect(page.textContent).toContain("You enter this node's readiness yourself (25%)");
       submit();
 
       const request = http.expectOne({ method: 'PUT', url: '/api/v1/nodes/5' });
@@ -176,7 +191,7 @@ describe('NodeForm', () => {
 
   it('ignores a returnTo that points outside the app', () => {
     fixture.componentRef.setInput('returnTo', '//evil.example.com');
-    expect((fixture.componentInstance as unknown as { safeReturnUrl(): string }).safeReturnUrl()).toBe('/nodes');
+    expect((fixture.componentInstance as unknown as { cancelUrl(): string }).cancelUrl()).toBe('/nodes');
   });
 
   function input(name: string, type?: string): HTMLInputElement {

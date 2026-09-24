@@ -26,6 +26,7 @@ export interface Node {
   readinessSourceType: ReadinessSourceType;
   linkedTree: TreeRef | null;
   links: NodeLink[];
+  tags: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -38,6 +39,7 @@ export interface NodeRequest {
   links: NodeLink[];
   /** Take readiness from this tree instead; null or omitted for the hand-entered value. */
   linkedTreeId?: number | null;
+  tags?: string[];
 }
 
 export interface Tree {
@@ -48,6 +50,12 @@ export interface Tree {
   tags: string[];
   createdAt: string;
   updatedAt: string;
+  /** Set while the tree is in edit mode (it has a restore point). */
+  editSessionStartedAt: string | null;
+}
+
+export interface TreeEditSession {
+  startedAt: string;
 }
 
 export interface TreeRequest {
@@ -66,6 +74,8 @@ export interface TreeNode {
   treeId: number;
   nodeId: number;
   title: string;
+  description: string | null;
+  links: NodeLink[];
   /** Effective readiness: derived from `linkedTree` when the node is linked. */
   readiness: number;
   linkedTree: TreeRef | null;

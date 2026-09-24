@@ -1,0 +1,53 @@
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+@if (node(); as node) {
+  <p><a routerLink="/nodes">← Node library</a></p>
+  <h1>{{ node.title }}</h1>
+  <p><a [routerLink]="['/nodes', node.id, 'edit']">Edit</a></p>
+
+  @if (node.description) {
+    <p>{{ node.description }}</p>
+  }
+  @if (node.tags.length) {
+    <p class="muted">Tags: {{ node.tags.join(', ') }}</p>
+  }
+
+  <h2>Readiness</h2>
+  @if (node.linkedTree; as linked) {
+    <p>
+      <progress max="100" [value]="node.readiness"></progress> <strong>{{ node.readiness }}%</strong>, the average of
+      the nodes in the linked tree <a [routerLink]="['/trees', linked.id]">{{ linked.title }}</a>.
+    </p>
+  } @else {
+    <p><progress max="100" [value]="node.readiness"></progress> <strong>{{ node.readiness }}%</strong></p>
+    <app-readiness-editor [nodeId]="node.id" [readiness]="node.readiness" (saved)="readinessSaved($event)" />
+  }
+
+  <h2>Links</h2>
+  @if (node.links.length) {
+    <ul>
+      @for (link of node.links; track $index) {
+        <li>
+          <a [href]="link.url" target="_blank" rel="noopener noreferrer">{{ link.label || link.url }}</a>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="muted">No links.</p>
+  }
+
+  <h2>Used in</h2>
+  @if (trees().length) {
+    <ul>
+      @for (tree of trees(); track tree.id) {
+        <li><a [routerLink]="['/trees', tree.id]">{{ tree.title }}</a></li>
+      }
+    </ul>
+  } @else {
+    <p class="muted">Not placed in any tree yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import {
   Prerequisite,
   Tree,
+  TreeEditSession,
   TreeNode,
   TreeNodeCreateRequest,
   TreeNodePosition,
@@ -37,6 +38,21 @@ export class TreeApi {
   /** Also removes the tree's node placements and prerequisite edges; library nodes stay. */
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  /** Enters edit mode, saving a restore point. 409 if the tree is already being edited. */
+  startEditSession(treeId: number): Observable<TreeEditSession> {
+    return this.http.post<TreeEditSession>(`${this.baseUrl}/${treeId}/edit-session`, null);
+  }
+
+  /** "Done": keeps the changes and drops the restore point. */
+  finishEditSession(treeId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${treeId}/edit-session`);
+  }
+
+  /** "Discard changes": puts the tree back as it was when edit mode started. */
+  discardEditSession(treeId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${treeId}/edit-session/discard`, null);
   }
 
   nodes(treeId: number): Observable<TreeNode[]> {

@@ -11,7 +11,7 @@ import com.progressiontracker.user.User;
 
 public interface NodeRepository extends JpaRepository<Node, Long> {
 
-	@EntityGraph(attributePaths = "links")
+	@EntityGraph(attributePaths = { "links", "tags" })
 	List<Node> findByOwnerOrderByTitleAsc(User owner);
 
 	Optional<Node> findByIdAndOwner(Long id, User owner);

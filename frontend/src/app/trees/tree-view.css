@@ -144,3 +144,20 @@ marker path {
   font-style: italic;
   fill: #1565c0;
 }
+
+.banner {
+  max-width: 60rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #c77700;
+  background: #fff4e0;
+}
+
+.banner.editing {
+  border-color: #1565c0;
+  background: #e8f0fb;
+}
+
+.banner .actions {
+  margin: 0.4rem 0 0;
+}

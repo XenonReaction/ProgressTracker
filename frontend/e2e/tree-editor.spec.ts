@@ -17,8 +17,10 @@ async function treeWith(
   return { tree, placed };
 }
 
+/** Opens the tree and switches it to edit mode, where the tools are. */
 async function openTree(page: Page, treeId: number): Promise<void> {
   await page.goto(`/trees/${treeId}`);
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
   await expect(page.getByRole('toolbar', { name: 'Tree editing tools' })).toBeVisible();
 }
 

@@ -68,6 +68,27 @@ public class NodeService {
 	}
 
 	/**
+	 * Sets the hand-entered readiness. A linked node is refused with 409, since its
+	 * readiness comes from its tree; it would only change the hidden value.
+	 */
+	public NodeResponse updateReadiness(Long id, NodeReadinessRequest request) {
+		Node node = findOwned(id);
+		if (node.getLinkedTree() != null) {
+			throw new ConflictException("\"" + node.getTitle() + "\" takes its readiness from the tree \""
+					+ node.getLinkedTree().getTitle() + "\", so it can't be set by hand");
+		}
+		node.setReadiness(request.readiness());
+		nodes.flush(); // so the response carries the new updatedAt
+		return toResponse(node);
+	}
+
+	/** The trees the node is placed in, by title. */
+	@Transactional(readOnly = true)
+	public List<TreeRef> treesUsing(Long id) {
+		return trees.findTreesContaining(findOwned(id)).stream().map(TreeRef::of).toList();
+	}
+
+	/**
 	 * Refuses to delete a node that any tree still uses, since the node is shared and
 	 * deleting it would silently change those trees. The 409 response lists them.
 	 */
@@ -99,6 +120,8 @@ public class NodeService {
 		node.setReadiness(request.readiness());
 		node.getLinks().clear();
 		request.linksOrEmpty().forEach(link -> node.getLinks().add(new NodeLink(link.url(), link.label())));
+		node.getTags().clear();
+		node.getTags().addAll(request.tagsOrEmpty());
 		node.setLinkedTree(request.linkedTreeId() == null ? null : linkableTree(node, request.linkedTreeId()));
 	}
 

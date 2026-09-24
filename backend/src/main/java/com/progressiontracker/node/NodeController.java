@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.progressiontracker.tree.TreeRef;
+
 @RestController
 @RequestMapping("/api/v1/nodes")
 public class NodeController {
@@ -44,6 +46,16 @@ public class NodeController {
 	@PutMapping("/{id}")
 	public NodeResponse update(@PathVariable Long id, @Valid @RequestBody NodeRequest request) {
 		return nodeService.update(id, request);
+	}
+
+	@PutMapping("/{id}/readiness")
+	public NodeResponse updateReadiness(@PathVariable Long id, @Valid @RequestBody NodeReadinessRequest request) {
+		return nodeService.updateReadiness(id, request);
+	}
+
+	@GetMapping("/{id}/trees")
+	public List<TreeRef> treesUsing(@PathVariable Long id) {
+		return nodeService.treesUsing(id);
 	}
 
 	@DeleteMapping("/{id}")

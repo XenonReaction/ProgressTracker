@@ -19,7 +19,12 @@
       <tbody>
         @for (tree of trees; track tree.id) {
           <tr>
-            <td><a [routerLink]="['/trees', tree.id]">{{ tree.title }}</a></td>
+            <td>
+              <a [routerLink]="['/trees', tree.id]">{{ tree.title }}</a>
+              @if (tree.editSessionStartedAt) {
+                <span class="muted">(unfinished edit)</span>
+              }
+            </td>
             <td>{{ tree.category }}</td>
             <td>{{ tree.tags.join(', ') }}</td>
             <td>

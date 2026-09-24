@@ -71,6 +71,13 @@ public class Node {
 	@OrderColumn(name = "position")
 	private List<NodeLink> links = new ArrayList<>();
 
+	@ElementCollection
+	@CollectionTable(name = "node_tags", joinColumns = @JoinColumn(name = "node_id"),
+			foreignKey = @ForeignKey(name = "node_tags_node_id_fk"))
+	@OrderColumn(name = "position")
+	@Column(name = "tag", nullable = false, length = 50)
+	private List<String> tags = new ArrayList<>();
+
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false)
 	private Instant createdAt;
@@ -135,6 +142,10 @@ public class Node {
 
 	public List<NodeLink> getLinks() {
 		return links;
+	}
+
+	public List<String> getTags() {
+		return tags;
 	}
 
 	public Instant getCreatedAt() {

@@ -21,7 +21,8 @@ public record NodeRequest(
 		String description,
 		@NotNull @Min(0) @Max(100) Integer readiness,
 		List<@Valid @NotNull Link> links,
-		Long linkedTreeId) {
+		Long linkedTreeId,
+		List<@NotBlank @Size(max = 50) String> tags) {
 
 	public record Link(@NotBlank @URL @Size(max = 2048) String url, @Size(max = 200) String label) {
 	}
@@ -29,6 +30,11 @@ public record NodeRequest(
 	/** {@code links} may be omitted; treat that as no links. */
 	public List<Link> linksOrEmpty() {
 		return links == null ? List.of() : links;
+	}
+
+	/** {@code tags} may be omitted; treat that as no tags. */
+	public List<String> tagsOrEmpty() {
+		return tags == null ? List.of() : tags;
 	}
 
 }

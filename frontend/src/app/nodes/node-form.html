@@ -25,14 +25,11 @@
     <label><input type="radio" formControlName="source" value="linked_tree" /> From a linked tree</label>
 
     @if (form.controls.source.value === 'manual') {
-      <p>
-        <label>
-          Readiness (0–100)<br />
-          <input type="range" min="0" max="100" formControlName="readiness" aria-label="Readiness slider" />
-          <input type="number" min="0" max="100" formControlName="readiness" />
-        </label>
-        @if (form.controls.readiness.invalid) {
-          <br /><span class="error">Readiness must be a whole number from 0 to 100.</span>
+      <p class="muted">
+        @if (id()) {
+          You enter this node's readiness yourself ({{ form.controls.readiness.value }}%), on its page.
+        } @else {
+          It starts at 0%. You can update it on the node's page after saving.
         }
       </p>
     } @else {
@@ -66,6 +63,16 @@
     }
   </fieldset>
 
+  <p>
+    <label>
+      Tags (comma-separated)<br />
+      <input formControlName="tags" size="50" placeholder="java, basics" />
+    </label>
+    @if (form.controls.tags.invalid) {
+      <br /><span class="error">Each tag can be at most {{ maxTagLength }} characters.</span>
+    }
+  </p>
+
   <fieldset formArrayName="links">
     <legend>Links</legend>
     @for (link of links.controls; track link; let i = $index) {
@@ -88,6 +95,6 @@
   <p>
     <button type="submit" [disabled]="saving()">Save</button>
     &nbsp;
-    <a [routerLink]="safeReturnUrl()">Cancel</a>
+    <a [routerLink]="cancelUrl()">Cancel</a>
   </p>
 </form>

@@ -20,21 +20,42 @@
       }
     </p>
   }
-  <p class="actions">
-    <a [routerLink]="['/trees', tree.id, 'edit']">Edit details</a>
-    &nbsp;
-    <button type="button" (click)="delete(tree)">Delete tree</button>
-  </p>
+  @if (unfinishedSession()) {
+    <div class="banner" role="region" aria-label="Unfinished edit session">
+      <p>This tree has unsaved changes from an edit session that didn't finish. Keep them or discard them?</p>
+      <button type="button" (click)="keepUnfinished()">Keep changes</button>
+      &nbsp;
+      <button type="button" (click)="discardUnfinished()">Discard changes</button>
+    </div>
+  } @else if (mode() === 'view') {
+    <p class="actions">
+      <button type="button" (click)="startEditing()">Edit</button>
+    </p>
+  } @else {
+    <div class="banner editing" role="region" aria-label="Edit mode">
+      <strong>Editing.</strong> Changes are saved as you make them. "Done" keeps them; "Discard changes" puts the tree
+      back as it was when you clicked Edit.
+      <p class="actions">
+        <button type="button" (click)="finishEditing()">Done</button>
+        &nbsp;
+        <button type="button" (click)="discardChanges()">Discard changes</button>
+        &nbsp;
+        <a [routerLink]="['/trees', tree.id, 'edit']" [queryParams]="{ resumeEdit: true }">Edit details</a>
+        &nbsp;
+        <button type="button" (click)="delete(tree)">Delete tree</button>
+      </p>
+    </div>
 
-  <div class="toolbar" role="toolbar" aria-label="Tree editing tools">
-    @for (t of tools; track t.id) {
-      <button type="button" [class.active]="tool() === t.id" [attr.aria-pressed]="tool() === t.id" (click)="setTool(t.id)">
-        {{ t.label }}
-      </button>
-    }
-    <span class="spacer"></span>
-    <button type="button" (click)="resetLayout()" [disabled]="!treeNodes().length">Reset to auto-layout</button>
-  </div>
+    <div class="toolbar" role="toolbar" aria-label="Tree editing tools">
+      @for (t of tools; track t.id) {
+        <button type="button" [class.active]="tool() === t.id" [attr.aria-pressed]="tool() === t.id" (click)="setTool(t.id)">
+          {{ t.label }}
+        </button>
+      }
+      <span class="spacer"></span>
+      <button type="button" (click)="resetLayout()" [disabled]="!treeNodes().length">Reset to auto-layout</button>
+    </div>
+  }
   <p class="muted hint">
     {{ hint() }}
     <span class="legend ready">Ready</span> = prerequisites meet the node's thresholds,
@@ -44,7 +65,7 @@
   <div class="layout">
     <svg
       #canvas
-      [class]="'tool-' + tool()"
+      [class]="mode() === 'edit' ? 'tool-' + tool() : 'viewing'"
       [attr.viewBox]="viewBox().x + ' ' + viewBox().y + ' ' + viewBox().width + ' ' + viewBox().height"
       [attr.width]="viewBox().width"
       role="img"
@@ -110,28 +131,44 @@
     } @else if (selected(); as node) {
       <aside class="details" aria-live="polite">
         <h2>{{ node.title }}</h2>
-        <p>
-          Readiness: <strong>{{ node.readiness }}%</strong><br />
-          State: <strong>{{ stateOf(node) }}</strong>
-        </p>
+        @if (mode() === 'view' && node.description) {
+          <p>{{ node.description }}</p>
+        }
         @if (node.linkedTree; as linked) {
           <p>
-            Readiness comes from the linked tree <strong>{{ linked.title }}</strong>, the average of its nodes.<br />
-            <a [routerLink]="['/trees', linked.id]">Open linked tree</a>
+            Readiness: <strong>{{ node.readiness }}%</strong>, from the linked tree
+            <strong>{{ linked.title }}</strong> (the average of its nodes).
+            @if (mode() === 'view') {
+              <br /><a [routerLink]="['/trees', linked.id]">Open linked tree</a>
+            }
           </p>
+        } @else if (mode() === 'view') {
+          <app-readiness-editor [nodeId]="node.nodeId" [readiness]="node.readiness" (saved)="readinessSaved()" />
+        } @else {
+          <p>Readiness: <strong>{{ node.readiness }}%</strong></p>
         }
+        <p>State: <strong>{{ stateOf(node) }}</strong></p>
 
-        <form [formGroup]="thresholdForm" (ngSubmit)="saveThresholds(node)">
-          <p>
-            Ready when its prerequisites<br />
-            <label>average at least <input type="number" min="0" max="100" formControlName="aggregateThreshold" />%</label><br />
-            <label>and each is at least <input type="number" min="0" max="100" formControlName="individualThreshold" />%</label>
-          </p>
-          @if (thresholdForm.invalid) {
-            <p class="error">Thresholds must be whole numbers from 0 to 100.</p>
-          }
-          <button type="submit">Save thresholds</button>
-        </form>
+        @if (mode() === 'edit') {
+          <form [formGroup]="thresholdForm" (ngSubmit)="saveThresholds(node)">
+            <p>
+              Ready when its prerequisites<br />
+              <label>average at least <input type="number" min="0" max="100" formControlName="aggregateThreshold" />%</label><br />
+              <label>and each is at least <input type="number" min="0" max="100" formControlName="individualThreshold" />%</label>
+            </p>
+            @if (thresholdForm.invalid) {
+              <p class="error">Thresholds must be whole numbers from 0 to 100.</p>
+            }
+            <button type="submit">Save thresholds</button>
+          </form>
+        } @else if (node.links.length) {
+          <h3>Links</h3>
+          <ul>
+            @for (link of node.links; track $index) {
+              <li><a [href]="link.url" target="_blank" rel="noopener noreferrer">{{ link.label || link.url }}</a></li>
+            }
+          </ul>
+        }
 
         <h3>Needs</h3>
         @if (titlesOf(node.prerequisiteIds); as needs) {
@@ -158,9 +195,11 @@
           }
         }
         <p>
-          <a [routerLink]="['/nodes', node.nodeId, 'edit']" [queryParams]="{ returnTo: '/trees/' + tree.id }">{{ node.linkedTree ? 'Change readiness source' : 'Edit readiness' }}</a>
-          &nbsp;
-          <button type="button" (click)="removeTreeNode(node)">Remove from tree</button>
+          @if (mode() === 'view') {
+            <a [routerLink]="['/nodes', node.nodeId]">Open node page</a>
+          } @else {
+            <button type="button" (click)="removeTreeNode(node)">Remove from tree</button>
+          }
         </p>
       </aside>
     }

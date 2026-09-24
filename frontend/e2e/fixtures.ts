@@ -52,6 +52,32 @@ export class Api {
     return response.json();
   }
 
+  /** Puts the tree in edit mode, as clicking "Edit" does. */
+  async startEditSession(treeId: number): Promise<void> {
+    await this.post(`/api/v1/trees/${treeId}/edit-session`, null);
+  }
+
+  async moveNode(
+    treeId: number,
+    treeNode: TreeNode,
+    positionX: number,
+    positionY: number,
+  ): Promise<void> {
+    const response = await this.request.put(`/api/v1/trees/${treeId}/nodes/${treeNode.id}`, {
+      data: {
+        positionX,
+        positionY,
+        aggregateThreshold: treeNode.aggregateThreshold,
+        individualThreshold: treeNode.individualThreshold,
+      },
+    });
+    expect(response.ok(), `move tree node ${treeNode.id}`).toBeTruthy();
+  }
+
+  async tree(treeId: number): Promise<Tree> {
+    return this.get(`/api/v1/trees/${treeId}`);
+  }
+
   async treeNodes(treeId: number): Promise<TreeNode[]> {
     return this.get(`/api/v1/trees/${treeId}/nodes`);
   }
@@ -95,16 +121,28 @@ export async function centreOf(locator: Locator): Promise<{ x: number; y: number
   return { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 };
 }
 
-export const test = base.extend<{ api: Api; unique: (label: string) => string }>({
+/** How the next `confirm()` dialogs are answered; tests can switch to "Cancel". */
+export interface Dialogs {
+  accept: boolean;
+  /** The messages of every dialog shown so far. */
+  messages: string[];
+}
+
+export const test = base.extend<{ api: Api; unique: (label: string) => string; dialogs: Dialogs }>({
   api: async ({ request }, use) => use(new Api(request)),
   /** Titles that can't clash with the sample data or with other tests running alongside. */
   unique: async ({}, use, testInfo) => {
     const suffix = `${testInfo.workerIndex}-${Date.now().toString(36)}`;
     await use((label) => `${label} ${suffix}`);
   },
-  page: async ({ page }, use) => {
-    // The app asks for confirmation before deleting or resetting; say yes
-    page.on('dialog', (dialog) => dialog.accept());
+  dialogs: async ({}, use) => use({ accept: true, messages: [] }),
+  page: async ({ page, dialogs }, use) => {
+    // The app asks for confirmation before deleting, resetting or leaving edit mode; say yes
+    // unless a test asks otherwise
+    page.on('dialog', (dialog) => {
+      dialogs.messages.push(dialog.message());
+      return dialogs.accept ? dialog.accept() : dialog.dismiss();
+    });
     await use(page);
   },
 });

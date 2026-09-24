@@ -26,6 +26,10 @@ test.describe('Linked trees', () => {
     await page.getByRole('button', { name: 'Save' }).click();
 
     // (80 + 60 + 31) / 3 = 57
+    await expect(
+      page.getByText(`57%, the average of the nodes in the linked tree ${detail.title}`),
+    ).toBeVisible();
+    await page.goto('/nodes');
     const row = page.getByRole('row', { name: summary.title });
     await expect(row).toContainText(`57% from ${detail.title}`);
 
@@ -46,9 +50,8 @@ test.describe('Linked trees', () => {
     await page.goto(`/nodes/${summary.id}/edit`);
     await expect(page.getByText('Your hand-entered value (25%) is kept')).toBeVisible();
     await page.getByLabel('Enter it myself').check();
-    await expect(page.getByRole('spinbutton')).toHaveValue('25');
     await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page.getByRole('row', { name: summary.title })).toContainText('25%');
+    await expect(page.getByText('25%', { exact: true })).toBeVisible();
   });
 
   test('readiness flows up through nested links', async ({ page, api, unique }) => {

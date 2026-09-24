@@ -36,7 +36,8 @@ class ApiIntegrationTest {
 
 	@AfterEach
 	void emptyTables() {
-		jdbc.execute("truncate table prerequisites, tree_nodes, tree_tags, trees, node_links, nodes, users cascade");
+		jdbc.execute("truncate table tree_edit_sessions, prerequisites, tree_nodes, tree_tags, trees, node_tags, "
+				+ "node_links, nodes, users cascade");
 	}
 
 	@Test
@@ -252,6 +253,120 @@ class ApiIntegrationTest {
 
 		put("/api/v1/nodes/" + node, "{\"title\": \"Collections\", \"readiness\": 0}");
 		assertThat(mvc.delete().uri("/api/v1/trees/{id}", collections)).hasStatus(HttpStatus.NO_CONTENT);
+	}
+
+	@Test
+	void discardingAnEditSessionPutsTheTreeBackAsItWas() {
+		long basics = createNode("Basics", 90);
+		long advanced = createNode("Advanced", 40);
+		long existing = createNode("Existing", 50);
+		long tree = id(post("/api/v1/trees", """
+				{"title": "Java", "category": "Technology", "tags": ["java"]}"""));
+		long tBasics = placeNode(tree, basics, "");
+		long tAdvanced = placeNode(tree, advanced, ", \"aggregateThreshold\": 60");
+		assertThat(addEdge(tree, tBasics, tAdvanced)).hasStatus(HttpStatus.CREATED);
+		assertThat(put("/api/v1/trees/" + tree + "/nodes/" + tBasics, """
+				{"positionX": 10, "positionY": 20, "aggregateThreshold": 80, "individualThreshold": 70}""")).hasStatusOk();
+
+		MvcTestResult started = post("/api/v1/trees/" + tree + "/edit-session", "");
+		assertThat(started).hasStatus(HttpStatus.CREATED);
+		assertThat(mvc.get().uri("/api/v1/trees/{id}", tree)).bodyJson()
+			.extractingPath("$.editSessionStartedAt")
+			.isNotNull();
+
+		// Every kind of change: details, a move, a removal (taking its edge), new and existing nodes, an edge
+		put("/api/v1/trees/" + tree, "{\"title\": \"Renamed\", \"tags\": []}");
+		put("/api/v1/trees/" + tree + "/nodes/" + tBasics, """
+				{"positionX": 500, "positionY": 500, "aggregateThreshold": 10, "individualThreshold": 10}""");
+		assertThat(mvc.delete().uri("/api/v1/trees/{tree}/nodes/{id}", tree, tAdvanced)).hasStatus(HttpStatus.NO_CONTENT);
+		long created = createNode("Created while editing", 0);
+		long tCreated = placeNode(tree, created, "");
+		placeNode(tree, existing, "");
+		assertThat(addEdge(tree, tBasics, tCreated)).hasStatus(HttpStatus.CREATED);
+
+		assertThat(post("/api/v1/trees/" + tree + "/edit-session/discard", "")).hasStatus(HttpStatus.NO_CONTENT);
+
+		MvcTestResult restored = mvc.get().uri("/api/v1/trees/{id}", tree).exchange();
+		assertThat(restored).bodyJson().extractingPath("$.title").isEqualTo("Java");
+		assertThat(restored).bodyJson().extractingPath("$.tags").asArray().containsExactly("java");
+		assertThat(restored).bodyJson().extractingPath("$.editSessionStartedAt").isNull();
+		MvcTestResult contents = mvc.get().uri("/api/v1/trees/{tree}/nodes", tree).exchange();
+		assertThat(contents).bodyJson().extractingPath("$[*].title").asArray().containsExactly("Basics", "Advanced");
+		assertThat(contents).bodyJson().extractingPath("$[0].positionX").isEqualTo(10.0);
+		assertThat(contents).bodyJson().extractingPath("$[0].aggregateThreshold").isEqualTo(80);
+		assertThat(contents).bodyJson().extractingPath("$[1].aggregateThreshold").isEqualTo(60);
+		assertThat(contents).bodyJson().extractingPath("$[1].prerequisiteIds").asArray().hasSize(1);
+		assertThat(mvc.get().uri("/api/v1/trees/{tree}/prerequisites", tree)).bodyJson()
+			.extractingPath("$")
+			.asArray()
+			.hasSize(1);
+
+		// The node created during the session is gone; the existing one stays in the library
+		assertThat(mvc.get().uri("/api/v1/nodes/{id}", created)).hasStatus(HttpStatus.NOT_FOUND);
+		assertThat(mvc.get().uri("/api/v1/nodes/{id}", existing)).hasStatusOk();
+	}
+
+	@Test
+	void finishingAnEditSessionKeepsTheChanges() {
+		long tree = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
+		long tNode = placeNode(tree, createNode("Basics", 90), "");
+		post("/api/v1/trees/" + tree + "/edit-session", "");
+		long created = createNode("Created while editing", 0);
+		placeNode(tree, created, "");
+		put("/api/v1/trees/" + tree + "/nodes/" + tNode, """
+				{"positionX": 500, "positionY": 0, "aggregateThreshold": 80, "individualThreshold": 70}""");
+
+		assertThat(mvc.delete().uri("/api/v1/trees/{id}/edit-session", tree)).hasStatus(HttpStatus.NO_CONTENT);
+
+		MvcTestResult contents = mvc.get().uri("/api/v1/trees/{tree}/nodes", tree).exchange();
+		assertThat(contents).bodyJson().extractingPath("$[0].positionX").isEqualTo(500.0);
+		assertThat(contents).bodyJson().extractingPath("$[*].title").asArray().hasSize(2);
+		// Nothing left to finish or discard
+		assertThat(mvc.delete().uri("/api/v1/trees/{id}/edit-session", tree)).hasStatus(HttpStatus.NOT_FOUND);
+		assertThat(post("/api/v1/trees/" + tree + "/edit-session/discard", "")).hasStatus(HttpStatus.NOT_FOUND);
+	}
+
+	@Test
+	void aTreeCanHaveOnlyOneEditSession() {
+		long tree = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
+
+		assertThat(post("/api/v1/trees/" + tree + "/edit-session", "")).hasStatus(HttpStatus.CREATED);
+		assertThat(post("/api/v1/trees/" + tree + "/edit-session", "")).hasStatus(HttpStatus.CONFLICT);
+		// Deleting the tree deletes its session too
+		assertThat(mvc.delete().uri("/api/v1/trees/{id}", tree)).hasStatus(HttpStatus.NO_CONTENT);
+	}
+
+	@Test
+	void discardKeepsANewNodeThatWasAlsoPlacedInAnotherTree() {
+		long tree = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
+		long other = id(post("/api/v1/trees", "{\"title\": \"Spring\"}"));
+		post("/api/v1/trees/" + tree + "/edit-session", "");
+		long created = createNode("Shared", 0);
+		placeNode(tree, created, "");
+		placeNode(other, created, "");
+
+		post("/api/v1/trees/" + tree + "/edit-session/discard", "");
+
+		assertThat(mvc.get().uri("/api/v1/nodes/{id}", created)).hasStatusOk();
+		assertThat(mvc.get().uri("/api/v1/trees/{tree}/nodes", tree)).bodyJson().extractingPath("$").asArray().isEmpty();
+	}
+
+	@Test
+	void setsHandEnteredReadinessAndTagsAndListsTheTreesUsingANode() {
+		long node = id(post("/api/v1/nodes", """
+				{"title": "Generics", "readiness": 10, "tags": ["java", "types"]}"""));
+		long tree = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
+		placeNode(tree, node, "");
+
+		MvcTestResult updated = put("/api/v1/nodes/" + node + "/readiness", "{\"readiness\": 65}");
+		assertThat(updated).hasStatusOk();
+		assertThat(updated).bodyJson().extractingPath("$.readiness").isEqualTo(65);
+		assertThat(updated).bodyJson().extractingPath("$.tags").asArray().containsExactly("java", "types");
+		assertThat(put("/api/v1/nodes/" + node + "/readiness", "{\"readiness\": 101}"))
+			.hasStatus(HttpStatus.BAD_REQUEST);
+		assertThat(mvc.get().uri("/api/v1/nodes/{id}/trees", node)).bodyJson()
+			.extractingPath("$[0].title")
+			.isEqualTo("Java");
 	}
 
 	private MvcTestResult link(long node, String title, int readiness, long tree) {

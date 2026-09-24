@@ -11,6 +11,7 @@ export function aNode(overrides: Partial<Node> = {}): Node {
     readinessSourceType: 'manual',
     linkedTree: null,
     links: [],
+    tags: [],
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,
@@ -26,6 +27,7 @@ export function aTree(overrides: Partial<Tree> = {}): Tree {
     tags: [],
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
+    editSessionStartedAt: null,
     ...overrides,
   };
 }
@@ -36,6 +38,8 @@ export function aTreeNode(overrides: Partial<TreeNode> = {}): TreeNode {
     treeId: 1,
     nodeId: 1,
     title: 'Generics',
+    description: null,
+    links: [],
     readiness: 50,
     linkedTree: null,
     positionX: 0,

@@ -14,6 +14,7 @@ import { NodeLink, NodeRequest, ReadinessSourceType, TreeRef } from '../core/api
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { TreeApi } from '../core/tree-api';
+import { MAX_TAG_LENGTH, parseTags, tagsValidator } from '../trees/tags';
 
 type LinkGroup = FormGroup<{ url: FormControl<string>; label: FormControl<string> }>;
 
@@ -24,8 +25,10 @@ function linkedTreeChosen(group: AbstractControl): ValidationErrors | null {
 }
 
 /**
- * Create (`/nodes/new`) or edit (`/nodes/:id/edit`) a library node, including where its
- * readiness comes from: a hand-entered value, or the average of a linked tree.
+ * Create (`/nodes/new`) or edit (`/nodes/:id/edit`) a library node: its title, description,
+ * links, tags, and where its readiness comes from (a hand-entered value, or the average of a
+ * linked tree). The hand-entered value itself is set on the node's view page, so this form
+ * only carries it through unchanged.
  */
 @Component({
   selector: 'app-node-form',
@@ -42,20 +45,27 @@ export class NodeForm implements OnInit {
   /** Query param: where to go after saving, e.g. back to the tree the user came from. */
   readonly returnTo = input<string>();
 
-  protected readonly form = new FormGroup({
-    title: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(200)],
-    }),
-    description: new FormControl('', { nonNullable: true }),
-    readiness: new FormControl(0, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.min(0), Validators.max(100)],
-    }),
-    links: new FormArray<LinkGroup>([]),
-    source: new FormControl<ReadinessSourceType>('manual', { nonNullable: true }),
-    linkedTreeId: new FormControl<number | null>(null),
-  }, { validators: linkedTreeChosen });
+  protected readonly maxTagLength = MAX_TAG_LENGTH;
+
+  protected readonly form = new FormGroup(
+    {
+      title: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.maxLength(200)],
+      }),
+      description: new FormControl('', { nonNullable: true }),
+      readiness: new FormControl(0, {
+        nonNullable: true,
+        validators: [Validators.required, Validators.min(0), Validators.max(100)],
+      }),
+      links: new FormArray<LinkGroup>([]),
+      /** Comma-separated in the form; sent to the API as a list. */
+      tags: new FormControl('', { nonNullable: true, validators: [tagsValidator] }),
+      source: new FormControl<ReadinessSourceType>('manual', { nonNullable: true }),
+      linkedTreeId: new FormControl<number | null>(null),
+    },
+    { validators: linkedTreeChosen },
+  );
 
   protected readonly error = signal<string | null>(null);
   protected readonly saving = signal(false);
@@ -83,6 +93,7 @@ export class NodeForm implements OnInit {
             readiness: node.manualReadiness,
             source: node.readinessSourceType,
             linkedTreeId: node.linkedTree?.id ?? null,
+            tags: node.tags.join(', '),
           });
           if (node.linkedTree) {
             this.savedLink.set({ treeId: node.linkedTree.id, readiness: node.readiness });
@@ -126,13 +137,14 @@ export class NodeForm implements OnInit {
       readiness: value.readiness,
       links: value.links.map((link) => ({ url: link.url.trim(), label: link.label.trim() || null })),
       linkedTreeId: value.source === 'linked_tree' ? value.linkedTreeId : null,
+      tags: parseTags(value.tags),
     };
     const id = this.id();
     const save$ = id ? this.nodeApi.update(Number(id), request) : this.nodeApi.create(request);
     this.saving.set(true);
     this.error.set(null);
     save$.subscribe({
-      next: () => this.router.navigateByUrl(this.safeReturnUrl()),
+      next: (node) => this.router.navigateByUrl(this.safeReturnUrl() ?? `/nodes/${node.id}`),
       error: (error) => {
         this.saving.set(false);
         this.error.set(errorMessage(error));
@@ -150,9 +162,14 @@ export class NodeForm implements OnInit {
     });
   }
 
-  /** Only follow in-app paths, never an absolute URL from the query string. */
-  protected safeReturnUrl(): string {
+  protected cancelUrl(): string {
+    const id = this.id();
+    return this.safeReturnUrl() ?? (id ? `/nodes/${id}` : '/nodes');
+  }
+
+  /** `returnTo` if it's an in-app path; never an absolute URL from the query string. */
+  protected safeReturnUrl(): string | null {
     const returnTo = this.returnTo();
-    return returnTo?.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/nodes';
+    return returnTo?.startsWith('/') && !returnTo.startsWith('//') ? returnTo : null;
   }
 }

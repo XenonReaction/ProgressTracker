@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Node, NodeRequest } from './api.models';
+import { Node, NodeRequest, TreeRef } from './api.models';
 
 @Injectable({ providedIn: 'root' })
 export class NodeApi {
@@ -23,6 +23,16 @@ export class NodeApi {
 
   update(id: number, request: NodeRequest): Observable<Node> {
     return this.http.put<Node>(`${this.baseUrl}/${id}`, request);
+  }
+
+  /** Sets only the hand-entered readiness; refused (409) for a node linked to a tree. */
+  updateReadiness(id: number, readiness: number): Observable<Node> {
+    return this.http.put<Node>(`${this.baseUrl}/${id}/readiness`, { readiness });
+  }
+
+  /** The trees the node is placed in. */
+  treesUsing(id: number): Observable<TreeRef[]> {
+    return this.http.get<TreeRef[]>(`${this.baseUrl}/${id}/trees`);
   }
 
   delete(id: number): Observable<void> {

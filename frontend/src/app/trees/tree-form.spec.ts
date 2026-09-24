@@ -116,6 +116,16 @@ describe('TreeForm', () => {
     it('cancels back to the tree', () => {
       expect(cancelLink().getAttribute('href')).toBe('/trees/4');
     });
+
+    it('goes back into edit mode when opened from the tree editor', async () => {
+      fixture.componentRef.setInput('resumeEdit', 'true');
+      await fixture.whenStable();
+      expect(cancelLink().getAttribute('href')).toBe('/trees/4?resumeEdit=true');
+
+      submit();
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4' }).flush(aTree({ id: 4 }));
+      expect(navigate).toHaveBeenCalledWith('/trees/4?resumeEdit=true');
+    });
   });
 
   function input(name: string): HTMLInputElement {

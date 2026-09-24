@@ -1,11 +1,12 @@
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Observable, forkJoin, switchMap } from 'rxjs';
+import { Observable, firstValueFrom, forkJoin, switchMap } from 'rxjs';
 
 import { Node, Prerequisite, Tree, TreeNode } from '../core/api.models';
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
+import { ReadinessEditor } from '../nodes/readiness-editor';
 import { TreeApi } from '../core/tree-api';
 import { AddNodePanel } from './add-node-panel';
 import { autoLayout } from './auto-layout';
@@ -30,15 +31,22 @@ interface Drag {
 }
 
 /**
- * A tree drawn as SVG, with a toolbar for editing it. Every change is saved to the backend
- * as soon as it's made (there's no undo yet; that's Milestone 2).
+ * A tree drawn as SVG. It opens in view mode, where nodes can be explored and hand-entered
+ * readiness updated. "Edit" starts an edit session on the server (a restore point) and
+ * shows the toolbar; every change is still saved as soon as it's made. "Done" keeps the
+ * changes and "Discard changes" puts the restore point back. Leaving the page while editing
+ * asks first and discards; an unfinished session found on load (e.g. after a crash) is
+ * resolved with "Keep" or "Discard" before anything else.
  */
 @Component({
   selector: 'app-tree-view',
-  imports: [RouterLink, ReactiveFormsModule, AddNodePanel],
+  imports: [RouterLink, ReactiveFormsModule, AddNodePanel, ReadinessEditor],
   templateUrl: './tree-view.html',
   styleUrl: './tree-view.css',
-  host: { '(document:keydown.escape)': 'cancelPending()' },
+  host: {
+    '(document:keydown.escape)': 'cancelPending()',
+    '(window:beforeunload)': 'onBeforeUnload($event)',
+  },
 })
 export class TreeView {
   private readonly treeApi = inject(TreeApi);
@@ -47,6 +55,8 @@ export class TreeView {
 
   /** Route param. */
   readonly id = input.required<string>();
+  /** Query param set by the tree details form, to come back into the edit session it was opened from. */
+  readonly resumeEdit = input<string>();
 
   protected readonly nodeWidth = NODE_WIDTH;
   protected readonly nodeHeight = NODE_HEIGHT;
@@ -65,6 +75,9 @@ export class TreeView {
   protected readonly libraryNodes = signal<Node[]>([]);
   protected readonly error = signal<string | null>(null);
 
+  protected readonly mode = signal<'view' | 'edit'>('view');
+  /** The tree has an edit session that this page didn't start or resume (V9). */
+  protected readonly unfinishedSession = signal(false);
   protected readonly tool = signal<Tool>('select');
   protected readonly selectedId = signal<number | null>(null);
   /** Connect tool: the prerequisite picked by the first click. */
@@ -104,6 +117,9 @@ export class TreeView {
     return this.libraryNodes().filter((n) => !used.has(n.id));
   });
   protected readonly hint = computed(() => {
+    if (this.mode() === 'view') {
+      return 'Click a node to see its details and update its readiness. Click "Edit" to change the tree.';
+    }
     switch (this.tool()) {
       case 'select':
         return 'Click a node to see and edit its details. Drag a node to move it.';
@@ -129,6 +145,8 @@ export class TreeView {
   private load(id: number): void {
     this.tree.set(null);
     this.error.set(null);
+    this.mode.set('view');
+    this.unfinishedSession.set(false);
     this.tool.set('select');
     this.selectedId.set(null);
     this.cancelPending();
@@ -141,9 +159,90 @@ export class TreeView {
         this.tree.set(tree);
         this.treeNodes.set(treeNodes);
         this.edges.set(edges);
+        if (tree.editSessionStartedAt) {
+          if (untracked(this.resumeEdit)) {
+            // Back from the details form, inside the same session
+            this.mode.set('edit');
+            this.router.navigate([], { queryParams: {}, replaceUrl: true });
+          } else {
+            this.unfinishedSession.set(true);
+          }
+        }
       },
       error: (error) => this.error.set(errorMessage(error)),
     });
+  }
+
+  // ---- Edit mode ----
+
+  protected startEditing(): void {
+    this.run(this.treeApi.startEditSession(this.treeId()), () => {
+      this.mode.set('edit');
+      this.selectedId.set(null);
+    });
+  }
+
+  /** "Done": keep every change. */
+  protected finishEditing(): void {
+    this.run(this.treeApi.finishEditSession(this.treeId()), () => this.leaveEditMode());
+  }
+
+  protected discardChanges(): void {
+    if (!confirm('Discard changes?\n\nThe tree goes back to how it was when you clicked Edit.')) {
+      return;
+    }
+    this.run(this.treeApi.discardEditSession(this.treeId()), () => this.load(this.treeId()));
+  }
+
+  protected keepUnfinished(): void {
+    this.run(this.treeApi.finishEditSession(this.treeId()), () => this.unfinishedSession.set(false));
+  }
+
+  protected discardUnfinished(): void {
+    this.run(this.treeApi.discardEditSession(this.treeId()), () => this.load(this.treeId()));
+  }
+
+  /**
+   * The route's canDeactivate guard. Leaving edit mode for anywhere but this tree's details
+   * form asks first; going anyway discards the changes, since only "Done" keeps them.
+   */
+  canLeave(nextUrl: string): boolean | Promise<boolean> {
+    if (this.mode() !== 'edit' || nextUrl.split('?')[0] === `/trees/${this.treeId()}/edit`) {
+      return true;
+    }
+    if (
+      !confirm(
+        'Leave without saving?\n\nYou are editing this tree. If you leave now, the changes made since you clicked ' +
+          'Edit are discarded.\n\nOK leaves without saving. Cancel stays so you can keep editing.',
+      )
+    ) {
+      return false;
+    }
+    return firstValueFrom(this.treeApi.discardEditSession(this.treeId())).then(
+      () => {
+        this.mode.set('view');
+        return true;
+      },
+      (error) => {
+        this.error.set(errorMessage(error));
+        return false;
+      },
+    );
+  }
+
+  /** Closing or reloading the tab mid-edit: the browser shows its own "Leave site?" box. */
+  protected onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.mode() === 'edit') {
+      event.preventDefault();
+    }
+  }
+
+  private leaveEditMode(): void {
+    this.mode.set('view');
+    this.tool.set('select');
+    this.selectedId.set(null);
+    this.cancelPending();
+    this.tree.update((tree) => (tree ? { ...tree, editSessionStartedAt: null } : tree));
   }
 
   // ---- Toolbar ----
@@ -180,13 +279,18 @@ export class TreeView {
     if (!confirmTreeDelete(tree.title)) {
       return;
     }
-    this.run(this.treeApi.delete(tree.id), () => this.router.navigateByUrl('/trees'));
+    this.run(this.treeApi.delete(tree.id), () => {
+      this.mode.set('view'); // the edit session went with the tree
+      this.router.navigateByUrl('/trees');
+    });
   }
 
   // ---- Canvas events ----
 
   protected onCanvasClick(event: MouseEvent): void {
-    if (this.tool() === 'add') {
+    if (this.mode() === 'view') {
+      this.selectedId.set(null);
+    } else if (this.tool() === 'add') {
       const point = this.toCanvasPoint(event);
       this.pendingPoint.set({ x: Math.round(point.x), y: Math.round(point.y) });
     } else if (this.tool() === 'select') {
@@ -197,7 +301,7 @@ export class TreeView {
   }
 
   protected onNodeMouseDown(event: MouseEvent, treeNode: TreeNode): void {
-    if (this.tool() !== 'select' || event.button !== 0) {
+    if (this.mode() !== 'edit' || this.tool() !== 'select' || event.button !== 0) {
       return;
     }
     event.preventDefault();
@@ -251,6 +355,10 @@ export class TreeView {
   /** Click or Enter on a node, for every tool except the press/drag handling of "select". */
   protected onNodeActivate(event: Event, treeNode: TreeNode): void {
     event.stopPropagation();
+    if (this.mode() === 'view') {
+      this.toggleSelected(treeNode);
+      return;
+    }
     switch (this.tool()) {
       case 'select':
         // Mouse selection happens on mouseup; this path is for the keyboard
@@ -272,12 +380,17 @@ export class TreeView {
 
   protected onEdgeClick(event: Event, edgeId: number): void {
     event.stopPropagation();
-    if (this.tool() === 'delete') {
+    if (this.mode() === 'edit' && this.tool() === 'delete') {
       this.run(this.treeApi.removePrerequisite(this.treeId(), edgeId), () => this.reloadContents());
     }
   }
 
   // ---- Actions ----
+
+  /** A hand-entered readiness changed in view mode; other nodes' states may follow it. */
+  protected readinessSaved(): void {
+    this.reloadContents();
+  }
 
   protected saveThresholds(treeNode: TreeNode): void {
     if (this.thresholdForm.invalid) {

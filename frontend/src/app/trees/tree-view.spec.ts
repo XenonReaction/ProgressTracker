@@ -56,16 +56,158 @@ describe('TreeView', () => {
       expect(nodeEl(3).classList).toContain('node');
     });
 
-    it('shows the tree metadata with a link to edit it', () => {
+    it('shows the tree metadata and opens in view mode, without editing tools', () => {
       expect(page.textContent).toContain('Category: Technology');
       expect(page.textContent).toContain('Tags: java');
-      expect(link('Edit details').getAttribute('href')).toBe('/trees/4/edit');
+      expect(button('Edit')).toBeTruthy();
+      expect(page.querySelector('[role=toolbar]')).toBeNull();
+      expect(link('Edit details')).toBeUndefined();
     });
 
-    it('starts with the select tool', () => {
+    it('shows a clicked node with its links and a readiness editor, and no thresholds', async () => {
+      await pressAndRelease(2);
+
+      const details = page.querySelector('aside')!;
+      expect(details.querySelector('h2')?.textContent).toBe('OOP');
+      expect(details.querySelector('app-readiness-editor input')).not.toBeNull();
+      expect(thresholdInput('aggregateThreshold')).toBeNull();
+      expect(details.querySelector('ul')?.textContent).toContain('Java Syntax (95%)');
+      expect(link('Open node page').getAttribute('href')).toBe('/nodes/12');
+      expect(button('Remove from tree', false)).toBeUndefined();
+    });
+
+    it('saves a new hand-entered readiness and reloads the tree', async () => {
+      await pressAndRelease(2);
+      type(page.querySelector('app-readiness-editor input') as HTMLInputElement, '85');
+      await fixture.whenStable();
+      page.querySelector('app-readiness-editor form')!.dispatchEvent(new Event('submit'));
+
+      const request = http.expectOne({ method: 'PUT', url: '/api/v1/nodes/12/readiness' });
+      expect(request.request.body).toEqual({ readiness: 85 });
+      request.flush(aNode({ id: 12, readiness: 85 }));
+      expectReload([syntax, { ...oop, readiness: 85 }, streams]);
+      await fixture.whenStable();
+
+      expect(nodeEl(3).classList).toContain('ready'); // OOP's 85 now meets Streams' 80/70
+    });
+
+    it('does not drag nodes in view mode', async () => {
+      mouse('mousedown', nodeEl(2), 0, 0);
+      mouse('mousemove', canvas(), 50, 20);
+      mouse('mouseup', canvas(), 50, 20);
+      await fixture.whenStable();
+
+      expect(nodeEl(2).getAttribute('transform')).toBe('translate(-90 122)');
+      http.expectNone({ method: 'PUT' });
+    });
+  });
+
+  describe('edit mode', () => {
+    beforeEach(async () => {
+      await enterEditMode();
+    });
+
+    it('starts an edit session and shows the tools, starting with select', () => {
       expect(button('Select / move').getAttribute('aria-pressed')).toBe('true');
       expect(button('Connect').getAttribute('aria-pressed')).toBe('false');
+      expect(link('Edit details').getAttribute('href')).toBe('/trees/4/edit?resumeEdit=true');
+      expect(button('Edit', false)).toBeUndefined();
     });
+
+    it('"Done" keeps the changes and goes back to view mode', async () => {
+      button('Done').click();
+      http.expectOne({ method: 'DELETE', url: '/api/v1/trees/4/edit-session' }).flush(null, { status: 204, statusText: 'No Content' });
+      await fixture.whenStable();
+
+      expect(page.querySelector('[role=toolbar]')).toBeNull();
+      expect(button('Edit')).toBeTruthy();
+    });
+
+    it('"Discard changes" asks, restores the tree and reloads it', async () => {
+      vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+      button('Discard changes').click();
+      http.expectOne({ method: 'POST', url: '/api/v1/trees/4/edit-session/discard' }).flush(null, { status: 204, statusText: 'No Content' });
+      http.expectOne('/api/v1/trees/4').flush(aTree({ id: 4, title: 'Java Fundamentals' }));
+      expectReload();
+      await fixture.whenStable();
+
+      expect(page.querySelector('[role=toolbar]')).toBeNull();
+    });
+
+    it('asks before leaving, and discards the changes when the user leaves anyway', async () => {
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+      expect(component().canLeave('/nodes')).toBe(false);
+      expect(confirm.mock.calls[0][0]).toContain('Leave without saving?');
+
+      confirm.mockReturnValue(true);
+      const leaving = component().canLeave('/nodes');
+      http.expectOne({ method: 'POST', url: '/api/v1/trees/4/edit-session/discard' }).flush(null, { status: 204, statusText: 'No Content' });
+      expect(await leaving).toBe(true);
+    });
+
+    it('lets the user open the tree details form without leaving the session', () => {
+      const confirm = vi.spyOn(window, 'confirm');
+      expect(component().canLeave('/trees/4/edit?resumeEdit=true')).toBe(true);
+      expect(confirm).not.toHaveBeenCalled();
+    });
+
+    it('asks the browser to warn before the tab is closed', () => {
+      const event = new Event('beforeunload', { cancelable: true });
+      window.dispatchEvent(event);
+      expect(event.defaultPrevented).toBe(true);
+    });
+  });
+
+  describe('an unfinished edit session', () => {
+    beforeEach(async () => {
+      fixture.componentRef.setInput('id', '6');
+      await fixture.whenStable();
+      http.expectOne('/api/v1/trees/6').flush(aTree({ id: 6, editSessionStartedAt: '2026-01-01T00:00:00Z' }));
+      http.expectOne('/api/v1/trees/6/nodes').flush([]);
+      http.expectOne('/api/v1/trees/6/prerequisites').flush([]);
+      await fixture.whenStable();
+    });
+
+    it('asks whether to keep or discard it before anything else', () => {
+      expect(page.textContent).toContain("unsaved changes from an edit session that didn't finish");
+      expect(button('Edit', false)).toBeUndefined();
+      expect(component().canLeave('/nodes')).toBe(true);
+    });
+
+    it('"Keep changes" finishes the session', async () => {
+      button('Keep changes').click();
+      http.expectOne({ method: 'DELETE', url: '/api/v1/trees/6/edit-session' }).flush(null, { status: 204, statusText: 'No Content' });
+      await fixture.whenStable();
+
+      expect(page.textContent).not.toContain("didn't finish");
+      expect(button('Edit')).toBeTruthy();
+    });
+
+    it('"Discard changes" restores the tree', async () => {
+      button('Discard changes').click();
+      http.expectOne({ method: 'POST', url: '/api/v1/trees/6/edit-session/discard' }).flush(null, { status: 204, statusText: 'No Content' });
+      http.expectOne('/api/v1/trees/6').flush(aTree({ id: 6 }));
+      http.expectOne('/api/v1/trees/6/nodes').flush([]);
+      http.expectOne('/api/v1/trees/6/prerequisites').flush([]);
+      await fixture.whenStable();
+
+      expect(page.textContent).not.toContain("didn't finish");
+    });
+  });
+
+  it('resumes edit mode when coming back from the details form', async () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    fixture.componentRef.setInput('resumeEdit', 'true');
+    fixture.componentRef.setInput('id', '6');
+    await fixture.whenStable();
+    http.expectOne('/api/v1/trees/6').flush(aTree({ id: 6, editSessionStartedAt: '2026-01-01T00:00:00Z' }));
+    http.expectOne('/api/v1/trees/6/nodes').flush([]);
+    http.expectOne('/api/v1/trees/6/prerequisites').flush([]);
+    await fixture.whenStable();
+
+    expect(page.querySelector('[role=toolbar]')).not.toBeNull();
+    expect(navigate).toHaveBeenCalledWith([], { queryParams: {}, replaceUrl: true });
   });
 
   describe('linked nodes', () => {
@@ -97,16 +239,20 @@ describe('TreeView', () => {
       expect(nodeEl(7).getAttribute('aria-label')).toBe('Collections, 57% ready, from linked tree Collections in Depth, ready');
     });
 
-    it('names the linked tree in the details, with a link to open it', async () => {
+    it('names the linked tree in the details, with a link to open it and no readiness editor', async () => {
       await pressAndRelease(7);
 
-      expect(page.querySelector('aside')?.textContent).toContain('Readiness comes from the linked tree Collections in Depth');
+      expect(page.querySelector('aside')?.textContent).toContain('from the linked tree Collections in Depth');
       expect(link('Open linked tree').getAttribute('href')).toBe('/trees/9');
-      expect(link('Change readiness source').getAttribute('href')).toBe('/nodes/17/edit?returnTo=%2Ftrees%2F5');
+      expect(page.querySelector('app-readiness-editor')).toBeNull();
     });
   });
 
   describe('select tool', () => {
+    beforeEach(async () => {
+      await enterEditMode();
+    });
+
     it('shows what a clicked node needs and unlocks, with its thresholds', async () => {
       await pressAndRelease(2);
 
@@ -117,7 +263,7 @@ describe('TreeView', () => {
       expect(unlocks.textContent).toContain('Streams');
       expect(thresholdInput('aggregateThreshold').value).toBe('80');
       expect(thresholdInput('individualThreshold').value).toBe('70');
-      expect(link('Edit readiness').getAttribute('href')).toBe('/nodes/12/edit?returnTo=%2Ftrees%2F4');
+      expect(page.querySelector('app-readiness-editor')).toBeNull();
       expect(nodeEl(2).classList).toContain('selected');
     });
 
@@ -213,6 +359,7 @@ describe('TreeView', () => {
 
   describe('connect tool', () => {
     beforeEach(async () => {
+      await enterEditMode();
       button('Connect').click();
       await fixture.whenStable();
     });
@@ -261,6 +408,7 @@ describe('TreeView', () => {
 
   describe('delete tool', () => {
     beforeEach(async () => {
+      await enterEditMode();
       button('Delete').click();
       await fixture.whenStable();
     });
@@ -291,6 +439,7 @@ describe('TreeView', () => {
 
   describe('add tool', () => {
     beforeEach(async () => {
+      await enterEditMode();
       button('Add node').click();
       http.expectOne({ method: 'GET', url: '/api/v1/nodes' }).flush([
         aNode({ id: 11, title: 'Java Syntax' }), // already in the tree
@@ -347,6 +496,10 @@ describe('TreeView', () => {
   });
 
   describe('reset to auto-layout', () => {
+    beforeEach(async () => {
+      await enterEditMode();
+    });
+
     it('saves every position at once after confirmation', async () => {
       vi.spyOn(window, 'confirm').mockReturnValue(true);
 
@@ -371,6 +524,10 @@ describe('TreeView', () => {
   });
 
   describe('deleting the tree', () => {
+    beforeEach(async () => {
+      await enterEditMode();
+    });
+
     it('deletes after confirmation and returns to the tree list', () => {
       vi.spyOn(window, 'confirm').mockReturnValue(true);
       const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
@@ -398,12 +555,22 @@ describe('TreeView', () => {
     return page.querySelector('svg') as SVGSVGElement;
   }
 
-  function button(label: string): HTMLButtonElement {
+  function button(label: string, required = true): HTMLButtonElement {
     const found = Array.from(page.querySelectorAll('button')).find((b) => b.textContent?.trim() === label);
-    if (!found) {
+    if (!found && required) {
       throw new Error(`No button "${label}"`);
     }
-    return found;
+    return found as HTMLButtonElement;
+  }
+
+  function component(): TreeView {
+    return fixture.componentInstance;
+  }
+
+  async function enterEditMode(): Promise<void> {
+    button('Edit').click();
+    http.expectOne({ method: 'POST', url: '/api/v1/trees/4/edit-session' }).flush({ startedAt: '2026-01-01T00:00:00Z' });
+    await fixture.whenStable();
   }
 
   function link(label: string): HTMLAnchorElement {

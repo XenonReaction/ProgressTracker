@@ -102,6 +102,9 @@ request acts as a single default user (`demo`). Errors are returned as
 | `GET/POST /trees`, `GET/PUT/DELETE /trees/{id}` | Tree metadata. Deleting a tree also removes its placements and edges, but not library nodes. A tree that nodes are linked to can't be deleted (409, listing those nodes). |
 | `GET/POST /trees/{treeId}/nodes`, `GET/PUT/DELETE /trees/{treeId}/nodes/{treeNodeId}` | Library nodes placed in a tree, with position and readiness thresholds. |
 | `PUT /trees/{treeId}/nodes/positions` | Moves many tree nodes in one transaction (used by auto-layout). An unknown id changes nothing. |
+| `PUT /nodes/{id}/readiness` | Sets only the hand-entered readiness (the view pages use it). Refused with 409 for a node linked to a tree. |
+| `GET /nodes/{id}/trees` | The trees a node is placed in. |
+| `POST/DELETE /trees/{treeId}/edit-session`, `POST /trees/{treeId}/edit-session/discard` | Edit mode: `POST` saves a restore point (409 if the tree is already being edited), `DELETE` is "Done" and keeps the changes, and `discard` puts the tree back as it was. A tree's `editSessionStartedAt` is set while a session is open. |
 | `GET/POST /trees/{treeId}/prerequisites`, `DELETE /trees/{treeId}/prerequisites/{id}` | Prerequisite edges. Self-edges (400), duplicates (409) and cycles (409) are refused. |
 
 **Linked trees.** A node's `readiness` in every response is its effective value. With

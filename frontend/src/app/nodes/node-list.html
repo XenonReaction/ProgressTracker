@@ -28,7 +28,7 @@
       <tbody>
         @for (node of nodes; track node.id) {
           <tr>
-            <td>{{ node.title }}</td>
+            <td><a [routerLink]="['/nodes', node.id]">{{ node.title }}</a></td>
             <td>
               <progress max="100" [value]="node.readiness"></progress> {{ node.readiness }}%
               @if (node.linkedTree; as linked) {

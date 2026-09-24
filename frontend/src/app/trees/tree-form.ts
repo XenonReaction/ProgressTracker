@@ -1,13 +1,13 @@
 import { Component, OnInit, inject, input, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, UrlTree } from '@angular/router';
 
 import { TreeRequest } from '../core/api.models';
 import { errorMessage } from '../core/problem';
 import { TreeApi } from '../core/tree-api';
 import { MAX_TAG_LENGTH, parseTags, tagsValidator } from './tags';
 
-/** Create (`/trees/new`) or edit (`/trees/:id/edit`) a tree's metadata. Contents are edited in Phase 4. */
+/** Create (`/trees/new`) or edit (`/trees/:id/edit`) a tree's metadata. Contents are edited on the tree page. */
 @Component({
   selector: 'app-tree-form',
   imports: [ReactiveFormsModule, RouterLink],
@@ -19,6 +19,8 @@ export class TreeForm implements OnInit {
 
   /** Route param; absent when creating. */
   readonly id = input<string>();
+  /** Query param: set when opened from the tree editor, so saving or cancelling goes back to edit mode. */
+  readonly resumeEdit = input<string>();
 
   protected readonly maxTagLength = MAX_TAG_LENGTH;
 
@@ -69,7 +71,7 @@ export class TreeForm implements OnInit {
     this.saving.set(true);
     this.error.set(null);
     save$.subscribe({
-      next: (tree) => this.router.navigateByUrl(`/trees/${tree.id}`),
+      next: (tree) => this.router.navigateByUrl(this.treeUrl(tree.id)),
       error: (error) => {
         this.saving.set(false);
         this.error.set(errorMessage(error));
@@ -77,8 +79,13 @@ export class TreeForm implements OnInit {
     });
   }
 
-  protected cancelUrl(): string {
+  /** A UrlTree, so the `resumeEdit` query string survives `routerLink`. */
+  protected cancelUrl(): UrlTree {
     const id = this.id();
-    return id ? `/trees/${id}` : '/trees';
+    return this.router.parseUrl(id ? this.treeUrl(Number(id)) : '/trees');
+  }
+
+  private treeUrl(id: number): string {
+    return this.resumeEdit() ? `/trees/${id}?resumeEdit=true` : `/trees/${id}`;
   }
 }

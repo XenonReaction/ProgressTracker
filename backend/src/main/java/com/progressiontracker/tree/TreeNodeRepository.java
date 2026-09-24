@@ -18,6 +18,8 @@ public interface TreeNodeRepository extends JpaRepository<TreeNode, Long> {
 
 	boolean existsByTreeAndNode(Tree tree, Node node);
 
+	boolean existsByNode(Node node);
+
 	/** The library nodes placed in a tree, for averaging its readiness. */
 	@Query("select tn.node from TreeNode tn where tn.tree = :tree")
 	List<Node> findNodesInTree(Tree tree);

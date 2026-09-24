@@ -63,7 +63,7 @@ class NodeServiceTest {
 		when(nodes.save(any(Node.class))).thenAnswer(invocation -> withId(invocation.getArgument(0), 7L));
 
 		NodeResponse response = service.create(new NodeRequest("Generics", "Type parameters", 40,
-				List.of(new NodeRequest.Link("https://example.com", "Docs")), null));
+				List.of(new NodeRequest.Link("https://example.com", "Docs")), null, List.of("java", "types")));
 
 		assertThat(response.id()).isEqualTo(7L);
 		assertThat(response.title()).isEqualTo("Generics");
@@ -72,6 +72,7 @@ class NodeServiceTest {
 		assertThat(response.readinessSourceType()).isEqualTo("manual");
 		assertThat(response.linkedTree()).isNull();
 		assertThat(response.links()).containsExactly(new NodeResponse.Link("https://example.com", "Docs"));
+		assertThat(response.tags()).containsExactly("java", "types");
 	}
 
 	@Test
@@ -80,7 +81,7 @@ class NodeServiceTest {
 		node.getLinks().add(new NodeLink("https://old.example.com", null));
 		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
 
-		NodeResponse response = service.update(7L, new NodeRequest("New title", null, 90, null, null));
+		NodeResponse response = service.update(7L, new NodeRequest("New title", null, 90, null, null, null));
 
 		assertThat(response.title()).isEqualTo("New title");
 		assertThat(response.readiness()).isEqualTo(90);
@@ -121,7 +122,7 @@ class NodeServiceTest {
 		when(treeNodes.findNodesInTree(linked))
 			.thenReturn(List.of(manual(11L, "List", 80), manual(12L, "Map", 60), manual(13L, "Set", 31)));
 
-		NodeResponse response = service.update(7L, new NodeRequest("Collections", null, 25, null, 3L));
+		NodeResponse response = service.update(7L, new NodeRequest("Collections", null, 25, null, 3L, null));
 
 		verify(treeLinks).checkNoLoop(node, List.of(containing), linked);
 		assertThat(response.readinessSourceType()).isEqualTo("linked_tree");
@@ -137,7 +138,7 @@ class NodeServiceTest {
 		node.setLinkedTree(withId(new Tree(user, "Collections in depth"), 3L));
 		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
 
-		NodeResponse response = service.update(7L, new NodeRequest("Collections", null, 25, null, null));
+		NodeResponse response = service.update(7L, new NodeRequest("Collections", null, 25, null, null, null));
 
 		assertThat(response.readinessSourceType()).isEqualTo("manual");
 		assertThat(response.linkedTree()).isNull();
@@ -148,7 +149,7 @@ class NodeServiceTest {
 	void linkingToAnUnknownTreeIsNotFound() {
 		when(trees.findByIdAndOwner(99L, user)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> service.create(new NodeRequest("Collections", null, 0, null, 99L)))
+		assertThatThrownBy(() -> service.create(new NodeRequest("Collections", null, 0, null, 99L, null)))
 			.isInstanceOf(NotFoundException.class)
 			.hasMessage("Tree 99 not found");
 		verify(nodes, never()).save(any());
@@ -163,8 +164,31 @@ class NodeServiceTest {
 		when(trees.findTreesContaining(node)).thenReturn(List.of(linked));
 		doThrow(new ConflictException("loop")).when(treeLinks).checkNoLoop(node, List.of(linked), linked);
 
-		assertThatThrownBy(() -> service.update(7L, new NodeRequest("Collections", null, 0, null, 3L)))
+		assertThatThrownBy(() -> service.update(7L, new NodeRequest("Collections", null, 0, null, 3L, null)))
 			.isInstanceOf(ConflictException.class);
+	}
+
+	@Test
+	void updateReadinessSetsTheHandEnteredValue() {
+		Node node = withId(new Node(user, "Generics"), 7L);
+		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
+
+		NodeResponse response = service.updateReadiness(7L, new NodeReadinessRequest(65));
+
+		assertThat(response.readiness()).isEqualTo(65);
+		assertThat(response.manualReadiness()).isEqualTo(65);
+	}
+
+	@Test
+	void updateReadinessRefusesALinkedNode() {
+		Node node = withId(new Node(user, "Collections"), 7L);
+		node.setLinkedTree(withId(new Tree(user, "Collections in Depth"), 3L));
+		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
+
+		assertThatThrownBy(() -> service.updateReadiness(7L, new NodeReadinessRequest(65)))
+			.isInstanceOf(ConflictException.class)
+			.hasMessageContaining("takes its readiness from the tree \"Collections in Depth\"");
+		assertThat(node.getReadiness()).isZero();
 	}
 
 	@Test

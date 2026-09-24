@@ -1,5 +1,6 @@
 package com.progressiontracker.tree;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import com.progressiontracker.node.Node;
 import com.progressiontracker.node.NodeRef;
 import com.progressiontracker.node.NodeRepository;
 import com.progressiontracker.user.CurrentUserService;
+import com.progressiontracker.user.User;
 
 /** CRUD for the current user's trees (metadata only; see TreeNodeService for contents). */
 @Service
@@ -23,35 +25,46 @@ public class TreeService {
 
 	private final NodeRepository nodes;
 
+	private final TreeEditSessionRepository editSessions;
+
 	private final CurrentUserService currentUser;
 
-	public TreeService(TreeRepository trees, NodeRepository nodes, CurrentUserService currentUser) {
+	public TreeService(TreeRepository trees, NodeRepository nodes, TreeEditSessionRepository editSessions,
+			CurrentUserService currentUser) {
 		this.trees = trees;
 		this.nodes = nodes;
+		this.editSessions = editSessions;
 		this.currentUser = currentUser;
 	}
 
 	@Transactional(readOnly = true)
 	public List<TreeResponse> list() {
-		return trees.findByOwnerOrderByTitleAsc(currentUser.getCurrentUser()).stream().map(TreeResponse::from).toList();
+		User owner = currentUser.getCurrentUser();
+		Map<Long, Instant> editing = editSessions.findByOwner(owner)
+			.stream()
+			.collect(Collectors.toMap(session -> session.getTree().getId(), TreeEditSession::getStartedAt));
+		return trees.findByOwnerOrderByTitleAsc(owner)
+			.stream()
+			.map(tree -> TreeResponse.from(tree, editing.get(tree.getId())))
+			.toList();
 	}
 
 	@Transactional(readOnly = true)
 	public TreeResponse get(Long id) {
-		return TreeResponse.from(findOwned(id));
+		return toResponse(findOwned(id));
 	}
 
 	public TreeResponse create(TreeRequest request) {
 		Tree tree = new Tree(currentUser.getCurrentUser(), request.title());
 		apply(request, tree);
-		return TreeResponse.from(trees.save(tree));
+		return TreeResponse.from(trees.save(tree), null);
 	}
 
 	public TreeResponse update(Long id, TreeRequest request) {
 		Tree tree = findOwned(id);
 		apply(request, tree);
 		trees.flush(); // so the response carries the new updatedAt
-		return TreeResponse.from(tree);
+		return toResponse(tree);
 	}
 
 	/**
@@ -76,6 +89,10 @@ public class TreeService {
 	public Tree findOwned(Long id) {
 		return trees.findByIdAndOwner(id, currentUser.getCurrentUser())
 			.orElseThrow(() -> new NotFoundException("Tree", id));
+	}
+
+	private TreeResponse toResponse(Tree tree) {
+		return TreeResponse.from(tree, editSessions.findByTree(tree).map(TreeEditSession::getStartedAt).orElse(null));
 	}
 
 	private static void apply(TreeRequest request, Tree tree) {

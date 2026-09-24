@@ -10,8 +10,8 @@ Milestone 1 (Phases 0–4b) is done: node library and tree CRUD, a tree editor w
 |---|---|
 | 5.0 Browser tests | **Done** (committed). |
 | 5.1 Migration tool | **Done** (committed). |
-| 5.2 Linked-tree readiness | **Built**, awaiting review. |
-| 5.3a View/edit modes, restore point, node pages | **Fully decided**, ready to approve. |
+| 5.2 Linked-tree readiness | **Done** (committed). |
+| 5.3a View/edit modes, restore point, node pages | **Built**, awaiting review. |
 | 5.3b Undo/redo | **Fully decided**, ready to approve. |
 | 5.4 Right-angle edges | **Fully decided**, ready to approve. |
 | 5.5 Readiness gradient | **Fully decided**, ready to approve. |
@@ -226,6 +226,17 @@ We've already hit this once. When the `positionx` column needed renaming, the on
 - **Leaving the page:** the app's own warning for links inside the app, the browser's "Leave site?" box for closing the tab, and the keep-or-discard question for an unfinished session (V9).
 - **Node pages:** a new node view page (read-only fields, clickable links, readiness editable inline if hand-entered, tags, the trees using it, its linked tree). The existing form becomes the node's edit mode, with tags added, and rows in the node library open the view page.
 - **Node tags:** a migration adding them, and the API and form changes to go with it.
+
+**5.3a built:**
+- **Migration `V4`** adds `node_tags` and `tree_edit_sessions` (one per tree, deleted with the tree). The restore point is a JSON snapshot of the tree's details, placements, thresholds and edges.
+- **API:** `POST /trees/{id}/edit-session` (Edit), `DELETE` (Done), `POST .../discard` (Discard changes); `PUT /nodes/{id}/readiness` for view-mode readiness; `GET /nodes/{id}/trees`; tags on nodes; `editSessionStartedAt` on trees.
+- **Tree page:** view mode by default (details, links, inline readiness, "Open node page", "Open linked tree"). Edit mode has the Phase 4 toolbar with Done, Discard changes, Edit details and Delete tree. Leaving asks first and discards, closing the tab gets the browser's warning, and an unfinished session shows a Keep/Discard banner. The tree list marks trees with an unfinished edit.
+- **Node pages:** a new view page (`/nodes/:id`); library rows open it. The form gains tags and loses the readiness number, which is now set on the view page.
+- **Choices made while building:**
+  - "Delete tree" and "Edit details" moved into edit mode, since view mode allows no other changes.
+  - Opening the tree details form from edit mode keeps the session: the form returns straight into edit mode.
+  - "Discard" deletes a node created during the session only if it was placed in this tree and is now in no tree. A node created and removed again within the session stays in the library, as removing a node always has.
+  - The backend doesn't refuse edits outside an edit session; view mode is enforced by the UI.
 
 **5.3b: undo/redo**
 - Undo and Redo buttons and keyboard shortcuts in edit mode, covering the changes listed above.

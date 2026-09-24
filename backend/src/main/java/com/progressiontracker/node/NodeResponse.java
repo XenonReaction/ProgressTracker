@@ -19,6 +19,7 @@ public record NodeResponse(
 		String readinessSourceType,
 		TreeRef linkedTree,
 		List<Link> links,
+		List<String> tags,
 		Instant createdAt,
 		Instant updatedAt) {
 
@@ -30,7 +31,7 @@ public record NodeResponse(
 		return new NodeResponse(node.getId(), node.getTitle(), node.getDescription(), readiness,
 				node.getReadiness(), node.getReadinessSourceType().getDbValue(), TreeRef.of(node.getLinkedTree()),
 				node.getLinks().stream().map(link -> new Link(link.getUrl(), link.getLabel())).toList(),
-				node.getCreatedAt(), node.getUpdatedAt());
+				List.copyOf(node.getTags()), node.getCreatedAt(), node.getUpdatedAt());
 	}
 
 }

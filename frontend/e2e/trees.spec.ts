@@ -29,17 +29,22 @@ test.describe('Trees', () => {
     await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
     await expect(page.getByText('Category: Computer science · Tags: cs, interviews')).toBeVisible();
 
+    // Details are edited from edit mode, which the form returns to
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByRole('link', { name: 'Edit details' }).click();
     // Wait for the saved values to load, or they'd overwrite what's typed
     await expect(page.getByLabel('Category')).toHaveValue('Computer science');
     await page.getByLabel('Category').fill('Algorithms');
     await page.getByRole('button', { name: 'Save' }).click();
     await expect(page.getByText('Category: Algorithms')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Done' })).toBeVisible();
+    await page.getByRole('button', { name: 'Done' }).click();
 
     await page.getByRole('link', { name: 'Trees', exact: true }).click();
     await expect(page.getByRole('row', { name: title })).toContainText('cs, interviews');
 
     await page.getByRole('link', { name: title }).click();
+    await page.getByRole('button', { name: 'Edit', exact: true }).click();
     await page.getByRole('button', { name: 'Delete tree' }).click();
     await expect(page).toHaveURL(/\/trees$/);
     await expect(page.getByRole('row', { name: title })).toHaveCount(0);

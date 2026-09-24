@@ -31,18 +31,19 @@ describe('NodeList', () => {
     vi.restoreAllMocks();
   });
 
-  it('shows each node with its readiness and an edit link', () => {
+  it('shows each node with its readiness, linking to its page and its edit form', () => {
     const rows = page.querySelectorAll('tbody tr');
     expect(rows.length).toBe(3);
     expect(rows[1].textContent).toContain('OOP');
     expect(rows[1].textContent).toContain('80%');
-    expect(rows[1].querySelector('a')?.getAttribute('href')).toBe('/nodes/2/edit');
+    const links = Array.from(rows[1].querySelectorAll('a')).map((a) => a.getAttribute('href'));
+    expect(links).toEqual(['/nodes/2', '/nodes/2/edit']);
   });
 
   it('names the tree a linked node takes its readiness from', () => {
     const row = page.querySelectorAll('tbody tr')[2];
     expect(row.textContent).toContain('70% from Collections in Depth');
-    expect(row.querySelector('a')?.getAttribute('href')).toBe('/trees/9');
+    expect(row.querySelectorAll('a')[1].getAttribute('href')).toBe('/trees/9');
   });
 
   it('deletes after confirmation and reloads the list', async () => {
