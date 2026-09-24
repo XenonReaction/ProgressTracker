@@ -8,7 +8,7 @@ Milestone 1 (Phases 0–4b) is done: node library and tree CRUD, a tree editor w
 
 | Sub-phase | State |
 |---|---|
-| 5.0 Browser tests | **Fully decided**, ready to approve. |
+| 5.0 Browser tests | **Built**, awaiting review. |
 | 5.1 Migration tool | **Fully decided**, ready to approve. |
 | 5.2 Linked-tree readiness | **Fully decided**, ready to approve. |
 | 5.3a View/edit modes, restore point, node pages | **Fully decided**, ready to approve. |
@@ -98,6 +98,8 @@ We've already hit this once. When the `positionx` column needed renaming, the on
   - tree create and delete,
   - the Phase 4 editor (drag to move, thresholds, connect, cycle refused, delete an edge or node, add a node, auto-layout).
 - Document `npm run e2e` in the README and CLAUDE.md.
+
+**Built:** 13 tests in `frontend/e2e/` (node library, trees, and the tree editor), all passing. Each test sets up its own uniquely named data through the API, so the tests don't depend on each other and run in parallel. The throwaway stack is `frontend/e2e/docker-compose.yml`, a separate Compose project on port 8090 with an in-memory database.
 
 **Depends on:** nothing.
 

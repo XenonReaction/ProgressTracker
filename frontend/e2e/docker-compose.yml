@@ -1,0 +1,38 @@
+# Throwaway copy of the app for the browser tests. `npm run e2e` starts it and removes it.
+# It's a separate Compose project with no fixed container names, no published database port
+# and an in-memory database, so it never touches the development database or the containers
+# from `docker compose --profile app up`. The images are built from the same Dockerfiles.
+name: progression-tracker-e2e
+
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: progressiontracker
+      POSTGRES_USER: progressiontracker
+      POSTGRES_PASSWORD: progressiontracker
+    # Data lives in memory and disappears when the container is removed
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U progressiontracker -d progressiontracker']
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  backend:
+    build: ../../backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/progressiontracker
+      # Loads the sample data, which some tests read
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ..
+    ports:
+      - '${E2E_PORT:-8090}:80'
+    depends_on:
+      - backend

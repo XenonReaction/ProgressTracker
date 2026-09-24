@@ -87,6 +87,7 @@ A new system for creating and editing skill trees, in the same spirit as the exi
 **Frontend:** Angular, no component library for now (plain Angular features only)
 **Testing (frontend):** Vitest (Angular's default runner since v21, running in jsdom). Chosen in Phase 3 over the originally planned Jasmine/Karma, since Karma is deprecated.
 **Testing (integration):** Real local PostgreSQL via Docker/Testcontainers — not an in-memory substitute.
+**Testing (browser):** Playwright on Chromium, against a throwaway Docker copy of the app (`npm run e2e`). Added in Phase 5.0.
 
 **API style — resolved this round (was round-5 Q3):** REST endpoints are prefixed **`/api/v1/...`** from day one (e.g. `GET /api/v1/trees/{id}/nodes`), rather than adding the prefix later.
 
@@ -163,8 +164,8 @@ Added after Phase 4 so the whole app can be started with one command, without in
 - Everything runs against the same Postgres service and data volume as local development.
 - Still on `ddl-auto=update`. That's fine for a container on your own machine, but deploying anywhere else waits for the migration tool (Phase 5).
 
-### Phase 5 — Milestone 2 candidates (not started yet)
-Deferred features that build on the Milestone 1 foundation, to be scoped in detail once Phases 1–4 are done:
+### Phase 5 — Milestone 2 (in progress)
+Scoped in detail in `plans/Phase_5_plan.md`, which now decides the sub-phases, their order and what's left for Milestone 3. The original candidates were:
 - Tree revision history (explicit commit action + in-session undo/redo).
 - Node-links-to-tree readiness aggregation, built as the pluggable "readiness function" mechanism (this is what `readiness_source_type` is reserved for).
 - Multi-step readiness gradient, if you decide to revisit the two-state default.

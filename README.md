@@ -106,3 +106,26 @@ database started by `docker compose`.
 cd frontend
 npm test -- --watch=false   # Vitest specs, run once in a simulated browser (jsdom)
 ```
+
+### Browser tests
+
+The browser tests drive a real Chromium with [Playwright](https://playwright.dev/): they
+click, type and drag like a person and check what appears on screen. They run against a
+throwaway copy of the app, never your own data.
+
+```bash
+cd frontend
+npx playwright install chromium   # first time only (~150 MB)
+npm run e2e                       # all browser tests
+npm run e2e -- e2e/trees.spec.ts  # one file
+npm run e2e -- --ui               # Playwright's interactive runner
+```
+
+`npm run e2e` builds the Docker images, starts a separate stack
+(`frontend/e2e/docker-compose.yml`, with the sample data in an in-memory database) on
+http://localhost:8090, runs the tests, and removes the stack. Docker must be running, and
+your own database and containers are left alone. Set `E2E_PORT` to use another port, or
+`E2E_KEEP_STACK=1` to leave the stack running afterwards for a look around.
+
+When a test fails, `npx playwright show-report` opens the results, including a
+step-by-step trace of the failing test.

@@ -36,6 +36,9 @@ npm start                                      # dev server on :4200; proxies /a
 npm test -- --watch=false                      # all Vitest specs, once
 npm test -- --watch=false --include src/app/trees/readiness.spec.ts   # a single spec file
 npm run build                                  # production build into frontend/dist/
+npx playwright install chromium                # first time only: the browser for the e2e tests
+npm run e2e                                    # Playwright browser tests against a throwaway Docker stack
+npm run e2e -- e2e/trees.spec.ts               # a single browser-test file
 ```
 
 No linter is configured. The frontend has a Prettier config (`frontend/.prettierrc`); the backend has no formatter.
@@ -44,10 +47,19 @@ No linter is configured. The frontend has a Prettier config (`frontend/.prettier
 
 `backend/Dockerfile` and `frontend/Dockerfile` are two-stage builds: Maven then a JRE, and Node then nginx. The `backend` and `frontend` Compose services sit behind the `app` profile so plain `docker compose up` stays database-only for development. The backend container gets its database URL from `SPRING_DATASOURCE_URL` and publishes no port (8080 stays free for `./mvnw spring-boot:run`). `frontend/nginx.conf` forwards `/api` to `backend:8080` and falls back to `index.html` for Angular routes, the same job `proxy.conf.json` does for `npm start`. Image builds skip tests because Testcontainers can't run inside a build.
 
+## Browser tests (Phase 5.0)
+
+Playwright on Chromium only, in `frontend/e2e/`, configured by `frontend/playwright.config.ts`. `e2e/global-setup.ts` runs `docker compose -f e2e/docker-compose.yml` (project `progression-tracker-e2e`: the same Dockerfiles, an in-memory Postgres, the `dev` seed, frontend on port 8090 or `E2E_PORT`), waits for the API, and tears the stack down after the run (`E2E_KEEP_STACK=1` keeps it). It first removes any stack left by an interrupted run, so every run starts from the seed data.
+
+- Tests set up their own data through the `api` fixture (REST calls) and give it titles from the `unique` fixture, so they're independent and run in parallel. Only read the seed data, never change it.
+- Find canvas nodes with `nodeBox(page, title)`, which matches the SVG `<title>` (the visible text is shortened). The `page` fixture accepts every `confirm()` dialog.
+- On edit pages, wait for the loaded values (`toHaveValue`) before typing, or the load overwrites what was typed.
+- Every sub-phase that changes on-screen behavior adds tests here.
+
 ## Layout
 
 - `backend/`: Spring Boot 4.1 on Java 21, built with Maven (wrapper included). Base package is `com.progressiontracker`. Maven covers only the backend.
-- `frontend/`: Angular 22 app built with npm and the Angular CLI, separate from the Maven build. It uses plain Angular with no component library, and UI polish is deliberately deferred.
+- `frontend/`: Angular 22 app built with npm and the Angular CLI, separate from the Maven build. It uses plain Angular with no component library, and UI polish is deliberately deferred. Browser tests are in `frontend/e2e/`.
 - `plans/`: the project plan, plus `skill_tree_plans/*.md` as reference content.
 - `data/trees/*.json`, `data/schema.json`: skill trees in the format of the older SkillTreeOSS app. They're reference material only. The app doesn't load them, and they don't map directly onto the new model. Phase 1 seed data is written by hand.
 
