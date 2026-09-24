@@ -12,8 +12,8 @@ Milestone 1 (Phases 0–4b) is done: node library and tree CRUD, a tree editor w
 | 5.1 Migration tool | **Done** (committed). |
 | 5.2 Linked-tree readiness | **Done** (committed). |
 | 5.3a View/edit modes, restore point, node pages | **Done** (committed). |
-| 5.3b Undo/redo | **Built**, awaiting review. |
-| 5.4 Right-angle edges | **Fully decided**, ready to approve. |
+| 5.3b Undo/redo | **Done** (committed). |
+| 5.4 Right-angle edges | **Built**, awaiting review. |
 | 5.5 Readiness gradient | **Fully decided**, ready to approve. |
 
 **What changed in round 4:**
@@ -275,6 +275,12 @@ We've already hit this once. When the `positionx` column needed renaming, the on
 - **Overlapping edges get nothing extra** (E7). When edges run along the same line (for example two edges leaving OOP's bottom point), you can drag segments apart by hand. Smarter auto-layout that reduces overlaps is on the Milestone 3 list.
 - **Edges don't automatically avoid other node boxes in Milestone 2** (E4). You can drag a segment out of the way, and automatic avoidance is on the Milestone 3 list.
 - **More than one connection point per node** is on the Milestone 3 list (E5).
+
+**Built:**
+- **Migration `V5`** adds `prerequisites.route`: JSON holding the number of segments the route was adjusted for and each draggable segment's **offset from its default place**. Storing offsets rather than points is what keeps an adjustment when a node moves (E6), and it keeps the Milestone 3 orientation toggle possible, since offsets don't depend on the layout's direction.
+- **API:** `PUT /trees/{id}/prerequisites/{edgeId}/route` sets or resets a route; `DELETE /trees/{id}/prerequisites/routes` resets every route (auto-layout); new edges can be created with a route (undo uses this); Discard restores routes.
+- **Drawing** (`trees/edge-routes.ts`): out at the bottom-middle, in at the top-middle. 3 segments when the dependent is at least 40 units below its prerequisite, otherwise 5, passing 30 units to the right of both nodes. Segments leaving or entering a node are at least 20 units long.
+- **Editing:** in edit mode with the select tool, the middle segment (3-segment routes) or the three inner segments (5-segment routes) can be dragged. A move that changes an edge's segment count resets that edge's route, and auto-layout resets all of them. Both are undone together with the move or layout. Segments are clamped so they stay between the two nodes' ports.
 
 **Depends on:** 5.1 (the edge-route column, added through a migration), 5.3 (edit mode, Discard and undo), and 5.0 (browser tests for dragging segments).
 

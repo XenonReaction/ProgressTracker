@@ -45,8 +45,8 @@ class MigrationTest {
 	void emptyDatabaseRunsEveryMigration() throws Exception {
 		MigrateResult result = flyway("fresh").migrate();
 
-		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3", "4");
-		assertThat(result.targetSchemaVersion).isEqualTo("4");
+		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3", "4", "5");
+		assertThat(result.targetSchemaVersion).isEqualTo("5");
 		assertThat(foreignKeyAndUniqueNames("fresh")).containsExactlyElementsOf(READABLE_NAMES);
 	}
 
@@ -62,7 +62,7 @@ class MigrationTest {
 
 		MigrateResult result = flyway("legacy").migrate();
 
-		assertThat(result.migrations).extracting(m -> m.version).containsExactly("2", "3", "4");
+		assertThat(result.migrations).extracting(m -> m.version).containsExactly("2", "3", "4", "5");
 		assertThat(foreignKeyAndUniqueNames("legacy")).containsExactlyElementsOf(READABLE_NAMES);
 		try (Connection connection = connect(); Statement statement = connection.createStatement();
 				ResultSet rows = statement.executeQuery("select username from legacy.users")) {

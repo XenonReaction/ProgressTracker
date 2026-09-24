@@ -106,6 +106,7 @@ request acts as a single default user (`demo`). Errors are returned as
 | `GET /nodes/{id}/trees` | The trees a node is placed in. |
 | `POST/DELETE /trees/{treeId}/edit-session`, `POST /trees/{treeId}/edit-session/discard` | Edit mode: `POST` saves a restore point (409 if the tree is already being edited), `DELETE` is "Done" and keeps the changes, and `discard` puts the tree back as it was. A tree's `editSessionStartedAt` is set while a session is open. |
 | `GET/POST /trees/{treeId}/prerequisites`, `DELETE /trees/{treeId}/prerequisites/{id}` | Prerequisite edges. Self-edges (400), duplicates (409) and cycles (409) are refused. |
+| `PUT /trees/{treeId}/prerequisites/{id}/route`, `DELETE /trees/{treeId}/prerequisites/routes` | An edge's hand-adjusted right-angle route (`{"segments": 3, "offsets": [40]}`, or null for the default), and resetting every route in a tree. |
 
 **Linked trees.** A node's `readiness` in every response is its effective value. With
 `linkedTreeId` set, that's the average readiness of the linked tree's nodes, rounded to a

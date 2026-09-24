@@ -51,7 +51,7 @@ class PrerequisiteServiceTest {
 
 	@Test
 	void rejectsSelfEdgeBeforeTouchingTheDatabase() {
-		assertThatThrownBy(() -> service.create(10L, new PrerequisiteRequest(31L, 31L)))
+		assertThatThrownBy(() -> service.create(10L, new PrerequisiteRequest(31L, 31L, null)))
 			.isInstanceOf(BadRequestException.class);
 		verifyNoInteractions(treeService, treeNodeService, prerequisites);
 	}
@@ -62,7 +62,7 @@ class PrerequisiteServiceTest {
 		when(treeNodeService.findInTree(tree, 31L)).thenReturn(a);
 		when(treeNodeService.findInTree(tree, 99L)).thenThrow(new NotFoundException("Tree node", 99L));
 
-		assertThatThrownBy(() -> service.create(10L, new PrerequisiteRequest(31L, 99L)))
+		assertThatThrownBy(() -> service.create(10L, new PrerequisiteRequest(31L, 99L, null)))
 			.isInstanceOf(NotFoundException.class);
 		verify(prerequisites, never()).save(any());
 	}
@@ -72,7 +72,7 @@ class PrerequisiteServiceTest {
 		givenTreeNodes();
 		when(prerequisites.existsByPrerequisiteAndDependent(a, b)).thenReturn(true);
 
-		assertThatThrownBy(() -> service.create(10L, new PrerequisiteRequest(31L, 32L)))
+		assertThatThrownBy(() -> service.create(10L, new PrerequisiteRequest(31L, 32L, null)))
 			.isInstanceOf(ConflictException.class);
 		verify(prerequisites, never()).save(any());
 	}
@@ -82,7 +82,7 @@ class PrerequisiteServiceTest {
 		givenTreeNodes();
 		when(prerequisites.findByTree(tree)).thenReturn(List.of(new Prerequisite(a, b), new Prerequisite(b, c)));
 
-		assertThatThrownBy(() -> service.create(10L, new PrerequisiteRequest(33L, 31L)))
+		assertThatThrownBy(() -> service.create(10L, new PrerequisiteRequest(33L, 31L, null)))
 			.isInstanceOf(ConflictException.class)
 			.hasMessageContaining("would create a cycle");
 		verify(prerequisites, never()).save(any());
@@ -95,9 +95,31 @@ class PrerequisiteServiceTest {
 		when(prerequisites.save(any(Prerequisite.class)))
 			.thenAnswer(invocation -> withId(invocation.getArgument(0), 40L));
 
-		PrerequisiteResponse response = service.create(10L, new PrerequisiteRequest(31L, 33L));
+		PrerequisiteResponse response = service.create(10L, new PrerequisiteRequest(31L, 33L, null));
 
-		assertThat(response).isEqualTo(new PrerequisiteResponse(40L, 31L, 33L));
+		assertThat(response).isEqualTo(new PrerequisiteResponse(40L, 31L, 33L, null));
+	}
+
+	@Test
+	void savesAnEdgeWithTheRouteItHadBefore() {
+		givenTreeNodes();
+		when(prerequisites.findByTree(tree)).thenReturn(List.of());
+		when(prerequisites.save(any(Prerequisite.class)))
+			.thenAnswer(invocation -> withId(invocation.getArgument(0), 40L));
+		EdgeRoute route = new EdgeRoute(3, List.of(40.0));
+
+		PrerequisiteResponse response = service.create(10L, new PrerequisiteRequest(31L, 33L, route));
+
+		assertThat(response.route()).isEqualTo(route);
+	}
+
+	@Test
+	void rejectsARouteWhoseOffsetsDoNotMatchItsSegments() {
+		assertThatThrownBy(() -> new EdgeRoute(5, List.of(1.0)).check()).isInstanceOf(BadRequestException.class)
+			.hasMessage("A 5-segment route has 3 offset(s), not 1");
+		assertThatThrownBy(() -> new EdgeRoute(4, List.of(1.0)).check()).isInstanceOf(BadRequestException.class);
+		assertThatThrownBy(() -> new EdgeRoute(3, List.of(Double.NaN)).check())
+			.isInstanceOf(BadRequestException.class);
 	}
 
 	private void givenTreeNodes() {

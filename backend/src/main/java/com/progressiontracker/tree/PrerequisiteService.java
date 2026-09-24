@@ -9,7 +9,7 @@ import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 
-/** Adds and removes prerequisite edges, keeping each tree's graph acyclic. */
+/** Adds and removes prerequisite edges, keeping each tree's graph acyclic, and stores their routes. */
 @Service
 @Transactional
 public class PrerequisiteService {
@@ -58,14 +58,37 @@ public class PrerequisiteService {
 			throw new ConflictException("Making tree node " + prerequisite.getId() + " a prerequisite of tree node "
 					+ dependent.getId() + " would create a cycle");
 		}
-		return PrerequisiteResponse.from(prerequisites.save(new Prerequisite(prerequisite, dependent)));
+		Prerequisite edge = new Prerequisite(prerequisite, dependent);
+		edge.setRoute(checked(request.route()));
+		return PrerequisiteResponse.from(prerequisites.save(edge));
+	}
+
+	/** Sets the edge's hand-adjusted route, or resets it to the default with null. */
+	public PrerequisiteResponse updateRoute(Long treeId, Long prerequisiteId, PrerequisiteRouteRequest request) {
+		Prerequisite edge = findInTree(treeService.findOwned(treeId), prerequisiteId);
+		edge.setRoute(checked(request.route()));
+		return PrerequisiteResponse.from(edge);
+	}
+
+	/** Resets every edge in the tree to its default route, as auto-layout does. */
+	public void resetRoutes(Long treeId) {
+		prerequisites.findByTree(treeService.findOwned(treeId)).forEach(edge -> edge.setRoute(null));
 	}
 
 	public void delete(Long treeId, Long prerequisiteId) {
-		Tree tree = treeService.findOwned(treeId);
-		Prerequisite edge = prerequisites.findByIdAndDependentTree(prerequisiteId, tree)
+		prerequisites.delete(findInTree(treeService.findOwned(treeId), prerequisiteId));
+	}
+
+	private Prerequisite findInTree(Tree tree, Long prerequisiteId) {
+		return prerequisites.findByIdAndDependentTree(prerequisiteId, tree)
 			.orElseThrow(() -> new NotFoundException("Prerequisite", prerequisiteId));
-		prerequisites.delete(edge);
+	}
+
+	private static EdgeRoute checked(EdgeRoute route) {
+		if (route != null) {
+			route.check();
+		}
+		return route;
 	}
 
 }

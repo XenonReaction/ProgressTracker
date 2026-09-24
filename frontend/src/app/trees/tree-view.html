@@ -100,11 +100,27 @@
         </marker>
       </defs>
       <rect class="background" [attr.x]="viewBox().x" [attr.y]="viewBox().y" [attr.width]="viewBox().width" [attr.height]="viewBox().height" />
-      @for (edge of edgeLines(); track edge.id) {
+      @for (edge of routedEdges(); track edge.id) {
         <g class="edge" [attr.data-edge-id]="edge.id" (click)="onEdgeClick($event, edge.id)">
-          <line class="edge-line" [attr.x1]="edge.from.x" [attr.y1]="edge.from.y" [attr.x2]="edge.to.x" [attr.y2]="edge.to.y" marker-end="url(#arrow)" />
+          <polyline class="edge-line" [attr.points]="pointsAttr(edge.points)" marker-end="url(#arrow)" />
           <!-- Wider invisible line so thin arrows are easy to click -->
-          <line class="edge-hit" [attr.x1]="edge.from.x" [attr.y1]="edge.from.y" [attr.x2]="edge.to.x" [attr.y2]="edge.to.y" />
+          <polyline class="edge-hit" [attr.points]="pointsAttr(edge.points)" />
+          @if (mode() === 'edit' && tool() === 'select') {
+            <!-- The segments that can be dragged to tidy the route -->
+            @for (handle of edge.handles; track handle.segment) {
+              <line
+                class="segment-handle"
+                [class.horizontal]="handle.axis === 'y'"
+                [class.vertical]="handle.axis === 'x'"
+                [attr.data-segment]="handle.segment"
+                [attr.x1]="edge.points[handle.segment].x"
+                [attr.y1]="edge.points[handle.segment].y"
+                [attr.x2]="edge.points[handle.segment + 1].x"
+                [attr.y2]="edge.points[handle.segment + 1].y"
+                (mousedown)="onSegmentMouseDown($event, edge, handle)"
+              />
+            }
+          }
         </g>
       }
       @for (treeNode of treeNodes(); track treeNode.id) {

@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import {
+  EdgeRoute,
   Prerequisite,
   Tree,
   TreeEditSession,
@@ -81,11 +82,28 @@ export class TreeApi {
     return this.http.get<Prerequisite[]>(`${this.baseUrl}/${treeId}/prerequisites`);
   }
 
-  addPrerequisite(treeId: number, prerequisiteTreeNodeId: number, dependentTreeNodeId: number): Observable<Prerequisite> {
+  /** `route` puts back an edge with the shape it had (undo); omit it for the default route. */
+  addPrerequisite(
+    treeId: number,
+    prerequisiteTreeNodeId: number,
+    dependentTreeNodeId: number,
+    route: EdgeRoute | null = null,
+  ): Observable<Prerequisite> {
     return this.http.post<Prerequisite>(`${this.baseUrl}/${treeId}/prerequisites`, {
       prerequisiteTreeNodeId,
       dependentTreeNodeId,
+      ...(route ? { route } : {}),
     });
+  }
+
+  /** Sets an edge's hand-adjusted route, or resets it to the default with null. */
+  updateRoute(treeId: number, prerequisiteId: number, route: EdgeRoute | null): Observable<Prerequisite> {
+    return this.http.put<Prerequisite>(`${this.baseUrl}/${treeId}/prerequisites/${prerequisiteId}/route`, { route });
+  }
+
+  /** Resets every edge in the tree to its default route (auto-layout does this). */
+  resetRoutes(treeId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${treeId}/prerequisites/routes`);
   }
 
   removePrerequisite(treeId: number, prerequisiteId: number): Observable<void> {

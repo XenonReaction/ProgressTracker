@@ -20,8 +20,8 @@ record TreeSnapshot(
 			int individualThreshold) {
 	}
 
-	/** A prerequisite edge between two placed library nodes. */
-	record Edge(Long prerequisiteNodeId, Long dependentNodeId) {
+	/** A prerequisite edge between two placed library nodes, with its route (null if default). */
+	record Edge(Long prerequisiteNodeId, Long dependentNodeId, EdgeRoute route) {
 	}
 
 }

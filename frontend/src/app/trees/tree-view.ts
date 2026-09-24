@@ -1,9 +1,9 @@
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Observable, firstValueFrom, forkJoin, switchMap } from 'rxjs';
+import { Observable, concat, firstValueFrom, forkJoin, last, map, of, switchMap } from 'rxjs';
 
-import { Node, Prerequisite, Tree, TreeNode } from '../core/api.models';
+import { EdgeRoute, Node, Prerequisite, Tree, TreeNode } from '../core/api.models';
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { ReadinessEditor } from '../nodes/readiness-editor';
@@ -11,10 +11,11 @@ import { TreeApi } from '../core/tree-api';
 import { AddNodePanel } from './add-node-panel';
 import { autoLayout } from './auto-layout';
 import { confirmTreeDelete } from './confirm-delete';
+import { RoutedEdge, SegmentHandle, pointsAttr, routeEdges, routeOutgrown } from './edge-routes';
 import * as commands from './edit-commands';
 import { EdgeEnds, EditContext, NodeState } from './edit-commands';
 import { ReadinessState, readinessState } from './readiness';
-import { NODE_HEIGHT, NODE_WIDTH, Point, ViewBox, edgeLines, viewBoxFor } from './tree-layout';
+import { NODE_HEIGHT, NODE_WIDTH, Point, ViewBox, viewBoxFor } from './tree-layout';
 import { EditCommand, UndoHistory } from './undo-history';
 
 /**
@@ -30,6 +31,16 @@ interface Drag {
   treeNodeId: number;
   startPointer: Point;
   startPosition: Point;
+  moved: boolean;
+}
+
+/** Dragging one segment of an edge's route (5.4). */
+interface SegmentDrag {
+  edgeId: number;
+  handle: SegmentHandle;
+  segments: 3 | 5;
+  startPointer: Point;
+  startOffsets: number[];
   moved: boolean;
 }
 
@@ -119,6 +130,10 @@ export class TreeView {
   protected readonly pendingPoint = signal<Point | null>(null);
 
   private drag: Drag | null = null;
+  private segmentDrag: SegmentDrag | null = null;
+  /** Routes of edges being dragged right now, shown instead of their stored routes. */
+  private readonly routeOverrides = signal<ReadonlyMap<number, EdgeRoute>>(new Map());
+  protected readonly pointsAttr = pointsAttr;
   /** The view box is held still while dragging, so the canvas doesn't rescale under the pointer. */
   private readonly frozenViewBox = signal<ViewBox | null>(null);
 
@@ -139,7 +154,7 @@ export class TreeView {
     return new Map<number, ReadinessState>(this.treeNodes().map((n) => [n.id, readinessState(n, byId)]));
   });
   protected readonly viewBox = computed(() => this.frozenViewBox() ?? viewBoxFor(this.treeNodes()));
-  protected readonly edgeLines = computed(() => edgeLines(this.edges(), this.byId()));
+  protected readonly routedEdges = computed(() => routeEdges(this.edges(), this.byId(), this.routeOverrides()));
   protected readonly selected = computed(() => {
     const id = this.selectedId();
     return id === null ? null : (this.byId().get(id) ?? null);
@@ -155,7 +170,7 @@ export class TreeView {
     }
     switch (this.tool()) {
       case 'select':
-        return 'Click a node to see and edit its details. Drag a node to move it.';
+        return 'Click a node to see and edit its details. Drag a node to move it, or drag a piece of an arrow to reroute it.';
       case 'add':
         return 'Click an empty spot on the canvas to add a node there.';
       case 'connect':
@@ -384,9 +399,17 @@ export class TreeView {
     const positionsOf = (nodes: TreeNode[]) =>
       nodes.map((n) => ({ nodeId: n.nodeId, positionX: n.positionX, positionY: n.positionY }));
     const before = positionsOf(this.treeNodes());
-    this.run(this.treeApi.updatePositions(this.treeId(), autoLayout(this.treeNodes())), (treeNodes) => {
+    const routesBefore = this.edges()
+      .filter((e) => e.route)
+      .map((e) => this.endsOf(e.id)!.ends);
+    // Every edge goes back to its default route too (5.4-E3b)
+    const laidOut = this.treeApi
+      .updatePositions(this.treeId(), autoLayout(this.treeNodes()))
+      .pipe(switchMap((treeNodes) => this.treeApi.resetRoutes(this.treeId()).pipe(map(() => treeNodes))));
+    this.run(laidOut, (treeNodes) => {
       this.treeNodes.set(treeNodes);
-      this.record(commands.layout(this.editContext, before, positionsOf(treeNodes)));
+      this.edges.update((edges) => edges.map((e) => ({ ...e, route: null })));
+      this.record(commands.layout(this.editContext, before, positionsOf(treeNodes), routesBefore));
     });
   }
 
@@ -429,7 +452,39 @@ export class TreeView {
     this.frozenViewBox.set(this.viewBox());
   }
 
+  /** Press on a draggable segment of an edge: select tool, edit mode only. */
+  protected onSegmentMouseDown(event: MouseEvent, edge: RoutedEdge, handle: SegmentHandle): void {
+    if (this.mode() !== 'edit' || this.tool() !== 'select' || event.button !== 0) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    this.segmentDrag = {
+      edgeId: edge.id,
+      handle,
+      segments: edge.segments,
+      startPointer: this.toCanvasPoint(event),
+      startOffsets: edge.offsets,
+      moved: false,
+    };
+    this.frozenViewBox.set(this.viewBox());
+  }
+
   protected onCanvasMouseMove(event: MouseEvent): void {
+    const segmentDrag = this.segmentDrag;
+    if (segmentDrag) {
+      const pointer = this.toCanvasPoint(event);
+      const axis = segmentDrag.handle.axis;
+      const delta = Math.round(pointer[axis] - segmentDrag.startPointer[axis]);
+      if (!segmentDrag.moved && Math.abs(delta) < DRAG_THRESHOLD) {
+        return;
+      }
+      segmentDrag.moved = true;
+      const offsets = [...segmentDrag.startOffsets];
+      offsets[segmentDrag.handle.offsetIndex] += delta;
+      this.routeOverrides.set(new Map([[segmentDrag.edgeId, { segments: segmentDrag.segments, offsets }]]));
+      return;
+    }
     const drag = this.drag;
     if (!drag) {
       return;
@@ -448,8 +503,12 @@ export class TreeView {
     );
   }
 
-  /** Ends a press on a node: saves the move if it was dragged, otherwise selects it. */
+  /** Ends a press on a node or segment: saves a drag, or selects a node that was only clicked. */
   protected onCanvasMouseUp(): void {
+    if (this.segmentDrag) {
+      this.endSegmentDrag(this.segmentDrag);
+      return;
+    }
     const drag = this.drag;
     if (!drag) {
       return;
@@ -535,13 +594,9 @@ export class TreeView {
     ) {
       return;
     }
-    const byId = this.byId();
     const edges: EdgeEnds[] = this.edges()
       .filter((e) => e.prerequisiteTreeNodeId === treeNode.id || e.dependentTreeNodeId === treeNode.id)
-      .map((e) => ({
-        prerequisiteNodeId: byId.get(e.prerequisiteTreeNodeId)!.nodeId,
-        dependentNodeId: byId.get(e.dependentTreeNodeId)!.nodeId,
-      }));
+      .map((e) => this.endsOf(e.id)!.ends);
     this.run(this.treeApi.removeNode(this.treeId(), treeNode.id), () => {
       if (this.selectedId() === treeNode.id) {
         this.selectedId.set(null);
@@ -645,14 +700,34 @@ export class TreeView {
     });
   }
 
-  /** Saves a move or a threshold change, and records it for undo with the state it replaced. */
+  /**
+   * Saves a move or a threshold change, and records it for undo with the state it replaced.
+   * A move that changes an edge's number of segments resets that edge's route (5.4-E6b).
+   */
   private saveTreeNode(treeNode: TreeNode, label: string, before: NodeState): void {
     const request = commands.stateOf(treeNode);
+    const byId = new Map(this.byId()).set(treeNode.id, treeNode);
+    const outgrown = this.edges().filter(
+      (e) => (e.prerequisiteTreeNodeId === treeNode.id || e.dependentTreeNodeId === treeNode.id) && routeOutgrown(e, byId),
+    );
+    const resetRoutes = outgrown.map((e) => this.endsOf(e.id)!.ends);
+    const saved$ = this.treeApi.updateNode(this.treeId(), treeNode.id, request).pipe(
+      switchMap((saved) =>
+        outgrown.length
+          ? concat(...outgrown.map((e) => this.treeApi.updateRoute(this.treeId(), e.id, null))).pipe(
+              last(),
+              map(() => saved),
+            )
+          : of(saved),
+      ),
+    );
     this.error.set(null);
-    this.treeApi.updateNode(this.treeId(), treeNode.id, request).subscribe({
+    saved$.subscribe({
       next: (saved) => {
         this.treeNodes.update((nodes) => nodes.map((n) => (n.id === saved.id ? saved : n)));
-        this.record(commands.updateNode(this.editContext, label, treeNode.nodeId, before, request));
+        const reset = new Set(outgrown.map((e) => e.id));
+        this.edges.update((edges) => edges.map((e) => (reset.has(e.id) ? { ...e, route: null } : e)));
+        this.record(commands.updateNode(this.editContext, label, treeNode.nodeId, before, request, resetRoutes));
       },
       error: (error) => {
         this.error.set(errorMessage(error));
@@ -661,18 +736,44 @@ export class TreeView {
     });
   }
 
-  /** An edge by the library nodes at its ends, for undo, with a label like `"A" → "B"`. */
+  /** An edge by the library nodes at its ends (with its route), for undo, and a label like `"A" → "B"`. */
   private endsOf(edgeId: number): { ends: EdgeEnds; label: string } | null {
     const edge = this.edges().find((e) => e.id === edgeId);
     const from = edge && this.byId().get(edge.prerequisiteTreeNodeId);
     const to = edge && this.byId().get(edge.dependentTreeNodeId);
-    if (!from || !to) {
+    if (!edge || !from || !to) {
       return null;
     }
     return {
-      ends: { prerequisiteNodeId: from.nodeId, dependentNodeId: to.nodeId },
+      ends: { prerequisiteNodeId: from.nodeId, dependentNodeId: to.nodeId, route: edge.route },
       label: `"${from.title}" → "${to.title}"`,
     };
+  }
+
+  /** Saves a dragged segment as the edge's new route, and records it for undo. */
+  private endSegmentDrag(segmentDrag: SegmentDrag): void {
+    this.segmentDrag = null;
+    this.frozenViewBox.set(null);
+    const routed = this.routedEdges().find((e) => e.id === segmentDrag.edgeId);
+    const ends = this.endsOf(segmentDrag.edgeId);
+    if (!segmentDrag.moved || !routed || !ends) {
+      this.routeOverrides.set(new Map());
+      return;
+    }
+    // Store what's shown, so a drag past the ends doesn't keep an offset that's clamped away
+    const route: EdgeRoute = { segments: routed.segments, offsets: routed.offsets };
+    this.error.set(null);
+    this.treeApi.updateRoute(this.treeId(), segmentDrag.edgeId, route).subscribe({
+      next: (saved) => {
+        this.edges.update((edges) => edges.map((e) => (e.id === saved.id ? saved : e)));
+        this.routeOverrides.set(new Map());
+        this.record(commands.reroute(this.editContext, `reshape arrow ${ends.label}`, ends.ends, ends.ends.route ?? null, route));
+      },
+      error: (error) => {
+        this.routeOverrides.set(new Map());
+        this.error.set(errorMessage(error));
+      },
+    });
   }
 
   /** Re-reads the tree's nodes and edges after a change to its structure. */

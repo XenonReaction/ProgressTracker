@@ -11,13 +11,32 @@ svg {
 }
 
 .edge-line {
+  fill: none;
   stroke: #555;
   stroke-width: 1.5;
 }
 
 .edge-hit {
+  fill: none;
   stroke: transparent;
   stroke-width: 14;
+}
+
+.segment-handle {
+  stroke: transparent;
+  stroke-width: 10;
+}
+
+.segment-handle.horizontal {
+  cursor: ns-resize;
+}
+
+.segment-handle.vertical {
+  cursor: ew-resize;
+}
+
+.segment-handle:hover {
+  stroke: rgb(21 101 192 / 35%);
 }
 
 .tool-delete .edge:hover .edge-line {

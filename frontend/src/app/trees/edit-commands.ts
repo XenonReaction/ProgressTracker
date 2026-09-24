@@ -1,6 +1,6 @@
-import { Observable, defer, forkJoin, map, of, switchMap } from 'rxjs';
+import { Observable, concat, defer, forkJoin, map, of, switchMap, toArray } from 'rxjs';
 
-import { Prerequisite, TreeNode } from '../core/api.models';
+import { EdgeRoute, Prerequisite, TreeNode } from '../core/api.models';
 import { NodeApi } from '../core/node-api';
 import { TreeApi } from '../core/tree-api';
 import { EditCommand } from './undo-history';
@@ -39,10 +39,11 @@ export interface NodePosition {
   positionY: number;
 }
 
-/** An edge, by the library nodes at its ends. */
+/** An edge, by the library nodes at its ends, with its route when it matters for undo. */
 export interface EdgeEnds {
   prerequisiteNodeId: number;
   dependentNodeId: number;
+  route?: EdgeRoute | null;
 }
 
 export function stateOf(treeNode: TreeNode): NodeState {
@@ -50,14 +51,29 @@ export function stateOf(treeNode: TreeNode): NodeState {
   return { positionX, positionY, aggregateThreshold, individualThreshold };
 }
 
-/** A move or a threshold change: sets the node's whole state back or forward. */
-export function updateNode(ctx: EditContext, label: string, nodeId: number, before: NodeState, after: NodeState): EditCommand {
+/**
+ * A move or a threshold change: sets the node's whole state back or forward. `resetRoutes`
+ * are the edges whose routes the move reset (it changed their number of segments, 5.4-E6b);
+ * undo puts those routes back and redo resets them again.
+ */
+export function updateNode(
+  ctx: EditContext,
+  label: string,
+  nodeId: number,
+  before: NodeState,
+  after: NodeState,
+  resetRoutes: EdgeEnds[] = [],
+): EditCommand {
   const set = (state: NodeState) => defer(() => ctx.treeApi.updateNode(ctx.treeId(), ctx.placed(nodeId).id, state));
-  return { label, undo: () => set(before), redo: () => set(after) };
+  return {
+    label,
+    undo: () => concat(set(before), setRoutes(ctx, resetRoutes)),
+    redo: () => concat(set(after), setRoutes(ctx, resetRoutes.map((ends) => ({ ...ends, route: null })))),
+  };
 }
 
-/** Auto-layout: every position at once. */
-export function layout(ctx: EditContext, before: NodePosition[], after: NodePosition[]): EditCommand {
+/** Auto-layout: every position at once, and every edge back to its default route (5.4-E3b). */
+export function layout(ctx: EditContext, before: NodePosition[], after: NodePosition[], routesBefore: EdgeEnds[]): EditCommand {
   const set = (positions: NodePosition[]) =>
     defer(() =>
       ctx.treeApi.updatePositions(
@@ -65,7 +81,20 @@ export function layout(ctx: EditContext, before: NodePosition[], after: NodePosi
         positions.map((p) => ({ treeNodeId: ctx.placed(p.nodeId).id, positionX: p.positionX, positionY: p.positionY })),
       ),
     );
-  return { label: 'auto-layout', undo: () => set(before), redo: () => set(after) };
+  return {
+    label: 'auto-layout',
+    undo: () => concat(set(before), setRoutes(ctx, routesBefore)),
+    redo: () => concat(set(after), defer(() => ctx.treeApi.resetRoutes(ctx.treeId()))),
+  };
+}
+
+/** Dragging an edge's segment: its route before and after. */
+export function reroute(ctx: EditContext, label: string, ends: EdgeEnds, before: EdgeRoute | null, after: EdgeRoute): EditCommand {
+  return {
+    label,
+    undo: () => setRoutes(ctx, [{ ...ends, route: before }]),
+    redo: () => setRoutes(ctx, [{ ...ends, route: after }]),
+  };
 }
 
 export function addEdge(ctx: EditContext, label: string, ends: EdgeEnds): EditCommand {
@@ -97,7 +126,12 @@ export function removeNode(ctx: EditContext, label: string, nodeId: number, stat
           return edges.length
             ? forkJoin(
                 edges.map((e) =>
-                  ctx.treeApi.addPrerequisite(ctx.treeId(), treeNodeIdOf(e.prerequisiteNodeId), treeNodeIdOf(e.dependentNodeId)),
+                  ctx.treeApi.addPrerequisite(
+                    ctx.treeId(),
+                    treeNodeIdOf(e.prerequisiteNodeId),
+                    treeNodeIdOf(e.dependentNodeId),
+                    e.route ?? null,
+                  ),
                 ),
               )
             : of(null);
@@ -141,16 +175,30 @@ export function createNode(ctx: EditContext, label: string, nodeId: number, titl
 
 function addEdgeBetween(ctx: EditContext, ends: EdgeEnds): Observable<unknown> {
   return defer(() =>
-    ctx.treeApi.addPrerequisite(ctx.treeId(), ctx.placed(ends.prerequisiteNodeId).id, ctx.placed(ends.dependentNodeId).id),
+    ctx.treeApi.addPrerequisite(
+      ctx.treeId(),
+      ctx.placed(ends.prerequisiteNodeId).id,
+      ctx.placed(ends.dependentNodeId).id,
+      ends.route ?? null,
+    ),
   );
 }
 
 function removeEdgeBetween(ctx: EditContext, ends: EdgeEnds): Observable<unknown> {
-  return defer(() => {
-    const edge = ctx.edgeBetween(ends.prerequisiteNodeId, ends.dependentNodeId);
-    if (!edge) {
-      throw new Error('That arrow is no longer in the tree');
-    }
-    return ctx.treeApi.removePrerequisite(ctx.treeId(), edge.id);
-  });
+  return defer(() => ctx.treeApi.removePrerequisite(ctx.treeId(), findEdge(ctx, ends).id));
+}
+
+/** Sets each edge's route (null resets it), one after another. */
+function setRoutes(ctx: EditContext, edges: EdgeEnds[]): Observable<unknown> {
+  return concat(
+    ...edges.map((ends) => defer(() => ctx.treeApi.updateRoute(ctx.treeId(), findEdge(ctx, ends).id, ends.route ?? null))),
+  ).pipe(toArray());
+}
+
+function findEdge(ctx: EditContext, ends: EdgeEnds): Prerequisite {
+  const edge = ctx.edgeBetween(ends.prerequisiteNodeId, ends.dependentNodeId);
+  if (!edge) {
+    throw new Error('That arrow is no longer in the tree');
+  }
+  return edge;
 }

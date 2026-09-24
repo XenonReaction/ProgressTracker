@@ -369,6 +369,39 @@ class ApiIntegrationTest {
 			.isEqualTo("Java");
 	}
 
+	@Test
+	void storesAnEdgesRouteAndResetsAllOfThem() {
+		long tree = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
+		long first = placeNode(tree, createNode("First", 50), "");
+		long second = placeNode(tree, createNode("Second", 50), "");
+		MvcTestResult created = addEdge(tree, first, second);
+		long edge = id(created);
+		assertThat(created).bodyJson().extractingPath("$.route").isNull();
+
+		MvcTestResult routed = put("/api/v1/trees/" + tree + "/prerequisites/" + edge + "/route", """
+				{"route": {"segments": 3, "offsets": [40]}}""");
+		assertThat(routed).hasStatusOk();
+		assertThat(routed).bodyJson().extractingPath("$.route.offsets[0]").isEqualTo(40.0);
+		assertThat(mvc.get().uri("/api/v1/trees/{tree}/prerequisites", tree)).bodyJson()
+			.extractingPath("$[0].route.segments")
+			.isEqualTo(3);
+
+		assertThat(put("/api/v1/trees/" + tree + "/prerequisites/" + edge + "/route", """
+				{"route": {"segments": 5, "offsets": [1]}}""")).hasStatus(HttpStatus.BAD_REQUEST);
+
+		// Discard puts the route back as it was when editing started
+		post("/api/v1/trees/" + tree + "/edit-session", "");
+		assertThat(mvc.delete().uri("/api/v1/trees/{tree}/prerequisites/routes", tree))
+			.hasStatus(HttpStatus.NO_CONTENT);
+		assertThat(mvc.get().uri("/api/v1/trees/{tree}/prerequisites", tree)).bodyJson()
+			.extractingPath("$[0].route")
+			.isNull();
+		post("/api/v1/trees/" + tree + "/edit-session/discard", "");
+		assertThat(mvc.get().uri("/api/v1/trees/{tree}/prerequisites", tree)).bodyJson()
+			.extractingPath("$[0].route.offsets[0]")
+			.isEqualTo(40.0);
+	}
+
 	private MvcTestResult link(long node, String title, int readiness, long tree) {
 		return put("/api/v1/nodes/" + node, """
 				{"title": "%s", "readiness": %d, "linkedTreeId": %d}""".formatted(title, readiness, tree));

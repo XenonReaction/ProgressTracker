@@ -1,4 +1,4 @@
-import { Prerequisite, TreeNode } from '../core/api.models';
+import { TreeNode } from '../core/api.models';
 
 /** Node boxes are drawn centred on their stored (positionX, positionY). */
 export const NODE_WIDTH = 180;
@@ -20,13 +20,6 @@ export interface ViewBox {
   height: number;
 }
 
-export interface EdgeLine {
-  /** The prerequisite edge's id, used to delete it. */
-  id: number;
-  from: Point;
-  to: Point;
-}
-
 /** SVG viewBox that fits every node box plus padding. */
 export function viewBoxFor(treeNodes: TreeNode[]): ViewBox {
   if (treeNodes.length === 0) {
@@ -42,39 +35,4 @@ export function viewBoxFor(treeNodes: TreeNode[]): ViewBox {
     width: Math.max(...xs) + NODE_WIDTH / 2 + PADDING - x,
     height: Math.max(...ys) + NODE_HEIGHT / 2 + PADDING - y,
   };
-}
-
-/**
- * One line per prerequisite edge, from the prerequisite's box edge to the dependent's box
- * edge, so arrowheads aren't hidden under the boxes.
- */
-export function edgeLines(edges: Prerequisite[], byId: Map<number, TreeNode>): EdgeLine[] {
-  return edges.flatMap((edge) => {
-    const prerequisite = byId.get(edge.prerequisiteTreeNodeId);
-    const dependent = byId.get(edge.dependentTreeNodeId);
-    if (!prerequisite || !dependent) {
-      return [];
-    }
-    const from = center(prerequisite);
-    const to = center(dependent);
-    return [{ id: edge.id, from: boxEdge(from, to), to: boxEdge(to, from) }];
-  });
-}
-
-function center(node: TreeNode): Point {
-  return { x: node.positionX, y: node.positionY };
-}
-
-/** Where the segment from a box's centre towards `toward` leaves the box. */
-function boxEdge(boxCenter: Point, toward: Point): Point {
-  const dx = toward.x - boxCenter.x;
-  const dy = toward.y - boxCenter.y;
-  if (dx === 0 && dy === 0) {
-    return boxCenter;
-  }
-  const scale = Math.min(
-    dx === 0 ? Infinity : NODE_WIDTH / 2 / Math.abs(dx),
-    dy === 0 ? Infinity : NODE_HEIGHT / 2 / Math.abs(dy),
-  );
-  return { x: boxCenter.x + dx * scale, y: boxCenter.y + dy * scale };
 }

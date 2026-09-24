@@ -129,7 +129,9 @@ public class TreeEditSessionService {
 			TreeNode prerequisite = placedByNodeId.get(edge.prerequisiteNodeId());
 			TreeNode dependent = placedByNodeId.get(edge.dependentNodeId());
 			if (prerequisite != null && dependent != null) {
-				prerequisites.save(new Prerequisite(prerequisite, dependent));
+				Prerequisite restored = new Prerequisite(prerequisite, dependent);
+				restored.setRoute(edge.route());
+				prerequisites.save(restored);
 			}
 		}
 
@@ -155,7 +157,7 @@ public class TreeEditSessionService {
 		List<TreeSnapshot.Edge> edges = prerequisites.findByTree(tree)
 			.stream()
 			.map(edge -> new TreeSnapshot.Edge(edge.getPrerequisite().getNode().getId(),
-					edge.getDependent().getNode().getId()))
+					edge.getDependent().getNode().getId(), edge.getRoute()))
 			.toList();
 		return new TreeSnapshot(tree.getTitle(), tree.getDescription(), tree.getCategory(), List.copyOf(tree.getTags()),
 				placements, edges);

@@ -17,8 +17,8 @@ describe('TreeView', () => {
   const oop = aTreeNode({ id: 2, nodeId: 12, title: 'OOP', readiness: 60, positionY: 150, prerequisiteIds: [1], dependentIds: [3] });
   const streams = aTreeNode({ id: 3, nodeId: 13, title: 'Streams', readiness: 15, positionY: 300, prerequisiteIds: [2] });
   const edges: Prerequisite[] = [
-    { id: 21, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 2 },
-    { id: 22, prerequisiteTreeNodeId: 2, dependentTreeNodeId: 3 },
+    { id: 21, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 2, route: null },
+    { id: 22, prerequisiteTreeNodeId: 2, dependentTreeNodeId: 3, route: null },
   ];
 
   beforeEach(async () => {
@@ -159,6 +159,80 @@ describe('TreeView', () => {
     });
   });
 
+  describe('right-angle edges', () => {
+    function edgeLine(id: number): string | null {
+      return page.querySelector(`g[data-edge-id="${id}"] polyline.edge-line`)!.getAttribute('points');
+    }
+
+    function handle(edgeId: number): SVGLineElement | null {
+      return page.querySelector(`g[data-edge-id="${edgeId}"] line.segment-handle`);
+    }
+
+    it('leave the bottom of the prerequisite and enter the top of the dependent', () => {
+      // Syntax (0, 0) → OOP (0, 150): out at y 28, in at y 122, the middle segment halfway
+      expect(edgeLine(21)).toBe('0,28 0,75 0,75 0,122');
+    });
+
+    it('offer draggable segments only in edit mode with the select tool', async () => {
+      expect(handle(21)).toBeNull();
+      await enterEditMode();
+      expect(handle(21)).not.toBeNull();
+      button('Connect').click();
+      await fixture.whenStable();
+      expect(handle(21)).toBeNull();
+    });
+
+    it('saves a dragged segment as the edge route, and undo puts the default back', async () => {
+      await enterEditMode();
+
+      mouse('mousedown', handle(21)!, 0, 0);
+      mouse('mousemove', canvas(), 0, 20);
+      await fixture.whenStable();
+      expect(edgeLine(21)).toBe('0,28 0,95 0,95 0,122');
+      mouse('mouseup', canvas(), 0, 20);
+
+      const save = http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/prerequisites/21/route' });
+      expect(save.request.body).toEqual({ route: { segments: 3, offsets: [20] } });
+      save.flush({ ...edges[0], route: { segments: 3, offsets: [20] } });
+      await fixture.whenStable();
+      expect(button('Undo').getAttribute('title')).toBe('Undo reshape arrow "Java Syntax" → "OOP" (Ctrl+Z)');
+
+      button('Undo').click();
+      const undo = http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/prerequisites/21/route' });
+      expect(undo.request.body).toEqual({ route: null });
+      undo.flush(edges[0]);
+      expectReload();
+    });
+
+    it('resets a route when a move changes its number of segments, and undo restores both', async () => {
+      await enterEditMode();
+      mouse('mousedown', handle(21)!, 0, 0);
+      mouse('mousemove', canvas(), 0, 20);
+      mouse('mouseup', canvas(), 0, 20);
+      const routed = { ...edges[0], route: { segments: 3 as const, offsets: [20] } };
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/prerequisites/21/route' }).flush(routed);
+      await fixture.whenStable();
+
+      // Move OOP above Java Syntax: that edge now needs 5 segments
+      mouse('mousedown', nodeEl(2), 0, 0);
+      mouse('mousemove', canvas(), 0, -250);
+      mouse('mouseup', canvas(), 0, -250);
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush({ ...oop, positionY: -100 });
+      const reset = http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/prerequisites/21/route' });
+      expect(reset.request.body).toEqual({ route: null });
+      reset.flush(edges[0]);
+      await fixture.whenStable();
+
+      button('Undo').click();
+      http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/nodes/2' }).flush(oop);
+      const restore = http.expectOne({ method: 'PUT', url: '/api/v1/trees/4/prerequisites/21/route' });
+      expect(restore.request.body).toEqual({ route: { segments: 3, offsets: [20] } });
+      restore.flush(routed);
+      expectReload();
+      http.expectNone({ method: 'DELETE' });
+    });
+  });
+
   describe('undo and redo', () => {
     const noContent = { status: 204, statusText: 'No Content' };
 
@@ -199,8 +273,8 @@ describe('TreeView', () => {
       await fixture.whenStable();
       click(nodeEl(1));
       click(nodeEl(3));
-      http.expectOne({ method: 'POST', url: '/api/v1/trees/4/prerequisites' }).flush({ id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 });
-      const withNewEdge = [...edges, { id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 }];
+      http.expectOne({ method: 'POST', url: '/api/v1/trees/4/prerequisites' }).flush({ id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3, route: null });
+      const withNewEdge = [...edges, { id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3, route: null }];
       expectReload([syntax, oop, streams], withNewEdge);
       await fixture.whenStable();
 
@@ -212,7 +286,7 @@ describe('TreeView', () => {
       button('Redo').click();
       const redo = http.expectOne({ method: 'POST', url: '/api/v1/trees/4/prerequisites' });
       expect(redo.request.body).toEqual({ prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 });
-      redo.flush({ id: 24, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 });
+      redo.flush({ id: 24, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3, route: null });
       expectReload();
     });
 
@@ -234,7 +308,7 @@ describe('TreeView', () => {
         { prerequisiteTreeNodeId: 1, dependentTreeNodeId: 8 },
         { prerequisiteTreeNodeId: 8, dependentTreeNodeId: 3 },
       ]);
-      arrows.forEach((r, i) => r.flush({ id: 30 + i, ...r.request.body }));
+      arrows.forEach((r, i) => r.flush({ id: 30 + i, route: null, ...r.request.body }));
       expectReload();
     });
 
@@ -556,8 +630,8 @@ describe('TreeView', () => {
       click(nodeEl(3));
       const request = http.expectOne({ method: 'POST', url: '/api/v1/trees/4/prerequisites' });
       expect(request.request.body).toEqual({ prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 });
-      request.flush({ id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 });
-      expectReload([syntax, oop, { ...streams, prerequisiteIds: [2, 1] }], [...edges, { id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3 }]);
+      request.flush({ id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3, route: null });
+      expectReload([syntax, oop, { ...streams, prerequisiteIds: [2, 1] }], [...edges, { id: 23, prerequisiteTreeNodeId: 1, dependentTreeNodeId: 3, route: null }]);
       await fixture.whenStable();
 
       expect(page.querySelectorAll('g.edge').length).toBe(3);
@@ -695,6 +769,8 @@ describe('TreeView', () => {
         { treeNodeId: 3, positionX: 0, positionY: 300 },
       ]);
       request.flush([syntax, oop, { ...streams, positionX: 200 }]);
+      // Every edge goes back to its default route too
+      http.expectOne({ method: 'DELETE', url: '/api/v1/trees/4/prerequisites/routes' }).flush(null, { status: 204, statusText: 'No Content' });
       await fixture.whenStable();
       expect(nodeEl(3).getAttribute('transform')).toBe('translate(110 272)');
     });

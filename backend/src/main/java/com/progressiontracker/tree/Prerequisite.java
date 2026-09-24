@@ -1,6 +1,8 @@
 package com.progressiontracker.tree;
 
 import jakarta.persistence.CheckConstraint;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -44,6 +46,11 @@ public class Prerequisite {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private TreeNode dependent;
 
+	/** The hand-adjusted route, or null for the default one. */
+	@Convert(converter = EdgeRouteConverter.class)
+	@Column(columnDefinition = "text")
+	private EdgeRoute route;
+
 	protected Prerequisite() {
 	}
 
@@ -62,6 +69,14 @@ public class Prerequisite {
 
 	public TreeNode getDependent() {
 		return dependent;
+	}
+
+	public EdgeRoute getRoute() {
+		return route;
+	}
+
+	public void setRoute(EdgeRoute route) {
+		this.route = route;
 	}
 
 }

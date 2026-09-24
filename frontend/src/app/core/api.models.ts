@@ -108,11 +108,21 @@ export interface TreeNodePosition {
   positionY: number;
 }
 
-/** A prerequisite edge; both ids are tree node ids. */
+/**
+ * A right-angle edge's hand adjustments: for the route with `segments` segments (3 or 5),
+ * how far each draggable segment was moved from its default place. See `edge-routes.ts`.
+ */
+export interface EdgeRoute {
+  segments: 3 | 5;
+  offsets: number[];
+}
+
+/** A prerequisite edge; both ids are tree node ids. `route` is null for the default route. */
 export interface Prerequisite {
   id: number;
   prerequisiteTreeNodeId: number;
   dependentTreeNodeId: number;
+  route: EdgeRoute | null;
 }
 
 /** RFC 9457 problem response body, plus the extra properties the backend adds. */
