@@ -1,12 +1,12 @@
 # Phase 6 Plan — CI and logging
 
-**Status:** Round 2. **Fully decided and ready to approve.** Every round 1 question is answered and recorded as **Decided**. Deployment (the old 6.3) has moved to "Deployment — to revisit" at the end, with its open questions kept for when it's picked up. No code has been written for any of this.
+**Status:** Approved and being built. Every question is answered and recorded as **Decided**. Deployment (the old 6.3) has moved to "Deployment — to revisit" at the end, with its open questions kept for when it's picked up.
 
 **Where each sub-phase stands:**
 
 | Sub-phase | Topic | State |
 |---|---|---|
-| 6.0 | GitHub Actions CI | **Fully decided.** |
+| 6.0 | GitHub Actions CI | **Built**, awaiting review. |
 | 6.1 | Configuration from outside and health checks | **Fully decided.** |
 | 6.2 | Logging review | **Fully decided.** |
 | ~~6.3~~ | ~~Deployment~~ | **Moved to "Deployment — to revisit"** (6.3-Q1). |
@@ -27,7 +27,7 @@
 
 ## What exists today
 
-- **Code host:** GitHub, private, with no workflows yet.
+- **Code host:** GitHub, private. (Before 6.0 it had no workflows.)
 - **Containers (4b):** two-stage Dockerfiles, and a Compose file whose `app` profile runs the database, backend and frontend together. The images are built locally only.
 - **Tests:** `./mvnw test` (backend, with Testcontainers), `npm test` (frontend unit tests) and `npm run e2e` (Playwright, against a throwaway Docker copy of the app). All three need Docker, which GitHub's hosted Ubuntu runners have.
 - **Configuration:** the database address, username and password are written into `application.properties` and `docker-compose.yml`, marked "local-only". Flyway's `baseline-on-migrate` is on.

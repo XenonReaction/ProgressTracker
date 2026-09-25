@@ -47,6 +47,10 @@ No linter is configured. The frontend has a Prettier config (`frontend/.prettier
 
 `backend/Dockerfile` and `frontend/Dockerfile` are two-stage builds: Maven then a JRE, and Node then nginx. The `backend` and `frontend` Compose services sit behind the `app` profile so plain `docker compose up` stays database-only for development. The backend container gets its database URL from `SPRING_DATASOURCE_URL` and publishes no port (8080 stays free for `./mvnw spring-boot:run`). `frontend/nginx.conf` forwards `/api` to `backend:8080` and falls back to `index.html` for Angular routes, the same job `proxy.conf.json` does for `npm start`. Image builds skip tests because Testcontainers can't run inside a build.
 
+## CI (Phase 6.0)
+
+GitHub Actions, in `.github/workflows/ci.yml`, on every push to any branch (and by hand). The `backend`, `frontend` and `e2e` jobs run the same commands as locally (`./mvnw -B test`; `npm ci`, `npm test -- --watch=false`, `npm run build`; `npx playwright install --with-deps chromium`, `npm run e2e`). The e2e job uploads the Playwright report and traces when it fails. On `main`, once all three pass, the `images` job builds both Dockerfiles and pushes them to `ghcr.io/xenonreaction/progression-tracker-{backend,frontend}` tagged with the commit SHA and `latest`, using the run's `GITHUB_TOKEN`, then keeps only the latest 10 versions of each. The repository is private and `main` is pushed to directly; a red run is fixed before the next change. Check runs with `gh run list` / `gh run watch`.
+
 ## Browser tests (Phase 5.0)
 
 Playwright on Chromium only, in `frontend/e2e/`, configured by `frontend/playwright.config.ts`. `e2e/global-setup.ts` runs `docker compose -f e2e/docker-compose.yml` (project `progression-tracker-e2e`: the same Dockerfiles, an in-memory Postgres, the `dev` seed, frontend on port 8090 or `E2E_PORT`), waits for the API, and tears the stack down after the run (`E2E_KEEP_STACK=1` keeps it). It first removes any stack left by an interrupted run, so every run starts from the seed data.

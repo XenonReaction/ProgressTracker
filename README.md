@@ -1,5 +1,7 @@
 # Progression Tracker
 
+[![CI](https://github.com/XenonReaction/ProgressTracker/actions/workflows/ci.yml/badge.svg)](https://github.com/XenonReaction/ProgressTracker/actions/workflows/ci.yml)
+
 An app for building skill trees and tracking how ready you are on each skill.
 Version 1 is a single-user proof of concept: create nodes (skills), arrange them
 into trees with prerequisite edges, and record a readiness value for each node.
@@ -158,3 +160,22 @@ your own database and containers are left alone. Set `E2E_PORT` to use another p
 
 When a test fails, `npx playwright show-report` opens the results, including a
 step-by-step trace of the failing test.
+
+## Continuous integration
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push, and can be started by hand
+from the repository's **Actions** tab. Three jobs run side by side:
+
+| Job | What it runs |
+|---|---|
+| Backend tests | `./mvnw test` (Testcontainers uses the runner's Docker) |
+| Frontend tests and build | `npm test -- --watch=false` and `npm run build` |
+| Browser tests | `npm run e2e`, on Chromium. When it fails, the Playwright report and traces are attached to the run as `playwright-report`. |
+
+When all three pass on `main`, both Docker images are published to GitHub's container
+registry, tagged with the commit id and `latest`:
+
+- `ghcr.io/xenonreaction/progression-tracker-backend`
+- `ghcr.io/xenonreaction/progression-tracker-frontend`
+
+The latest 10 versions of each are kept. The repository and its images are private.
