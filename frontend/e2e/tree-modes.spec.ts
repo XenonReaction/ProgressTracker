@@ -20,6 +20,12 @@ function editButton(page: Page) {
   return page.getByRole('button', { name: 'Edit', exact: true });
 }
 
+/** Clicks Edit and waits for edit mode: until the session is saved, the page is still in view mode. */
+async function startEditing(page: Page): Promise<void> {
+  await editButton(page).click();
+  await expect(page.getByRole('toolbar')).toBeVisible();
+}
+
 async function dragBy(page: Page, title: string, dx: number, dy: number): Promise<void> {
   const start = await centreOf(nodeBox(page, title));
   await page.mouse.move(start.x, start.y);
@@ -64,7 +70,7 @@ test.describe('Tree view and edit modes', () => {
     const { tree, basics, advanced } = await basicsToAdvanced(api, unique);
     const newTitle = unique('Made while editing');
     await page.goto(`/trees/${tree.id}`);
-    await editButton(page).click();
+    await startEditing(page);
 
     // Move a node, delete the arrow, and create a brand new node
     await dragBy(page, basics.title, 150, 0);
@@ -102,7 +108,7 @@ test.describe('Tree view and edit modes', () => {
   test('"Done" keeps the changes', async ({ page, api, unique }) => {
     const { tree, basics } = await basicsToAdvanced(api, unique);
     await page.goto(`/trees/${tree.id}`);
-    await editButton(page).click();
+    await startEditing(page);
 
     await dragBy(page, basics.title, 150, 0);
     await expect
@@ -126,7 +132,7 @@ test.describe('Tree view and edit modes', () => {
   }) => {
     const { tree, basics } = await basicsToAdvanced(api, unique);
     await page.goto(`/trees/${tree.id}`);
-    await editButton(page).click();
+    await startEditing(page);
     await dragBy(page, basics.title, 150, 0);
     await expect
       .poll(async () => (await api.treeNodes(tree.id)).find((n) => n.id === basics.id)!.positionX)
@@ -175,7 +181,7 @@ test.describe('Tree view and edit modes', () => {
   }) => {
     const { tree } = await basicsToAdvanced(api, unique);
     await page.goto(`/trees/${tree.id}`);
-    await editButton(page).click();
+    await startEditing(page);
 
     await page.getByRole('link', { name: 'Edit details' }).click();
     await expect(page.getByLabel('Title')).toHaveValue(tree.title);
