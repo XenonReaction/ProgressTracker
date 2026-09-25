@@ -6,8 +6,8 @@
 
 | Sub-phase | Topic | State |
 |---|---|---|
-| 6.0 | GitHub Actions CI | **Built**, awaiting review. |
-| 6.1 | Configuration from outside and health checks | **Fully decided.** |
+| 6.0 | GitHub Actions CI | **Done** (committed and green on GitHub). |
+| 6.1 | Configuration from outside and health checks | **Done** (committed). |
 | 6.2 | Logging review | **Fully decided.** |
 | ~~6.3~~ | ~~Deployment~~ | **Moved to "Deployment — to revisit"** (6.3-Q1). |
 
@@ -73,6 +73,13 @@
 - Documented in the README ("Configuration") and CLAUDE.md.
 
 **Done when:** nothing environment-specific is only settable in code, `/actuator/health` reports the app and database as up, and Docker waits for it.
+
+**Built:**
+- `baseline-on-migrate` removed; a database with tables but no Flyway history is refused, and `MigrationTest` now checks that. Your database already has Flyway's history, so it starts as before.
+- The database login is overridable everywhere by `SPRING_DATASOURCE_*` variables, and in Docker Compose by `POSTGRES_USER` / `POSTGRES_PASSWORD` (defaulting to the local values).
+- The `prod` profile: `ProductionSettingsCheck` stops startup, naming each missing `SPRING_DATASOURCE_*` setting. *A change from the draft:* plain `${...}` placeholders weren't enough, because Spring Boot leaves an unresolved one as literal text, so a missing password would have been used as the text `${SPRING_DATASOURCE_PASSWORD}`. The dev sample data never loads with `prod`, even if `dev` is also on.
+- `/actuator/health` (only health is exposed; component states without details). Both Compose files use it as the backend's health check, the frontend waits for it, and the browser tests start their stack with `docker compose up --wait`.
+- Tests: the health endpoint, the prod profile (refusing to start without the settings; no sample data with them), and the refused pre-Flyway database. The README has "Configuration" and "Health check" sections.
 
 ---
 

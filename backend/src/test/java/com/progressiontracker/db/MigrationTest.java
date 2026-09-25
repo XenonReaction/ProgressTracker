@@ -1,6 +1,7 @@
 package com.progressiontracker.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Container;
@@ -24,9 +26,9 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 /**
- * Runs the Flyway migrations the way the app does, both on an empty database and on one
- * whose tables Hibernate created before Flyway was added. Each test uses its own schema in
- * one shared container.
+ * Runs the Flyway migrations the way the app does: on an empty database, and on one whose
+ * tables Hibernate created before Flyway was added (now refused). Each test uses its own
+ * schema in one shared container.
  */
 @Testcontainers
 class MigrationTest {
@@ -50,9 +52,13 @@ class MigrationTest {
 		assertThat(foreignKeyAndUniqueNames("fresh")).containsExactlyElementsOf(READABLE_NAMES);
 	}
 
+	/**
+	 * Phase 5.1 baselined the one database that predated Flyway, and 6.1 turned that off: a
+	 * database with tables but no Flyway history is now refused, and left as it was.
+	 */
 	@Test
-	void databaseCreatedByHibernateIsBaselinedAtV1AndKeepsItsData() throws Exception {
-		// What ddl-auto=update left behind: V1's tables and some data, but no Flyway history
+	void databaseWithTablesButNoFlywayHistoryIsRefused() throws Exception {
+		// What ddl-auto=update used to leave behind: V1's tables and some data, but no history
 		try (Connection connection = connect(); Statement statement = connection.createStatement()) {
 			statement.execute("create schema legacy");
 			statement.execute("set search_path to legacy");
@@ -60,10 +66,10 @@ class MigrationTest {
 			statement.execute("insert into users (created_at, username) values (now(), 'demo')");
 		}
 
-		MigrateResult result = flyway("legacy").migrate();
+		assertThatThrownBy(() -> flyway("legacy").migrate()).isInstanceOf(FlywayException.class)
+			.hasMessageContaining("no schema history table");
 
-		assertThat(result.migrations).extracting(m -> m.version).containsExactly("2", "3", "4", "5");
-		assertThat(foreignKeyAndUniqueNames("legacy")).containsExactlyElementsOf(READABLE_NAMES);
+		assertThat(foreignKeyAndUniqueNames("legacy")).doesNotContain("users_username_unique");
 		try (Connection connection = connect(); Statement statement = connection.createStatement();
 				ResultSet rows = statement.executeQuery("select username from legacy.users")) {
 			assertThat(rows.next()).isTrue();
@@ -80,8 +86,7 @@ class MigrationTest {
 		return Flyway.configure()
 			.dataSource(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())
 			.schemas(schema)
-			.baselineOnMigrate(Boolean.parseBoolean(app.getProperty("spring.flyway.baseline-on-migrate")))
-			.baselineVersion(app.getProperty("spring.flyway.baseline-version"))
+			.baselineOnMigrate(Boolean.parseBoolean(app.getProperty("spring.flyway.baseline-on-migrate", "false")))
 			.load();
 	}
 

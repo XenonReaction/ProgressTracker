@@ -85,8 +85,33 @@ To change the schema:
 Never edit a migration that has already run: Flyway notices the change and refuses to
 start. Write a new migration instead.
 
-A database created before Flyway was added (Phase 5.1) is recognised as already having
-`V1`'s tables, and only the later migrations are run on it.
+A database that has tables but no Flyway history is refused rather than adopted. The one
+local database that predated Flyway was brought under it in Phase 5.1.
+
+### Configuration
+
+The defaults in `application.properties` are for local development. Anywhere else, supply
+the database from the environment:
+
+| Variable | Default (local only) |
+|---|---|
+| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/progressiontracker` |
+| `SPRING_DATASOURCE_USERNAME` | `progressiontracker` |
+| `SPRING_DATASOURCE_PASSWORD` | `progressiontracker` |
+
+With Docker Compose, `POSTGRES_USER` and `POSTGRES_PASSWORD` (for example in a git-ignored
+`.env` file) set the login for both the database and the backend.
+
+The `prod` profile (`SPRING_PROFILES_ACTIVE=prod`) is for a future deployment. It refuses to
+start unless all three `SPRING_DATASOURCE_*` variables are set, and the sample data never
+loads with it.
+
+### Health check
+
+`GET /actuator/health` on the backend (port 8080) reports `UP` or `DOWN`, with the state of
+each check, such as `db`, but none of their details. Nothing else under `/actuator` is
+exposed. Docker Compose uses it: the frontend container starts once the backend reports
+`UP`.
 
 Stop the database with `docker compose down`. The data is kept in a Docker
 volume; add `-v` to delete it too.

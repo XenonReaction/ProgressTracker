@@ -86,6 +86,18 @@ class ApiIntegrationTest {
 	}
 
 	@Test
+	void reportsItsHealthWithTheDatabaseCheckButNoDetails() {
+		MvcTestResult health = mvc.get().uri("/actuator/health").exchange();
+
+		assertThat(health).hasStatusOk();
+		assertThat(health).bodyJson().extractingPath("$.status").isEqualTo("UP");
+		assertThat(health).bodyJson().extractingPath("$.components.db.status").isEqualTo("UP");
+		assertThat(health).bodyJson().doesNotHavePath("$.components.db.details");
+		// Nothing but health is exposed
+		assertThat(mvc.get().uri("/actuator/env")).hasStatus(HttpStatus.NOT_FOUND);
+	}
+
+	@Test
 	void updatesANodeAndReturnsTheNewState() {
 		long node = createNode("Generics", 10);
 

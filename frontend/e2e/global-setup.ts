@@ -46,7 +46,8 @@ export default async function globalSetup(config: FullConfig): Promise<() => voi
   // Clear out anything left by an interrupted run, so every run starts from the sample data
   compose('down', '-v', '--remove-orphans');
   try {
-    compose('up', '-d', '--build');
+    // --wait returns once the backend's health check passes (its /actuator/health)
+    compose('up', '-d', '--build', '--wait');
     await waitForApi(baseURL);
   } catch (error) {
     teardown();

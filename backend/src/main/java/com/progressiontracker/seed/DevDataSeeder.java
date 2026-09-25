@@ -24,15 +24,17 @@ import com.progressiontracker.user.User;
 
 /**
  * Loads a small hand-written data set for local development, owned by the default user
- * the API acts as. Runs only with the {@code dev} profile, and does nothing if that user
- * already has any nodes or trees, so restarting against the persistent docker-compose
- * database doesn't duplicate data.
+ * the API acts as. Runs only with the {@code dev} profile, and never alongside {@code prod}
+ * even if both are switched on. It does nothing if that user already has any nodes or
+ * trees, so restarting against the persistent docker-compose database doesn't duplicate
+ * data.
  * <p>
- * Contents: a seven-node library (one node not in any tree), and two trees that share the
- * "Object-Oriented Programming" node.
+ * Contents: a ten-node library (one node not in any tree) and three trees. Two of them share
+ * the "Object-Oriented Programming" node, and "Collections Framework" takes its readiness
+ * from the third.
  */
 @Component
-@Profile("dev")
+@Profile("dev & !prod")
 public class DevDataSeeder implements ApplicationRunner {
 
 	private static final Logger log = LoggerFactory.getLogger(DevDataSeeder.class);
