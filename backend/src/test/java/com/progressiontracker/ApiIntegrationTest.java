@@ -8,8 +8,11 @@ import com.jayway.jsonpath.JsonPath;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,7 @@ import org.springframework.test.web.servlet.assertj.MvcTestResult;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
+@ExtendWith(OutputCaptureExtension.class)
 class ApiIntegrationTest {
 
 	@Autowired
@@ -83,6 +87,54 @@ class ApiIntegrationTest {
 		assertThat(mvc.delete().uri("/api/v1/nodes/{id}", oop)).hasStatus(HttpStatus.NO_CONTENT);
 		assertThat(mvc.get().uri("/api/v1/nodes")).bodyJson().extractingPath("$[*].title").asArray()
 			.containsExactly("Java Syntax", "Streams");
+	}
+
+	@Test
+	void logsEachRequestWithAnIdThatIsAlsoReturned(CapturedOutput output) {
+		MvcTestResult result = mvc.get().uri("/api/v1/trees").exchange();
+
+		String requestId = result.getResponse().getHeader("X-Request-Id");
+		assertThat(requestId).matches("[0-9a-f]{8}");
+		assertThat(output).containsPattern("\\[" + requestId + "\\] .* GET /api/v1/trees 200 \\d+ms");
+
+		// A caller's own id is kept if it's a plain id, and replaced otherwise
+		assertThat(mvc.get().uri("/api/v1/trees").header("X-Request-Id", "from-the-browser-1").exchange()
+			.getResponse()
+			.getHeader("X-Request-Id")).isEqualTo("from-the-browser-1");
+		assertThat(mvc.get().uri("/api/v1/trees").header("X-Request-Id", "bad id\nwith a newline").exchange()
+			.getResponse()
+			.getHeader("X-Request-Id")).matches("[0-9a-f]{8}");
+	}
+
+	/**
+	 * The default user is created on first use. When the first request only reads, that used
+	 * to happen inside its read-only transaction and fail with a 500; found by 6.2's logging.
+	 */
+	@Test
+	void theVeryFirstRequestCanBeARead() {
+		assertThat(jdbc.queryForObject("select count(*) from users", Integer.class)).isZero();
+
+		assertThat(mvc.get().uri("/api/v1/nodes")).hasStatusOk();
+		assertThat(jdbc.queryForObject("select count(*) from users", Integer.class)).isEqualTo(1);
+	}
+
+	@Test
+	void doesNotLogHealthChecks(CapturedOutput output) {
+		assertThat(mvc.get().uri("/actuator/health")).hasStatusOk();
+		assertThat(output).doesNotContain("GET /actuator/health");
+	}
+
+	@Test
+	void logsImportantChangesByIdWithoutTheirText(CapturedOutput output) {
+		long tree = id(post("/api/v1/trees", "{\"title\": \"Secret study plans\"}"));
+		post("/api/v1/trees/" + tree + "/edit-session", "");
+		mvc.delete().uri("/api/v1/trees/{id}/edit-session", tree).exchange();
+		mvc.delete().uri("/api/v1/trees/{id}", tree).exchange();
+
+		assertThat(output).contains("Edit session started for tree " + tree)
+			.contains("Edit session finished for tree " + tree)
+			.contains("Deleted tree " + tree)
+			.doesNotContain("Secret study plans");
 	}
 
 	@Test

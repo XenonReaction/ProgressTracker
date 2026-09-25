@@ -49,6 +49,11 @@ class ProdProfileTest {
 			assertThat(context.getBeanNamesForType(DevDataSeeder.class)).isEmpty();
 		}
 
+		@Test
+		void logsInJson() {
+			assertThat(context.getEnvironment().getProperty("logging.structured.format.console")).isEqualTo("ecs");
+		}
+
 	}
 
 }

@@ -106,6 +106,18 @@ The `prod` profile (`SPRING_PROFILES_ACTIVE=prod`) is for a future deployment. I
 start unless all three `SPRING_DATASOURCE_*` variables are set, and the sample data never
 loads with it.
 
+### Logs
+
+The backend logs one line per API request (method, path, status and time taken), plus
+unexpected errors in full and a few important changes, such as a tree being deleted. It
+never logs the text of your trees and nodes. Each request gets an id, shown on every line
+logged while handling it and returned in the `X-Request-Id` response header, so a problem
+seen in the browser can be matched to its log lines.
+
+Logs are plain text locally, and JSON (the ECS format) with the `prod` profile. In Docker,
+`docker logs progression-tracker-backend` shows them; each container keeps at most three
+10 MB log files.
+
 ### Health check
 
 `GET /actuator/health` on the backend (port 8080) reports `UP` or `DOWN`, with the state of

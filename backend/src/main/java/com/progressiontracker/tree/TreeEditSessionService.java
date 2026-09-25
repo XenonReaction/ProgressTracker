@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,8 @@ import com.progressiontracker.node.NodeRepository;
 @Service
 @Transactional
 public class TreeEditSessionService {
+
+	private static final Logger log = LoggerFactory.getLogger(TreeEditSessionService.class);
 
 	private final TreeEditSessionRepository sessions;
 
@@ -59,12 +63,14 @@ public class TreeEditSessionService {
 		Instant startedAt = Instant.now().truncatedTo(ChronoUnit.MICROS); // the column's precision
 		TreeEditSession session = sessions
 			.save(new TreeEditSession(tree, startedAt, json.writeValueAsString(snapshotOf(tree))));
+		log.info("Edit session started for tree {}", treeId);
 		return new TreeEditSessionResponse(session.getStartedAt());
 	}
 
 	/** "Done": keeps every change and drops the restore point. */
 	public void finish(Long treeId) {
 		sessions.delete(findSession(treeService.findOwned(treeId)));
+		log.info("Edit session finished for tree {}; changes kept", treeId);
 	}
 
 	/**
@@ -141,6 +147,7 @@ public class TreeEditSessionService {
 			}
 		}
 		sessions.delete(session);
+		log.info("Edit session discarded for tree {}; restored its restore point", treeId);
 	}
 
 	private TreeEditSession findSession(Tree tree) {

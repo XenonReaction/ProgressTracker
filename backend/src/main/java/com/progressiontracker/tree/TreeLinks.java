@@ -6,6 +6,8 @@ import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.progressiontracker.common.ConflictException;
@@ -19,6 +21,8 @@ import com.progressiontracker.node.Node;
  */
 @Component
 public class TreeLinks {
+
+	private static final Logger log = LoggerFactory.getLogger(TreeLinks.class);
 
 	private final TreeNodeRepository treeNodes;
 
@@ -35,11 +39,14 @@ public class TreeLinks {
 		Set<Long> reachable = reachableFrom(linkedTree.getId());
 		for (Tree tree : containing) {
 			if (tree.getId().equals(linkedTree.getId())) {
+				log.info("Refused link: node {} to tree {}, which contains it", node.getId(), tree.getId());
 				throw new ConflictException(
 						"\"" + node.getTitle() + "\" can't take its readiness from \"" + tree.getTitle()
 								+ "\" because it's in that tree");
 			}
 			if (reachable.contains(tree.getId())) {
+				log.info("Refused link: node {} to tree {}, whose links lead back to tree {}", node.getId(),
+						linkedTree.getId(), tree.getId());
 				throw new ConflictException("\"" + node.getTitle() + "\" can't take its readiness from \""
 						+ linkedTree.getTitle() + "\": that tree's links lead back to \"" + tree.getTitle()
 						+ "\", which contains it, so its readiness would depend on itself");

@@ -8,7 +8,7 @@
 |---|---|---|
 | 6.0 | GitHub Actions CI | **Done** (committed and green on GitHub). |
 | 6.1 | Configuration from outside and health checks | **Done** (committed). |
-| 6.2 | Logging review | **Fully decided.** |
+| 6.2 | Logging review | **Done** (committed). |
 | ~~6.3~~ | ~~Deployment~~ | **Moved to "Deployment — to revisit"** (6.3-Q1). |
 
 **Order (decided, O-Q1):** 6.0 → 6.1 → 6.2. CI comes first, so every later step is tested on each push.
@@ -107,6 +107,13 @@
 - Documented in CLAUDE.md, replacing the "Logging: default, unconfigured" convention.
 
 **Done when:** the chosen events are logged in the chosen format, and the tests check the request line and error logging.
+
+**Built:**
+- `RequestLoggingFilter`: a request id (8 hex characters, or the caller's own `X-Request-Id` if it's a plain id of up to 64 letters, digits and dashes), returned in `X-Request-Id`, on every log line of the request, and one INFO line per request. Health checks aren't logged, since Docker calls them every few seconds.
+- INFO lines by id only: trees and nodes deleted, edit sessions started, finished and discarded, links refused because of a loop, and the default user being created.
+- ERROR with the stack trace for anything unexpected, and a generic 500 carrying the `requestId`; DEBUG for 404, 400, 409 and validation failures.
+- Plain text locally (with `[requestId]` after the thread name), ECS JSON with `prod` (checked for real by running the Docker app with it), and Docker logs capped at 3 × 10 MB per container.
+- **A bug the new logging found (fixed):** on a database with no user yet, the first request created the default user inside its own transaction, and when that request only read (a `GET`), Postgres refused the insert and the request failed with a 500. Sample data or a first write had always hidden it; a fresh production database would have hit it on its first page load. The default user is now created in its own short transaction, and a test makes a read the very first request.
 
 ---
 

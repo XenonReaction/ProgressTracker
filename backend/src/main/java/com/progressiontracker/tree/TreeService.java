@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,8 @@ import com.progressiontracker.user.User;
 @Service
 @Transactional
 public class TreeService {
+
+	private static final Logger log = LoggerFactory.getLogger(TreeService.class);
 
 	private final TreeRepository trees;
 
@@ -82,6 +86,7 @@ public class TreeService {
 					Map.of("nodes", linking.stream().map(NodeRef::of).toList()));
 		}
 		trees.delete(tree);
+		log.info("Deleted tree {}", id);
 	}
 
 	/** Looks up one of the current user's trees, or throws 404. */

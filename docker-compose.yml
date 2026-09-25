@@ -3,9 +3,17 @@
 #   then open http://localhost:8081
 # The database login defaults to local-only values; POSTGRES_USER and POSTGRES_PASSWORD
 # (for example in a git-ignored .env file) replace them for both the database and backend.
+# Docker keeps each container's logs; cap them at 3 files of 10 MB
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "3"
+
 services:
   postgres:
     image: postgres:18
+    logging: *logging
     container_name: progression-tracker-db
     environment:
       POSTGRES_DB: progressiontracker
@@ -24,6 +32,7 @@ services:
   backend:
     profiles: [app]
     build: ./backend
+    logging: *logging
     container_name: progression-tracker-backend
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/progressiontracker
@@ -48,6 +57,7 @@ services:
   frontend:
     profiles: [app]
     build: ./frontend
+    logging: *logging
     container_name: progression-tracker-frontend
     ports:
       - "8081:80"
