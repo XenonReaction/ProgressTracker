@@ -95,7 +95,11 @@ class ApiIntegrationTest {
 
 		String requestId = result.getResponse().getHeader("X-Request-Id");
 		assertThat(requestId).matches("[0-9a-f]{8}");
-		assertThat(output).containsPattern("\\[" + requestId + "\\] .* GET /api/v1/trees 200 \\d+ms");
+		// On one line, in either order: plain text has "[id] ... GET ...", and JSON (if a prod
+		// profile test ran earlier in this JVM and set up logging that way) has the id after it
+		String requestLine = "GET /api/v1/trees 200 \\d+ms";
+		assertThat(output).containsPattern("(?m)^.*(" + requestId + ".*" + requestLine + "|" + requestLine + ".*"
+				+ requestId + ").*$");
 
 		// A caller's own id is kept if it's a plain id, and replaced otherwise
 		assertThat(mvc.get().uri("/api/v1/trees").header("X-Request-Id", "from-the-browser-1").exchange()
