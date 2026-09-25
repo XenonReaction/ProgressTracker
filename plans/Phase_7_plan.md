@@ -1,26 +1,31 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Round 3 of the discussion. *This was `Phase_6_plan.md` until round 3.* Deployment, CI and logging now come first, as Phase 6 (`Phase_6_plan.md`), so this plan became Phase 7 and its sub-phases were renumbered from 6.x to 7.x. Eight questions still need an answer, each with an empty `- Answer:` line: the six follow-ups from round 2 (F1–F6, unchanged apart from their numbers) and two new questions about the modular monolith (A-Q1, A-Q2). No code has been written for any of this.
+**Status:** Round 4. **Fully decided and ready to approve.** Every question is answered and recorded as **Decided**. *This was `Phase_6_plan.md` until round 3, when deployment, CI and logging moved ahead of it as Phase 6.* No code has been written for any of this.
 
 **Where each sub-phase stands:**
 
 | Sub-phase | State |
 |---|---|
-| Architecture: modular monolith | **Decided in principle.** 2 questions (A-Q1, A-Q2). |
-| 7.0 Rules and examples | Decided. 1 follow-up about build order (F1). |
+| Architecture: modular monolith | **Fully decided.** |
+| 7.0 Rules and examples | **Fully decided**, examples final. |
 | 7.1 Typed node resources | **Fully decided.** |
-| 7.2 Flashcards and review records | Mostly decided. 3 follow-ups (F2–F4). |
+| 7.2 Flashcards and review records | **Fully decided.** Built first, starting with the module set-up. |
 | 7.3 Readiness from several resources | **Fully decided.** |
-| 7.4 External materials with manual progress | Mostly decided. 1 follow-up (F5). |
+| 7.4 External materials with manual progress | **Fully decided.** |
 | 7.5 Lessons | **Fully decided.** |
-| 7.6 Coding questions | Mostly decided. 1 follow-up (F6). |
+| 7.6 Coding questions | **Fully decided.** |
 | 7.7 Refine based on use | Not scoped yet. Starts with spaced repetition and staleness. |
 
-**What changed in round 3:**
-- **Order decided (O-Q1):** deployment, CI and logging come first, as Phase 6. This plan is now Phase 7, and every sub-phase moved from 6.x to 7.x (for example, the old 6.2-F2 is now 7.2-F2).
-- **New "Architecture" section:** Phase 7 is built as a **modular monolith**. Each learning feature is its own module inside the one backend, and could be extracted into a separate service later if there's a reason. It adapts the module map from your ChatGPT discussion to this codebase, and asks two questions about how strict the boundaries should be.
-- **F1–F6 are carried over unanswered**, with the same wording.
-- **This plan now stands on its own.** The outline it started from has been folded in (see "Where this plan comes from"), and that separate file has been deleted.
+**Build order (decided, F1):** 7.0 → **7.2** (flashcards) → 7.1 (typed node resources) → 7.3 (readiness from resources) → 7.4 → 7.5 → 7.6 → 7.7. The sub-phase numbers keep the plan's original order, so 7.2 comes before 7.1.
+
+**What changed in round 4:**
+- **Every open question is answered**, all with the recommendation apart from F2, where your answer adds a deck-level rule.
+- **Architecture:** each learning module owns its own activity records (A-Q1), and Spring Modulith checks the module boundaries (A-Q2).
+- **Flashcards come first (F1)**, so Spring Modulith and the package refactor it needs move from the start of 7.1 to the start of 7.2.
+- **Flashcard rules (F2–F4):** a card passes when its last 3 answers were all correct; a deck's readiness is the share of its cards that have passed, and it counts as complete at 80%; the review page lists cards not yet passed.
+- **External materials keep every progress update** (F5), and **a coding question counts when you mark it solved** (F6).
+
+**Earlier rounds:** round 3 moved this plan behind Phase 6 (renumbering 6.x to 7.x), added the modular-monolith architecture, and folded in the outline it started from, so it stands on its own.
 
 ---
 
@@ -85,25 +90,25 @@ The main change Phase 7 brings is **several readiness sources per node**, where 
 
 The ChatGPT map had a single "Progress / Learning history" module. Here that's the **Readiness** module, and the questions below decide whether it stores activity records itself.
 
-**How modules talk to each other** (recommended, and part of A-Q1):
+**How modules talk to each other** (decided with A-Q1):
 - Through small public Java interfaces, such as `ReadinessCalculator`, never through another module's repositories or entities.
 - Across modules, tables refer to each other by plain ids with no database foreign keys. For example, a node resource stores a deck's id, and the Flashcards module confirms the deck exists when the resource is added. That's what would let a module move into its own service and database later.
 - Within a module, foreign keys and JPA relationships stay as they are today.
 
-**Questions:**
+**Decisions:**
 
 - **A-Q1. Who owns activity records such as card reviews and coding attempts?** The ChatGPT map lists review history under Flashcards and also attempts and "last reviewed" under a shared Progress module.
   - *Each learning module owns its own records* (recommended). Flashcards stores card reviews, Coding practice stores attempts, and so on. The Readiness module stores nothing of its own: it asks each module, through its calculator, for readiness, "last reviewed" and later "review due". Each module keeps its data and rules together, which is what makes it extractable.
   - *One shared activity table* (the main plan's original `practice_events` idea), which every module writes to. It's easy to query across all activities, but every module then depends on one table's shape, and none could be extracted on its own.
-  - Answer:
+  - **Decided: each learning module owns its own records.**
 
 - **A-Q2. How module boundaries are enforced.**
   - *Spring Modulith* (recommended): a Spring project that treats each top-level package as a module and has a test that fails the build when one module reaches into another's internals or two modules depend on each other in a circle. It can also draw a diagram of the modules. Its version must match Spring Boot 4.1, which is checked when it's added.
   - *ArchUnit*: a general library for writing the same kind of rules by hand. More flexible, more to write.
   - *By convention only*: code review and this plan. Nothing stops a shortcut.
 
-  Either tool needs a small refactor first. Today `node`, `tree` and `readiness` depend on each other in a circle (for example, nodes know their linked tree, and trees ask about nodes). They'd move under one `progression` package, or the circle would be broken by an interface. That refactor would be the first step of 7.1.
-  - Answer:
+  Either tool needs a small refactor first. Today `node`, `tree` and `readiness` depend on each other in a circle (for example, nodes know their linked tree, and trees ask about nodes). They'd move under one `progression` package, or the circle would be broken by an interface.
+  - **Decided: Spring Modulith.** Because flashcards are built first (F1), setting it up and the refactor are the **first step of 7.2**, before the Flashcards module is added. Its version compatibility with Spring Boot 4.1 is checked then.
 
 ---
 
@@ -128,7 +133,7 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - **A node with no counting resources shows its hand-entered readiness** (Q4), as today.
 - **No deadline** (Q5). At least one learning feature is built on its own before everything is wired into nodes (see F1).
 
-**Examples, from the decisions so far** (numbers depend on F2–F6):
+**Examples** (final: they're what 7.3's tests will check):
 
 | Node | Its resources | Readiness |
 |---|---|---|
@@ -137,16 +142,16 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 | CSS Flexbox, after the article is marked as reference only | the deck | **75%** |
 | Front-end Basics | a linked "CSS" tree whose nodes average 54%; a lesson at 100% | (54 + 100) / 2 = **77%** |
 
-**Follow-up:**
+**Build order:**
 
 - **7.0-F1. Build order.** Your answer to Q5 was "implement at least one feature that is outside the node system before implementing all of them". I've read that as: build flashcards as a feature of their own first, studied from their own pages, and only then wire resources into nodes. The build order would be:
 
   **7.0 → 7.2 (flashcards) → 7.1 (typed node resources) → 7.3 (readiness from resources) → 7.4 → 7.5 → 7.6 → 7.7**
 
-  The sub-phase numbers stay as they are, so the answers above still line up. Is that what you meant?
-  - Answer:
+  The sub-phase numbers stay as they are, so the answers above still line up.
+  - **Decided: yes.** Flashcards are built as a feature of their own first.
 
-**Done when:** the follow-ups are answered and the examples above are confirmed.
+**Done** (this round): the rules are decided and the examples above are final.
 
 ---
 
@@ -164,7 +169,6 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - **Resources are ordered by hand, and a label defaults to the target's title** (Q3).
 
 **Scope:**
-- If A-Q2 chooses a boundary tool: the module refactor described there comes first.
 - A `node_resources` table in the Progression module: resource type, target id or URL, label, position, and "counts toward readiness". Targets in other modules are referred to by plain id (see Architecture).
 - Validate targets: internal ones must exist and belong to the user (each module confirms its own); URLs must be http(s).
 - The node page and form list resources by type.
@@ -175,43 +179,29 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 
 ## 7.2 — Flashcards and review records
 
-*Also covers "practice-activity tracking" from Milestone 3.*
+*Built first (F1). Also covers "practice-activity tracking" from Milestone 3.*
 
 **Goal:** a Flashcards module with decks built in the app, studied from their own pages and from an Anki-style review page, with every review recorded.
 
 **Decided:**
 - **Decks are built in the app** (Q1), not through Anki. Importing Anki decks is a future idea.
 - **You grade each answer yourself as correct or wrong** (Q2, Q3). Anki-style ratings (Again, Hard, Good, Easy) can come with spaced repetition.
-- **A card is passed when at least 80% of its last 3 reviews were correct** (Q3). See F2: with 3 reviews, that means all 3.
-- **A review page lists the cards that need reviewing, across all decks, in the style of Anki** (Q2). See F4 for which cards appear before spaced repetition exists.
+- **A card has passed when its last 3 answers were all correct** (Q3, F2). A new card needs 3 correct answers in a row, and one wrong answer un-passes it until it's right 3 times in a row again.
+- **A deck's readiness is the share of its cards that have passed** (F3): 16 of 20 passed gives 80%.
+- **A deck counts as complete when 80% of its cards have passed** (F2). The deck page says so. It matches a node's default aggregate threshold of 80%, so a deck at 80% already reads as "ready to move on" in the 5.5 gradient.
+- **The review page lists every card not yet passed, across all decks, the least recently reviewed first** (Q2, F4), in the style of Anki. Never-seen cards come first, and passed cards drop off. Spaced repetition later adds passed cards back when they're due.
 - **Spaced repetition comes later** (Q3), and it's where "staleness" gets built (Q2); both lead 7.7. Every review is recorded with its result from the start, so that history is there when they arrive.
+- **The Flashcards module owns its review records** (A-Q1).
 
 **Scope:**
-- Decks and cards: create, edit, delete; a card has a front and a back.
+- **First, the module set-up (A-Q2):** add Spring Modulith and its boundary test, and refactor `node`, `tree` and `readiness` so they no longer depend on each other in a circle (one `progression` package, or an interface that breaks the circle). The existing tests must pass unchanged in behaviour.
+- The Flashcards module: decks and cards (create, edit, delete); a card has a front and a back.
 - A study screen for one deck: show the front, reveal the back, mark correct or wrong.
-- The review page (F4).
-- A `card_reviews` table: user, card, time, correct or wrong. This is the `practice_events` idea the main plan designed for, starting with flashcards (where it lives depends on A-Q1).
-- Deck readiness (F3) and "last reviewed", through a `FlashcardReadinessCalculator`, with the review rules kept inside the Flashcards module.
+- The review page.
+- A `card_reviews` table owned by the module: user, card, time, correct or wrong. This is the `practice_events` idea the main plan designed for, starting with flashcards.
+- Deck readiness and "last reviewed", through a `FlashcardReadinessCalculator`, with the review rules kept inside the Flashcards module.
 
-**Follow-ups:**
-
-- **7.2-F2. When a card passes.** "80% correct when seen the last 3 times" can only be met by getting all 3 right, since 2 of 3 is 67%.
-  - *All of the last 3 correct* (recommended): the same rule, stated plainly. A new card needs 3 correct reviews to pass, and one wrong answer un-passes it until it's right 3 times in a row again.
-  - *At least 2 of the last 3 correct*: more forgiving.
-  - *At least 80% of the last 5*: keeps "80%" meaningful (4 of 5), but a new card needs 5 reviews before it can pass.
-  - Answer:
-
-- **7.2-F3. A deck's readiness.** You suggested a deck is complete when about 80% of its cards are passed.
-  - *Readiness = the share of cards passed* (recommended): 16 of 20 passed gives 80%. A node's default aggregate threshold is already 80%, so a deck at 80% already reads as "ready to move on" in the 5.5 gradient, with no extra rule.
-  - *80% passed counts as 100%*: readiness is scaled so the deck shows complete at 80%.
-  - Answer:
-
-- **7.2-F4. Which cards the review page shows, before spaced repetition.** Without spaced repetition, no card has a due date yet.
-  - *Every card not yet passed, the least recently reviewed first* (recommended). Never-seen cards come first, and passed cards drop off the list. Spaced repetition later adds passed cards back when they're due.
-  - *Every card, the least recently reviewed first*: nothing drops off, which suits cramming.
-  - Answer:
-
-**Done when:** you can study a deck and work through the review page, and see the deck's readiness change.
+**Done when:** Spring Modulith's boundary test passes, and you can study a deck, work through the review page, and see the deck's readiness change, reaching "complete" at 80% of cards passed.
 
 ---
 
@@ -240,20 +230,12 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 **Decided:**
 - **You enter progress by hand as 0–100%** (Q1).
 - **A URL can be purely a reference that doesn't count** (Q3); that's what today's node links become in 7.1.
+- **Every progress update is kept** (F5): setting an article to 40% on 1 September and 60% on 15 September keeps both. The current value is the latest, and "last reviewed" is the latest update's date. The history is there for charts or staleness later.
 
 **Scope:**
 - A small Materials module: URL, title and optional notes.
-- Your own progress (0–100%) and the date you last reviewed the material, with an optional note on what you covered. Editing the link itself doesn't count as a review.
+- Your own progress updates (0–100%, with the date and an optional note on what you covered), each kept as a record owned by the module. Editing the link itself doesn't count as a review.
 - Shown as self-reported, and included in the node's readiness only if the resource counts.
-
-**Follow-up:**
-
-- **7.4-F5. Keeping old progress values.** Say you set an article to 40% on 1 September, then to 60% on 15 September. What should the app remember?
-  - *Every update* (recommended): it keeps "40% on 1 Sept" and "60% on 15 Sept". The current value is the latest one, and "last reviewed" is simply the latest date. It's the same idea as flashcard reviews (7.2), so the history is there for charts or staleness later.
-  - *Only the latest*: it keeps "60%, last reviewed 15 Sept" and forgets the 40%. It's simpler, but the earlier values are gone for good.
-
-  Either way, the app shows the same thing today. The difference is only whether the history is there later.
-  - Answer:
 
 **Done when:** updating your progress on a material changes your node and tree readiness.
 
@@ -283,19 +265,12 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - **Written problems that you solve on your own machine** (Q1). Each question has a problem statement and a solution that stays hidden until you ask to see it. No code runs on the server.
 - **In-browser coding later** (Q1): writing and running solutions in the app is a future idea.
 - **HTML and CSS first, then JavaScript** (Q2), to cover the front-end side of the learning plan. JavaScript can come after HTML and CSS are in place.
+- **A question counts when you mark it solved** (F6): a question is 0% or 100%, and a set's readiness is the share of its questions solved. Revealing the solution before marking it solved is recorded, so a later version could treat that differently.
 
 **Scope:**
 - A Coding practice module. Questions: title, language (HTML, CSS, or later JavaScript), problem statement, worked examples, and solution (hidden until revealed).
 - Questions grouped into sets, such as "CSS Flexbox exercises", so a node can point to a whole set.
-- Your attempts recorded (F6), and a calculator for the readiness contract.
-
-**Follow-up:**
-
-- **7.6-F6. When a question counts as done.** With solutions checked by you, the app needs you to say how it went.
-  - *Mark it solved* (recommended): a question is 0% or 100%, and a set's readiness is the share of questions solved. Revealing the solution before marking it solved is recorded, so a later version could treat that differently.
-  - *Grade it like a flashcard*: correct or wrong each time you attempt it, and solved when the 7.2 pass rule is met. It reuses the flashcard rules, but it's more effort per question.
-  - *0–100% by hand*, like lessons and external materials.
-  - Answer:
+- Your attempts recorded (marked solved, and whether the solution was revealed first), owned by the module, and a calculator for the readiness contract.
 
 **Done when:** attempts update the question's, node's and tree's readiness.
 
