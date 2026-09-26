@@ -1,4 +1,4 @@
-import { Node, Tree, TreeNode } from './api.models';
+import { Card, Deck, Node, Tree, TreeNode } from './api.models';
 
 /** Builders for specs; override only the fields a test cares about. */
 export function aNode(overrides: Partial<Node> = {}): Node {
@@ -48,6 +48,38 @@ export function aTreeNode(overrides: Partial<TreeNode> = {}): TreeNode {
     individualThreshold: 70,
     prerequisiteIds: [],
     dependentIds: [],
+    ...overrides,
+  };
+}
+
+export function aDeck(overrides: Partial<Deck> = {}): Deck {
+  return {
+    id: 1,
+    title: 'CSS Flexbox',
+    description: null,
+    cardCount: 0,
+    passedCount: 0,
+    readiness: 0,
+    complete: false,
+    lastReviewedAt: null,
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
+export function aCard(overrides: Partial<Card> = {}): Card {
+  return {
+    id: 1,
+    deckId: 1,
+    deckTitle: 'CSS Flexbox',
+    front: 'Which property sets the main axis?',
+    back: 'flex-direction',
+    correctInARow: 0,
+    passed: false,
+    lastReviewedAt: null,
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,
   };
 }

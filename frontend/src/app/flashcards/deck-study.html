@@ -1,0 +1,23 @@
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+@if (deck(); as deck) {
+  <p>
+    <a [routerLink]="['/decks', deck.id]">← {{ deck.title }}</a>
+  </p>
+  <h1>Study: {{ deck.title }}</h1>
+}
+
+@if (cards(); as cards) {
+  @if (cards.length) {
+    <app-study-session [cards]="cards" (again)="reload()" />
+  } @else if (deck()?.cardCount) {
+    <p>Every card in this deck has passed.</p>
+    <p><button type="button" (click)="studyAll()">Study all cards anyway</button></p>
+  } @else {
+    <p class="muted">This deck has no cards yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

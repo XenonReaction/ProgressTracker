@@ -1,0 +1,85 @@
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+@if (deck(); as deck) {
+  <p><a routerLink="/decks">← Flashcards</a></p>
+  <h1>{{ deck.title }}</h1>
+  <p>
+    @if (deck.cardCount) {
+      <a [routerLink]="['/decks', deck.id, 'study']">Study</a>
+      &nbsp;
+    }
+    <a [routerLink]="['/decks', deck.id, 'edit']">Edit</a>
+    &nbsp;
+    <button type="button" (click)="deleteDeck(deck)">Delete deck</button>
+  </p>
+  @if (deck.description) {
+    <p>{{ deck.description }}</p>
+  }
+
+  <h2>Readiness</h2>
+  <p>
+    <progress max="100" [value]="deck.readiness"></progress> <strong>{{ deck.readiness }}%</strong>:
+    {{ deck.passedCount }} of {{ deck.cardCount }} cards passed.
+  </p>
+  <p>
+    @if (deck.complete) {
+      <strong>Complete</strong>: at least {{ completePercent }}% of its cards have passed.
+    } @else {
+      <span class="muted"
+        >Complete once {{ completePercent }}% of its cards have passed. A card passes after 3
+        correct answers in a row.</span
+      >
+    }
+  </p>
+  <p class="muted">
+    Last reviewed: {{ deck.lastReviewedAt ? (deck.lastReviewedAt | date: 'medium') : 'never' }}
+  </p>
+
+  <h2>Cards</h2>
+  @if (cards().length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Front</th>
+          <th>Back</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (card of cards(); track card.id) {
+          <tr>
+            @if (editingId() === card.id) {
+              <td colspan="4">
+                <app-card-form
+                  [deckId]="deck.id"
+                  [card]="card"
+                  (saved)="cardSaved()"
+                  (cancelled)="editingId.set(null)"
+                />
+              </td>
+            } @else {
+              <td>{{ card.front }}</td>
+              <td>{{ card.back }}</td>
+              <td>{{ cardStatus(card) }}</td>
+              <td>
+                <button type="button" (click)="editingId.set(card.id)">Edit</button>
+                &nbsp;
+                <button type="button" (click)="deleteCard(card)">Delete</button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No cards yet.</p>
+  }
+
+  <h3>Add a card</h3>
+  <app-card-form [deckId]="deck.id" (saved)="cardSaved()" />
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

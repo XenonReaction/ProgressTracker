@@ -125,6 +125,51 @@ export interface Prerequisite {
   route: EdgeRoute | null;
 }
 
+/**
+ * A flashcard deck. `readiness` is the share of its cards that have passed, and it's
+ * `complete` once at least 80% have.
+ */
+export interface Deck {
+  id: number;
+  title: string;
+  description: string | null;
+  cardCount: number;
+  passedCount: number;
+  readiness: number;
+  complete: boolean;
+  /** The latest answer to any of its cards; null if none. */
+  lastReviewedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DeckRequest {
+  title: string;
+  description: string | null;
+}
+
+/**
+ * A flashcard. It has `passed` when its last 3 answers were correct; `correctInARow` counts
+ * towards that (0 to 3). `deckTitle` is for the review page, which mixes decks.
+ */
+export interface Card {
+  id: number;
+  deckId: number;
+  deckTitle: string;
+  front: string;
+  back: string;
+  correctInARow: number;
+  passed: boolean;
+  lastReviewedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CardRequest {
+  front: string;
+  back: string;
+}
+
 /** RFC 9457 problem response body, plus the extra properties the backend adds. */
 export interface Problem {
   status: number;

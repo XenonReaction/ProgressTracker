@@ -37,8 +37,9 @@ class MigrationTest {
 	static final PostgreSQLContainer postgres = new PostgreSQLContainer(DockerImageName.parse("postgres:18"));
 
 	/** Every named foreign key and unique constraint after the latest migration. */
-	private static final List<String> READABLE_NAMES = List.of("node_links_node_id_fk", "node_tags_node_id_fk",
-			"nodes_linked_tree_id_fk", "nodes_user_id_fk", "prerequisites_dependent_tree_node_id_fk",
+	private static final List<String> READABLE_NAMES = List.of("card_reviews_card_id_fk",
+			"card_reviews_user_id_fk", "cards_deck_id_fk", "decks_user_id_fk", "node_links_node_id_fk",
+			"node_tags_node_id_fk", "nodes_linked_tree_id_fk", "nodes_user_id_fk", "prerequisites_dependent_tree_node_id_fk",
 			"prerequisites_edge_unique", "prerequisites_prerequisite_tree_node_id_fk", "tree_edit_sessions_tree_id_fk",
 			"tree_edit_sessions_tree_id_unique", "tree_nodes_node_id_fk", "tree_nodes_tree_id_fk",
 			"tree_nodes_tree_node_unique", "tree_tags_tree_id_fk", "trees_user_id_fk", "users_username_unique");
@@ -47,8 +48,8 @@ class MigrationTest {
 	void emptyDatabaseRunsEveryMigration() throws Exception {
 		MigrateResult result = flyway("fresh").migrate();
 
-		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3", "4", "5");
-		assertThat(result.targetSchemaVersion).isEqualTo("5");
+		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3", "4", "5", "6");
+		assertThat(result.targetSchemaVersion).isEqualTo("6");
 		assertThat(foreignKeyAndUniqueNames("fresh")).containsExactlyElementsOf(READABLE_NAMES);
 	}
 

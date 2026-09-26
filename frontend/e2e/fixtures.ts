@@ -1,6 +1,6 @@
 import { APIRequestContext, Locator, Page, test as base, expect } from '@playwright/test';
 
-import type { Node, Prerequisite, Tree, TreeNode } from '../src/app/core/api.models';
+import type { Card, Deck, Node, Prerequisite, Tree, TreeNode } from '../src/app/core/api.models';
 
 /**
  * Sets up test data through the REST API, so each test starts from exactly the state it
@@ -72,6 +72,27 @@ export class Api {
       },
     });
     expect(response.ok(), `move tree node ${treeNode.id}`).toBeTruthy();
+  }
+
+  async createDeck(title: string): Promise<Deck> {
+    return this.post('/api/v1/decks', { title, description: null });
+  }
+
+  async createCard(deckId: number, front: string, back: string): Promise<Card> {
+    return this.post(`/api/v1/decks/${deckId}/cards`, { front, back });
+  }
+
+  /** Records answers to the card, one per verdict, in order. */
+  async answer(card: Card, ...correct: boolean[]): Promise<void> {
+    for (const verdict of correct) {
+      await this.post(`/api/v1/decks/${card.deckId}/cards/${card.id}/reviews`, {
+        correct: verdict,
+      });
+    }
+  }
+
+  async deck(deckId: number): Promise<Deck> {
+    return this.get(`/api/v1/decks/${deckId}`);
   }
 
   async tree(treeId: number): Promise<Tree> {

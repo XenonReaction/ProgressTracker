@@ -1,0 +1,31 @@
+@if (current(); as card) {
+  <p class="muted">{{ position() }}</p>
+  <section class="flashcard" aria-label="Card">
+    <h2>{{ card.front }}</h2>
+    @if (revealed()) {
+      <p class="answer" aria-label="Answer">{{ card.back }}</p>
+    }
+  </section>
+  @if (revealed()) {
+    <p>
+      Did you get it right?
+      <button type="button" (click)="answer(true)" [disabled]="saving()">Correct</button>
+      &nbsp;
+      <button type="button" (click)="answer(false)" [disabled]="saving()">Wrong</button>
+    </p>
+  } @else {
+    <p><button type="button" (click)="revealed.set(true)">Show answer</button></p>
+  }
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+} @else {
+  <h2>Finished</h2>
+  <p>
+    You got {{ correctCount() }} of {{ answered().length }} right.
+    @if (passedCount()) {
+      {{ passedCount() }} {{ passedCount() === 1 ? 'card has' : 'cards have' }} now passed.
+    }
+  </p>
+  <p><button type="button" (click)="again.emit()">Study again</button></p>
+}

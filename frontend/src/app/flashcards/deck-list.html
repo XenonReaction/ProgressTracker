@@ -1,0 +1,53 @@
+<h1>Flashcards</h1>
+<p>
+  <a routerLink="/decks/new">+ New deck</a> &nbsp;
+  <a routerLink="/review">Review cards not yet passed</a>
+</p>
+
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+@if (decks(); as decks) {
+  @if (decks.length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Deck</th>
+          <th>Cards passed</th>
+          <th>Readiness</th>
+          <th>Last reviewed</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (deck of decks; track deck.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/decks', deck.id]">{{ deck.title }}</a>
+            </td>
+            <td>{{ deck.passedCount }} of {{ deck.cardCount }}</td>
+            <td>
+              <progress max="100" [value]="deck.readiness"></progress> {{ deck.readiness }}%
+              @if (deck.complete) {
+                <strong>Complete</strong>
+              }
+            </td>
+            <td>{{ deck.lastReviewedAt ? (deck.lastReviewedAt | date: 'medium') : 'Never' }}</td>
+            <td>
+              <a [routerLink]="['/decks', deck.id, 'study']">Study</a>
+              &nbsp;
+              <a [routerLink]="['/decks', deck.id, 'edit']">Edit</a>
+              &nbsp;
+              <button type="button" (click)="delete(deck)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No decks yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

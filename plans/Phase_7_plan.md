@@ -1,6 +1,6 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Fully decided. 7.0 is complete; no code has been written for 7.1 onward.
+**Status:** Fully decided. 7.0 and 7.1 are complete; no code has been written for 7.2 onward.
 
 **Steps, in build order:**
 
@@ -8,7 +8,7 @@
 |---|---|---|
 | — | Architecture: modular monolith | **Fully decided.** |
 | 7.0 | Rules and examples | **Complete.** Rules and examples final; main plan updated. |
-| 7.1 | Flashcards and review records | **Fully decided.** Starts with the module set-up. |
+| 7.1 | Flashcards and review records | **Complete.** |
 | 7.2 | Typed node resources | **Fully decided.** |
 | 7.3 | Readiness from several resources | **Fully decided.** |
 | 7.4 | External materials with manual progress | **Fully decided.** |
@@ -152,6 +152,12 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - Deck readiness and "last reviewed", through a `FlashcardReadinessCalculator`, with the review rules kept inside the Flashcards module.
 
 **Done when:** Spring Modulith's boundary test passes, and you can study a deck, work through the review page, and see the deck's readiness change, reaching "complete" at 80% of cards passed.
+
+**Done:**
+- **Module set-up:** Spring Modulith 2.1.1 (built against Spring Boot 4.1.1), test scope only. `node`, `tree` and `readiness` moved under one `progression` package, with the dev seed, so the circle between them is inside one module. `ModularityTest` checks the boundaries; every existing test passed unchanged after the move.
+- **Flashcards module:** its public API is `FlashcardReadinessCalculator` with the `CardProgress` and `DeckProgress` records, which hold the rules; everything else is in `flashcards.internal`, out of other modules' reach. `V6__flashcards.sql` adds `decks`, `cards` and `card_reviews`.
+- **Pages:** Flashcards (the deck list), each deck's page with its cards, a study page per deck (offering every card once all have passed) and the Review page, with "Flashcards" and "Review" in the navigation. A dev seed deck, "CSS Flexbox", has cards in every state.
+- **Built for 7.3, not yet used by it:** the calculator works on the Flashcards module's own entities. 7.3 adds the by-id entry point that the Readiness module will call.
 
 ---
 

@@ -1,5 +1,10 @@
 import { RouterStateSnapshot, Routes } from '@angular/router';
 
+import { DeckForm } from './flashcards/deck-form';
+import { DeckList } from './flashcards/deck-list';
+import { DeckStudy } from './flashcards/deck-study';
+import { DeckView } from './flashcards/deck-view';
+import { ReviewPage } from './flashcards/review-page';
 import { NodeForm } from './nodes/node-form';
 import { NodeList } from './nodes/node-list';
 import { NodeView } from './nodes/node-view';
@@ -25,5 +30,11 @@ export const routes: Routes = [
       (view: TreeView, _route: unknown, _state: unknown, next: RouterStateSnapshot) => view.canLeave(next.url),
     ],
   },
+  { path: 'decks', component: DeckList, title: 'Flashcards' },
+  { path: 'decks/new', component: DeckForm, title: 'New deck' },
+  { path: 'decks/:id', component: DeckView, title: 'Deck' },
+  { path: 'decks/:id/edit', component: DeckForm, title: 'Edit deck' },
+  { path: 'decks/:id/study', component: DeckStudy, title: 'Study' },
+  { path: 'review', component: ReviewPage, title: 'Review' },
   { path: '**', redirectTo: 'nodes' },
 ];

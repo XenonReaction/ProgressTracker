@@ -23,3 +23,17 @@ td {
 .muted {
   color: #666;
 }
+
+/* A card being studied */
+.flashcard {
+  max-width: 40rem;
+  padding: 1rem 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.flashcard .answer {
+  padding-top: 0.75rem;
+  border-top: 1px dashed #ccc;
+  font-size: 1.1rem;
+}

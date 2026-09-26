@@ -1,0 +1,84 @@
+package com.progressiontracker.flashcards;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.progressiontracker.flashcards.internal.Card;
+import com.progressiontracker.flashcards.internal.CardRepository;
+import com.progressiontracker.flashcards.internal.CardReview;
+import com.progressiontracker.flashcards.internal.CardReviewRepository;
+import com.progressiontracker.flashcards.internal.Deck;
+import com.progressiontracker.user.CurrentUserService;
+import com.progressiontracker.user.User;
+
+/**
+ * Readiness and "last reviewed" for cards and decks, worked out from the current user's
+ * recorded answers when asked, never stored. The rules are in {@link CardProgress} and
+ * {@link DeckProgress}. Call it inside a transaction.
+ */
+@Component
+public class FlashcardReadinessCalculator {
+
+	private final CardRepository cards;
+
+	private final CardReviewRepository reviews;
+
+	private final CurrentUserService currentUser;
+
+	public FlashcardReadinessCalculator(CardRepository cards, CardReviewRepository reviews,
+			CurrentUserService currentUser) {
+		this.cards = cards;
+		this.reviews = reviews;
+		this.currentUser = currentUser;
+	}
+
+	/** Each card's progress, by card id. */
+	public Map<Long, CardProgress> cards(Collection<Card> cardsToCheck) {
+		if (cardsToCheck.isEmpty()) {
+			return Map.of();
+		}
+		User user = currentUser.getCurrentUser();
+		Map<Long, List<CardReview>> byCard = new HashMap<>();
+		for (CardReview review : reviews.findByUserAndCardInOrderByReviewedAtDescIdDesc(user, cardsToCheck)) {
+			byCard.computeIfAbsent(review.getCard().getId(), id -> new ArrayList<>()).add(review);
+		}
+		Map<Long, CardProgress> progress = new LinkedHashMap<>();
+		for (Card card : cardsToCheck) {
+			List<CardReview> newestFirst = byCard.getOrDefault(card.getId(), List.of());
+			progress.put(card.getId(),
+					newestFirst.isEmpty() ? CardProgress.NEVER_REVIEWED
+							: CardProgress.of(newestFirst.stream().map(CardReview::isCorrect).toList(),
+									newestFirst.get(0).getReviewedAt()));
+		}
+		return progress;
+	}
+
+	/** Each deck's progress, by deck id. */
+	public Map<Long, DeckProgress> decks(Collection<Deck> decks) {
+		if (decks.isEmpty()) {
+			return Map.of();
+		}
+		List<Card> allCards = cards.findByDeckInOrderByIdAsc(decks);
+		Map<Long, CardProgress> cardProgress = cards(allCards);
+		Map<Long, List<CardProgress>> byDeck = new HashMap<>();
+		for (Card card : allCards) {
+			byDeck.computeIfAbsent(card.getDeck().getId(), id -> new ArrayList<>()).add(cardProgress.get(card.getId()));
+		}
+		Map<Long, DeckProgress> progress = new LinkedHashMap<>();
+		for (Deck deck : decks) {
+			progress.put(deck.getId(), DeckProgress.of(byDeck.getOrDefault(deck.getId(), List.of())));
+		}
+		return progress;
+	}
+
+	public DeckProgress deck(Deck deck) {
+		return decks(List.of(deck)).get(deck.getId());
+	}
+
+}

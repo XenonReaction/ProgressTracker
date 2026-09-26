@@ -1,0 +1,40 @@
+package com.progressiontracker.progression.node;
+
+import java.util.List;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.URL;
+
+/**
+ * Body for creating a node or replacing all of its editable fields. {@code readiness} is the
+ * hand-entered value. With {@code linkedTreeId} set, the node takes its readiness from that
+ * tree instead, and the hand-entered value is kept for when it's unlinked.
+ */
+public record NodeRequest(
+		@NotBlank @Size(max = 200) String title,
+		String description,
+		@NotNull @Min(0) @Max(100) Integer readiness,
+		List<@Valid @NotNull Link> links,
+		Long linkedTreeId,
+		List<@NotBlank @Size(max = 50) String> tags) {
+
+	public record Link(@NotBlank @URL @Size(max = 2048) String url, @Size(max = 200) String label) {
+	}
+
+	/** {@code links} may be omitted; treat that as no links. */
+	public List<Link> linksOrEmpty() {
+		return links == null ? List.of() : links;
+	}
+
+	/** {@code tags} may be omitted; treat that as no tags. */
+	public List<String> tagsOrEmpty() {
+		return tags == null ? List.of() : tags;
+	}
+
+}
