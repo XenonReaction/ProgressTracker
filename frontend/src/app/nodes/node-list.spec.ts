@@ -19,7 +19,7 @@ describe('NodeList', () => {
     fixture = TestBed.createComponent(NodeList);
     page = fixture.nativeElement;
     http.expectOne('/api/v1/nodes').flush([
-      aNode({ id: 1, title: 'Generics', readiness: 40 }),
+      aNode({ id: 1, title: 'Generics', readiness: 40, reviewDue: true }),
       aNode({ id: 2, title: 'OOP', readiness: 80, resources: [aUrlResource('https://example.com')] }),
       aNode({
         id: 3,
@@ -43,6 +43,12 @@ describe('NodeList', () => {
     expect(rows[1].textContent).toContain('80%');
     const links = Array.from(rows[1].querySelectorAll('a')).map((a) => a.getAttribute('href'));
     expect(links).toEqual(['/nodes/2', '/nodes/2/edit']);
+  });
+
+  it('marks a node with a flashcard review due beneath it', () => {
+    const rows = page.querySelectorAll('tbody tr');
+    expect(rows[0].querySelector('.review-due')?.textContent).toBe('Review due');
+    expect(rows[1].querySelector('.review-due')).toBeNull();
   });
 
   it('names the trees a node takes its readiness from, and counts its resources', () => {

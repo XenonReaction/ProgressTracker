@@ -11,7 +11,8 @@ import com.progressiontracker.progression.readiness.ReadinessContext;
  * edges); {@code nodeId} is the library node's id. Title, description, resources and
  * readiness are copied from the library node so a tree can be rendered from this one
  * response; {@code readiness} is the effective value (derived when a resource counts), and
- * {@code lastReviewedAt} the latest review beneath the resources that count.
+ * {@code lastReviewedAt} the latest review beneath the resources that count, and
+ * {@code reviewDue} whether anything beneath them is due for review.
  * {@code prerequisiteIds} and {@code dependentIds} are tree node ids: what this node needs
  * and what it unlocks.
  */
@@ -24,6 +25,7 @@ public record TreeNodeResponse(
 		List<NodeResponse.Resource> resources,
 		int readiness,
 		Instant lastReviewedAt,
+		boolean reviewDue,
 		double positionX,
 		double positionY,
 		int aggregateThreshold,
@@ -36,7 +38,8 @@ public record TreeNodeResponse(
 		return new TreeNodeResponse(id, treeNode.getTree().getId(), treeNode.getNode().getId(),
 				treeNode.getNode().getTitle(), treeNode.getNode().getDescription(),
 				NodeResponse.Resource.of(treeNode.getNode(), readiness), readiness.of(treeNode.getNode()),
-				readiness.lastReviewed(treeNode.getNode()), treeNode.getPositionX(),
+				readiness.lastReviewed(treeNode.getNode()), readiness.reviewDue(treeNode.getNode()),
+				treeNode.getPositionX(),
 				treeNode.getPositionY(), treeNode.getAggregateThreshold(), treeNode.getIndividualThreshold(),
 				treeEdges.stream()
 					.filter(edge -> edge.getDependent().getId().equals(id))

@@ -42,6 +42,13 @@
       >
     }
   </p>
+  @if (deck.dueCount) {
+    <p class="review-due">
+      <strong>Review due:</strong> {{ deck.dueCount }}
+      {{ deck.dueCount === 1 ? 'passed card is' : 'passed cards are' }} due for review.
+      <a [routerLink]="['/decks', deck.id, 'study']">Study now</a>
+    </p>
+  }
   <p class="muted">
     Last reviewed: {{ deck.lastReviewedAt ? (deck.lastReviewedAt | date: 'medium') : 'never' }}
   </p>
@@ -54,6 +61,7 @@
           <th>Front</th>
           <th>Back</th>
           <th>Status</th>
+          <th>Next review</th>
           <th></th>
         </tr>
       </thead>
@@ -61,7 +69,7 @@
         @for (card of cards(); track card.id) {
           <tr>
             @if (editingId() === card.id) {
-              <td colspan="4">
+              <td colspan="5">
                 <app-card-form
                   [deckId]="deck.id"
                   [card]="card"
@@ -73,6 +81,15 @@
               <td>{{ card.front }}</td>
               <td>{{ card.back }}</td>
               <td>{{ cardStatus(card) }}</td>
+              <td>
+                @if (card.due) {
+                  <strong>Now</strong>
+                } @else if (card.dueAt) {
+                  {{ card.dueAt | date: 'mediumDate' }}
+                } @else {
+                  <span class="muted">Once passed</span>
+                }
+              </td>
               <td>
                 <button type="button" (click)="editingId.set(card.id)">Edit</button>
                 &nbsp;

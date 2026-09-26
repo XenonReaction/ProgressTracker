@@ -20,7 +20,7 @@ import com.progressiontracker.progression.node.NodeResourceType;
 import com.progressiontracker.progression.tree.Tree;
 
 /**
- * Effective readiness and "last reviewed" for one request. Readiness is worked out when it's
+ * Effective readiness, "last reviewed" and "review due" for one request. Readiness is worked out when it's
  * read, never stored, and this remembers each node's, tree's and resource's value so a tree
  * or deck that several nodes list is worked out only once. Get one from
  * {@link ReadinessService#context()} and use it inside the service transaction, since it
@@ -30,8 +30,8 @@ public class ReadinessContext {
 
 	private static final Logger log = LoggerFactory.getLogger(ReadinessContext.class);
 
-	/** Readiness and the latest review beneath, for a node or a tree. */
-	private record Standing(int readiness, Instant lastReviewedAt) {
+	/** For a node or a tree: readiness, the latest review beneath, and whether a review is due beneath. */
+	private record Standing(int readiness, Instant lastReviewedAt, boolean reviewDue) {
 	}
 
 	private final Map<NodeResourceType, ReadinessCalculator> calculators;
@@ -65,6 +65,11 @@ public class ReadinessContext {
 		return standing(node).lastReviewedAt();
 	}
 
+	/** Whether anything beneath the node's resources that count is due for review. */
+	public boolean reviewDue(Node node) {
+		return standing(node).reviewDue();
+	}
+
 	/** The average of the tree's nodes' readiness, rounded to a whole percent. An empty tree is 0%. */
 	public int ofTree(Tree tree) {
 		return standing(tree).readiness();
@@ -73,6 +78,11 @@ public class ReadinessContext {
 	/** The latest review beneath any of the tree's nodes, or null if none. */
 	public Instant lastReviewedOfTree(Tree tree) {
 		return standing(tree).lastReviewedAt();
+	}
+
+	/** Whether any of the tree's nodes has a review due. */
+	public boolean reviewDueInTree(Tree tree) {
+		return standing(tree).reviewDue();
 	}
 
 	/** Where one resource stands, or null for a type that can't count (a URL). */
@@ -98,12 +108,13 @@ public class ReadinessContext {
 		List<NodeResource> counting = node.countingResources();
 		Standing standing;
 		if (counting.isEmpty()) {
-			standing = new Standing(node.getReadiness(), null);
+			standing = new Standing(node.getReadiness(), null, false);
 		}
 		else {
 			List<ResourceStatus> statuses = counting.stream().map(this::of).toList();
 			standing = new Standing(average(statuses.stream().map(ResourceStatus::readiness).toList()),
-					latest(statuses.stream().map(ResourceStatus::lastReviewedAt).toList()));
+					latest(statuses.stream().map(ResourceStatus::lastReviewedAt).toList()),
+					statuses.stream().anyMatch(ResourceStatus::reviewDue));
 		}
 		nodes.put(node.getId(), standing);
 		return standing;
@@ -118,12 +129,13 @@ public class ReadinessContext {
 		if (!inProgress.add(id)) {
 			// The link checks prevent loops, so this only guards against bad data
 			log.warn("Tree {} links back to itself; counting it as 0% readiness", id);
-			return new Standing(0, null);
+			return new Standing(0, null, false);
 		}
 		try {
 			List<Node> treeNodes = nodesInTree.apply(tree);
 			Standing standing = new Standing(average(treeNodes.stream().map(this::of).toList()),
-					latest(treeNodes.stream().map(this::lastReviewed).toList()));
+					latest(treeNodes.stream().map(this::lastReviewed).toList()),
+					treeNodes.stream().anyMatch(this::reviewDue));
 			trees.put(id, standing);
 			return standing;
 		}

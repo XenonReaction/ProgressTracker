@@ -1,7 +1,7 @@
 <h1>Flashcards</h1>
 <p>
   <a routerLink="/decks/new">+ New deck</a> &nbsp;
-  <a routerLink="/review">Review cards not yet passed</a>
+  <a routerLink="/review">Review cards</a>
 </p>
 
 @if (error(); as message) {
@@ -25,6 +25,7 @@
           <th>Deck</th>
           <th>Cards passed</th>
           <th>Readiness</th>
+          <th>Review due</th>
           <th>Last reviewed</th>
           <th></th>
         </tr>
@@ -40,6 +41,11 @@
               <progress max="100" [value]="deck.readiness"></progress> {{ deck.readiness }}%
               @if (deck.complete) {
                 <strong>Complete</strong>
+              }
+            </td>
+            <td>
+              @if (deck.dueCount) {
+                <strong>{{ deck.dueCount }} {{ deck.dueCount === 1 ? 'card' : 'cards' }}</strong>
               }
             </td>
             <td>{{ deck.lastReviewedAt ? (deck.lastReviewedAt | date: 'medium') : 'Never' }}</td>

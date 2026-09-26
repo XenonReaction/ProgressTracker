@@ -22,6 +22,7 @@ describe('DeckView', () => {
       passed: true,
       correctInARow: 3,
       lastReviewedAt: '2026-09-01T00:00:00Z',
+      dueAt: '2026-09-08T12:00:00Z',
     }),
     aCard({ id: 8, deckId: 4, front: 'Main axis?', back: 'flex-direction' }),
   ];
@@ -51,6 +52,37 @@ describe('DeckView', () => {
     expect(rows[0]).toContain('Passed');
     expect(rows[1]).toContain('Not answered yet');
     expect(page.querySelector('a[href="/decks/4/study"]')).not.toBeNull();
+  });
+
+  it("shows each card's next review, and nothing due", () => {
+    const rows = Array.from(page.querySelectorAll('tbody tr')).map((row) =>
+      row.querySelectorAll('td')[3].textContent?.trim(),
+    );
+    expect(rows).toEqual(['Sep 8, 2026', 'Once passed']);
+    expect(page.querySelector('.review-due')).toBeNull();
+  });
+
+  it('says how many passed cards are due for review, and which', async () => {
+    fixture.componentRef.setInput('id', '5');
+    await fixture.whenStable();
+    await flush(aDeck({ id: 5, cardCount: 1, passedCount: 1, readiness: 100, dueCount: 1 }), [
+      aCard({
+        id: 9,
+        deckId: 5,
+        passed: true,
+        correctInARow: 3,
+        due: true,
+        dueAt: '2026-09-08T12:00:00Z',
+      }),
+    ]);
+
+    expect(page.querySelector('.review-due')?.textContent?.replace(/\s+/g, ' ')).toContain(
+      'Review due: 1 passed card is due for review.',
+    );
+    expect(page.textContent).toContain('100%: 1 of 1 cards passed.');
+    const row = page.querySelector('tbody tr')!;
+    expect(row.textContent).toContain('Passed, review due');
+    expect(row.querySelectorAll('td')[3].textContent?.trim()).toBe('Now');
   });
 
   it('says when the deck is complete', async () => {

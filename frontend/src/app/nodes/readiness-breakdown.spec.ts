@@ -42,6 +42,16 @@ describe('ReadinessBreakdown', () => {
     expect(page.querySelectorAll('a')[1].getAttribute('href')).toBe('/materials/6');
   });
 
+  it('marks a part with a flashcard review due', async () => {
+    fixture.componentRef.setInput('resources', [
+      { ...aDeckResource(4, 'Flexbox cards', true, 75), reviewDue: true },
+      aTreeResource(3, 'Article', true, null, 60),
+    ]);
+    await fixture.whenStable();
+
+    expect(text()).toBe('Deck Flexbox cards: 75% (review due), Tree Article: 60% → 68%');
+  });
+
   it('shows when anything beneath was last reviewed, and can leave out the links', async () => {
     fixture.componentRef.setInput('lastReviewedAt', '2026-09-01T10:00:00Z');
     fixture.componentRef.setInput('links', false);

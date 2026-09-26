@@ -54,7 +54,7 @@ public class CardController {
 		return cardService.review(deckId, cardId, request);
 	}
 
-	/** Cards not yet passed, across all decks or in one, in the order to study them. */
+	/** Cards to study now (not yet passed, or passed and due), across all decks or in one, in order. */
 	@GetMapping("/api/v1/review-queue")
 	public List<CardResponse> reviewQueue(@RequestParam(required = false) Long deckId) {
 		return cardService.reviewQueue(deckId);

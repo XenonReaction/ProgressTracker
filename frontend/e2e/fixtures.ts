@@ -161,6 +161,10 @@ export class Api {
     return this.get(`/api/v1/decks/${deckId}`);
   }
 
+  async decks(): Promise<Deck[]> {
+    return this.get('/api/v1/decks');
+  }
+
   async tree(treeId: number): Promise<Tree> {
     return this.get(`/api/v1/trees/${treeId}`);
   }

@@ -19,9 +19,10 @@ import com.progressiontracker.user.User;
  * only with the {@code dev} profile, never with {@code prod}, and does nothing if the default
  * user already has a deck.
  * <p>
- * Contents: a "CSS Flexbox" deck of five cards. One has passed (three correct answers), one is
- * two correct answers in, one was last answered wrong and two have never been answered, so
- * the deck is at 20% and the review page lists four cards.
+ * Contents: a "CSS Flexbox" deck of five cards. One passed (three correct answers) 10 days
+ * ago, so it's due for review again; one is two correct answers in, one was last answered
+ * wrong and two have never been answered. The deck is at 20% with one card due, and the
+ * review page lists all five cards.
  */
 @Component
 @Profile("dev & !prod")
@@ -54,6 +55,8 @@ public class FlashcardsDevDataSeeder implements ApplicationRunner {
 			return;
 		}
 		Instant dayAgo = Instant.now().minus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.MICROS);
+		// More than the 7 days a newly passed card waits, so it's due
+		Instant tenDaysAgo = dayAgo.minus(9, ChronoUnit.DAYS);
 
 		Deck flexbox = new Deck(user, "CSS Flexbox");
 		flexbox.setDescription("Laying out items in one dimension.");
@@ -64,7 +67,7 @@ public class FlashcardsDevDataSeeder implements ApplicationRunner {
 		card(flexbox, "Which property aligns items along the cross axis?", "align-items");
 		card(flexbox, "What does flex: 1 expand to?", "flex-grow: 1; flex-shrink: 1; flex-basis: 0%");
 
-		answer(display, user, dayAgo, true, true, true);
+		answer(display, user, tenDaysAgo, true, true, true);
 		answer(direction, user, dayAgo.plusSeconds(60), true, true);
 		answer(justify, user, dayAgo.plusSeconds(120), true, false);
 

@@ -39,7 +39,7 @@ describe('ReviewPage', () => {
     http.expectOne('/api/v1/review-queue').flush([]);
     await fixture.whenStable();
 
-    expect(page.textContent).toContain('Nothing to review: every card has passed.');
+    expect(page.textContent).toContain('Nothing to review: every card has passed and none is due.');
   });
 
   it('loads a fresh list to study again', async () => {

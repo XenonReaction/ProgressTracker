@@ -12,8 +12,11 @@ import java.util.Objects;
  * empty deck)
  * @param complete whether at least {@link #COMPLETE_PERCENT}% of its cards have passed
  * @param lastReviewedAt the latest answer to any of its cards, or null if none
+ * @param dueCount how many passed cards are due for review; readiness doesn't change while
+ * they're due
  */
-public record DeckProgress(int cardCount, int passedCount, int readiness, boolean complete, Instant lastReviewedAt) {
+public record DeckProgress(int cardCount, int passedCount, int readiness, boolean complete, Instant lastReviewedAt,
+		int dueCount) {
 
 	/**
 	 * The share of passed cards at which a deck counts as complete. It matches a tree node's
@@ -21,7 +24,7 @@ public record DeckProgress(int cardCount, int passedCount, int readiness, boolea
 	 */
 	public static final int COMPLETE_PERCENT = 80;
 
-	public static DeckProgress of(Collection<CardProgress> cards) {
+	public static DeckProgress of(Collection<CardProgress> cards, Instant now) {
 		int cardCount = cards.size();
 		int passedCount = (int) cards.stream().filter(CardProgress::passed).count();
 		int readiness = cardCount == 0 ? 0 : (int) Math.round(passedCount * 100.0 / cardCount);
@@ -31,7 +34,8 @@ public record DeckProgress(int cardCount, int passedCount, int readiness, boolea
 			.filter(Objects::nonNull)
 			.max(Comparator.naturalOrder())
 			.orElse(null);
-		return new DeckProgress(cardCount, passedCount, readiness, complete, lastReviewedAt);
+		int dueCount = (int) cards.stream().filter(card -> card.isDue(now)).count();
+		return new DeckProgress(cardCount, passedCount, readiness, complete, lastReviewedAt, dueCount);
 	}
 
 }

@@ -27,7 +27,12 @@
                 <span class="muted">(unfinished edit)</span>
               }
             </td>
-            <td><progress max="100" [value]="tree.readiness"></progress> {{ tree.readiness }}%</td>
+            <td>
+              <progress max="100" [value]="tree.readiness"></progress> {{ tree.readiness }}%
+              @if (tree.reviewDue) {
+                <strong class="review-due">Review due</strong>
+              }
+            </td>
             <td>{{ tree.lastReviewedAt ? (tree.lastReviewedAt | date: 'medium') : 'Never' }}</td>
             <td>{{ tree.category }}</td>
             <td>{{ tree.tags.join(', ') }}</td>

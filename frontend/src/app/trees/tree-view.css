@@ -196,6 +196,12 @@ marker path {
   fill: #1565c0;
 }
 
+.review-due-marker {
+  font-size: 10px;
+  font-weight: bold;
+  fill: #8a4b00;
+}
+
 .banner {
   max-width: 60rem;
   padding: 0.5rem 0.75rem;

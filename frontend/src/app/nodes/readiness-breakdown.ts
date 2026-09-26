@@ -13,7 +13,8 @@ import {
 
 /**
  * What a derived readiness is made of, e.g. "Deck Flexbox cards: 75%, Material Guide: 60%
- * (self-reported) → 68%", with each part linking to its page, and when anything beneath was last reviewed.
+ * (self-reported) → 68%", with each part linking to its page, marking parts with a review
+ * due, and when anything beneath was last reviewed.
  * Only for a node whose resources count.
  */
 @Component({
@@ -29,7 +30,7 @@ import {
           {{ title(part) }}
         }
         : {{ part.readiness }}%{{ selfReported(part) ? ' (self-reported)' : ''
-        }}{{ last ? '' : ',' }}
+        }}@if (part.reviewDue) {<strong class="review-due"> (review due)</strong>}{{ last ? '' : ',' }}
       }
       → <strong>{{ readiness() }}%</strong>
     </p>

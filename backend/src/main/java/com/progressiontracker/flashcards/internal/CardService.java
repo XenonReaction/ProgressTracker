@@ -54,7 +54,7 @@ public class CardService {
 
 	public CardResponse create(Long deckId, CardRequest request) {
 		Card card = cards.save(new Card(deckService.findOwned(deckId), request.front(), request.back()));
-		return CardResponse.from(card, CardProgress.NEVER_REVIEWED);
+		return CardResponse.from(card, CardProgress.NEVER_REVIEWED, readiness.now());
 	}
 
 	public CardResponse update(Long deckId, Long cardId, CardRequest request) {
@@ -73,14 +73,15 @@ public class CardService {
 	/** Records one answer and returns the card's new standing. */
 	public CardResponse review(Long deckId, Long cardId, ReviewRequest request) {
 		Card card = findInDeck(deckId, cardId);
-		Instant now = Instant.now().truncatedTo(ChronoUnit.MICROS); // the column's precision
+		Instant now = readiness.now().truncatedTo(ChronoUnit.MICROS); // the column's precision
 		reviews.save(new CardReview(card, currentUser.getCurrentUser(), now, request.correct()));
 		return toResponse(card);
 	}
 
 	/**
-	 * Every card that hasn't passed yet, in one deck or (with no {@code deckId}) all of the
-	 * user's decks: never-answered cards first, then the least recently answered.
+	 * Every card to study now, in one deck or (with no {@code deckId}) all of the user's decks:
+	 * each card that hasn't passed yet, and each passed card that's due for review.
+	 * Never-answered cards first, then the least recently answered.
 	 */
 	@Transactional(readOnly = true)
 	public List<CardResponse> reviewQueue(Long deckId) {
@@ -89,7 +90,7 @@ public class CardService {
 			return List.of();
 		}
 		return toResponses(cards.findByDeckInOrderByIdAsc(decks)).stream()
-			.filter(card -> !card.passed())
+			.filter(card -> !card.passed() || card.due())
 			.sorted(REVIEW_ORDER)
 			.toList();
 	}
@@ -105,7 +106,8 @@ public class CardService {
 
 	private List<CardResponse> toResponses(List<Card> cardsToMap) {
 		Map<Long, CardProgress> progress = readiness.cards(cardsToMap);
-		return cardsToMap.stream().map(card -> CardResponse.from(card, progress.get(card.getId()))).toList();
+		Instant now = readiness.now();
+		return cardsToMap.stream().map(card -> CardResponse.from(card, progress.get(card.getId()), now)).toList();
 	}
 
 }

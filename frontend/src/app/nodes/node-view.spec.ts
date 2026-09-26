@@ -94,7 +94,24 @@ describe('NodeView', () => {
     expect(link('Docs').getAttribute('href')).toBe('https://example.com');
   });
 
-  it('breaks a derived readiness down into what each counting resource contributes', async () => {
+  it('says when a flashcard beneath it is due for review, and which resource', async () => {
+    await load(
+      aNode({
+        id: 5,
+        readiness: 100,
+        reviewDue: true,
+        resources: [{ ...aDeckResource(4, 'Flexbox cards', true, 100), reviewDue: true }],
+      }),
+    );
+
+    expect(page.querySelector('p.review-due')?.textContent).toContain('Review due:');
+    expect(page.querySelector('p.review-due a')?.getAttribute('href')).toBe('/review');
+    expect(page.querySelector('h3 + ul li')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      'Flexbox cards · 100% · counts toward readiness · review due',
+    );
+  });
+
+    it('breaks a derived readiness down into what each counting resource contributes', async () => {
     await load(
       aNode({
         id: 5,

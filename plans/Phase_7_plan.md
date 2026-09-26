@@ -1,6 +1,6 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Fully decided. 7.0 to 7.6 are complete; 7.7 is to be scoped once 7.3 has been in use for a while.
+**Status:** Fully decided. 7.0 to 7.6 are complete, and 7.7 is scoped and in progress.
 
 **Steps, in build order:**
 
@@ -14,7 +14,7 @@
 | 7.4 | External materials with manual progress | **Complete.** |
 | 7.5 | Lessons | **Complete.** |
 | 7.6 | Coding questions | **Complete.** |
-| 7.7 | Refine based on use | Not scoped yet. Starts with spaced repetition and staleness. |
+| 7.7 | Refine based on use | **Fully decided.** In progress. |
 
 ---
 
@@ -290,13 +290,24 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 
 ## 7.7 — Refine based on use
 
-*Scoped after 7.3 has been in use for a while.*
+*Spaced repetition for flashcards, "review due" markers, and three housekeeping jobs.*
 
-**Candidates:**
-- **Spaced repetition and staleness** (from 7.1). Cards get due dates from how you've answered them, Anki-style, and passed cards come back to the review page when they're due. Cards that are overdue make their deck, and the nodes and trees above it, show as going stale, and perhaps lose readiness until they're reviewed. The same idea could later cover lessons and external materials, using their last-reviewed dates.
-- Focused tests for aggregation, changed resources, cross-tree links, loops and keeping users separate, and migrations run against real data (much of this is added along the way).
-- Measure slow tree views, and add caching or batched queries only where they're needed.
-- Reconsider whether any module should become a separate service. The expected answer is "not yet": modules stay together unless running them separately has clear value, such as isolating code execution (Future ideas).
+**Decided:**
+- **Fixed intervals, still graded correct or wrong.** A passed card comes back for review after a fixed interval that grows with each correct answer in a row: 7 days once it passes (3 in a row), then 14, 30, and 60 days from then on. A wrong answer un-passes it as today, which puts it straight back on the review page. Cards not yet passed stay on the review page all the time, as 7.1 decided, so the intervals only schedule passed cards.
+- **The review page adds passed cards when they're due**, alongside the cards not yet passed, in the same order (never answered first, then the least recently answered).
+- **"Review due" is shown, and readiness doesn't change.** A deck shows how many of its cards are due; a node, and a tree, shows "review due" when a deck counting toward it (at any depth) has cards due. Readiness numbers stay as they are.
+- **Flashcards only.** Materials, lessons and coding questions have no schedule yet, so they don't go stale in 7.7.
+- **Also in 7.7:** a speed check of the node list and tree pages with a large data set (batching the per-resource reads only if they're slow), extra tests for the tricky cases, and a write-up on whether any module should become a separate service.
+
+**Scope:**
+- Due dates worked out from the recorded answers when read, never stored, like readiness. The time comes from an injectable clock, so tests can move it.
+- A deck's due count on the deck list and page, each card's next review on the deck page, and passed cards on the review page when due.
+- The readiness contract carries "review due" alongside readiness and "last reviewed", up through nodes and trees; shown on the node list and page, the tree list and page, and in the tree editor.
+- **Speed check:** a test that loads a large data set, times the node list and tree pages and counts their database queries. The numbers are recorded here, with any batching they call for.
+- **Extra tests:** readiness from every resource type on one node, removing resources, trees linking to trees, and one user never seeing or using another's data in any module.
+- **Write-up:** below, under "Splitting modules into services".
+
+**Done when:** a passed card comes back to the review page when it's due, and its deck, node and tree show "review due" until it's reviewed; the speed check and extra tests pass; the write-up is in this plan.
 
 ---
 

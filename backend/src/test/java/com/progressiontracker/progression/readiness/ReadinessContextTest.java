@@ -121,10 +121,10 @@ class ReadinessContextTest {
 		Instant later = Instant.parse("2026-09-15T10:00:00Z");
 		ReadinessContext withDecks = TestReadiness.service(treeNodes, flashcards).context();
 		when(flashcards.deck(40L))
-			.thenReturn(Optional.of(new DeckSummary(40L, "Early", new DeckProgress(1, 1, 100, true, earlier))));
+			.thenReturn(Optional.of(new DeckSummary(40L, "Early", new DeckProgress(1, 1, 100, true, earlier, 0))));
 		// Never asked for: it doesn't count
 		lenient().when(flashcards.deck(41L))
-			.thenReturn(Optional.of(new DeckSummary(41L, "Late", new DeckProgress(2, 0, 0, false, later))));
+			.thenReturn(Optional.of(new DeckSummary(41L, "Late", new DeckProgress(2, 0, 0, false, later, 0))));
 		Node studied = manual("Studied", 0);
 		studied.getResources().add(NodeResource.deck(40L, null, true));
 		studied.getResources().add(NodeResource.deck(41L, null, false));

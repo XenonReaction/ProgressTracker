@@ -98,7 +98,7 @@ class NodeServiceTest {
 		assertThat(response.resources())
 			.containsExactly(
 					new NodeResponse.Resource("url", "https://example.com", null, null, null, null, null, "Docs", false, null,
-					null));
+					null, false));
 		assertThat(response.tags()).containsExactly("java", "types");
 	}
 
@@ -154,9 +154,8 @@ class NodeServiceTest {
 
 		verify(treeLinks).checkNoLoop(node, List.of(containing), linked);
 		assertThat(response.resources()).containsExactly(
-				new NodeResponse.Resource("tree", null, new TreeRef(3L, "Collections in depth"), null, null, null, null, null, true,
-						57,
-						null));
+				new NodeResponse.Resource("tree", null, new TreeRef(3L, "Collections in depth"), null, null, null, null, null,
+						true, 57, null, false));
 		assertThat(response.readiness()).isEqualTo(57); // (80 + 60 + 31) / 3 = 57.0
 		assertThat(response.manualReadiness()).isEqualTo(25);
 	}
@@ -265,7 +264,7 @@ class NodeServiceTest {
 		when(trees.findTreesContaining(node)).thenReturn(List.of());
 		when(treeNodes.findNodesInTree(article)).thenReturn(List.of(manual(11L, "Reading", 60)));
 		when(flashcards.deck(40L)).thenReturn(Optional.of(new DeckSummary(40L, "Flexbox cards",
-				new DeckProgress(20, 15, 75, false, reviewed))));
+				new DeckProgress(20, 15, 75, false, reviewed, 0))));
 
 		NodeResponse response = service.update(7L,
 				new NodeRequest("CSS Flexbox", null, 0, List.of(deck(40L, true), tree(3L, null, true)), null));
@@ -274,7 +273,7 @@ class NodeServiceTest {
 		assertThat(response.readiness()).isEqualTo(68);
 		assertThat(response.lastReviewedAt()).isEqualTo(reviewed);
 		assertThat(response.resources().get(0)).isEqualTo(new NodeResponse.Resource("deck", null, null,
-				new DeckRef(40L, "Flexbox cards"), null, null, null, null, true, 75, reviewed));
+				new DeckRef(40L, "Flexbox cards"), null, null, null, null, true, 75, reviewed, false));
 		assertThat(response.resources().get(1).readiness()).isEqualTo(60);
 		// Only the tree can make a loop
 		verify(treeLinks).checkNoLoop(node, List.of(), article);
@@ -284,7 +283,7 @@ class NodeServiceTest {
 	void aDeckThatIsNotTheUsersIsNotFoundAndADeckTwiceIsRefused() {
 		when(flashcards.deck(40L)).thenReturn(Optional.empty());
 		when(flashcards.deck(41L))
-			.thenReturn(Optional.of(new DeckSummary(41L, "Mine", new DeckProgress(0, 0, 0, false, null))));
+			.thenReturn(Optional.of(new DeckSummary(41L, "Mine", new DeckProgress(0, 0, 0, false, null, 0))));
 
 		assertThatThrownBy(() -> create(deck(40L, true))).isInstanceOf(NotFoundException.class)
 			.hasMessage("Deck 40 not found");

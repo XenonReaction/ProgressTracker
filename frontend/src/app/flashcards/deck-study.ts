@@ -8,8 +8,9 @@ import { errorMessage } from '../core/problem';
 import { StudySession } from './study-session';
 
 /**
- * Studies one deck (`/decks/:id/study`): its cards not yet passed, never-answered first, then
- * the least recently answered. When every card has passed, all of them can be studied anyway.
+ * Studies one deck (`/decks/:id/study`): its cards not yet passed and its passed cards due for
+ * review, never-answered first, then the least recently answered. When every card has passed
+ * and none is due, all of them can be studied anyway.
  */
 @Component({
   selector: 'app-deck-study',

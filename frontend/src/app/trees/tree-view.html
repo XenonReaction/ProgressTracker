@@ -7,6 +7,9 @@
   <p class="tree-readiness">
     Readiness: <strong>{{ tree.readiness }}%</strong> <span class="muted">(the average of its nodes)</span> · Last
     reviewed: {{ tree.lastReviewedAt ? (tree.lastReviewedAt | date: 'medium') : 'never' }}
+    @if (tree.reviewDue) {
+      · <strong class="review-due">Review due</strong> <a routerLink="/review">Review now</a>
+    }
   </p>
   @if (tree.description) {
     <p>{{ tree.description }}</p>
@@ -152,6 +155,10 @@
             <!-- Marks a node whose readiness comes from its resources (trees, decks) -->
             <text [attr.x]="nodeWidth - 6" y="12" text-anchor="end" class="linked-marker">linked</text>
           }
+          @if (treeNode.reviewDue) {
+            <!-- A flashcard beneath it is due for review -->
+            <text x="6" y="12" class="review-due-marker">review due</text>
+          }
         </g>
       }
       @if (pendingPoint(); as point) {
@@ -188,6 +195,9 @@
         } @else {
           <p>Readiness: <strong>{{ node.readiness }}%</strong></p>
         }
+        @if (node.reviewDue) {
+          <p class="review-due"><strong>Review due:</strong> flashcards beneath it are due for review.</p>
+        }
         <p>Ready to start: <strong>{{ levelOf(node) }}</strong></p>
 
         @if (mode() === 'edit') {
@@ -210,6 +220,9 @@
                 @if (resourceLink(resource); as target) {
                   {{ resourceTypeNames[resource.type] }}: <a [routerLink]="target">{{ resourceTitle(resource) }}</a>
                   <span class="muted"> {{ resource.readiness }}%{{ resource.counts ? '' : ', for reference' }}</span>
+                  @if (resource.reviewDue) {
+                    <strong class="review-due"> review due</strong>
+                  }
                 } @else {
                   <a [href]="resource.url" target="_blank" rel="noopener noreferrer">{{ resourceTitle(resource) }}</a>
                 }

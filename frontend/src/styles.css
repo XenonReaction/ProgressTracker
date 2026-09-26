@@ -61,3 +61,8 @@ td {
 textarea.code {
   font-family: ui-monospace, monospace;
 }
+
+/* "Review due": a flashcard beneath is due for review (readiness is unchanged) */
+.review-due {
+  color: #8a4b00;
+}

@@ -6,6 +6,9 @@ describe('cardStatus', () => {
     expect(
       cardStatus(aCard({ passed: true, correctInARow: 3, lastReviewedAt: '2026-09-01T00:00:00Z' })),
     ).toBe('Passed');
+    expect(cardStatus(aCard({ passed: true, correctInARow: 3, due: true }))).toBe(
+      'Passed, review due',
+    );
     expect(cardStatus(aCard())).toBe('Not answered yet');
     expect(cardStatus(aCard({ correctInARow: 2, lastReviewedAt: '2026-09-01T00:00:00Z' }))).toBe(
       '2 of 3 correct in a row',

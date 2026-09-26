@@ -31,6 +31,9 @@
             <td><a [routerLink]="['/nodes', node.id]">{{ node.title }}</a></td>
             <td>
               <progress max="100" [value]="node.readiness"></progress> {{ node.readiness }}%
+              @if (node.reviewDue) {
+                <strong class="review-due">Review due</strong>
+              }
               @if (countingResources(node.resources); as counting) {
                 @if (counting.length) {
                   <span class="muted"

@@ -69,6 +69,30 @@ describe('StudySession', () => {
     expect(again).toBe(1);
   });
 
+  it('does not count a due card that was already passed as newly passed', async () => {
+    const due = aCard({
+      id: 9,
+      deckId: 4,
+      front: 'Gap?',
+      back: 'gap',
+      passed: true,
+      correctInARow: 3,
+      due: true,
+    });
+    fixture.componentRef.setInput('cards', [due]);
+    await fixture.whenStable();
+    expect(page.textContent).toContain('Passed, review due');
+
+    await answer('Correct');
+    http
+      .expectOne({ method: 'POST', url: '/api/v1/decks/4/cards/9/reviews' })
+      .flush({ ...due, due: false });
+    await fixture.whenStable();
+
+    expect(page.textContent).toContain('You got 1 of 1 right.');
+    expect(page.textContent).not.toContain('now passed');
+  });
+
   it("shows each card's deck when asked", async () => {
     fixture.componentRef.setInput('showDeck', true);
     await fixture.whenStable();

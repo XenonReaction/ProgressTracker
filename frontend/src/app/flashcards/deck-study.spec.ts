@@ -39,7 +39,9 @@ describe('DeckStudy', () => {
     http.expectOne('/api/v1/decks/4').flush(aDeck({ id: 4, cardCount: 2, passedCount: 2 }));
     http.expectOne('/api/v1/review-queue?deckId=4').flush([]);
     await fixture.whenStable();
-    expect(page.textContent).toContain('Every card in this deck has passed.');
+    expect(page.textContent).toContain(
+      'Every card in this deck has passed, and none is due for review.',
+    );
 
     (page.querySelector('button') as HTMLButtonElement).click();
     http

@@ -16,6 +16,12 @@
 
   <h2>Readiness</h2>
   <p><progress max="100" [value]="node.readiness"></progress> <strong>{{ node.readiness }}%</strong></p>
+  @if (node.reviewDue) {
+    <p class="review-due">
+      <strong>Review due:</strong> flashcards beneath it are due for review. Readiness stays the same meanwhile.
+      <a routerLink="/review">Review now</a>
+    </p>
+  }
   @if (hasCountingResource(node.resources)) {
     <p class="muted">The average of the resources that count toward it:</p>
     <app-readiness-breakdown [resources]="node.resources" [readiness]="node.readiness" [lastReviewedAt]="node.lastReviewedAt" />
@@ -49,6 +55,9 @@
                     · {{ resource.readiness }}%{{ isSelfReported(resource) ? ' (self-reported)' : '' }} ·
                     {{ resource.counts ? 'counts toward readiness' : 'for reference' }}</span
                   >
+                  @if (resource.reviewDue) {
+                    <strong class="review-due"> · review due</strong>
+                  }
                 } @else {
                   <a [href]="resource.url" target="_blank" rel="noopener noreferrer">{{ resourceTitle(resource) }}</a>
                 }

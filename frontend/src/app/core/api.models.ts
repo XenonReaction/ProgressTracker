@@ -40,7 +40,7 @@ export type NodeResourceType = 'url' | 'tree' | 'deck' | 'material' | 'lesson' |
  * (`url`). `label` is as entered, or null to show
  * the target's title. `counts` is whether it counts toward the node's readiness; a URL never does.
  * `readiness` and `lastReviewedAt` are the resource's own (null for a URL), whether it
- * counts or not.
+ * counts or not, and `reviewDue` whether a flashcard beneath it is due for review.
  */
 export interface NodeResource {
   type: NodeResourceType;
@@ -54,6 +54,7 @@ export interface NodeResource {
   counts: boolean;
   readiness: number | null;
   lastReviewedAt: string | null;
+  reviewDue: boolean;
 }
 
 export interface NodeResourceRequest {
@@ -80,6 +81,8 @@ export interface Node {
   manualReadiness: number;
   /** The latest review beneath the resources that count; null if none. */
   lastReviewedAt: string | null;
+  /** Whether a flashcard beneath the resources that count is due for review. */
+  reviewDue: boolean;
   resources: NodeResource[];
   tags: string[];
   createdAt: string;
@@ -105,6 +108,8 @@ export interface Tree {
   readiness: number;
   /** The latest review beneath any of its nodes; null if none. */
   lastReviewedAt: string | null;
+  /** Whether any of its nodes has a review due. */
+  reviewDue: boolean;
   createdAt: string;
   updatedAt: string;
   /** Set while the tree is in edit mode (it has a restore point). */
@@ -136,6 +141,7 @@ export interface TreeNode {
   /** Effective readiness: derived when any of `resources` counts. */
   readiness: number;
   lastReviewedAt: string | null;
+  reviewDue: boolean;
   positionX: number;
   positionY: number;
   aggregateThreshold: number;
@@ -196,6 +202,8 @@ export interface Deck {
   complete: boolean;
   /** The latest answer to any of its cards; null if none. */
   lastReviewedAt: string | null;
+  /** How many passed cards are due for review. Readiness doesn't change while they're due. */
+  dueCount: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -207,7 +215,9 @@ export interface DeckRequest {
 
 /**
  * A flashcard. It has `passed` when its last 3 answers were correct; `correctInARow` counts
- * towards that (0 to 3). `deckTitle` is for the review page, which mixes decks.
+ * towards that (0 to 3). A passed card comes back for review at `dueAt` (7 days after it
+ * passes, then 14, 30 and 60), and is `due` from then. `deckTitle` is for the review page,
+ * which mixes decks.
  */
 export interface Card {
   id: number;
@@ -218,6 +228,9 @@ export interface Card {
   correctInARow: number;
   passed: boolean;
   lastReviewedAt: string | null;
+  /** When a passed card is next due for review; null while it hasn't passed. */
+  dueAt: string | null;
+  due: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -20,6 +20,7 @@ export function aNode(overrides: Partial<Node> = {}): Node {
     readiness: 50,
     manualReadiness: 50,
     lastReviewedAt: null,
+    reviewDue: false,
     resources: [],
     tags: [],
     createdAt: '2026-01-01T00:00:00Z',
@@ -37,6 +38,7 @@ export function aTree(overrides: Partial<Tree> = {}): Tree {
     tags: [],
     readiness: 0,
     lastReviewedAt: null,
+    reviewDue: false,
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     editSessionStartedAt: null,
@@ -54,6 +56,7 @@ export function aTreeNode(overrides: Partial<TreeNode> = {}): TreeNode {
     resources: [],
     readiness: 50,
     lastReviewedAt: null,
+    reviewDue: false,
     positionX: 0,
     positionY: 0,
     aggregateThreshold: 80,
@@ -74,6 +77,7 @@ export function aDeck(overrides: Partial<Deck> = {}): Deck {
     readiness: 0,
     complete: false,
     lastReviewedAt: null,
+    dueCount: 0,
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,
@@ -90,6 +94,8 @@ export function aCard(overrides: Partial<Card> = {}): Card {
     correctInARow: 0,
     passed: false,
     lastReviewedAt: null,
+    dueAt: null,
+    due: false,
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,
@@ -115,6 +121,7 @@ export function aTreeResource(
     counts,
     readiness,
     lastReviewedAt: null,
+    reviewDue: false,
   };
 }
 
@@ -137,6 +144,7 @@ export function aDeckResource(
     counts,
     readiness,
     lastReviewedAt,
+    reviewDue: false,
   };
 }
 
@@ -153,6 +161,7 @@ export function aUrlResource(url: string, label: string | null = null): NodeReso
     counts: false,
     readiness: null,
     lastReviewedAt: null,
+    reviewDue: false,
   };
 }
 
@@ -175,6 +184,7 @@ export function aMaterialResource(
     counts,
     readiness,
     lastReviewedAt,
+    reviewDue: false,
   };
 }
 
@@ -212,6 +222,7 @@ export function aLessonResource(
     counts,
     readiness,
     lastReviewedAt,
+    reviewDue: false,
   };
 }
 
@@ -248,6 +259,7 @@ export function aQuestionSetResource(
     counts,
     readiness,
     lastReviewedAt,
+    reviewDue: false,
   };
 }
 

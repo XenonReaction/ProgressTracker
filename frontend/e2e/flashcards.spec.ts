@@ -11,6 +11,28 @@ test.describe('Flashcards', () => {
     await expect(row).not.toContainText('Complete');
   });
 
+  test("the sample deck's passed card is due for review again, and readiness stays", async ({
+    page,
+  }) => {
+    await page.goto('/decks');
+    const row = page.getByRole('row', { name: /CSS Flexbox/ });
+    await expect(row).toContainText('1 card');
+    await expect(row).toContainText('20%');
+
+    await row.getByRole('link', { name: 'CSS Flexbox' }).click();
+    await expect(page.locator('p.review-due')).toContainText(
+      'Review due: 1 passed card is due for review.',
+    );
+    const passed = page.getByRole('row', { name: /display: flex/ });
+    await expect(passed).toContainText('Passed, review due');
+    await expect(passed.getByRole('cell').nth(3)).toHaveText('Now');
+    await expect(page.getByRole('row', { name: /align-items/ })).toContainText('Once passed');
+
+    // Only looks: the due card is on the review page, which lists all five sample cards
+    await page.goto('/review');
+    await expect(page.getByText(/^Card 1 of \d+ · /)).toBeVisible();
+  });
+
   test('creates a deck, adds and edits cards, studies it, then deletes it', async ({
     page,
     api,
@@ -86,7 +108,9 @@ test.describe('Flashcards', () => {
 
     // Passed cards leave the study list; they can still be studied on purpose
     await page.getByRole('button', { name: 'Study again' }).click();
-    await expect(page.getByText('Every card in this deck has passed.')).toBeVisible();
+    await expect(
+      page.getByText('Every card in this deck has passed, and none is due for review.'),
+    ).toBeVisible();
     await page.getByRole('button', { name: 'Study all cards anyway' }).click();
     await expect(page.getByText('Card 1 of 1 · Passed')).toBeVisible();
 
@@ -101,7 +125,7 @@ test.describe('Flashcards', () => {
   }) => {
     // Only looks: answering here would change the sample data other tests read
     await page.goto('/decks');
-    await page.getByRole('link', { name: 'Review cards not yet passed' }).click();
+    await page.getByRole('link', { name: 'Review cards', exact: true }).click();
 
     await expect(page.getByRole('heading', { level: 1, name: 'Review' })).toBeVisible();
     await expect(page.getByText(/^Card 1 of \d+ · .+ · /)).toBeVisible();

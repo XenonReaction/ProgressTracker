@@ -554,6 +554,38 @@ describe('TreeView', () => {
       await pressAndRelease(8);
       expect(link('Lesson cards').getAttribute('href')).toBe('/decks/5');
     });
+
+    it('marks a tree and a node with a flashcard review due, without changing readiness', async () => {
+      fixture.componentRef.setInput('id', '6');
+      await fixture.whenStable();
+      http.expectOne('/api/v1/trees/6').flush(aTree({ id: 6, title: 'Front end', readiness: 100, reviewDue: true }));
+      http.expectOne('/api/v1/trees/6/nodes').flush([
+        aTreeNode({
+          id: 8,
+          title: 'Flexbox',
+          readiness: 100,
+          reviewDue: true,
+          resources: [{ ...aDeckResource(5, 'Flexbox cards', true, 100), reviewDue: true }],
+        }),
+      ]);
+      http.expectOne('/api/v1/trees/6/prerequisites').flush([]);
+      await fixture.whenStable();
+
+      expect(page.querySelector('.tree-readiness')?.textContent).toContain('Review due');
+      expect(page.querySelector('.tree-readiness a')?.getAttribute('href')).toBe('/review');
+      expect(nodeEl(8).querySelector('.review-due-marker')?.textContent).toBe('review due');
+      expect(nodeEl(8).getAttribute('aria-label')).toBe('Flexbox, 100% ready, from deck Flexbox cards, review due, ready');
+      await pressAndRelease(8);
+      const details = page.querySelector('aside')!;
+      expect(details.textContent).toContain('Readiness: 100%');
+      expect(details.textContent).toContain('Review due: flashcards beneath it are due for review.');
+      expect(details.querySelector('.breakdown')?.textContent).toContain('(review due)');
+    });
+
+    it('shows no review marker when nothing is due', () => {
+      expect(nodeEl(7).querySelector('.review-due-marker')).toBeNull();
+      expect(page.querySelector('.tree-readiness')?.textContent).not.toContain('Review due');
+    });
   });
 
   describe('select tool', () => {

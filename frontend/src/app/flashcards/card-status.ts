@@ -9,7 +9,7 @@ export const COMPLETE_PERCENT = 80;
 /** Where a card stands, in words. */
 export function cardStatus(card: Card): string {
   if (card.passed) {
-    return 'Passed';
+    return card.due ? 'Passed, review due' : 'Passed';
   }
   if (card.lastReviewedAt === null) {
     return 'Not answered yet';

@@ -27,6 +27,7 @@ describe('DeckList', () => {
         readiness: 80,
         complete: true,
         lastReviewedAt: '2026-09-01T10:00:00Z',
+        dueCount: 2,
       }),
       aDeck({ id: 5, title: 'HTML Forms', cardCount: 2 }),
     ]);
@@ -50,6 +51,13 @@ describe('DeckList', () => {
       '/decks/3/study',
       '/decks/3/edit',
     ]);
+  });
+
+  it('shows how many passed cards in each deck are due for review', () => {
+    const [flexbox, forms] = Array.from(page.querySelectorAll('tbody tr'));
+    expect(flexbox.querySelectorAll('td')[3].textContent?.trim()).toBe('2 cards');
+    expect(forms.querySelectorAll('td')[3].textContent?.trim()).toBe('');
+    expect(page.querySelector('a[href="/review"]')?.textContent).toBe('Review cards');
   });
 
   it('explains a refused delete and links to the nodes that list the deck', async () => {

@@ -13,7 +13,7 @@
   @if (cards.length) {
     <app-study-session [cards]="cards" (again)="reload()" />
   } @else if (deck()?.cardCount) {
-    <p>Every card in this deck has passed.</p>
+    <p>Every card in this deck has passed, and none is due for review.</p>
     <p><button type="button" (click)="studyAll()">Study all cards anyway</button></p>
   } @else {
     <p class="muted">This deck has no cards yet.</p>

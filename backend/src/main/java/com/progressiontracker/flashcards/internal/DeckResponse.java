@@ -6,7 +6,8 @@ import com.progressiontracker.flashcards.DeckProgress;
 
 /**
  * A deck with where it stands: {@code readiness} is the share of its cards that have passed,
- * and it's {@code complete} once that reaches 80%.
+ * and it's {@code complete} once that reaches 80%. {@code dueCount} passed cards are due for
+ * review.
  */
 public record DeckResponse(
 		Long id,
@@ -17,13 +18,14 @@ public record DeckResponse(
 		int readiness,
 		boolean complete,
 		Instant lastReviewedAt,
+		int dueCount,
 		Instant createdAt,
 		Instant updatedAt) {
 
 	static DeckResponse from(Deck deck, DeckProgress progress) {
 		return new DeckResponse(deck.getId(), deck.getTitle(), deck.getDescription(), progress.cardCount(),
 				progress.passedCount(), progress.readiness(), progress.complete(), progress.lastReviewedAt(),
-				deck.getCreatedAt(), deck.getUpdatedAt());
+				progress.dueCount(), deck.getCreatedAt(), deck.getUpdatedAt());
 	}
 
 }

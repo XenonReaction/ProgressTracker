@@ -1,5 +1,7 @@
 package com.progressiontracker.flashcards;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,8 +22,8 @@ import com.progressiontracker.user.CurrentUserService;
 import com.progressiontracker.user.User;
 
 /**
- * Readiness and "last reviewed" for cards and decks, worked out from the current user's
- * recorded answers when asked, never stored. The rules are in {@link CardProgress} and
+ * Readiness, "last reviewed" and due reviews for cards and decks, worked out from the current
+ * user's recorded answers when asked, never stored. The rules are in {@link CardProgress} and
  * {@link DeckProgress}. Call it inside a transaction.
  */
 @Component
@@ -35,12 +37,20 @@ public class FlashcardReadinessCalculator {
 
 	private final CurrentUserService currentUser;
 
+	private final Clock clock;
+
 	public FlashcardReadinessCalculator(DeckRepository decks, CardRepository cards, CardReviewRepository reviews,
-			CurrentUserService currentUser) {
+			CurrentUserService currentUser, Clock clock) {
 		this.decks = decks;
 		this.cards = cards;
 		this.reviews = reviews;
 		this.currentUser = currentUser;
+		this.clock = clock;
+	}
+
+	/** Now, by the application's clock. */
+	public Instant now() {
+		return clock.instant();
 	}
 
 	/** Each card's progress, by card id. */
@@ -77,7 +87,7 @@ public class FlashcardReadinessCalculator {
 		}
 		Map<Long, DeckProgress> progress = new LinkedHashMap<>();
 		for (Deck deck : decks) {
-			progress.put(deck.getId(), DeckProgress.of(byDeck.getOrDefault(deck.getId(), List.of())));
+			progress.put(deck.getId(), DeckProgress.of(byDeck.getOrDefault(deck.getId(), List.of()), now()));
 		}
 		return progress;
 	}

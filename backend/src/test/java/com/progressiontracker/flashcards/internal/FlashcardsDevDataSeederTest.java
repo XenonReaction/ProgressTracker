@@ -42,13 +42,14 @@ class FlashcardsDevDataSeederTest {
 			assertThat(deck.passedCount()).isEqualTo(1);
 			assertThat(deck.readiness()).isEqualTo(20);
 			assertThat(deck.lastReviewedAt()).isNotNull();
+			assertThat(deck.dueCount()).isEqualTo(1);
 		});
-		// Never answered first, then the least recently answered
-		assertThat(cards.reviewQueue(null)).extracting(CardResponse::back, CardResponse::correctInARow)
-			.containsExactly(tuple("align-items", 0),
-					tuple("flex-grow: 1; flex-shrink: 1; flex-basis: 0%", 0),
-					tuple("flex-direction", 2),
-					tuple("justify-content", 0));
+		// Never answered first, then the least recently answered: the passed card is due
+		assertThat(cards.reviewQueue(null))
+			.extracting(CardResponse::back, CardResponse::correctInARow, CardResponse::due)
+			.containsExactly(tuple("align-items", 0, false),
+					tuple("flex-grow: 1; flex-shrink: 1; flex-basis: 0%", 0, false), tuple("display: flex", 3, true),
+					tuple("flex-direction", 2, false), tuple("justify-content", 0, false));
 	}
 
 }

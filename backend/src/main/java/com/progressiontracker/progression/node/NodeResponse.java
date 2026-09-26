@@ -11,7 +11,8 @@ import com.progressiontracker.progression.tree.TreeRef;
  * A library node. {@code readiness} is the value to show and use: the average of the
  * resources that count, or the hand-entered {@code manualReadiness} when none do. The
  * hand-entered value is always returned so an edit form can keep it. {@code lastReviewedAt}
- * is the latest review beneath the resources that count, or null.
+ * is the latest review beneath the resources that count, or null, and {@code reviewDue}
+ * whether anything beneath them is due for review.
  */
 public record NodeResponse(
 		Long id,
@@ -20,6 +21,7 @@ public record NodeResponse(
 		int readiness,
 		int manualReadiness,
 		Instant lastReviewedAt,
+		boolean reviewDue,
 		List<Resource> resources,
 		List<String> tags,
 		Instant createdAt,
@@ -33,7 +35,8 @@ public record NodeResponse(
 	 * it counts or not, so a page can show what each contributes.
 	 */
 	public record Resource(String type, String url, TreeRef tree, DeckRef deck, MaterialRef material, LessonRef lesson,
-			QuestionSetRef questionSet, String label, boolean counts, Integer readiness, Instant lastReviewedAt) {
+			QuestionSetRef questionSet, String label, boolean counts, Integer readiness, Instant lastReviewedAt,
+			boolean reviewDue) {
 
 		static Resource of(NodeResource resource, ReadinessContext context) {
 			ResourceStatus status = context.of(resource);
@@ -46,7 +49,7 @@ public record NodeResponse(
 					: new QuestionSetRef(resource.getQuestionSetId(), title);
 			return new Resource(resource.getType().getDbValue(), resource.getUrl(), TreeRef.of(resource.getTree()), deck,
 					material, lesson, questionSet, resource.getLabel(), resource.counts(), status == null ? null : status.readiness(),
-					status == null ? null : status.lastReviewedAt());
+					status == null ? null : status.lastReviewedAt(), status != null && status.reviewDue());
 		}
 
 		public static List<Resource> of(Node node, ReadinessContext context) {
@@ -57,8 +60,8 @@ public record NodeResponse(
 
 	static NodeResponse from(Node node, ReadinessContext context) {
 		return new NodeResponse(node.getId(), node.getTitle(), node.getDescription(), context.of(node),
-				node.getReadiness(), context.lastReviewed(node), Resource.of(node, context), List.copyOf(node.getTags()),
-				node.getCreatedAt(), node.getUpdatedAt());
+				node.getReadiness(), context.lastReviewed(node), context.reviewDue(node), Resource.of(node, context),
+				List.copyOf(node.getTags()), node.getCreatedAt(), node.getUpdatedAt());
 	}
 
 }

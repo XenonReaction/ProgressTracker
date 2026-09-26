@@ -672,7 +672,8 @@ export class TreeView {
   protected ariaLabel(treeNode: TreeNode): string {
     const sources = readinessSources(treeNode.resources);
     const linked = sources ? `, from ${sources}` : '';
-    return `${treeNode.title}, ${treeNode.readiness}% ready${linked}, ${this.levelOf(treeNode)}`;
+    const due = treeNode.reviewDue ? ', review due' : '';
+    return `${treeNode.title}, ${treeNode.readiness}% ready${linked}${due}, ${this.levelOf(treeNode)}`;
   }
 
   /** SVG text doesn't wrap, so long titles are shortened to fit the box. */

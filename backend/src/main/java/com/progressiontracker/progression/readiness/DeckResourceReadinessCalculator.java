@@ -9,8 +9,8 @@ import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.node.NodeResourceType;
 
 /**
- * A flashcard deck resource: the share of its cards passed, and its latest answer, from the
- * Flashcards module's public API.
+ * A flashcard deck resource: the share of its cards passed, its latest answer, and whether any
+ * card is due for review, from the Flashcards module's public API.
  */
 @Component
 class DeckResourceReadinessCalculator implements ReadinessCalculator {
@@ -32,7 +32,7 @@ class DeckResourceReadinessCalculator implements ReadinessCalculator {
 	public ResourceStatus status(NodeResource resource, ReadinessContext context) {
 		return flashcards.deck(resource.getDeckId())
 			.map(deck -> new ResourceStatus(deck.title(), deck.progress().readiness(),
-					deck.progress().lastReviewedAt()))
+					deck.progress().lastReviewedAt(), deck.progress().dueCount() > 0))
 			.orElseGet(() -> {
 				// Deleting a deck that nodes list is refused, so this only guards against bad data
 				log.warn("Deck {} not found; counting it as 0% readiness", resource.getDeckId());

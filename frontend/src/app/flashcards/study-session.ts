@@ -36,7 +36,7 @@ export class StudySession {
   protected readonly index = signal(0);
   protected readonly revealed = signal(false);
   /** Each answered card as the server returned it, with its new standing. */
-  protected readonly answered = signal<{ card: Card; correct: boolean }[]>([]);
+  protected readonly answered = signal<{ card: Card; correct: boolean; wasPassed: boolean }[]>([]);
   protected readonly saving = signal(false);
   protected readonly error = signal<string | null>(null);
 
@@ -44,8 +44,9 @@ export class StudySession {
   protected readonly correctCount = computed(
     () => this.answered().filter((answer) => answer.correct).length,
   );
+  /** Cards that passed during this session (a due card that was already passed doesn't count). */
   protected readonly passedCount = computed(
-    () => this.answered().filter((answer) => answer.card.passed).length,
+    () => this.answered().filter((answer) => answer.card.passed && !answer.wasPassed).length,
   );
   /** "Card 2 of 5 · CSS Flexbox · 1 of 3 correct in a row" */
   protected readonly position = computed(() => {
@@ -82,7 +83,10 @@ export class StudySession {
     this.flashcardApi.review(card, correct).subscribe({
       next: (updated) => {
         this.saving.set(false);
-        this.answered.update((answers) => [...answers, { card: updated, correct }]);
+        this.answered.update((answers) => [
+          ...answers,
+          { card: updated, correct, wasPassed: card.passed },
+        ]);
         this.revealed.set(false);
         this.index.update((index) => index + 1);
       },

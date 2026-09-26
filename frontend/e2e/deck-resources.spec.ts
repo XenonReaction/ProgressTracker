@@ -62,6 +62,42 @@ test.describe('Decks as node resources', () => {
     );
   });
 
+  test('a deck with a card due marks its node and the trees above it "review due"', async ({
+    page,
+    api,
+    unique,
+  }) => {
+    // The sample deck has a passed card due for review; listing it only reads it
+    const sample = (await api.decks()).find((deck) => deck.title === 'CSS Flexbox')!;
+    expect(sample.dueCount).toBe(1);
+    const flexbox = await api.setResources(await api.createNode(unique('CSS Flexbox'), 0), [
+      { type: 'deck', deckId: sample.id, counts: true },
+    ]);
+    const css = await api.createTree(unique('CSS'));
+    await api.place(css.id, flexbox.id, 0, 0);
+    const frontEnd = await api.link(await api.createNode(unique('Front end'), 0), css.id);
+    const web = await api.createTree(unique('Web'));
+    await api.place(web.id, frontEnd.id, 0, 0);
+
+    await page.goto('/nodes');
+    await expect(page.getByRole('row', { name: flexbox.title })).toContainText('Review due');
+    await page.getByRole('link', { name: flexbox.title, exact: true }).click();
+    await expect(page.locator('p.review-due')).toContainText('Review due:');
+    // Readiness is unchanged: the deck is still 20%
+    await expect(page.locator('.breakdown')).toHaveText(
+      /Deck\s+CSS Flexbox\s*: 20%\s*\(review due\)\s*→ 20%/,
+    );
+
+    await page.goto('/trees');
+    await expect(page.getByRole('row', { name: web.title })).toContainText('Review due');
+    await page.getByRole('link', { name: web.title }).click();
+    await expect(page.locator('.tree-readiness')).toContainText('Review due');
+    await expect(nodeBox(page, frontEnd.title).locator('.review-due-marker')).toHaveText(
+      'review due',
+    );
+    await expect(nodeBox(page, frontEnd.title)).toHaveAttribute('aria-label', /, review due, /);
+  });
+
   test("a deck that a node lists can't be deleted", async ({ page, api, unique }) => {
     const deck = await api.createDeck(unique('Kept deck'));
     const node = await api.setResources(await api.createNode(unique('Uses it'), 0), [

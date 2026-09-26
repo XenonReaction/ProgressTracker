@@ -24,6 +24,7 @@ describe('TreeList', () => {
         tags: ['java', 'backend'],
         readiness: 64,
         lastReviewedAt: '2026-09-01T10:00:00Z',
+        reviewDue: true,
       }),
       aTree({ id: 5, title: 'Spring Basics' }),
     ]);
@@ -48,6 +49,12 @@ describe('TreeList', () => {
     expect(java.textContent).toContain('64%');
     expect(java.textContent).toContain('Sep 1, 2026');
     expect(spring.textContent).toContain('Never');
+  });
+
+  it('marks a tree with a flashcard review due beneath it', () => {
+    const [java, spring] = Array.from(page.querySelectorAll('tbody tr'));
+    expect(java.querySelector('.review-due')?.textContent).toBe('Review due');
+    expect(spring.querySelector('.review-due')).toBeNull();
   });
 
   it('deletes after a confirmation that explains what is removed, then reloads', async () => {
