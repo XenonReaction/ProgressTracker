@@ -18,51 +18,6 @@
     </label>
   </p>
 
-  <fieldset>
-    <legend>Readiness</legend>
-    <label><input type="radio" formControlName="source" value="manual" /> Enter it myself</label>
-    &nbsp;
-    <label><input type="radio" formControlName="source" value="linked_tree" /> From a linked tree</label>
-
-    @if (form.controls.source.value === 'manual') {
-      <p class="muted">
-        @if (id()) {
-          You enter this node's readiness yourself ({{ form.controls.readiness.value }}%), on its page.
-        } @else {
-          It starts at 0%. You can update it on the node's page after saving.
-        }
-      </p>
-    } @else {
-      <p>
-        <label>
-          Linked tree<br />
-          @if (trees(); as trees) {
-            <select formControlName="linkedTreeId">
-              <option [ngValue]="null">Choose a tree…</option>
-              @for (tree of trees; track tree.id) {
-                <option [ngValue]="tree.id">{{ tree.title }}</option>
-              }
-            </select>
-          } @else {
-            <span class="muted">Loading trees…</span>
-          }
-        </label>
-        @if (form.hasError('linkedTreeRequired') && form.touched) {
-          <br /><span class="error">Choose the tree this node's readiness comes from.</span>
-        }
-      </p>
-      <p class="muted">
-        Readiness will be the average of that tree's nodes.
-        @if (savedLink(); as link) {
-          @if (link.treeId === form.controls.linkedTreeId.value) {
-            It's {{ link.readiness }}% now.
-          }
-        }
-        Your hand-entered value ({{ form.controls.readiness.value }}%) is kept for if you unlink it.
-      </p>
-    }
-  </fieldset>
-
   <p>
     <label>
       Tags (comma-separated)<br />
@@ -73,19 +28,93 @@
     }
   </p>
 
-  <fieldset formArrayName="links">
-    <legend>Links</legend>
-    @for (link of links.controls; track link; let i = $index) {
-      <div [formGroupName]="i">
-        <input formControlName="url" placeholder="https://…" size="40" [attr.aria-label]="'Link ' + (i + 1) + ' URL'" />
-        <input formControlName="label" placeholder="Label (optional)" [attr.aria-label]="'Link ' + (i + 1) + ' label'" />
-        <button type="button" (click)="removeLink(i)">Remove</button>
-        @if (link.controls.url.touched && link.controls.url.invalid) {
+  <!-- Each row binds its own FormGroup rather than formGroupName="i": rows are tracked by
+       control, so moving one keeps its DOM, and formGroupName wouldn't follow a new index -->
+  <fieldset>
+    <legend>Resources</legend>
+    <p class="muted readiness-source">
+      @if (anyCounts()) {
+        Readiness will be the average of the trees that count.
+        @if (currentReadiness() !== null) {
+          It's {{ currentReadiness() }}% now.
+        }
+        Your hand-entered value ({{ form.controls.readiness.value }}%) is kept for when none count.
+      } @else if (id()) {
+        Nothing counts toward readiness, so you enter it yourself ({{
+          form.controls.readiness.value
+        }}%), on the node's page.
+      } @else {
+        Nothing counts toward readiness, so it starts at 0% and you update it on the node's page
+        after saving.
+      }
+    </p>
+
+    @for (resource of resources.controls; track resource; let i = $index) {
+      <div
+        [formGroup]="resource"
+        class="resource"
+        [attr.aria-label]="'Resource ' + (i + 1)"
+        role="group"
+      >
+        @if (resource.controls.type.value === 'tree') {
+          <strong>Tree</strong>
+          @if (trees(); as trees) {
+            <select formControlName="treeId" [attr.aria-label]="'Resource ' + (i + 1) + ' tree'">
+              <option [ngValue]="null">Choose a tree…</option>
+              @for (tree of trees; track tree.id) {
+                <option [ngValue]="tree.id">{{ tree.title }}</option>
+              }
+            </select>
+          } @else {
+            <span class="muted">Loading trees…</span>
+          }
+          <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
+        } @else {
+          <strong>Link</strong>
+          <input
+            formControlName="url"
+            placeholder="https://…"
+            size="40"
+            [attr.aria-label]="'Resource ' + (i + 1) + ' URL'"
+          />
+        }
+        <input
+          formControlName="label"
+          [placeholder]="
+            resource.controls.type.value === 'tree'
+              ? 'Label (optional; the tree\'s title)'
+              : 'Label (optional)'
+          "
+          [attr.aria-label]="'Resource ' + (i + 1) + ' label'"
+        />
+        <button
+          type="button"
+          (click)="move(i, -1)"
+          [disabled]="i === 0"
+          [attr.aria-label]="'Move resource ' + (i + 1) + ' up'"
+        >
+          ↑
+        </button>
+        <button
+          type="button"
+          (click)="move(i, 1)"
+          [disabled]="i === resources.length - 1"
+          [attr.aria-label]="'Move resource ' + (i + 1) + ' down'"
+        >
+          ↓
+        </button>
+        <button type="button" (click)="removeResource(i)">Remove</button>
+        @if (resource.touched && resource.hasError('url')) {
           <span class="error">Enter an http(s) URL.</span>
+        }
+        @if (resource.touched && resource.hasError('treeRequired')) {
+          <span class="error">Choose a tree.</span>
         }
       </div>
     }
-    <button type="button" (click)="addLink()">+ Add link</button>
+    <button type="button" (click)="addResource('url')">+ Add link</button>
+    &nbsp;
+    <button type="button" (click)="addResource('tree')">+ Add tree</button>
   </fieldset>
 
   @if (error(); as message) {

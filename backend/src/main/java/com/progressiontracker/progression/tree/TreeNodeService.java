@@ -69,8 +69,8 @@ public class TreeNodeService {
 		if (treeNodes.existsByTreeAndNode(tree, node)) {
 			throw new ConflictException("Node " + node.getId() + " is already in tree " + treeId);
 		}
-		if (node.getLinkedTree() != null) {
-			treeLinks.checkNoLoop(node, List.of(tree), node.getLinkedTree());
+		for (Tree counted : node.countingTrees()) {
+			treeLinks.checkNoLoop(node, List.of(tree), counted);
 		}
 		TreeNode treeNode = new TreeNode(tree, node, request.positionX(), request.positionY());
 		if (request.aggregateThreshold() != null) {

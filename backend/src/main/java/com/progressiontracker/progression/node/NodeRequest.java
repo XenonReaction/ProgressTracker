@@ -7,29 +7,45 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.URL;
 
 /**
  * Body for creating a node or replacing all of its editable fields. {@code readiness} is the
- * hand-entered value. With {@code linkedTreeId} set, the node takes its readiness from that
- * tree instead, and the hand-entered value is kept for when it's unlinked.
+ * hand-entered value: it's used while no resource counts, and kept otherwise.
+ * {@code resources} are in the order to show them.
  */
 public record NodeRequest(
 		@NotBlank @Size(max = 200) String title,
 		String description,
 		@NotNull @Min(0) @Max(100) Integer readiness,
-		List<@Valid @NotNull Link> links,
-		Long linkedTreeId,
+		List<@Valid @NotNull Resource> resources,
 		List<@NotBlank @Size(max = 50) String> tags) {
 
-	public record Link(@NotBlank @URL @Size(max = 2048) String url, @Size(max = 200) String label) {
+	/**
+	 * One resource: {@code type} {@code "url"} with {@code url}, or {@code "tree"} with
+	 * {@code treeId}. {@code label} is optional (the target's title is shown instead).
+	 * {@code counts} is whether it counts toward readiness; a URL never does.
+	 */
+	public record Resource(
+			@NotBlank String type,
+			@URL @Pattern(regexp = "(?i)https?://.*", message = "must be an http(s) URL") @Size(max = 2048) String url,
+			Long treeId,
+			@Size(max = 200) String label,
+			Boolean counts) {
+
+		/** {@code counts} may be omitted; treat that as not counting. */
+		public boolean countsOrFalse() {
+			return Boolean.TRUE.equals(counts);
+		}
+
 	}
 
-	/** {@code links} may be omitted; treat that as no links. */
-	public List<Link> linksOrEmpty() {
-		return links == null ? List.of() : links;
+	/** {@code resources} may be omitted; treat that as none. */
+	public List<Resource> resourcesOrEmpty() {
+		return resources == null ? List.of() : resources;
 	}
 
 	/** {@code tags} may be omitted; treat that as no tags. */

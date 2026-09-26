@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.progressiontracker.progression.node.Node;
-import com.progressiontracker.progression.node.NodeLink;
+import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.node.NodeRepository;
 import com.progressiontracker.progression.tree.Prerequisite;
 import com.progressiontracker.progression.tree.PrerequisiteRepository;
@@ -68,14 +68,14 @@ public class DevDataSeeder implements ApplicationRunner {
 		}
 
 		Node syntax = node(user, "Java Syntax Basics", "Variables, types, operators and control flow.", 95,
-				new NodeLink("https://dev.java/learn/language-basics/", "dev.java: Language Basics"));
+				NodeResource.url("https://dev.java/learn/language-basics/", "dev.java: Language Basics"));
 		Node oop = node(user, "Object-Oriented Programming", "Classes, interfaces, inheritance and polymorphism.", 80,
-				new NodeLink("https://dev.java/learn/classes-objects/", "dev.java: Classes and Objects"));
+				NodeResource.url("https://dev.java/learn/classes-objects/", "dev.java: Classes and Objects"));
 		Node collections = node(user, "Collections Framework", "List, Set, Map and their common implementations.", 65);
 		Node generics = node(user, "Generics", "Type parameters, bounded types and wildcards.", 40);
 		Node streams = node(user, "Streams API", "Functional-style operations on sequences of elements.", 15);
 		Node springCore = node(user, "Spring Core", "Dependency injection and the application context.", 30,
-				new NodeLink("https://docs.spring.io/spring-framework/reference/core.html", "Spring Framework: Core"));
+				NodeResource.url("https://docs.spring.io/spring-framework/reference/core.html", "Spring Framework: Core"));
 		node(user, "Maven Basics", "Library-only node: not placed in any tree.", 50);
 
 		Tree javaTree = tree(user, "Java Fundamentals", "Core language skills, in rough learning order.",
@@ -109,16 +109,16 @@ public class DevDataSeeder implements ApplicationRunner {
 		TreeNode cSet = place(collectionsTree, node(user, "Sets", "HashSet and TreeSet.", 50), 150, 150);
 		edge(cList, cMap);
 		edge(cList, cSet);
-		collections.setLinkedTree(collectionsTree);
+		collections.getResources().add(0, NodeResource.tree(collectionsTree, null, true));
 
 		log.info("Seeded dev data for user '{}'", user.getUsername());
 	}
 
-	private Node node(User owner, String title, String description, int readiness, NodeLink... links) {
+	private Node node(User owner, String title, String description, int readiness, NodeResource... links) {
 		Node node = new Node(owner, title);
 		node.setDescription(description);
 		node.setReadiness(readiness);
-		node.getLinks().addAll(List.of(links));
+		node.getResources().addAll(List.of(links));
 		return nodes.save(node);
 	}
 

@@ -41,7 +41,7 @@ class ApiIntegrationTest {
 	@AfterEach
 	void emptyTables() {
 		jdbc.execute("truncate table card_reviews, cards, decks, tree_edit_sessions, prerequisites, tree_nodes, "
-				+ "tree_tags, trees, node_tags, node_links, nodes, users cascade");
+				+ "tree_tags, trees, node_tags, node_resources, nodes, users cascade");
 	}
 
 	@Test
@@ -159,24 +159,25 @@ class ApiIntegrationTest {
 
 		MvcTestResult updated = put("/api/v1/nodes/" + node, """
 				{"title": "Generics & Wildcards", "readiness": 75,
-				 "links": [{"url": "https://dev.java/learn/generics/", "label": "dev.java"}]}""");
+				 "resources": [{"type": "url", "url": "https://dev.java/learn/generics/", "label": "dev.java"}]}""");
 
 		assertThat(updated).hasStatusOk();
 		assertThat(updated).bodyJson().extractingPath("$.title").isEqualTo("Generics & Wildcards");
 		assertThat(updated).bodyJson().extractingPath("$.readiness").isEqualTo(75);
-		assertThat(updated).bodyJson().extractingPath("$.links[0].label").isEqualTo("dev.java");
+		assertThat(updated).bodyJson().extractingPath("$.resources[0].label").isEqualTo("dev.java");
+		assertThat(updated).bodyJson().extractingPath("$.resources[0].counts").isEqualTo(false);
 		assertThat(mvc.get().uri("/api/v1/nodes/{id}", node)).bodyJson().extractingPath("$.readiness").isEqualTo(75);
 	}
 
 	@Test
 	void invalidRequestsListEveryBadField() {
 		MvcTestResult result = post("/api/v1/nodes", """
-				{"title": "", "readiness": 150, "links": [{"url": "not a url"}]}""");
+				{"title": "", "readiness": 150, "resources": [{"type": "url", "url": "ftp://example.com"}]}""");
 
 		assertThat(result).hasStatus(HttpStatus.BAD_REQUEST)
 			.hasContentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON);
 		assertThat(result).bodyJson().extractingPath("$.errors[*].field").asArray()
-			.containsExactlyInAnyOrder("title", "readiness", "links[0].url");
+			.containsExactlyInAnyOrder("title", "readiness", "resources[0].url");
 	}
 
 	@Test
@@ -266,21 +267,63 @@ class ApiIntegrationTest {
 		assertThat(linked).hasStatusOk();
 		assertThat(linked).bodyJson().extractingPath("$.readiness").isEqualTo(57);
 		assertThat(linked).bodyJson().extractingPath("$.manualReadiness").isEqualTo(10);
-		assertThat(linked).bodyJson().extractingPath("$.readinessSourceType").isEqualTo("linked_tree");
-		assertThat(linked).bodyJson().extractingPath("$.linkedTree.title").isEqualTo("Collections");
+		assertThat(linked).bodyJson().extractingPath("$.resources[0].type").isEqualTo("tree");
+		assertThat(linked).bodyJson().extractingPath("$.resources[0].tree.title").isEqualTo("Collections");
+		assertThat(linked).bodyJson().extractingPath("$.resources[0].counts").isEqualTo(true);
 
 		// A tree using the linked node sees the derived value too
 		long java = id(post("/api/v1/trees", "{\"title\": \"Java\"}"));
 		placeNode(java, collectionsNode, "");
 		MvcTestResult inJava = mvc.get().uri("/api/v1/trees/{tree}/nodes", java).exchange();
 		assertThat(inJava).bodyJson().extractingPath("$[0].readiness").isEqualTo(57);
-		assertThat(inJava).bodyJson().extractingPath("$[0].linkedTree.id").isEqualTo((int) collections);
+		assertThat(inJava).bodyJson().extractingPath("$[0].resources[0].tree.id").isEqualTo((int) collections);
 
 		// Unlinking brings back the hand-entered value
 		MvcTestResult unlinked = put("/api/v1/nodes/" + collectionsNode, """
 				{"title": "Collections", "readiness": 10}""");
 		assertThat(unlinked).bodyJson().extractingPath("$.readiness").isEqualTo(10);
-		assertThat(unlinked).bodyJson().extractingPath("$.readinessSourceType").isEqualTo("manual");
+		assertThat(unlinked).bodyJson().extractingPath("$.resources").asArray().isEmpty();
+	}
+
+	@Test
+	void aNodeAveragesEveryTreeThatCountsAndKeepsItsResourcesInOrder() {
+		long css = id(post("/api/v1/trees", "{\"title\": \"CSS\"}"));
+		placeNode(css, createNode("Selectors", 54), "");
+		long html = id(post("/api/v1/trees", "{\"title\": \"HTML\"}"));
+		placeNode(html, createNode("Forms", 100), "");
+		long reading = id(post("/api/v1/trees", "{\"title\": \"Further reading\"}"));
+		placeNode(reading, createNode("Anything", 0), "");
+		long node = createNode("Front-end Basics", 10);
+
+		MvcTestResult saved = put("/api/v1/nodes/" + node, """
+				{"title": "Front-end Basics", "readiness": 10, "resources": [
+				  {"type": "url", "url": "https://developer.mozilla.org/", "label": "MDN"},
+				  {"type": "tree", "treeId": %d, "counts": true},
+				  {"type": "tree", "treeId": %d, "counts": false, "label": "Optional extras"},
+				  {"type": "tree", "treeId": %d, "counts": true}]}""".formatted(css, reading, html));
+
+		// (54 + 100) / 2 = 77; the tree that doesn't count is only a reference
+		assertThat(saved).hasStatusOk();
+		assertThat(saved).bodyJson().extractingPath("$.readiness").isEqualTo(77);
+		assertThat(saved).bodyJson().extractingPath("$.resources[*].type").asArray()
+			.containsExactly("url", "tree", "tree", "tree");
+		assertThat(saved).bodyJson().extractingPath("$.resources[2].label").isEqualTo("Optional extras");
+		assertThat(saved).bodyJson().extractingPath("$.resources[1].label").isNull();
+		assertThat(put("/api/v1/nodes/" + node + "/readiness", "{\"readiness\": 50}")).hasStatus(HttpStatus.CONFLICT);
+
+		// Refused: a URL that counts, a tree listed twice, and an unknown type
+		assertThat(put("/api/v1/nodes/" + node, """
+				{"title": "X", "readiness": 0, "resources": [{"type": "url", "url": "https://a.example", "counts": true}]}"""))
+			.hasStatus(HttpStatus.BAD_REQUEST);
+		assertThat(put("/api/v1/nodes/" + node, """
+				{"title": "X", "readiness": 0, "resources": [{"type": "tree", "treeId": %d},
+				 {"type": "tree", "treeId": %d}]}""".formatted(css, css))).hasStatus(HttpStatus.BAD_REQUEST);
+		assertThat(put("/api/v1/nodes/" + node, """
+				{"title": "X", "readiness": 0, "resources": [{"type": "deck", "treeId": 1}]}"""))
+			.hasStatus(HttpStatus.BAD_REQUEST);
+
+		// A tree listed only as a reference still can't be deleted from under the node
+		assertThat(mvc.delete().uri("/api/v1/trees/{id}", reading)).hasStatus(HttpStatus.CONFLICT);
 	}
 
 	@Test
@@ -470,9 +513,11 @@ class ApiIntegrationTest {
 			.isEqualTo(40.0);
 	}
 
+	/** Replaces the node's resources with one tree that counts. */
 	private MvcTestResult link(long node, String title, int readiness, long tree) {
 		return put("/api/v1/nodes/" + node, """
-				{"title": "%s", "readiness": %d, "linkedTreeId": %d}""".formatted(title, readiness, tree));
+				{"title": "%s", "readiness": %d, "resources": [{"type": "tree", "treeId": %d, "counts": true}]}"""
+			.formatted(title, readiness, tree));
 	}
 
 	private long createNode(String title, int readiness) {

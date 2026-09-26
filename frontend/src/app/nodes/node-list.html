@@ -21,7 +21,7 @@
         <tr>
           <th>Title</th>
           <th>Readiness</th>
-          <th>Links</th>
+          <th>Resources</th>
           <th></th>
         </tr>
       </thead>
@@ -31,11 +31,18 @@
             <td><a [routerLink]="['/nodes', node.id]">{{ node.title }}</a></td>
             <td>
               <progress max="100" [value]="node.readiness"></progress> {{ node.readiness }}%
-              @if (node.linkedTree; as linked) {
-                <span class="muted">from <a [routerLink]="['/trees', linked.id]">{{ linked.title }}</a></span>
+              @if (countingTrees(node.resources); as trees) {
+                @if (trees.length) {
+                  <span class="muted"
+                    >from
+                    @for (tree of trees; track tree.id; let last = $last) {
+                      <a [routerLink]="['/trees', tree.id]">{{ tree.title }}</a>{{ last ? '' : ', ' }}
+                    }
+                  </span>
+                }
               }
             </td>
-            <td>{{ node.links.length }}</td>
+            <td>{{ node.resources.length }}</td>
             <td>
               <a [routerLink]="['/nodes', node.id, 'edit']">Edit</a>
               &nbsp;

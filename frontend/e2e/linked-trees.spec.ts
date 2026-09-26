@@ -21,8 +21,9 @@ test.describe('Linked trees', () => {
 
     await page.goto(`/nodes/${summary.id}/edit`);
     await expect(page.getByLabel('Title')).toHaveValue(summary.title);
-    await page.getByLabel('From a linked tree').check();
-    await page.getByRole('combobox').selectOption({ label: detail.title });
+    await page.getByRole('button', { name: '+ Add tree' }).click();
+    await page.getByLabel('Resource 1 tree').selectOption({ label: detail.title });
+    await expect(page.getByLabel('Counts toward readiness')).toBeChecked();
     await page.getByRole('button', { name: 'Save' }).click();
 
     // (80 + 60 + 31) / 3 = 57
@@ -46,12 +47,66 @@ test.describe('Linked trees', () => {
     await expect(page.getByRole('heading', { level: 1, name: detail.title })).toBeVisible();
     await expect(page.locator('svg g.node')).toHaveCount(3);
 
-    // Unlinking brings back the hand-entered value
+    // A tree that no longer counts is kept for reference, and the hand-entered value is back
     await page.goto(`/nodes/${summary.id}/edit`);
     await expect(page.getByText('Your hand-entered value (25%) is kept')).toBeVisible();
-    await page.getByLabel('Enter it myself').check();
+    await page.getByLabel('Counts toward readiness').uncheck();
     await page.getByRole('button', { name: 'Save' }).click();
     await expect(page.getByText('25%', { exact: true })).toBeVisible();
+    await expect(page.getByRole('listitem').filter({ hasText: detail.title })).toContainText(
+      'for reference',
+    );
+  });
+
+  test('a node averages every tree that counts, and lists its resources by type', async ({
+    page,
+    api,
+    unique,
+  }) => {
+    const css = await api.createTree(unique('CSS'));
+    await api.place(css.id, (await api.createNode(unique('Selectors'), 54)).id, 0, 0);
+    const html = await api.createTree(unique('HTML'));
+    await api.place(html.id, (await api.createNode(unique('Forms'), 100)).id, 0, 0);
+    const reading = await api.createTree(unique('Reading'));
+    const node = await api.createNode(unique('Front-end Basics'), 10);
+
+    await page.goto(`/nodes/${node.id}/edit`);
+    await expect(page.getByLabel('Title')).toHaveValue(node.title);
+    await page.getByRole('button', { name: '+ Add link' }).click();
+    await page.getByLabel('Resource 1 URL').fill('https://developer.mozilla.org/');
+    await page.getByLabel('Resource 1 label').fill('MDN');
+    // Rows 2 to 4, one tree each
+    for (const [index, tree] of [css, reading, html].entries()) {
+      await page.getByRole('button', { name: '+ Add tree' }).click();
+      await page.getByLabel(`Resource ${index + 2} tree`).selectOption({ label: tree.title });
+    }
+    await page
+      .getByRole('group', { name: 'Resource 3' })
+      .getByLabel('Counts toward readiness')
+      .uncheck();
+    // The link goes last, one row at a time (waiting for each move to show)
+    for (const from of [1, 2, 3]) {
+      await page.getByRole('button', { name: `Move resource ${from} down` }).click();
+      await expect(page.getByLabel(`Resource ${from + 1} URL`)).toHaveValue(
+        'https://developer.mozilla.org/',
+      );
+    }
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    // (54 + 100) / 2 = 77: the reading list doesn't count
+    await expect(
+      page.getByText(`77%, the average of the linked trees ${css.title} and ${html.title}.`),
+    ).toBeVisible();
+    await expect(page.getByRole('heading', { level: 3 })).toHaveText(['Trees', 'Links']);
+    await expect(page.getByRole('listitem').filter({ hasText: reading.title })).toContainText(
+      'for reference',
+    );
+    await expect(page.getByRole('link', { name: 'MDN' })).toHaveAttribute(
+      'href',
+      'https://developer.mozilla.org/',
+    );
+    const saved = (await api.nodes()).find((n) => n.id === node.id)!;
+    expect(saved.resources.map((r) => r.type)).toEqual(['tree', 'tree', 'tree', 'url']);
   });
 
   test('readiness flows up through nested links', async ({ page, api, unique }) => {
@@ -79,8 +134,8 @@ test.describe('Linked trees', () => {
 
     await page.goto(`/nodes/${node.id}/edit`);
     await expect(page.getByLabel('Title')).toHaveValue(node.title);
-    await page.getByLabel('From a linked tree').check();
-    await page.getByRole('combobox').selectOption({ label: tree.title });
+    await page.getByRole('button', { name: '+ Add tree' }).click();
+    await page.getByLabel('Resource 1 tree').selectOption({ label: tree.title });
     await page.getByRole('button', { name: 'Save' }).click();
 
     await expect(page.getByRole('alert')).toContainText("because it's in that tree");

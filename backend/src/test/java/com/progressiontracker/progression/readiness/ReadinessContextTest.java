@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.progressiontracker.progression.node.Node;
+import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.tree.Tree;
 import com.progressiontracker.progression.tree.TreeNodeRepository;
 import com.progressiontracker.user.User;
@@ -85,10 +86,30 @@ class ReadinessContextTest {
 	}
 
 	@Test
-	void serviceRefusesToStartWithoutACalculatorForEverySourceType() {
-		assertThatThrownBy(() -> new ReadinessService(List.of(new ManualReadinessCalculator()), treeNodes))
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessage("No readiness calculator for LINKED_TREE");
+	void severalCountingResourcesAreAveragedAndOnesThatDoNotCountAreIgnored() {
+		Node node = manual("Front-end Basics", 10);
+		node.getResources().add(NodeResource.tree(tree("CSS", manual("Selectors", 54)), null, true));
+		node.getResources().add(NodeResource.url("https://example.com", null));
+		node.getResources().add(NodeResource.tree(withId(new Tree(user, "Reading"), nextId++), null, false));
+		node.getResources().add(NodeResource.tree(tree("HTML", manual("Forms", 100)), null, true));
+
+		// (54 + 100) / 2 = 77
+		assertThat(context.of(node)).isEqualTo(77);
+	}
+
+	@Test
+	void nodeWithOnlyResourcesThatDoNotCountUsesItsHandEnteredValue() {
+		Node node = manual("Syntax", 95);
+		node.getResources().add(NodeResource.url("https://example.com", null));
+		node.getResources().add(NodeResource.tree(withId(new Tree(user, "Reading"), nextId++), null, false));
+
+		assertThat(context.of(node)).isEqualTo(95);
+	}
+
+	@Test
+	void serviceRefusesToStartWithoutACalculatorForEveryTypeThatCanCount() {
+		assertThatThrownBy(() -> new ReadinessService(List.of(), treeNodes)).isInstanceOf(IllegalStateException.class)
+			.hasMessage("No readiness calculator for TREE");
 	}
 
 	private Node manual(String title, int readiness) {
@@ -99,7 +120,7 @@ class ReadinessContextTest {
 
 	private Node linked(String title, Tree tree, int handEntered) {
 		Node node = manual(title, handEntered);
-		node.setLinkedTree(tree);
+		node.getResources().add(NodeResource.tree(tree, null, true));
 		return node;
 	}
 

@@ -1,6 +1,14 @@
 import { APIRequestContext, Locator, Page, test as base, expect } from '@playwright/test';
 
-import type { Card, Deck, Node, Prerequisite, Tree, TreeNode } from '../src/app/core/api.models';
+import type {
+  Card,
+  Deck,
+  Node,
+  NodeResourceRequest,
+  Prerequisite,
+  Tree,
+  TreeNode,
+} from '../src/app/core/api.models';
 
 /**
  * Sets up test data through the REST API, so each test starts from exactly the state it
@@ -10,7 +18,7 @@ export class Api {
   constructor(private readonly request: APIRequestContext) {}
 
   async createNode(title: string, readiness = 0): Promise<Node> {
-    return this.post('/api/v1/nodes', { title, description: null, readiness, links: [] });
+    return this.post('/api/v1/nodes', { title, description: null, readiness, resources: [] });
   }
 
   async createTree(title: string): Promise<Tree> {
@@ -39,16 +47,24 @@ export class Api {
 
   /** Makes the node take its readiness from the tree (keeping its hand-entered value). */
   async link(node: Node, treeId: number): Promise<Node> {
+    return this.setResources(node, [{ type: 'tree', treeId, counts: true }]);
+  }
+
+  /** Replaces the node's resources. */
+  async setResources(node: Node, resources: NodeResourceRequest[]): Promise<Node> {
     const response = await this.request.put(`/api/v1/nodes/${node.id}`, {
       data: {
         title: node.title,
         description: node.description,
         readiness: node.manualReadiness,
-        links: node.links,
-        linkedTreeId: treeId,
+        resources,
+        tags: node.tags,
       },
     });
-    expect(response.ok(), `link node ${node.id}: ${await response.text()}`).toBeTruthy();
+    expect(
+      response.ok(),
+      `set resources of node ${node.id}: ${await response.text()}`,
+    ).toBeTruthy();
     return response.json();
   }
 

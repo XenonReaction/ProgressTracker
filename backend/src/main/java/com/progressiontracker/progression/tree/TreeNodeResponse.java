@@ -7,9 +7,9 @@ import com.progressiontracker.progression.readiness.ReadinessContext;
 
 /**
  * A node as placed in a tree. {@code id} is the tree node's id (used in tree URLs and
- * edges); {@code nodeId} is the library node's id. Title, description, links, readiness and
- * linked tree are copied from the library node so a tree can be rendered from this one response;
- * {@code readiness} is the effective value (derived when {@code linkedTree} is set).
+ * edges); {@code nodeId} is the library node's id. Title, description, resources and
+ * readiness are copied from the library node so a tree can be rendered from this one
+ * response; {@code readiness} is the effective value (derived when a resource counts).
  * {@code prerequisiteIds} and {@code dependentIds} are tree node ids: what this node needs
  * and what it unlocks.
  */
@@ -19,9 +19,8 @@ public record TreeNodeResponse(
 		Long nodeId,
 		String title,
 		String description,
-		List<NodeResponse.Link> links,
+		List<NodeResponse.Resource> resources,
 		int readiness,
-		TreeRef linkedTree,
 		double positionX,
 		double positionY,
 		int aggregateThreshold,
@@ -33,13 +32,7 @@ public record TreeNodeResponse(
 		Long id = treeNode.getId();
 		return new TreeNodeResponse(id, treeNode.getTree().getId(), treeNode.getNode().getId(),
 				treeNode.getNode().getTitle(), treeNode.getNode().getDescription(),
-				treeNode.getNode()
-					.getLinks()
-					.stream()
-					.map(link -> new NodeResponse.Link(link.getUrl(), link.getLabel()))
-					.toList(),
-				readiness.of(treeNode.getNode()),
-				TreeRef.of(treeNode.getNode().getLinkedTree()), treeNode.getPositionX(),
+				NodeResponse.Resource.of(treeNode.getNode()), readiness.of(treeNode.getNode()), treeNode.getPositionX(),
 				treeNode.getPositionY(), treeNode.getAggregateThreshold(), treeNode.getIndividualThreshold(),
 				treeEdges.stream()
 					.filter(edge -> edge.getDependent().getId().equals(id))

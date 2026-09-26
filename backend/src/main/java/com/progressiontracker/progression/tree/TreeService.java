@@ -73,11 +73,11 @@ public class TreeService {
 
 	/**
 	 * Deletes the tree with its tree nodes and edges (database cascade). Library nodes stay.
-	 * A tree that nodes take their readiness from is refused with 409, listing those nodes.
+	 * A tree that nodes list as a resource is refused with 409, listing those nodes.
 	 */
 	public void delete(Long id) {
 		Tree tree = findOwned(id);
-		List<Node> linking = nodes.findByLinkedTreeOrderByTitleAsc(tree);
+		List<Node> linking = nodes.findLinkingTo(tree);
 		if (!linking.isEmpty()) {
 			String titles = linking.stream().map(node -> "\"" + node.getTitle() + "\"").collect(Collectors.joining(", "));
 			throw new ConflictException(

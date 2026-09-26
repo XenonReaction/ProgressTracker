@@ -15,9 +15,10 @@ import com.progressiontracker.progression.node.Node;
 
 /**
  * Keeps links between trees free of loops. Tree A "links to" tree B when a node placed in A
- * takes its readiness from B. A loop would make a tree's readiness depend on itself, so a
- * change that would close one is refused with 409. Both linking a node and placing a linked
- * node in a tree can close a loop, so both check here.
+ * takes readiness from B (a tree resource that counts). A loop would make a tree's readiness
+ * depend on itself, so a change that would close one is refused with 409. Both saving a
+ * node's resources and placing a node in a tree can close a loop, so both check here, once
+ * per tree the node counts. A tree resource that doesn't count can't make a loop.
  */
 @Component
 public class TreeLinks {

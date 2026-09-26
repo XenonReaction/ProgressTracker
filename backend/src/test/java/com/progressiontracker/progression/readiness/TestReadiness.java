@@ -11,8 +11,7 @@ public final class TestReadiness {
 	}
 
 	public static ReadinessService service(TreeNodeRepository treeNodes) {
-		return new ReadinessService(List.of(new ManualReadinessCalculator(), new LinkedTreeReadinessCalculator()),
-				treeNodes);
+		return new ReadinessService(List.of(new TreeResourceReadinessCalculator()), treeNodes);
 	}
 
 }

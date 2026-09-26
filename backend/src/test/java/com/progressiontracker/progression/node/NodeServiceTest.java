@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.progression.readiness.TestReadiness;
@@ -59,33 +60,32 @@ class NodeServiceTest {
 	}
 
 	@Test
-	void createCopiesFieldsAndDefaultsToManualSource() {
+	void createCopiesFieldsAndUsesTheHandEnteredValueWhenNothingCounts() {
 		when(nodes.save(any(Node.class))).thenAnswer(invocation -> withId(invocation.getArgument(0), 7L));
 
 		NodeResponse response = service.create(new NodeRequest("Generics", "Type parameters", 40,
-				List.of(new NodeRequest.Link("https://example.com", "Docs")), null, List.of("java", "types")));
+				List.of(url("https://example.com", "Docs")), List.of("java", "types")));
 
 		assertThat(response.id()).isEqualTo(7L);
 		assertThat(response.title()).isEqualTo("Generics");
 		assertThat(response.description()).isEqualTo("Type parameters");
 		assertThat(response.readiness()).isEqualTo(40);
-		assertThat(response.readinessSourceType()).isEqualTo("manual");
-		assertThat(response.linkedTree()).isNull();
-		assertThat(response.links()).containsExactly(new NodeResponse.Link("https://example.com", "Docs"));
+		assertThat(response.resources())
+			.containsExactly(new NodeResponse.Resource("url", "https://example.com", null, "Docs", false));
 		assertThat(response.tags()).containsExactly("java", "types");
 	}
 
 	@Test
-	void updateReplacesFieldsAndLinks() {
+	void updateReplacesFieldsAndResources() {
 		Node node = withId(new Node(user, "Old title"), 7L);
-		node.getLinks().add(new NodeLink("https://old.example.com", null));
+		node.getResources().add(NodeResource.url("https://old.example.com", null));
 		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
 
-		NodeResponse response = service.update(7L, new NodeRequest("New title", null, 90, null, null, null));
+		NodeResponse response = service.update(7L, new NodeRequest("New title", null, 90, null, null));
 
 		assertThat(response.title()).isEqualTo("New title");
 		assertThat(response.readiness()).isEqualTo(90);
-		assertThat(response.links()).isEmpty();
+		assertThat(response.resources()).isEmpty();
 	}
 
 	@Test
@@ -112,7 +112,7 @@ class NodeServiceTest {
 	}
 
 	@Test
-	void linkingTakesReadinessFromTheTreeAndKeepsTheHandEnteredValue() {
+	void aCountingTreeGivesTheNodeItsReadinessAndTheHandEnteredValueIsKept() {
 		Node node = withId(new Node(user, "Collections"), 7L);
 		Tree linked = withId(new Tree(user, "Collections in depth"), 3L);
 		Tree containing = withId(new Tree(user, "Java"), 4L);
@@ -122,41 +122,94 @@ class NodeServiceTest {
 		when(treeNodes.findNodesInTree(linked))
 			.thenReturn(List.of(manual(11L, "List", 80), manual(12L, "Map", 60), manual(13L, "Set", 31)));
 
-		NodeResponse response = service.update(7L, new NodeRequest("Collections", null, 25, null, 3L, null));
+		NodeResponse response = service.update(7L,
+				new NodeRequest("Collections", null, 25, List.of(tree(3L, null, true)), null));
 
 		verify(treeLinks).checkNoLoop(node, List.of(containing), linked);
-		assertThat(response.readinessSourceType()).isEqualTo("linked_tree");
-		assertThat(response.linkedTree()).isEqualTo(new TreeRef(3L, "Collections in depth"));
+		assertThat(response.resources()).containsExactly(
+				new NodeResponse.Resource("tree", null, new TreeRef(3L, "Collections in depth"), null, true));
 		assertThat(response.readiness()).isEqualTo(57); // (80 + 60 + 31) / 3 = 57.0
 		assertThat(response.manualReadiness()).isEqualTo(25);
 	}
 
 	@Test
-	void unlinkingGoesBackToTheHandEnteredValue() {
+	void severalCountingTreesAreAveragedAndATreeThatDoesNotCountIsIgnored() {
+		Node node = withId(new Node(user, "Front-end Basics"), 7L);
+		Tree css = withId(new Tree(user, "CSS"), 3L);
+		Tree html = withId(new Tree(user, "HTML"), 4L);
+		Tree reading = withId(new Tree(user, "Further reading"), 5L);
+		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
+		when(trees.findByIdAndOwner(3L, user)).thenReturn(Optional.of(css));
+		when(trees.findByIdAndOwner(4L, user)).thenReturn(Optional.of(html));
+		when(trees.findByIdAndOwner(5L, user)).thenReturn(Optional.of(reading));
+		when(trees.findTreesContaining(node)).thenReturn(List.of());
+		when(treeNodes.findNodesInTree(css)).thenReturn(List.of(manual(11L, "Selectors", 54)));
+		when(treeNodes.findNodesInTree(html)).thenReturn(List.of(manual(12L, "Forms", 100)));
+
+		NodeResponse response = service.update(7L, new NodeRequest("Front-end Basics", null, 10,
+				List.of(tree(3L, "Styling", true), url("https://example.com", null), tree(4L, null, true),
+						tree(5L, null, false)),
+				null));
+
+		// (54 + 100) / 2 = 77; the reference-only tree isn't read or loop-checked
+		assertThat(response.readiness()).isEqualTo(77);
+		assertThat(response.resources()).extracting(NodeResponse.Resource::type)
+			.containsExactly("tree", "url", "tree", "tree");
+		assertThat(response.resources().get(0).label()).isEqualTo("Styling");
+		verify(treeLinks).checkNoLoop(node, List.of(), css);
+		verify(treeLinks).checkNoLoop(node, List.of(), html);
+		verify(treeLinks, never()).checkNoLoop(node, List.of(), reading);
+		verify(treeNodes, never()).findNodesInTree(reading);
+	}
+
+	@Test
+	void removingTheLastCountingResourceGoesBackToTheHandEnteredValue() {
 		Node node = withId(new Node(user, "Collections"), 7L);
 		node.setReadiness(25);
-		node.setLinkedTree(withId(new Tree(user, "Collections in depth"), 3L));
+		node.getResources().add(NodeResource.tree(withId(new Tree(user, "Collections in depth"), 3L), null, true));
 		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
 
-		NodeResponse response = service.update(7L, new NodeRequest("Collections", null, 25, null, null, null));
+		NodeResponse response = service.update(7L, new NodeRequest("Collections", null, 25, null, null));
 
-		assertThat(response.readinessSourceType()).isEqualTo("manual");
-		assertThat(response.linkedTree()).isNull();
+		assertThat(response.resources()).isEmpty();
 		assertThat(response.readiness()).isEqualTo(25);
 	}
 
 	@Test
-	void linkingToAnUnknownTreeIsNotFound() {
+	void aTreeThatIsNotTheUsersIsNotFound() {
 		when(trees.findByIdAndOwner(99L, user)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> service.create(new NodeRequest("Collections", null, 0, null, 99L, null)))
+		assertThatThrownBy(() -> service.create(
+				new NodeRequest("Collections", null, 0, List.of(tree(99L, null, true)), null)))
 			.isInstanceOf(NotFoundException.class)
 			.hasMessage("Tree 99 not found");
 		verify(nodes, never()).save(any());
 	}
 
 	@Test
-	void linkingRefusesALoop() {
+	void refusesResourcesThatDoNotFitTheirType() {
+		Tree css = withId(new Tree(user, "CSS"), 3L);
+		lenient().when(trees.findByIdAndOwner(3L, user)).thenReturn(Optional.of(css));
+
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("url", "https://example.com", null, null, true)))
+			.isInstanceOf(BadRequestException.class)
+			.hasMessageContaining("can't count toward readiness");
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("url", null, null, null, false)))
+			.isInstanceOf(BadRequestException.class);
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("tree", "https://example.com", 3L, null, true)))
+			.isInstanceOf(BadRequestException.class);
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("deck", null, 3L, null, true)))
+			.isInstanceOf(BadRequestException.class)
+			.hasMessageContaining("Unknown resource type");
+		assertThatThrownBy(() -> service.create(new NodeRequest("Twice", null, 0,
+				List.of(tree(3L, null, true), tree(3L, "Again", false)), null)))
+			.isInstanceOf(BadRequestException.class)
+			.hasMessage("Tree 3 is listed more than once");
+		verify(nodes, never()).save(any());
+	}
+
+	@Test
+	void countingATreeRefusesALoop() {
 		Node node = withId(new Node(user, "Collections"), 7L);
 		Tree linked = withId(new Tree(user, "Java"), 3L);
 		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
@@ -164,7 +217,8 @@ class NodeServiceTest {
 		when(trees.findTreesContaining(node)).thenReturn(List.of(linked));
 		doThrow(new ConflictException("loop")).when(treeLinks).checkNoLoop(node, List.of(linked), linked);
 
-		assertThatThrownBy(() -> service.update(7L, new NodeRequest("Collections", null, 0, null, 3L, null)))
+		assertThatThrownBy(() -> service.update(7L,
+				new NodeRequest("Collections", null, 0, List.of(tree(3L, null, true)), null)))
 			.isInstanceOf(ConflictException.class);
 	}
 
@@ -180,14 +234,14 @@ class NodeServiceTest {
 	}
 
 	@Test
-	void updateReadinessRefusesALinkedNode() {
+	void updateReadinessRefusesANodeWithACountingResource() {
 		Node node = withId(new Node(user, "Collections"), 7L);
-		node.setLinkedTree(withId(new Tree(user, "Collections in Depth"), 3L));
+		node.getResources().add(NodeResource.tree(withId(new Tree(user, "Collections in Depth"), 3L), null, true));
 		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
 
 		assertThatThrownBy(() -> service.updateReadiness(7L, new NodeReadinessRequest(65)))
 			.isInstanceOf(ConflictException.class)
-			.hasMessageContaining("takes its readiness from the tree \"Collections in Depth\"");
+			.hasMessageContaining("takes its readiness from its resources");
 		assertThat(node.getReadiness()).isZero();
 	}
 
@@ -200,6 +254,18 @@ class NodeServiceTest {
 		service.delete(7L);
 
 		verify(nodes).delete(node);
+	}
+
+	private NodeResponse create(NodeRequest.Resource resource) {
+		return service.create(new NodeRequest("Node", null, 0, List.of(resource), null));
+	}
+
+	private static NodeRequest.Resource url(String url, String label) {
+		return new NodeRequest.Resource("url", url, null, label, false);
+	}
+
+	private static NodeRequest.Resource tree(Long treeId, String label, boolean counts) {
+		return new NodeRequest.Resource("tree", null, treeId, label, counts);
 	}
 
 	private Node manual(Long id, String title, int readiness) {

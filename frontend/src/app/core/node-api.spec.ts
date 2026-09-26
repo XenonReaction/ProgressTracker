@@ -25,7 +25,7 @@ describe('NodeApi', () => {
   });
 
   it('gets, creates, updates and deletes by id', () => {
-    const request = { title: 'Generics', description: null, readiness: 10, links: [] };
+    const request = { title: 'Generics', description: null, readiness: 10, resources: [] };
     api.get(3).subscribe();
     api.create(request).subscribe();
     api.update(3, request).subscribe();

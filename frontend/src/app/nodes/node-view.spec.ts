@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { aNode } from '../core/test-data';
+import { aNode, aTreeResource, aUrlResource } from '../core/test-data';
 import { NodeView } from './node-view';
 
 describe('NodeView', () => {
@@ -28,14 +28,14 @@ describe('NodeView', () => {
     await fixture.whenStable();
   }
 
-  it('shows the node read-only, with its links, tags, trees and an Edit link', async () => {
+  it('shows the node read-only, with its resources, tags, trees and an Edit link', async () => {
     await load(
       aNode({
         id: 5,
         title: 'Generics',
         description: 'Type parameters',
         tags: ['java', 'types'],
-        links: [{ url: 'https://dev.java/learn/generics/', label: 'dev.java' }],
+        resources: [aUrlResource('https://dev.java/learn/generics/', 'dev.java')],
       }),
     );
 
@@ -66,8 +66,36 @@ describe('NodeView', () => {
     expect(page.textContent).toContain('65%');
   });
 
+  it('lists resources by type, trees first, saying which count', async () => {
+    await load(
+      aNode({
+        id: 5,
+        resources: [
+          aUrlResource('https://example.com', 'Docs'),
+          aTreeResource(9, 'Collections in Depth', true, 'Deep dive'),
+          aTreeResource(4, 'Reading', false),
+        ],
+      }),
+    );
+
+    const headings = Array.from(page.querySelectorAll('h3')).map((h) => h.textContent);
+    expect(headings).toEqual(['Trees', 'Links']);
+    const trees = Array.from(page.querySelectorAll('h3 + ul')[0].querySelectorAll('li')).map((li) =>
+      li.textContent?.replace(/\s+/g, ' ').trim(),
+    );
+    expect(trees).toEqual(['Deep dive (Collections in Depth) · counts toward readiness', 'Reading · for reference']);
+    expect(link('Docs').getAttribute('href')).toBe('https://example.com');
+  });
+
+  it('averages several linked trees', async () => {
+    await load(aNode({ id: 5, readiness: 77, resources: [aTreeResource(3, 'CSS'), aTreeResource(4, 'HTML')] }), []);
+
+    expect(page.textContent).toContain('77%, the average of the linked trees CSS and HTML.');
+    expect(page.querySelector('app-readiness-editor')).toBeNull();
+  });
+
   it('shows where a linked node gets its readiness, with no way to type one', async () => {
-    await load(aNode({ id: 5, readiness: 57, linkedTree: { id: 9, title: 'Collections in Depth' } }), []);
+    await load(aNode({ id: 5, readiness: 57, resources: [aTreeResource(9, 'Collections in Depth')] }), []);
 
     expect(page.textContent).toContain('57%, the average of the nodes in the linked tree Collections in Depth');
     expect(link('Collections in Depth').getAttribute('href')).toBe('/trees/9');

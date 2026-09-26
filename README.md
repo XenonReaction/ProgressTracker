@@ -7,9 +7,11 @@ single-user proof of concept: there's no login, and every request acts as one de
 
 What it does today:
 
-- **Node library.** Skills (nodes) with a description, links, tags and a readiness value
-  from 0 to 100. A node's readiness is entered by hand, or taken from a whole other tree
-  (the average of its nodes), with trees nesting to any depth but never in a loop.
+- **Node library.** Skills (nodes) with a description, tags, a readiness value from 0 to
+  100, and resources: links to read, and other trees. A tree can count toward the node's
+  readiness, which is then the average of the trees that count (each the average of its
+  nodes); otherwise readiness is entered by hand. Trees nest to any depth but never in a
+  loop.
 - **Skill trees.** Arrangements of library nodes on a canvas, joined by prerequisite
   edges. The same node can sit in several trees. Each node shows how close it is to being
   worth starting (not started, early, close or ready), judged by its prerequisites'
@@ -178,23 +180,27 @@ request acts as a single default user (`demo`). Errors are returned as
 
 | Method & path | Purpose |
 |---|---|
-| `GET/POST /nodes`, `GET/PUT/DELETE /nodes/{id}` | Node library. Deleting a node that a tree still uses returns 409 and lists those trees. Setting `linkedTreeId` makes the node take its readiness from that tree (see below). |
-| `PUT /nodes/{id}/readiness` | Sets only the hand-entered readiness (the view pages use it). Refused with 409 for a node linked to a tree. |
+| `GET/POST /nodes`, `GET/PUT/DELETE /nodes/{id}` | Node library, each node with its `resources` in order (see below). Deleting a node that a tree still uses returns 409 and lists those trees. |
+| `PUT /nodes/{id}/readiness` | Sets only the hand-entered readiness (the view pages use it). Refused with 409 while any of the node's resources counts. |
 | `GET /nodes/{id}/trees` | The trees a node is placed in. |
-| `GET/POST /trees`, `GET/PUT/DELETE /trees/{id}` | Tree metadata. Deleting a tree also removes its placements and edges, but not library nodes. A tree that nodes are linked to can't be deleted (409, listing those nodes). |
+| `GET/POST /trees`, `GET/PUT/DELETE /trees/{id}` | Tree metadata. Deleting a tree also removes its placements and edges, but not library nodes. A tree that any node lists as a resource can't be deleted (409, listing those nodes). |
 | `GET/POST /trees/{treeId}/nodes`, `GET/PUT/DELETE /trees/{treeId}/nodes/{treeNodeId}` | Library nodes placed in a tree, with position and readiness thresholds. |
 | `PUT /trees/{treeId}/nodes/positions` | Moves many tree nodes in one transaction (used by auto-layout). An unknown id changes nothing. |
 | `POST/DELETE /trees/{treeId}/edit-session`, `POST /trees/{treeId}/edit-session/discard` | Edit mode: `POST` saves a restore point (409 if the tree is already being edited), `DELETE` is "Done" and keeps the changes, and `discard` puts the tree back as it was. A tree's `editSessionStartedAt` is set while a session is open. |
 | `GET/POST /trees/{treeId}/prerequisites`, `DELETE /trees/{treeId}/prerequisites/{id}` | Prerequisite edges. Self-edges (400), duplicates (409) and cycles (409) are refused. |
 | `PUT /trees/{treeId}/prerequisites/{id}/route`, `DELETE /trees/{treeId}/prerequisites/routes` | An edge's hand-adjusted right-angle route (`{"segments": 3, "offsets": [40]}`, or null for the default), and resetting every route in a tree. |
 
-**Linked trees.** A node's `readiness` in every response is its effective value. With
-`linkedTreeId` set, that's the average readiness of the linked tree's nodes, rounded to a
-whole percent (0 for an empty tree), and a linked node inside that tree counts with its own
-derived value. The hand-entered value is still sent as `readiness` in requests, returned as
-`manualReadiness`, and used again when the node is unlinked. A link that would make a
-tree's readiness depend on itself is refused with 409, whether it comes from linking a node
-or placing a linked node in a tree.
+**Resources and readiness.** A node's `resources` are sent and returned in order. Each is
+`{"type": "url", "url": "https://…"}` (for reading, never counts) or `{"type": "tree",
+"treeId": 3, "counts": true}` (returned with `tree: {id, title}`), with an optional
+`label`; without one, the target's title is shown. A node's `readiness` in every response is
+its effective value: the average of the trees that count, each the average of its nodes'
+readiness, rounded to a whole percent (0 for an empty tree), with nodes inside those trees
+counting their own derived value. When nothing counts, it's the hand-entered value, which
+is always sent as `readiness` in requests and returned as `manualReadiness`. A URL that
+counts, a tree listed twice or an unknown type is refused with 400. Counting a tree that
+would make a tree's readiness depend on itself is refused with 409, whether it comes from
+saving a node or placing it in a tree.
 
 Tree node ids and library node ids are different: `/trees/{treeId}/nodes/{treeNodeId}`
 and prerequisite edges use tree node ids, and each tree node response includes the

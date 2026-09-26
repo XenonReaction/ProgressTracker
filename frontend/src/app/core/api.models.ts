@@ -1,21 +1,38 @@
 /** Shapes of the backend's /api/v1 JSON. Keep in sync with the Java *Response/*Request records. */
 
-export interface NodeLink {
-  url: string;
-  label: string | null;
-}
-
-/** A tree named in another response, e.g. the tree a node takes its readiness from. */
+/** A tree named in another response, e.g. a tree a node lists as a resource. */
 export interface TreeRef {
   id: number;
   title: string;
 }
 
-export type ReadinessSourceType = 'manual' | 'linked_tree';
+/** What a node resource points to. Only a tree can count toward readiness so far. */
+export type NodeResourceType = 'url' | 'tree';
 
 /**
- * `readiness` is the value to show: `manualReadiness` (entered by hand), or the average of
- * `linkedTree`'s nodes when the node is linked. The hand-entered value is kept while linked.
+ * Something a node points to, in the node's order: a tree (`tree`) or an external page
+ * (`url`). `label` is as entered, or null to show the target's title. `counts` is whether
+ * it counts toward the node's readiness; a URL never does.
+ */
+export interface NodeResource {
+  type: NodeResourceType;
+  url: string | null;
+  tree: TreeRef | null;
+  label: string | null;
+  counts: boolean;
+}
+
+export interface NodeResourceRequest {
+  type: NodeResourceType;
+  url?: string | null;
+  treeId?: number | null;
+  label?: string | null;
+  counts?: boolean;
+}
+
+/**
+ * `readiness` is the value to show: the average of the resources that count, or
+ * `manualReadiness` (entered by hand) when none do. The hand-entered value is always kept.
  */
 export interface Node {
   id: number;
@@ -23,9 +40,7 @@ export interface Node {
   description: string | null;
   readiness: number;
   manualReadiness: number;
-  readinessSourceType: ReadinessSourceType;
-  linkedTree: TreeRef | null;
-  links: NodeLink[];
+  resources: NodeResource[];
   tags: string[];
   createdAt: string;
   updatedAt: string;
@@ -34,11 +49,9 @@ export interface Node {
 export interface NodeRequest {
   title: string;
   description: string | null;
-  /** The hand-entered value, kept even while the node is linked. */
+  /** The hand-entered value, kept even while a resource counts. */
   readiness: number;
-  links: NodeLink[];
-  /** Take readiness from this tree instead; null or omitted for the hand-entered value. */
-  linkedTreeId?: number | null;
+  resources?: NodeResourceRequest[];
   tags?: string[];
 }
 
@@ -75,10 +88,9 @@ export interface TreeNode {
   nodeId: number;
   title: string;
   description: string | null;
-  links: NodeLink[];
-  /** Effective readiness: derived from `linkedTree` when the node is linked. */
+  resources: NodeResource[];
+  /** Effective readiness: derived when any of `resources` counts. */
   readiness: number;
-  linkedTree: TreeRef | null;
   positionX: number;
   positionY: number;
   aggregateThreshold: number;
@@ -178,6 +190,6 @@ export interface Problem {
   errors?: { field: string; message: string }[];
   /** Trees still using a node that couldn't be deleted. */
   trees?: TreeRef[];
-  /** Nodes linked to a tree that couldn't be deleted. */
+  /** Nodes listing a tree that couldn't be deleted. */
   nodes?: { id: number; title: string }[];
 }

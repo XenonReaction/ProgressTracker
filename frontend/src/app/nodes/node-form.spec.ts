@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 
-import { aNode, aTree } from '../core/test-data';
+import { aNode, aTree, aTreeResource, aUrlResource } from '../core/test-data';
 import { NodeForm } from './node-form';
 
 describe('NodeForm', () => {
@@ -42,8 +42,14 @@ describe('NodeForm', () => {
         title: 'Generics',
         description: 'Type parameters',
         readiness: 0,
-        links: [{ url: 'https://dev.java/learn/generics/', label: 'dev.java' }],
-        linkedTreeId: null,
+        resources: [
+          {
+            type: 'url',
+            url: 'https://dev.java/learn/generics/',
+            label: 'dev.java',
+            counts: false,
+          },
+        ],
         tags: ['java', 'types'],
       });
       request.flush(aNode({ id: 8 }));
@@ -52,11 +58,12 @@ describe('NodeForm', () => {
 
     it('does not ask for readiness, which is set on the node page', () => {
       expect(input('readiness', 'number')).toBeNull();
-      expect(page.textContent).toContain('It starts at 0%');
+      expect(page.textContent).toContain('it starts at 0%');
     });
 
     it('does not submit an invalid form', async () => {
       type(input('tags'), 'x'.repeat(51));
+      submit();
       submit();
       await fixture.whenStable();
 
@@ -67,7 +74,7 @@ describe('NodeForm', () => {
 
     it('rejects links that are not http(s) URLs', async () => {
       type(input('title'), 'Generics');
-      await addLink('not a url', '');
+      await addLink('ftp://example.com', '');
       submit();
       await fixture.whenStable();
 
@@ -75,41 +82,89 @@ describe('NodeForm', () => {
       expect(page.textContent).toContain('Enter an http(s) URL');
     });
 
-    it('links the node to a chosen tree instead of a hand-entered value', async () => {
+    it('adds a tree, which counts toward readiness unless unticked', async () => {
       type(input('title'), 'Collections');
-      await chooseSource('linked_tree');
-      http.expectOne({ method: 'GET', url: '/api/v1/trees' }).flush([aTree({ id: 3, title: 'Collections in Depth' })]);
+      await addTree();
+      http
+        .expectOne({ method: 'GET', url: '/api/v1/trees' })
+        .flush([
+          aTree({ id: 3, title: 'Collections in Depth' }),
+          aTree({ id: 4, title: 'Reading' }),
+        ]);
       await fixture.whenStable();
+      chooseTree(0, 1);
+      await fixture.whenStable();
+      expect(page.textContent).toContain('Readiness will be the average of the trees that count.');
 
-      chooseTree(1);
+      await addTree();
+      chooseTree(1, 2);
+      counts(1).click();
+      type(labelInput(1), ' Further reading ');
+      await fixture.whenStable();
       submit();
 
       const request = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
-      expect(request.request.body.linkedTreeId).toBe(3);
+      expect(request.request.body.resources).toEqual([
+        { type: 'tree', treeId: 3, label: null, counts: true },
+        { type: 'tree', treeId: 4, label: 'Further reading', counts: false },
+      ]);
       request.flush(aNode());
     });
 
-    it('requires a tree when the linked source is chosen', async () => {
+    it('requires a tree to be chosen', async () => {
       type(input('title'), 'Collections');
-      await chooseSource('linked_tree');
+      await addTree();
       http.expectOne('/api/v1/trees').flush([aTree({ id: 3 })]);
       submit();
       await fixture.whenStable();
 
       http.expectNone('/api/v1/nodes');
-      expect(page.textContent).toContain("Choose the tree this node's readiness comes from");
+      expect(page.textContent).toContain('Choose a tree.');
+    });
+
+    it('reorders and removes resources', async () => {
+      type(input('title'), 'Generics');
+      await addLink('https://first.example', 'First');
+      await addLink('https://second.example', 'Second');
+      await addLink('https://third.example', 'Third');
+
+      button('Move resource 3 up').click();
+      await fixture.whenStable();
+      expect(rows().map((row) => labelInputIn(row).value)).toEqual(['First', 'Third', 'Second']);
+      expect(
+        (rows()[1].querySelector('input[formControlName=url]') as HTMLInputElement).value,
+      ).toBe('https://third.example');
+      expect(button('Move resource 1 up').disabled).toBe(true);
+      expect(button('Move resource 3 down').disabled).toBe(true);
+      (rows()[0].querySelector('button:last-of-type') as HTMLButtonElement).click();
+      await fixture.whenStable();
+      expect(rows().map((row) => labelInputIn(row).value)).toEqual(['Third', 'Second']);
+      submit();
+
+      const request = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
+      expect(request.request.body.resources.map((r: { label: string }) => r.label)).toEqual([
+        'Third',
+        'Second',
+      ]);
+      request.flush(aNode());
     });
 
     it('shows validation problems returned by the backend', async () => {
       type(input('title'), 'Generics');
       submit();
       http.expectOne('/api/v1/nodes').flush(
-        { status: 400, title: 'Bad Request', errors: [{ field: 'title', message: 'size must be between 0 and 200' }] },
+        {
+          status: 400,
+          title: 'Bad Request',
+          errors: [{ field: 'title', message: 'size must be between 0 and 200' }],
+        },
         { status: 400, statusText: 'Bad Request' },
       );
       await fixture.whenStable();
 
-      expect(page.querySelector('[role=alert]')?.textContent).toContain('title size must be between 0 and 200');
+      expect(page.querySelector('[role=alert]')?.textContent).toContain(
+        'title size must be between 0 and 200',
+      );
       expect(navigate).not.toHaveBeenCalled();
     });
   });
@@ -126,7 +181,7 @@ describe('NodeForm', () => {
           readiness: 60,
           manualReadiness: 60,
           tags: ['java'],
-          links: [{ url: 'https://example.com', label: 'Docs' }],
+          resources: [aUrlResource('https://example.com', 'Docs')],
         }),
       );
       await fixture.whenStable();
@@ -135,8 +190,10 @@ describe('NodeForm', () => {
     it('loads the existing node into the form', () => {
       expect(input('title').value).toBe('OOP');
       expect(input('tags').value).toBe('java');
-      expect(page.textContent).toContain("You enter this node's readiness yourself (60%), on its page");
-      expect((page.querySelector('input[formControlName=url]') as HTMLInputElement).value).toBe('https://example.com');
+      expect(page.textContent).toContain('so you enter it yourself (60%)');
+      expect((page.querySelector('input[formControlName=url]') as HTMLInputElement).value).toBe(
+        'https://example.com',
+      );
     });
 
     it('puts the updated node, keeping its readiness, and goes back to where the user came from', () => {
@@ -147,13 +204,15 @@ describe('NodeForm', () => {
       expect(request.request.body.title).toBe('Object-oriented programming');
       expect(request.request.body.readiness).toBe(60);
       expect(request.request.body.tags).toEqual(['java']);
-      expect(request.request.body.links).toEqual([{ url: 'https://example.com', label: 'Docs' }]);
+      expect(request.request.body.resources).toEqual([
+        { type: 'url', url: 'https://example.com', label: 'Docs', counts: false },
+      ]);
       request.flush(aNode());
       expect(navigate).toHaveBeenCalledWith('/trees/2');
     });
   });
 
-  describe('editing a linked node', () => {
+  describe('editing a node that takes its readiness from a tree', () => {
     beforeEach(async () => {
       fixture.componentRef.setInput('id', '5');
       await fixture.whenStable();
@@ -163,27 +222,40 @@ describe('NodeForm', () => {
           title: 'Collections',
           readiness: 57,
           manualReadiness: 25,
-          readinessSourceType: 'linked_tree',
-          linkedTree: { id: 3, title: 'Collections in Depth' },
+          resources: [aTreeResource(3, 'Collections in Depth', true, 'Deep dive')],
         }),
       );
-      http.expectOne('/api/v1/trees').flush([aTree({ id: 2, title: 'Java' }), aTree({ id: 3, title: 'Collections in Depth' })]);
+      http
+        .expectOne('/api/v1/trees')
+        .flush([aTree({ id: 2, title: 'Java' }), aTree({ id: 3, title: 'Collections in Depth' })]);
       await fixture.whenStable();
     });
 
-    it('shows the linked tree with its current readiness and keeps the hand-entered value', () => {
-      expect(select().selectedOptions[0].textContent).toBe('Collections in Depth');
+    it('shows the tree with its current readiness and keeps the hand-entered value', () => {
+      expect(treeSelect(0).selectedOptions[0].textContent).toBe('Collections in Depth');
+      expect(labelInput(0).value).toBe('Deep dive');
+      expect(counts(0).checked).toBe(true);
       expect(page.textContent).toContain("It's 57% now.");
       expect(page.textContent).toContain('Your hand-entered value (25%) is kept');
     });
 
-    it('unlinking sends the hand-entered value and no tree', async () => {
-      await chooseSource('manual');
-      expect(page.textContent).toContain("You enter this node's readiness yourself (25%)");
+    it('stops showing the saved readiness once the trees that count change', async () => {
+      chooseTree(0, 1);
+      await fixture.whenStable();
+
+      expect(page.textContent).not.toContain("It's 57% now.");
+    });
+
+    it('unticking the tree goes back to the hand-entered value', async () => {
+      counts(0).click();
+      await fixture.whenStable();
+      expect(page.textContent).toContain('so you enter it yourself (25%)');
       submit();
 
       const request = http.expectOne({ method: 'PUT', url: '/api/v1/nodes/5' });
-      expect(request.request.body.linkedTreeId).toBeNull();
+      expect(request.request.body.resources).toEqual([
+        { type: 'tree', treeId: 3, label: 'Deep dive', counts: false },
+      ]);
       expect(request.request.body.readiness).toBe(25);
       request.flush(aNode());
     });
@@ -191,7 +263,9 @@ describe('NodeForm', () => {
 
   it('ignores a returnTo that points outside the app', () => {
     fixture.componentRef.setInput('returnTo', '//evil.example.com');
-    expect((fixture.componentInstance as unknown as { cancelUrl(): string }).cancelUrl()).toBe('/nodes');
+    expect((fixture.componentInstance as unknown as { cancelUrl(): string }).cancelUrl()).toBe(
+      '/nodes',
+    );
   });
 
   function input(name: string, type?: string): HTMLInputElement {
@@ -204,27 +278,48 @@ describe('NodeForm', () => {
     element.dispatchEvent(new Event('input'));
   }
 
+  function button(label: string): HTMLButtonElement {
+    return Array.from(page.querySelectorAll('button')).find(
+      (b) => b.getAttribute('aria-label') === label || b.textContent?.trim() === label,
+    ) as HTMLButtonElement;
+  }
+
+  function rows(): HTMLElement[] {
+    return Array.from(page.querySelectorAll('fieldset .resource'));
+  }
+
   async function addLink(url: string, label: string): Promise<void> {
-    (Array.from(page.querySelectorAll('button')).find((b) => b.textContent?.includes('Add link')) as HTMLButtonElement).click();
+    button('+ Add link').click();
     await fixture.whenStable();
-    const links = page.querySelectorAll('fieldset div');
-    const row = links[links.length - 1];
+    const row = rows().at(-1)!;
     type(row.querySelector('input[formControlName=url]') as HTMLInputElement, url);
     type(row.querySelector('input[formControlName=label]') as HTMLInputElement, label);
   }
 
-  async function chooseSource(source: 'manual' | 'linked_tree'): Promise<void> {
-    (page.querySelector(`input[type=radio][value=${source}]`) as HTMLInputElement).click();
+  async function addTree(): Promise<void> {
+    button('+ Add tree').click();
     await fixture.whenStable();
   }
 
-  function select(): HTMLSelectElement {
-    return page.querySelector('select[formControlName=linkedTreeId]') as HTMLSelectElement;
+  function treeSelect(row: number): HTMLSelectElement {
+    return rows()[row].querySelector('select') as HTMLSelectElement;
   }
 
-  function chooseTree(index: number): void {
-    select().selectedIndex = index;
-    select().dispatchEvent(new Event('change'));
+  function chooseTree(row: number, index: number): void {
+    treeSelect(row).selectedIndex = index;
+    treeSelect(row).dispatchEvent(new Event('change'));
+  }
+
+  function counts(row: number): HTMLInputElement {
+    return rows()[row].querySelector('input[type=checkbox]') as HTMLInputElement;
+  }
+
+  function labelInput(row: number): HTMLInputElement {
+    return labelInputIn(rows()[row]);
+  }
+
+  function labelInputIn(row: HTMLElement): HTMLInputElement {
+    return row.querySelector('input[formControlName=label]') as HTMLInputElement;
   }
 
   function submit(): void {

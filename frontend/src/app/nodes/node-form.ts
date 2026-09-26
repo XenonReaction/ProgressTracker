@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormArray,
@@ -10,25 +11,37 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { NodeLink, NodeRequest, ReadinessSourceType, TreeRef } from '../core/api.models';
+import { NodeRequest, NodeResource, NodeResourceType, TreeRef } from '../core/api.models';
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { TreeApi } from '../core/tree-api';
 import { MAX_TAG_LENGTH, parseTags, tagsValidator } from '../trees/tags';
 
-type LinkGroup = FormGroup<{ url: FormControl<string>; label: FormControl<string> }>;
+type ResourceGroup = FormGroup<{
+  type: FormControl<NodeResourceType>;
+  url: FormControl<string>;
+  treeId: FormControl<number | null>;
+  label: FormControl<string>;
+  counts: FormControl<boolean>;
+}>;
 
-/** A linked node needs a tree to link to. */
-function linkedTreeChosen(group: AbstractControl): ValidationErrors | null {
-  const { source, linkedTreeId } = group.value;
-  return source === 'linked_tree' && linkedTreeId == null ? { linkedTreeRequired: true } : null;
+const HTTP_URL = /^https?:\/\/\S+$/i;
+
+/** A link needs an http(s) URL, and a tree needs a tree chosen. */
+function resourceTarget(group: AbstractControl): ValidationErrors | null {
+  const { type, url, treeId } = group.value;
+  if (type === 'url') {
+    return HTTP_URL.test((url ?? '').trim()) ? null : { url: true };
+  }
+  return treeId == null ? { treeRequired: true } : null;
 }
 
 /**
  * Create (`/nodes/new`) or edit (`/nodes/:id/edit`) a library node: its title, description,
- * links, tags, and where its readiness comes from (a hand-entered value, or the average of a
- * linked tree). The hand-entered value itself is set on the node's view page, so this form
- * only carries it through unchanged.
+ * tags and resources. Resources are links and trees, in the order the user sets; a tree can
+ * count toward readiness, and then the node's readiness is the average of the trees that
+ * count. The hand-entered value itself is set on the node's view page, so this form only
+ * carries it through unchanged.
  */
 @Component({
   selector: 'app-node-form',
@@ -47,40 +60,45 @@ export class NodeForm implements OnInit {
 
   protected readonly maxTagLength = MAX_TAG_LENGTH;
 
-  protected readonly form = new FormGroup(
-    {
-      title: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required, Validators.maxLength(200)],
-      }),
-      description: new FormControl('', { nonNullable: true }),
-      readiness: new FormControl(0, {
-        nonNullable: true,
-        validators: [Validators.required, Validators.min(0), Validators.max(100)],
-      }),
-      links: new FormArray<LinkGroup>([]),
-      /** Comma-separated in the form; sent to the API as a list. */
-      tags: new FormControl('', { nonNullable: true, validators: [tagsValidator] }),
-      source: new FormControl<ReadinessSourceType>('manual', { nonNullable: true }),
-      linkedTreeId: new FormControl<number | null>(null),
-    },
-    { validators: linkedTreeChosen },
-  );
+  protected readonly form = new FormGroup({
+    title: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.maxLength(200)],
+    }),
+    description: new FormControl('', { nonNullable: true }),
+    readiness: new FormControl(0, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(0), Validators.max(100)],
+    }),
+    resources: new FormArray<ResourceGroup>([]),
+    /** Comma-separated in the form; sent to the API as a list. */
+    tags: new FormControl('', { nonNullable: true, validators: [tagsValidator] }),
+  });
 
   protected readonly error = signal<string | null>(null);
   protected readonly saving = signal(false);
-  /** Trees to link to; loaded the first time "From a linked tree" is chosen. */
+  /** Trees to choose from; loaded the first time a tree resource is shown. */
   protected readonly trees = signal<TreeRef[] | null>(null);
-  /** The linked tree and derived readiness as last saved, shown while that link is chosen. */
-  protected readonly savedLink = signal<{ treeId: number; readiness: number } | null>(null);
+  private treesRequested = false;
+  /** The node's readiness as last saved, and which trees counted then. */
+  private readonly saved = signal<{ countingKey: string; readiness: number } | null>(null);
 
-  constructor() {
-    this.form.controls.source.valueChanges.subscribe((source) => {
-      if (source === 'linked_tree') {
-        this.loadTrees();
-      }
-    });
-  }
+  private readonly formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue(),
+  });
+  /** Ids of the trees that count, as the form stands. */
+  private readonly countingKey = computed(() =>
+    (this.formValue().resources ?? [])
+      .filter((r) => r.type === 'tree' && r.counts && r.treeId != null)
+      .map((r) => r.treeId)
+      .join(','),
+  );
+  protected readonly anyCounts = computed(() => this.countingKey() !== '');
+  /** The saved readiness, while the trees that count are the ones it was worked out from. */
+  protected readonly currentReadiness = computed(() => {
+    const saved = this.saved();
+    return saved && saved.countingKey === this.countingKey() ? saved.readiness : null;
+  });
 
   ngOnInit(): void {
     const id = this.id();
@@ -91,38 +109,57 @@ export class NodeForm implements OnInit {
             title: node.title,
             description: node.description ?? '',
             readiness: node.manualReadiness,
-            source: node.readinessSourceType,
-            linkedTreeId: node.linkedTree?.id ?? null,
             tags: node.tags.join(', '),
           });
-          if (node.linkedTree) {
-            this.savedLink.set({ treeId: node.linkedTree.id, readiness: node.readiness });
-          }
-          node.links.forEach((link) => this.addLink(link));
+          node.resources.forEach((resource) => this.addResource(resource.type, resource));
+          this.saved.set({ countingKey: this.countingKey(), readiness: node.readiness });
         },
         error: (error) => this.error.set(errorMessage(error)),
       });
     }
   }
 
-  protected get links(): FormArray<LinkGroup> {
-    return this.form.controls.links;
+  protected get resources(): FormArray<ResourceGroup> {
+    return this.form.controls.resources;
   }
 
-  protected addLink(link?: NodeLink): void {
-    this.links.push(
-      new FormGroup({
-        url: new FormControl(link?.url ?? '', {
-          nonNullable: true,
-          validators: [Validators.required, Validators.pattern(/^https?:\/\/\S+$/)],
-        }),
-        label: new FormControl(link?.label ?? '', { nonNullable: true }),
-      }),
+  protected addResource(type: NodeResourceType, resource?: NodeResource): void {
+    this.resources.push(
+      new FormGroup(
+        {
+          type: new FormControl(type, { nonNullable: true }),
+          url: new FormControl(resource?.url ?? '', { nonNullable: true }),
+          treeId: new FormControl<number | null>(resource?.tree?.id ?? null),
+          label: new FormControl(resource?.label ?? '', {
+            nonNullable: true,
+            validators: [Validators.maxLength(200)],
+          }),
+          // A new tree counts unless the user says otherwise; a link never does
+          counts: new FormControl(resource ? resource.counts : type === 'tree', {
+            nonNullable: true,
+          }),
+        },
+        { validators: resourceTarget },
+      ),
     );
+    if (type === 'tree') {
+      this.loadTrees();
+    }
   }
 
-  protected removeLink(index: number): void {
-    this.links.removeAt(index);
+  protected removeResource(index: number): void {
+    this.resources.removeAt(index);
+  }
+
+  /** Swaps the resource with its neighbour, `by` -1 (up) or +1 (down). */
+  protected move(index: number, by: -1 | 1): void {
+    const other = index + by;
+    if (other < 0 || other >= this.resources.length) {
+      return;
+    }
+    const control = this.resources.at(index);
+    this.resources.removeAt(index);
+    this.resources.insert(other, control);
   }
 
   protected save(): void {
@@ -135,8 +172,11 @@ export class NodeForm implements OnInit {
       title: value.title.trim(),
       description: value.description.trim() || null,
       readiness: value.readiness,
-      links: value.links.map((link) => ({ url: link.url.trim(), label: link.label.trim() || null })),
-      linkedTreeId: value.source === 'linked_tree' ? value.linkedTreeId : null,
+      resources: value.resources.map((r) =>
+        r.type === 'url'
+          ? { type: 'url', url: r.url.trim(), label: r.label.trim() || null, counts: false }
+          : { type: 'tree', treeId: r.treeId, label: r.label.trim() || null, counts: r.counts },
+      ),
       tags: parseTags(value.tags),
     };
     const id = this.id();
@@ -152,10 +192,12 @@ export class NodeForm implements OnInit {
     });
   }
 
+  /** Loads the trees to choose from, once. */
   private loadTrees(): void {
-    if (this.trees()) {
+    if (this.treesRequested) {
       return;
     }
+    this.treesRequested = true;
     this.treeApi.list().subscribe({
       next: (trees) => this.trees.set(trees.map(({ id, title }) => ({ id, title }))),
       error: (error) => this.error.set(errorMessage(error)),

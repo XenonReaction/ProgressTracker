@@ -1,6 +1,6 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Fully decided. 7.0 and 7.1 are complete; no code has been written for 7.2 onward.
+**Status:** Fully decided. 7.0 to 7.2 are complete; no code has been written for 7.3 onward.
 
 **Steps, in build order:**
 
@@ -9,7 +9,7 @@
 | — | Architecture: modular monolith | **Fully decided.** |
 | 7.0 | Rules and examples | **Complete.** Rules and examples final; main plan updated. |
 | 7.1 | Flashcards and review records | **Complete.** |
-| 7.2 | Typed node resources | **Fully decided.** |
+| 7.2 | Typed node resources | **Complete.** |
 | 7.3 | Readiness from several resources | **Fully decided.** |
 | 7.4 | External materials with manual progress | **Fully decided.** |
 | 7.5 | Lessons | **Fully decided.** |
@@ -180,6 +180,12 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - The node page and form list resources by type.
 
 **Done when:** nodes list typed resources, and every existing link and linked tree still works.
+
+**Done:**
+- **Types so far:** `url` and `tree`, the two that exist today. Decks join in 7.3, lessons in 7.5 and coding questions in 7.6, each widening `node_resources_resource_type_check`. A URL never counts; a tree counts unless marked for reference only.
+- **Storage:** `V7__node_resources.sql` creates `node_resources` and moves every link and linked tree into it (the linked tree first and counting, then the links in order), then drops `node_links`, `nodes.linked_tree_id` and `nodes.readiness_source_type`. A tree is referred to by a foreign key, since it's in the same module; targets in other modules will be plain ids. `MigrationTest` checks the move on data in the old shape.
+- **Readiness:** the 7.0 rule applies to the trees that count: their plain average, or the hand-entered value when none count. `ReadinessCalculator` is now one per resource type (`TreeResourceReadinessCalculator`), which is where 7.3 adds decks. Loop checks run for every tree a node counts; a reference-only tree can't make a loop.
+- **Pages:** the node form lists resources in order ("+ Add link", "+ Add tree", move up and down, remove, and "Counts toward readiness" on trees). The node page groups them by type, trees first. The tree editor's details panel lists them and offers "Open" for each tree that counts.
 
 ---
 

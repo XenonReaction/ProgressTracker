@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { aNode } from '../core/test-data';
+import { aNode, aTreeResource, aUrlResource } from '../core/test-data';
 import { NodeList } from './node-list';
 
 describe('NodeList', () => {
@@ -20,8 +20,13 @@ describe('NodeList', () => {
     page = fixture.nativeElement;
     http.expectOne('/api/v1/nodes').flush([
       aNode({ id: 1, title: 'Generics', readiness: 40 }),
-      aNode({ id: 2, title: 'OOP', readiness: 80, links: [{ url: 'https://example.com', label: null }] }),
-      aNode({ id: 3, title: 'Collections', readiness: 70, linkedTree: { id: 9, title: 'Collections in Depth' } }),
+      aNode({ id: 2, title: 'OOP', readiness: 80, resources: [aUrlResource('https://example.com')] }),
+      aNode({
+        id: 3,
+        title: 'Collections',
+        readiness: 70,
+        resources: [aTreeResource(9, 'Collections in Depth'), aTreeResource(4, 'Reading', false)],
+      }),
     ]);
     await fixture.whenStable();
   });
@@ -40,10 +45,12 @@ describe('NodeList', () => {
     expect(links).toEqual(['/nodes/2', '/nodes/2/edit']);
   });
 
-  it('names the tree a linked node takes its readiness from', () => {
+  it('names the trees a node takes its readiness from, and counts its resources', () => {
     const row = page.querySelectorAll('tbody tr')[2];
-    expect(row.textContent).toContain('70% from Collections in Depth');
+    expect(row.textContent?.replace(/\s+/g, ' ')).toContain('70% from Collections in Depth');
+    expect(row.textContent).not.toContain('Reading');
     expect(row.querySelectorAll('a')[1].getAttribute('href')).toBe('/trees/9');
+    expect(row.querySelectorAll('td')[2].textContent).toBe('2');
   });
 
   it('deletes after confirmation and reloads the list', async () => {

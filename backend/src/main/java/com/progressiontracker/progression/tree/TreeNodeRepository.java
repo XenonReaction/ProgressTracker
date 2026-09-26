@@ -24,10 +24,10 @@ public interface TreeNodeRepository extends JpaRepository<TreeNode, Long> {
 	@Query("select tn.node from TreeNode tn where tn.tree = :tree")
 	List<Node> findNodesInTree(Tree tree);
 
-	/** The trees that nodes in this tree link to. */
+	/** The trees that nodes in this tree take readiness from (tree resources that count). */
 	@Query("""
-			select distinct n.linkedTree.id from TreeNode tn join tn.node n
-			where tn.tree.id = :treeId and n.linkedTree is not null""")
+			select distinct r.tree.id from TreeNode tn join tn.node n join n.resources r
+			where tn.tree.id = :treeId and r.tree is not null and r.counts = true""")
 	List<Long> findLinkedTreeIds(Long treeId);
 
 }

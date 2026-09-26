@@ -14,6 +14,7 @@ import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
 import com.progressiontracker.TestcontainersConfiguration;
+import com.progressiontracker.progression.tree.Tree;
 import com.progressiontracker.user.User;
 
 @DataJpaTest
@@ -31,7 +32,7 @@ class NodeMappingTest {
 	}
 
 	@Test
-	void newNodeDefaultsToZeroManualReadiness() {
+	void newNodeDefaultsToZeroReadinessAndNoResources() {
 		Long id = em.persistAndGetId(new Node(owner, "Generics"), Long.class);
 		em.flush();
 		em.clear();
@@ -39,38 +40,47 @@ class NodeMappingTest {
 		Node reloaded = em.find(Node.class, id);
 
 		assertThat(reloaded.getReadiness()).isZero();
-		assertThat(reloaded.getReadinessSourceType()).isEqualTo(ReadinessSourceType.MANUAL);
+		assertThat(reloaded.getResources()).isEmpty();
 		assertThat(reloaded.getCreatedAt()).isNotNull();
 		assertThat(reloaded.getUpdatedAt()).isNotNull();
 	}
 
 	@Test
-	void readinessSourceTypeIsStoredAsLowercaseString() {
-		Long id = em.persistAndGetId(new Node(owner, "Generics"), Long.class);
-		em.flush();
-
-		Object stored = em.getEntityManager()
-			.createNativeQuery("select readiness_source_type from nodes where id = :id")
-			.setParameter("id", id)
-			.getSingleResult();
-
-		assertThat(stored).isEqualTo("manual");
-	}
-
-	@Test
-	void linksArePersistedInOrder() {
+	void resourcesArePersistedInOrderWithTheirTypeStoredAsLowercaseText() {
+		Tree tree = em.persist(new Tree(owner, "Collections"));
 		Node node = new Node(owner, "Generics");
-		node.getLinks().add(new NodeLink("https://example.com/first", "First"));
-		node.getLinks().add(new NodeLink("https://example.com/second", null));
+		node.getResources().add(NodeResource.url("https://example.com/first", "First"));
+		node.getResources().add(NodeResource.tree(tree, null, true));
+		node.getResources().add(NodeResource.url("https://example.com/second", null));
 		Long id = em.persistAndGetId(node, Long.class);
 		em.flush();
 		em.clear();
 
 		Node reloaded = em.find(Node.class, id);
 
-		assertThat(reloaded.getLinks()).extracting(NodeLink::getUrl)
-			.containsExactly("https://example.com/first", "https://example.com/second");
-		assertThat(reloaded.getLinks()).extracting(NodeLink::getLabel).containsExactly("First", null);
+		assertThat(reloaded.getResources()).extracting(NodeResource::getType)
+			.containsExactly(NodeResourceType.URL, NodeResourceType.TREE, NodeResourceType.URL);
+		assertThat(reloaded.getResources()).extracting(NodeResource::getUrl)
+			.containsExactly("https://example.com/first", null, "https://example.com/second");
+		assertThat(reloaded.getResources()).extracting(NodeResource::getLabel).containsExactly("First", null, null);
+		assertThat(reloaded.getResources().get(1).getTree().getId()).isEqualTo(tree.getId());
+		assertThat(reloaded.countingTrees()).extracting(Tree::getId).containsExactly(tree.getId());
+		assertThat(em.getEntityManager()
+			.createNativeQuery("select resource_type from node_resources where node_id = :id order by position")
+			.setParameter("id", id)
+			.getResultList()).containsExactly("url", "tree", "url");
+	}
+
+	@Test
+	void aUrlThatCountsIsRefusedByTheDatabase() {
+		Long id = em.persistAndGetId(new Node(owner, "Generics"), Long.class);
+		em.flush();
+
+		assertThatThrownBy(() -> em.getEntityManager()
+			.createNativeQuery("insert into node_resources (node_id, position, resource_type, url, counts) "
+					+ "values (:id, 0, 'url', 'https://example.com', true)")
+			.setParameter("id", id)
+			.executeUpdate()).hasMessageContaining("node_resources_url_never_counts");
 	}
 
 	@ParameterizedTest

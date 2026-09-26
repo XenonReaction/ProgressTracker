@@ -1,13 +1,16 @@
 package com.progressiontracker.progression.node;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.progression.readiness.ReadinessContext;
@@ -18,7 +21,7 @@ import com.progressiontracker.progression.tree.TreeRef;
 import com.progressiontracker.progression.tree.TreeRepository;
 import com.progressiontracker.user.CurrentUserService;
 
-/** CRUD for the current user's node library, including linking a node to a tree. */
+/** CRUD for the current user's node library, including a node's resources. */
 @Service
 @Transactional
 public class NodeService {
@@ -72,14 +75,14 @@ public class NodeService {
 	}
 
 	/**
-	 * Sets the hand-entered readiness. A linked node is refused with 409, since its
-	 * readiness comes from its tree; it would only change the hidden value.
+	 * Sets the hand-entered readiness. A node with a resource that counts is refused with 409,
+	 * since its readiness comes from those resources; it would only change the hidden value.
 	 */
 	public NodeResponse updateReadiness(Long id, NodeReadinessRequest request) {
 		Node node = findOwned(id);
-		if (node.getLinkedTree() != null) {
-			throw new ConflictException("\"" + node.getTitle() + "\" takes its readiness from the tree \""
-					+ node.getLinkedTree().getTitle() + "\", so it can't be set by hand");
+		if (!node.countingResources().isEmpty()) {
+			throw new ConflictException("\"" + node.getTitle()
+					+ "\" takes its readiness from its resources, so it can't be set by hand");
 		}
 		node.setReadiness(request.readiness());
 		nodes.flush(); // so the response carries the new updatedAt
@@ -123,20 +126,53 @@ public class NodeService {
 		node.setTitle(request.title());
 		node.setDescription(request.description());
 		node.setReadiness(request.readiness());
-		node.getLinks().clear();
-		request.linksOrEmpty().forEach(link -> node.getLinks().add(new NodeLink(link.url(), link.label())));
 		node.getTags().clear();
 		node.getTags().addAll(request.tagsOrEmpty());
-		node.setLinkedTree(request.linkedTreeId() == null ? null : linkableTree(node, request.linkedTreeId()));
+		List<NodeResource> resources = request.resourcesOrEmpty().stream().map(this::toResource).toList();
+		checkNoTreeTwice(resources);
+		node.getResources().clear();
+		node.getResources().addAll(resources);
+		List<Tree> containing = node.getId() == null ? List.of() : trees.findTreesContaining(node);
+		for (Tree counted : node.countingTrees()) {
+			treeLinks.checkNoLoop(node, containing, counted);
+		}
 	}
 
-	/** The current user's tree, if linking the node to it wouldn't make a loop (404 or 409). */
-	private Tree linkableTree(Node node, Long treeId) {
-		Tree tree = trees.findByIdAndOwner(treeId, currentUser.getCurrentUser())
-			.orElseThrow(() -> new NotFoundException("Tree", treeId));
-		List<Tree> containing = node.getId() == null ? List.of() : trees.findTreesContaining(node);
-		treeLinks.checkNoLoop(node, containing, tree);
-		return tree;
+	/** Checks one requested resource (400, or 404 for a tree that isn't the user's). */
+	private NodeResource toResource(NodeRequest.Resource resource) {
+		String type = resource.type().trim().toLowerCase();
+		if (type.equals(NodeResourceType.URL.getDbValue())) {
+			if (resource.url() == null || resource.url().isBlank() || resource.treeId() != null) {
+				throw new BadRequestException("A url resource needs a url and no treeId");
+			}
+			if (resource.countsOrFalse()) {
+				throw new BadRequestException("A url resource is for reading only and can't count toward readiness");
+			}
+			return NodeResource.url(resource.url(), blankToNull(resource.label()));
+		}
+		if (type.equals(NodeResourceType.TREE.getDbValue())) {
+			if (resource.treeId() == null || resource.url() != null) {
+				throw new BadRequestException("A tree resource needs a treeId and no url");
+			}
+			Tree tree = trees.findByIdAndOwner(resource.treeId(), currentUser.getCurrentUser())
+				.orElseThrow(() -> new NotFoundException("Tree", resource.treeId()));
+			return NodeResource.tree(tree, blankToNull(resource.label()), resource.countsOrFalse());
+		}
+		throw new BadRequestException("Unknown resource type \"" + resource.type() + "\"; expected url or tree");
+	}
+
+	/** A tree listed twice would count twice, so it's refused. */
+	private static void checkNoTreeTwice(List<NodeResource> resources) {
+		Set<Long> seen = new HashSet<>();
+		for (NodeResource resource : resources) {
+			if (resource.getTree() != null && !seen.add(resource.getTree().getId())) {
+				throw new BadRequestException("Tree " + resource.getTree().getId() + " is listed more than once");
+			}
+		}
+	}
+
+	private static String blankToNull(String text) {
+		return text == null || text.isBlank() ? null : text.trim();
 	}
 
 }

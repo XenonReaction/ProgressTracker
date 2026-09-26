@@ -11,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.progressiontracker.progression.node.Node;
-import com.progressiontracker.progression.node.ReadinessSourceType;
+import com.progressiontracker.progression.node.NodeResource;
+import com.progressiontracker.progression.node.NodeResourceType;
 import com.progressiontracker.progression.tree.Tree;
 
 /**
@@ -24,7 +25,7 @@ public class ReadinessContext {
 
 	private static final Logger log = LoggerFactory.getLogger(ReadinessContext.class);
 
-	private final Map<ReadinessSourceType, ReadinessCalculator> calculators;
+	private final Map<NodeResourceType, ReadinessCalculator> calculators;
 
 	private final Function<Tree, List<Node>> nodesInTree;
 
@@ -35,21 +36,31 @@ public class ReadinessContext {
 	/** Trees being averaged right now, to stop at a loop instead of recursing forever. */
 	private final Set<Long> inProgress = new HashSet<>();
 
-	ReadinessContext(Map<ReadinessSourceType, ReadinessCalculator> calculators,
+	ReadinessContext(Map<NodeResourceType, ReadinessCalculator> calculators,
 			Function<Tree, List<Node>> nodesInTree) {
 		this.calculators = calculators;
 		this.nodesInTree = nodesInTree;
 	}
 
-	/** The node's readiness from its source: hand-entered, or derived from its linked tree. */
+	/**
+	 * The node's readiness: the average of its resources that count, rounded to a whole
+	 * percent, or its hand-entered value when none do.
+	 */
 	public int of(Node node) {
 		Integer known = nodeReadiness.get(node.getId());
 		if (known != null) {
 			return known;
 		}
-		int readiness = calculators.get(node.getReadinessSourceType()).readiness(node, this);
+		List<NodeResource> counting = node.countingResources();
+		int readiness = counting.isEmpty() ? node.getReadiness()
+				: (int) Math.round(counting.stream().mapToInt(this::of).average().orElse(0));
 		nodeReadiness.put(node.getId(), readiness);
 		return readiness;
+	}
+
+	/** One resource's readiness, from the calculator for its type. */
+	public int of(NodeResource resource) {
+		return calculators.get(resource.getType()).readiness(resource, this);
 	}
 
 	/**

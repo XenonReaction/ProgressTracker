@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 
 import { Prerequisite } from '../core/api.models';
-import { aNode, aTree, aTreeNode } from '../core/test-data';
+import { aNode, aTree, aTreeNode, aTreeResource, aUrlResource } from '../core/test-data';
 import { TreeView } from './tree-view';
 
 describe('TreeView', () => {
@@ -348,7 +348,7 @@ describe('TreeView', () => {
 
       button('Redo').click();
       const recreate = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
-      expect(recreate.request.body).toEqual({ title: 'Spring Core', description: null, readiness: 0, links: [] });
+      expect(recreate.request.body).toEqual({ title: 'Spring Core', description: null, readiness: 0, resources: [] });
       recreate.flush(aNode({ id: 16, title: 'Spring Core' }));
       const place = http.expectOne({ method: 'POST', url: '/api/v1/trees/4/nodes' });
       expect(place.request.body).toEqual({ nodeId: 16, positionX: -200, positionY: -128, aggregateThreshold: 80, individualThreshold: 70 });
@@ -486,7 +486,7 @@ describe('TreeView', () => {
       nodeId: 17,
       title: 'Collections',
       readiness: 57,
-      linkedTree: { id: 9, title: 'Collections in Depth' },
+      resources: [aTreeResource(9, 'Collections in Depth'), aUrlResource('https://dev.java/', 'dev.java')],
     });
 
     beforeEach(async () => {
@@ -515,6 +515,37 @@ describe('TreeView', () => {
       expect(page.querySelector('aside')?.textContent).toContain('from the linked tree Collections in Depth');
       expect(link('Open linked tree').getAttribute('href')).toBe('/trees/9');
       expect(page.querySelector('app-readiness-editor')).toBeNull();
+    });
+
+    it('lists the node\'s resources in view mode', async () => {
+      await pressAndRelease(7);
+
+      const resources = Array.from(page.querySelectorAll('aside h3 + ul')[0].querySelectorAll('li')).map((li) =>
+        li.textContent?.trim(),
+      );
+      expect(resources).toEqual(['Tree: Collections in Depth', 'dev.java']);
+    });
+
+    it('averages several linked trees and offers to open each', async () => {
+      fixture.componentRef.setInput('id', '6');
+      await fixture.whenStable();
+      http.expectOne('/api/v1/trees/6').flush(aTree({ id: 6, title: 'Front end' }));
+      http.expectOne('/api/v1/trees/6/nodes').flush([
+        aTreeNode({
+          id: 8,
+          title: 'Front-end Basics',
+          readiness: 77,
+          resources: [aTreeResource(3, 'CSS'), aTreeResource(4, 'Reading', false), aTreeResource(5, 'HTML')],
+        }),
+      ]);
+      http.expectOne('/api/v1/trees/6/prerequisites').flush([]);
+      await fixture.whenStable();
+
+      expect(nodeEl(8).getAttribute('aria-label')).toBe('Front-end Basics, 77% ready, from linked trees CSS and HTML, ready');
+      await pressAndRelease(8);
+      expect(page.querySelector('aside')?.textContent).toContain('the average of the linked trees CSS and HTML');
+      expect(link('Open CSS').getAttribute('href')).toBe('/trees/3');
+      expect(link('Open HTML').getAttribute('href')).toBe('/trees/5');
     });
   });
 
@@ -748,7 +779,7 @@ describe('TreeView', () => {
       page.querySelector('app-add-node-panel form')!.dispatchEvent(new Event('submit'));
 
       const create = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
-      expect(create.request.body).toEqual({ title: 'Spring Core', description: null, readiness: 0, links: [] });
+      expect(create.request.body).toEqual({ title: 'Spring Core', description: null, readiness: 0, resources: [] });
       create.flush(aNode({ id: 15, title: 'Spring Core', readiness: 0 }));
       const place = http.expectOne({ method: 'POST', url: '/api/v1/trees/4/nodes' });
       expect(place.request.body).toEqual({ nodeId: 15, positionX: -200, positionY: -128 });

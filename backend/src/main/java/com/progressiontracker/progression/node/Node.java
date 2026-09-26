@@ -31,12 +31,8 @@ import com.progressiontracker.user.User;
  * appear in several trees. Position and prerequisites live on the tree side, not here.
  */
 @Entity
-@Table(name = "nodes", check = {
-		@CheckConstraint(name = "nodes_readiness_range", constraint = "readiness between 0 and 100"),
-		@CheckConstraint(name = "nodes_readiness_source_type_check",
-				constraint = "readiness_source_type in ('manual', 'linked_tree')"),
-		@CheckConstraint(name = "nodes_linked_tree_matches_source",
-				constraint = "(readiness_source_type = 'linked_tree') = (linked_tree_id is not null)") })
+@Table(name = "nodes",
+		check = @CheckConstraint(name = "nodes_readiness_range", constraint = "readiness between 0 and 100"))
 public class Node {
 
 	@Id
@@ -53,23 +49,24 @@ public class Node {
 	@Column(columnDefinition = "text")
 	private String description;
 
-	/** The hand-entered value. It's kept, but not used, while the node is linked to a tree. */
+	/**
+	 * The hand-entered value. It's used only while no resource counts; otherwise it's kept for
+	 * when none does again.
+	 */
 	@Column(nullable = false)
 	private int readiness = 0;
 
-	@Column(nullable = false, length = 50)
-	private ReadinessSourceType readinessSourceType = ReadinessSourceType.MANUAL;
-
-	/** The tree this node's readiness comes from, or null for a hand-entered value. */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "linked_tree_id", foreignKey = @ForeignKey(name = "nodes_linked_tree_id_fk"))
-	private Tree linkedTree;
-
+	/**
+	 * In the order the user chose. {@code @CollectionTable} can't declare check constraints, so
+	 * they're only in the V7 migration: node_resources_resource_type_check (the allowed
+	 * types), node_resources_target_matches_type (a url has a url, a tree has a tree) and
+	 * node_resources_url_never_counts.
+	 */
 	@ElementCollection
-	@CollectionTable(name = "node_links", joinColumns = @JoinColumn(name = "node_id"),
-			foreignKey = @ForeignKey(name = "node_links_node_id_fk"))
+	@CollectionTable(name = "node_resources", joinColumns = @JoinColumn(name = "node_id"),
+			foreignKey = @ForeignKey(name = "node_resources_node_id_fk"))
 	@OrderColumn(name = "position")
-	private List<NodeLink> links = new ArrayList<>();
+	private List<NodeResource> resources = new ArrayList<>();
 
 	@ElementCollection
 	@CollectionTable(name = "node_tags", joinColumns = @JoinColumn(name = "node_id"),
@@ -126,22 +123,21 @@ public class Node {
 		this.readiness = readiness;
 	}
 
-	public ReadinessSourceType getReadinessSourceType() {
-		return readinessSourceType;
+	public List<NodeResource> getResources() {
+		return resources;
 	}
 
-	public Tree getLinkedTree() {
-		return linkedTree;
+	/** The resources that count toward readiness. When there are none, the hand-entered value is used. */
+	public List<NodeResource> countingResources() {
+		return resources.stream().filter(NodeResource::counts).toList();
 	}
 
-	/** Links the node to a tree, or back to its hand-entered value with {@code null}. */
-	public void setLinkedTree(Tree linkedTree) {
-		this.linkedTree = linkedTree;
-		this.readinessSourceType = linkedTree == null ? ReadinessSourceType.MANUAL : ReadinessSourceType.LINKED_TREE;
-	}
-
-	public List<NodeLink> getLinks() {
-		return links;
+	/** The trees whose readiness this node's readiness depends on. */
+	public List<Tree> countingTrees() {
+		return resources.stream()
+			.filter(resource -> resource.counts() && resource.getType() == NodeResourceType.TREE)
+			.map(NodeResource::getTree)
+			.toList();
 	}
 
 	public List<String> getTags() {

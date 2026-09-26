@@ -1,4 +1,4 @@
-import { Card, Deck, Node, Tree, TreeNode } from './api.models';
+import { Card, Deck, Node, NodeResource, Tree, TreeNode } from './api.models';
 
 /** Builders for specs; override only the fields a test cares about. */
 export function aNode(overrides: Partial<Node> = {}): Node {
@@ -8,9 +8,7 @@ export function aNode(overrides: Partial<Node> = {}): Node {
     description: null,
     readiness: 50,
     manualReadiness: 50,
-    readinessSourceType: 'manual',
-    linkedTree: null,
-    links: [],
+    resources: [],
     tags: [],
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
@@ -39,9 +37,8 @@ export function aTreeNode(overrides: Partial<TreeNode> = {}): TreeNode {
     nodeId: 1,
     title: 'Generics',
     description: null,
-    links: [],
+    resources: [],
     readiness: 50,
-    linkedTree: null,
     positionX: 0,
     positionY: 0,
     aggregateThreshold: 80,
@@ -82,4 +79,17 @@ export function aCard(overrides: Partial<Card> = {}): Card {
     updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,
   };
+}
+
+export function aTreeResource(
+  id: number,
+  title: string,
+  counts = true,
+  label: string | null = null,
+): NodeResource {
+  return { type: 'tree', url: null, tree: { id, title }, label, counts };
+}
+
+export function aUrlResource(url: string, label: string | null = null): NodeResource {
+  return { type: 'url', url, tree: null, label, counts: false };
 }

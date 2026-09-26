@@ -7,6 +7,7 @@ import { EdgeRoute, Node, Prerequisite, Tree, TreeNode } from '../core/api.model
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { ReadinessEditor } from '../nodes/readiness-editor';
+import { countingTrees, resourceTitle, titleList } from '../nodes/resources';
 import { TreeApi } from '../core/tree-api';
 import { AddNodePanel } from './add-node-panel';
 import { autoLayout } from './auto-layout';
@@ -74,6 +75,9 @@ export class TreeView {
   readonly resumeEdit = input<string>();
 
   protected readonly readinessLevels = READINESS_LEVELS;
+  protected readonly countingTrees = countingTrees;
+  protected readonly resourceTitle = resourceTitle;
+  protected readonly titleList = titleList;
   protected readonly nodeWidth = NODE_WIDTH;
   protected readonly nodeHeight = NODE_HEIGHT;
   protected readonly tools: { id: Tool; label: string }[] = [
@@ -627,7 +631,7 @@ export class TreeView {
       return;
     }
     const placed = this.nodeApi
-      .create({ title, description: null, readiness: 0, links: [] })
+      .create({ title, description: null, readiness: 0, resources: [] })
       .pipe(
         switchMap((node) => {
           this.libraryNodes.update((nodes) => [...nodes, node]);
@@ -657,7 +661,10 @@ export class TreeView {
   }
 
   protected ariaLabel(treeNode: TreeNode): string {
-    const linked = treeNode.linkedTree ? `, from linked tree ${treeNode.linkedTree.title}` : '';
+    const trees = countingTrees(treeNode.resources);
+    const linked = trees.length
+      ? `, from linked ${trees.length === 1 ? 'tree' : 'trees'} ${titleList(trees)}`
+      : '';
     return `${treeNode.title}, ${treeNode.readiness}% ready${linked}, ${this.levelOf(treeNode)}`;
   }
 

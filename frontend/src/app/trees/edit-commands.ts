@@ -160,7 +160,7 @@ export function createNode(ctx: EditContext, label: string, nodeId: number, titl
       ),
     redo: () => {
       const recreated: Observable<number> = deleted
-        ? ctx.nodeApi.create({ title, description: null, readiness: 0, links: [] }).pipe(
+        ? ctx.nodeApi.create({ title, description: null, readiness: 0, resources: [] }).pipe(
             map((node) => {
               ctx.alias(ctx.resolve(nodeId), node.id);
               deleted = false;

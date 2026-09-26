@@ -21,6 +21,7 @@ import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.progression.node.Node;
+import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.node.NodeService;
 import com.progressiontracker.progression.readiness.TestReadiness;
 import com.progressiontracker.user.User;
@@ -89,9 +90,9 @@ class TreeNodeServiceTest {
 	}
 
 	@Test
-	void addChecksThatALinkedNodeDoesNotMakeALoop() {
+	void addChecksThatANodeCountingATreeDoesNotMakeALoop() {
 		Tree linked = withId(new Tree(user, "Collections"), 11L);
-		node.setLinkedTree(linked);
+		node.getResources().add(NodeResource.tree(linked, null, true));
 		when(nodeService.findOwned(20L)).thenReturn(node);
 		doThrow(new ConflictException("loop")).when(treeLinks).checkNoLoop(node, List.of(tree), linked);
 

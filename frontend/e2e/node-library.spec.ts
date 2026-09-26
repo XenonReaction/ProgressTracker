@@ -13,8 +13,8 @@ test.describe('Node library', () => {
     await page.getByLabel('Description').fill('Functions that call themselves.');
     await page.getByLabel('Tags (comma-separated)').fill('algorithms, basics');
     await page.getByRole('button', { name: '+ Add link' }).click();
-    await page.getByLabel('Link 1 URL').fill('https://example.com/recursion');
-    await page.getByLabel('Link 1 label').fill('Notes');
+    await page.getByLabel('Resource 1 URL').fill('https://example.com/recursion');
+    await page.getByLabel('Resource 1 label').fill('Notes');
     await page.getByRole('button', { name: 'Save' }).click();
 
     // Saving opens the node's page, where readiness is set
@@ -30,7 +30,7 @@ test.describe('Node library', () => {
 
     await page.getByRole('link', { name: 'Edit' }).click();
     await expect(page.getByLabel('Title')).toHaveValue(title);
-    await expect(page.getByLabel('Link 1 URL')).toHaveValue('https://example.com/recursion');
+    await expect(page.getByLabel('Resource 1 URL')).toHaveValue('https://example.com/recursion');
     await page.getByLabel('Description').fill('A function that calls itself.');
     await page.getByRole('button', { name: 'Save' }).click();
     await expect(page.getByText('A function that calls itself.')).toBeVisible();
