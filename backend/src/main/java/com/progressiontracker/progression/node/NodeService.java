@@ -67,11 +67,10 @@ public class NodeService {
 
 	@Transactional(readOnly = true)
 	public List<NodeResponse> list() {
+		List<Node> library = nodes.findByOwnerOrderByTitleAsc(currentUser.getCurrentUser());
 		ReadinessContext context = readiness.context();
-		return nodes.findByOwnerOrderByTitleAsc(currentUser.getCurrentUser())
-			.stream()
-			.map(node -> NodeResponse.from(node, context))
-			.toList();
+		context.prefetch(library);
+		return library.stream().map(node -> NodeResponse.from(node, context)).toList();
 	}
 
 	@Transactional(readOnly = true)

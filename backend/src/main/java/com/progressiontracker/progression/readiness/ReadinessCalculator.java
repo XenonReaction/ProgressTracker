@@ -1,5 +1,10 @@
 package com.progressiontracker.progression.readiness;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.node.NodeResourceType;
 
@@ -18,5 +23,24 @@ public interface ReadinessCalculator {
 	 * derived from them
 	 */
 	ResourceStatus status(NodeResource resource, ReadinessContext context);
+
+	/**
+	 * The batch form of {@link #status}, by {@link NodeResource#targetKey()}, used by
+	 * {@link ReadinessContext#prefetch} so a page reads each module a fixed number of times
+	 * instead of once per resource. The default asks {@link #status} for each.
+	 */
+	default Map<String, ResourceStatus> statuses(Collection<NodeResource> resources, ReadinessContext context) {
+		return byTargetKey(resources, resource -> status(resource, context));
+	}
+
+	/** Each resource's status, by target, working out a target listed twice only once. */
+	static Map<String, ResourceStatus> byTargetKey(Collection<NodeResource> resources,
+			Function<NodeResource, ResourceStatus> status) {
+		Map<String, ResourceStatus> statuses = new HashMap<>();
+		for (NodeResource resource : resources) {
+			statuses.computeIfAbsent(resource.targetKey(), key -> status.apply(resource));
+		}
+		return statuses;
+	}
 
 }

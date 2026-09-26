@@ -1,10 +1,15 @@
 package com.progressiontracker.progression.readiness;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.progressiontracker.coding.QuestionSetReadinessCalculator;
+import com.progressiontracker.coding.QuestionSetSummary;
 import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.node.NodeResourceType;
 
@@ -30,13 +35,24 @@ class QuestionSetResourceReadinessCalculator implements ReadinessCalculator {
 
 	@Override
 	public ResourceStatus status(NodeResource resource, ReadinessContext context) {
-		return questionSets.questionSet(resource.getQuestionSetId())
-			.map(set -> new ResourceStatus(set.title(), set.progress().readiness(), set.progress().lastReviewedAt()))
-			.orElseGet(() -> {
-				// Deleting a question set that nodes list is refused, so this only guards against bad data
-				log.warn("Question set {} not found; counting it as 0% readiness", resource.getQuestionSetId());
-				return new ResourceStatus(null, 0, null);
-			});
+		return statusOf(resource.getQuestionSetId(), questionSets.questionSet(resource.getQuestionSetId()).orElse(null));
+	}
+
+	@Override
+	public Map<String, ResourceStatus> statuses(Collection<NodeResource> resources, ReadinessContext context) {
+		Map<Long, QuestionSetSummary> found = questionSets
+			.questionSets(resources.stream().map(NodeResource::getQuestionSetId).collect(Collectors.toSet()));
+		return ReadinessCalculator.byTargetKey(resources,
+				resource -> statusOf(resource.getQuestionSetId(), found.get(resource.getQuestionSetId())));
+	}
+
+	private static ResourceStatus statusOf(Long setId, QuestionSetSummary set) {
+		if (set == null) {
+			// Deleting a question set that nodes list is refused, so this only guards against bad data
+			log.warn("Question set {} not found; counting it as 0% readiness", setId);
+			return new ResourceStatus(null, 0, null);
+		}
+		return new ResourceStatus(set.title(), set.progress().readiness(), set.progress().lastReviewedAt());
 	}
 
 }

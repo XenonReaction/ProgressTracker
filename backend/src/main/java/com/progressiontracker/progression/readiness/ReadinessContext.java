@@ -1,8 +1,10 @@
 package com.progressiontracker.progression.readiness;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +26,9 @@ import com.progressiontracker.progression.tree.Tree;
  * read, never stored, and this remembers each node's, tree's and resource's value so a tree
  * or deck that several nodes list is worked out only once. Get one from
  * {@link ReadinessService#context()} and use it inside the service transaction, since it
- * loads trees lazily.
+ * loads trees lazily. A service that shows many nodes calls {@link #prefetch} or
+ * {@link #prefetchTrees} first, so their resources are read in one batch per type rather
+ * than one at a time.
  */
 public class ReadinessContext {
 
@@ -43,6 +47,8 @@ public class ReadinessContext {
 	private final Map<Long, Standing> trees = new HashMap<>();
 
 	private final Map<String, ResourceStatus> resources = new HashMap<>();
+
+	private final Map<Long, List<Node>> nodesByTree = new HashMap<>();
 
 	/** Trees being averaged right now, to stop at a loop instead of recursing forever. */
 	private final Set<Long> inProgress = new HashSet<>();
@@ -85,19 +91,85 @@ public class ReadinessContext {
 		return standing(tree).reviewDue();
 	}
 
+	/**
+	 * Works out, in one batch per resource type, every resource these nodes list and every
+	 * resource that counts beneath the trees they list, at any depth, so reading them
+	 * afterwards needs no more queries.
+	 */
+	public void prefetch(Collection<Node> listedNodes) {
+		prefetch(listedNodes, true);
+	}
+
+	/** Like {@link #prefetch}, for the resources that count beneath these trees. */
+	public void prefetchTrees(Collection<Tree> treesToRead) {
+		List<Node> treeNodes = new ArrayList<>();
+		for (Tree tree : treesToRead) {
+			if (!trees.containsKey(tree.getId())) {
+				treeNodes.addAll(nodesIn(tree));
+			}
+		}
+		prefetch(treeNodes, false);
+	}
+
+	/**
+	 * Walks down from the nodes level by level, through the trees their resources list,
+	 * collecting the resources not worked out yet, then asks each type's calculator for all of
+	 * them at once.
+	 *
+	 * @param allResources whether to include the nodes' resources that don't count (shown, but
+	 * not averaged); beneath them only the resources that count are needed
+	 */
+	private void prefetch(Collection<Node> startNodes, boolean allResources) {
+		Map<NodeResourceType, List<NodeResource>> pending = new EnumMap<>(NodeResourceType.class);
+		Set<String> collected = new HashSet<>();
+		Set<Long> visitedTrees = new HashSet<>();
+		Collection<Node> level = startNodes;
+		boolean top = allResources;
+		while (!level.isEmpty()) {
+			List<Node> next = new ArrayList<>();
+			for (Node node : level) {
+				for (NodeResource resource : top ? node.getResources() : node.countingResources()) {
+					if (resource.getType() == NodeResourceType.TREE) {
+						Tree tree = resource.getTree();
+						if (!trees.containsKey(tree.getId()) && visitedTrees.add(tree.getId())) {
+							next.addAll(nodesIn(tree));
+						}
+					}
+					else if (calculators.containsKey(resource.getType()) && !resources.containsKey(key(resource))
+							&& collected.add(key(resource))) {
+						pending.computeIfAbsent(resource.getType(), type -> new ArrayList<>()).add(resource);
+					}
+				}
+			}
+			level = next;
+			top = false;
+		}
+		pending.forEach((type, list) -> calculators.get(type)
+			.statuses(list, this)
+			.forEach((targetKey, status) -> resources.put(type + ":" + targetKey, status)));
+	}
+
 	/** Where one resource stands, or null for a type that can't count (a URL). */
 	public ResourceStatus of(NodeResource resource) {
 		ReadinessCalculator calculator = calculators.get(resource.getType());
 		if (calculator == null) {
 			return null;
 		}
-		String key = resource.getType() + ":" + resource.targetKey();
-		ResourceStatus known = resources.get(key);
+		ResourceStatus known = resources.get(key(resource));
 		if (known == null) {
 			known = calculator.status(resource, this);
-			resources.put(key, known);
+			resources.put(key(resource), known);
 		}
 		return known;
+	}
+
+	private static String key(NodeResource resource) {
+		return resource.getType() + ":" + resource.targetKey();
+	}
+
+	/** The tree's nodes, loaded once per request. */
+	private List<Node> nodesIn(Tree tree) {
+		return nodesByTree.computeIfAbsent(tree.getId(), id -> nodesInTree.apply(tree));
 	}
 
 	private Standing standing(Node node) {
@@ -132,7 +204,8 @@ public class ReadinessContext {
 			return new Standing(0, null, false);
 		}
 		try {
-			List<Node> treeNodes = nodesInTree.apply(tree);
+			prefetchTrees(List.of(tree));
+			List<Node> treeNodes = nodesIn(tree);
 			Standing standing = new Standing(average(treeNodes.stream().map(this::of).toList()),
 					latest(treeNodes.stream().map(this::lastReviewed).toList()),
 					treeNodes.stream().anyMatch(this::reviewDue));

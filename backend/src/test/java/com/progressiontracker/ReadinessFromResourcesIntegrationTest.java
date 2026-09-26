@@ -207,6 +207,142 @@ class ReadinessFromResourcesIntegrationTest {
 		assertThat(mvc.delete().uri("/api/v1/decks/{id}", deck)).hasStatus(HttpStatus.NO_CONTENT);
 	}
 
+	@Test
+	void aNodeCountingEveryTypeAveragesThemAllAndLeavesOutReferencesAndLinks() {
+		long selectors = id(post("/api/v1/trees", "{\"title\": \"Selectors\"}"));
+		placeNode(selectors, createNode("Attribute selectors", 40));
+		long deck = deckWithCards("Flexbox cards", 4, 2);
+		long material = materialAt("Flexbox guide", 70);
+		long lesson = lessonAt("Flexbox lesson", 30);
+		long set = questionSet("Flexbox exercises", 4, 1);
+		long reference = deckWithCards("Old cards", 1, 1);
+		long flexbox = createNode("CSS Flexbox", 5);
+
+		MvcTestResult saved = setResources(flexbox, "CSS Flexbox", 5, """
+				{"type": "tree", "treeId": %d, "counts": true},
+				{"type": "deck", "deckId": %d, "counts": true},
+				{"type": "material", "materialId": %d, "counts": true},
+				{"type": "lesson", "lessonId": %d, "counts": true},
+				{"type": "question_set", "questionSetId": %d, "counts": true},
+				{"type": "deck", "deckId": %d, "counts": false},
+				{"type": "url", "url": "https://example.com/flexbox"}""".formatted(selectors, deck, material, lesson, set,
+				reference));
+
+		// (40 + 50 + 70 + 30 + 25) / 5 = 43; the reference deck (100%) and the link don't count
+		assertThat(saved).hasStatusOk();
+		assertThat(saved).bodyJson().extractingPath("$.readiness").isEqualTo(43);
+		assertThat(saved).bodyJson().extractingPath("$.manualReadiness").isEqualTo(5);
+		assertThat(saved).bodyJson()
+			.extractingPath("$.resources[*].readiness")
+			.asArray()
+			.containsExactly(40, 50, 70, 30, 25, 100, null);
+		assertThat(saved).bodyJson().extractingPath("$.lastReviewedAt").isNotNull();
+		// The same through a tree, and through the node list's batched reads
+		long all = id(post("/api/v1/trees", "{\"title\": \"All\"}"));
+		placeNode(all, flexbox);
+		assertThat(treeField(all, "readiness")).isEqualTo(43);
+		assertThat(mvc.get().uri("/api/v1/nodes")).bodyJson()
+			.extractingPath("$[?(@.title == 'CSS Flexbox')].readiness")
+			.asArray()
+			.containsExactly(43);
+	}
+
+	@Test
+	void removingResourcesFallsBackStepByStepToTheHandEnteredValue() {
+		long deck = deckWithCards("Flexbox cards", 2, 1);
+		long material = materialAt("Flexbox guide", 70);
+		long flexbox = createNode("CSS Flexbox", 20);
+		long css = id(post("/api/v1/trees", "{\"title\": \"CSS\"}"));
+		placeNode(css, flexbox);
+		String deckCounting = "{\"type\": \"deck\", \"deckId\": %d, \"counts\": true}".formatted(deck);
+		String materialCounting = "{\"type\": \"material\", \"materialId\": %d, \"counts\": true}".formatted(material);
+		setResources(flexbox, "CSS Flexbox", 20, deckCounting + ", " + materialCounting);
+		assertThat(treeField(css, "readiness")).isEqualTo(60); // (50 + 70) / 2
+
+		// Without the material: the deck alone, and the material can be deleted
+		setResources(flexbox, "CSS Flexbox", 20, deckCounting);
+		assertThat(readinessOfNode(flexbox)).isEqualTo(50);
+		assertThat(treeField(css, "readiness")).isEqualTo(50);
+		assertThat(mvc.delete().uri("/api/v1/materials/{id}", material)).hasStatus(HttpStatus.NO_CONTENT);
+
+		// The deck kept only for reference: the hand-entered value is back, with nothing reviewed
+		MvcTestResult reference = setResources(flexbox, "CSS Flexbox", 20,
+				"{\"type\": \"deck\", \"deckId\": %d, \"counts\": false}".formatted(deck));
+		assertThat(reference).bodyJson().extractingPath("$.readiness").isEqualTo(20);
+		assertThat(reference).bodyJson().extractingPath("$.lastReviewedAt").isNull();
+		assertThat(treeField(css, "readiness")).isEqualTo(20);
+		assertThat(treeField(css, "lastReviewedAt")).isNull();
+		assertThat(mvc.delete().uri("/api/v1/decks/{id}", deck)).hasStatus(HttpStatus.CONFLICT);
+
+		// No resources at all: still the hand-entered value, and the deck can go
+		setResources(flexbox, "CSS Flexbox", 20, "");
+		assertThat(readinessOfNode(flexbox)).isEqualTo(20);
+		assertThat(mvc.delete().uri("/api/v1/decks/{id}", deck)).hasStatus(HttpStatus.NO_CONTENT);
+	}
+
+	@Test
+	void treesLinkedInADiamondFollowEveryPathAndStillRefuseALoop() {
+		// Base (20 and 80) is counted by both Left and Right, and Top counts both of those
+		long base = id(post("/api/v1/trees", "{\"title\": \"Base\"}"));
+		long low = createNode("Low", 20);
+		placeNode(base, low);
+		placeNode(base, createNode("High", 80));
+		long left = id(post("/api/v1/trees", "{\"title\": \"Left\"}"));
+		placeNode(left, linkedNode("Left via Base", base));
+		placeNode(left, createNode("Left alone", 90));
+		long right = id(post("/api/v1/trees", "{\"title\": \"Right\"}"));
+		placeNode(right, linkedNode("Right via Base", base));
+		long top = createNode("Top", 0);
+		setResources(top, "Top", """
+				{"type": "tree", "treeId": %d, "counts": true},
+				{"type": "tree", "treeId": %d, "counts": true}""".formatted(left, right));
+		long summit = id(post("/api/v1/trees", "{\"title\": \"Summit\"}"));
+		placeNode(summit, top);
+
+		// Base 50; Left (50 + 90) / 2 = 70; Right 50; Top (70 + 50) / 2 = 60
+		assertThat(treeField(left, "readiness")).isEqualTo(70);
+		assertThat(treeField(right, "readiness")).isEqualTo(50);
+		assertThat(readinessOfNode(top)).isEqualTo(60);
+
+		// A change at the bottom reaches the top along both paths
+		assertThat(mvc.put()
+			.uri("/api/v1/nodes/{id}/readiness", low)
+			.contentType(MediaType.APPLICATION_JSON)
+			.content("{\"readiness\": 40}")).hasStatusOk();
+		// Base 60; Left 75; Right 60; Top 67.5, rounded to 68
+		assertThat(readinessOfNode(top)).isEqualTo(68);
+		assertThat(treeField(summit, "readiness")).isEqualTo(68);
+
+		// Counting Summit from Base would loop back through both sides; a reference is fine
+		assertThat(setResources(low, "Low", 40,
+				"{\"type\": \"tree\", \"treeId\": %d, \"counts\": true}".formatted(summit)))
+			.hasStatus(HttpStatus.CONFLICT);
+		assertThat(setResources(low, "Low", 40,
+				"{\"type\": \"tree\", \"treeId\": %d, \"counts\": false}".formatted(summit)))
+			.hasStatusOk();
+		assertThat(readinessOfNode(top)).isEqualTo(68);
+	}
+
+	/** A node that counts the tree. */
+	private long linkedNode(String title, long tree) {
+		long node = createNode(title, 0);
+		setResources(node, title, "{\"type\": \"tree\", \"treeId\": %d, \"counts\": true}".formatted(tree));
+		return node;
+	}
+
+	/** A set of {@code questions} coding questions, the first {@code solved} of them marked solved. */
+	private long questionSet(String title, int questions, int solved) {
+		long set = id(post("/api/v1/question-sets", "{\"title\": \"%s\"}".formatted(title)));
+		for (int i = 0; i < questions; i++) {
+			long question = id(post("/api/v1/question-sets/" + set + "/questions", """
+					{"title": "Q%d", "language": "css", "problem": "P", "solution": "S"}""".formatted(i)));
+			if (i < solved) {
+				assertThat(post("/api/v1/question-sets/" + set + "/questions/" + question + "/solved", "")).hasStatusOk();
+			}
+		}
+		return set;
+	}
+
 	/** A deck with {@code cards} cards, the first {@code passed} of them answered right 3 times. */
 	private long deckWithCards(String title, int cards, int passed) {
 		long deck = id(post("/api/v1/decks", "{\"title\": \"%s\"}".formatted(title)));
@@ -244,10 +380,16 @@ class ReadinessFromResourcesIntegrationTest {
 	}
 
 	private MvcTestResult setResources(long node, String title, String resources) {
+		return setResources(node, title, 0, resources);
+	}
+
+	/** Replaces the node's resources, sending {@code readiness} as its hand-entered value. */
+	private MvcTestResult setResources(long node, String title, int readiness, String resources) {
 		return mvc.put()
 			.uri("/api/v1/nodes/{id}", node)
 			.contentType(MediaType.APPLICATION_JSON)
-			.content("{\"title\": \"%s\", \"readiness\": 0, \"resources\": [%s]}".formatted(title, resources))
+			.content("{\"title\": \"%s\", \"readiness\": %d, \"resources\": [%s]}".formatted(title, readiness,
+					resources))
 			.exchange();
 	}
 

@@ -105,4 +105,22 @@ public class FlashcardReadinessCalculator {
 			.map(deck -> new DeckSummary(deck.getId(), deck.getTitle(), deck(deck)));
 	}
 
+	/**
+	 * The batch form of {@link #deck(Long)}: the current user's decks among these ids, with
+	 * their progress, by id, in a fixed number of queries. Ids that aren't the user's decks
+	 * are left out.
+	 */
+	public Map<Long, DeckSummary> deckSummaries(Collection<Long> deckIds) {
+		if (deckIds.isEmpty()) {
+			return Map.of();
+		}
+		List<Deck> found = decks.findByIdInAndOwner(deckIds, currentUser.getCurrentUser());
+		Map<Long, DeckProgress> progress = decks(found);
+		Map<Long, DeckSummary> summaries = new HashMap<>();
+		for (Deck deck : found) {
+			summaries.put(deck.getId(), new DeckSummary(deck.getId(), deck.getTitle(), progress.get(deck.getId())));
+		}
+		return summaries;
+	}
+
 }

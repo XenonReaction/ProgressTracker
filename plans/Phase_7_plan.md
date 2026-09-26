@@ -1,6 +1,6 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Fully decided. 7.0 to 7.6 are complete, and 7.7 is scoped and in progress.
+**Status:** Complete. 7.0 to 7.7 are done.
 
 **Steps, in build order:**
 
@@ -14,7 +14,7 @@
 | 7.4 | External materials with manual progress | **Complete.** |
 | 7.5 | Lessons | **Complete.** |
 | 7.6 | Coding questions | **Complete.** |
-| 7.7 | Refine based on use | **Fully decided.** In progress. |
+| 7.7 | Refine based on use | **Complete.** |
 
 ---
 
@@ -309,6 +309,51 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 
 **Done when:** a passed card comes back to the review page when it's due, and its deck, node and tree show "review due" until it's reviewed; the speed check and extra tests pass; the write-up is in this plan.
 
+**Done:**
+- **Spaced repetition and "review due":** `CardProgress` works out a passed card's `dueAt` from its last answer and its correct answers in a row; `DeckProgress` counts the cards due. "Now" comes from a `Clock` bean, which `ReviewDueIntegrationTest` moves forward. `ResourceStatus` carries `reviewDue`, and nodes, tree nodes and trees report it at any depth. Shown on the deck list and page (with each card's next review), the node list and page, the readiness breakdown, the tree list and page, and on canvas nodes. The dev seed's passed card was answered 10 days ago, so it's due on every fresh stack.
+- **Speed check** (`ReadinessSpeedCheckTest`): 300 nodes in 10 trees of 30, chained by prerequisites, each counting one deck (20 cards, 5 answers each), material, lesson or question set (10 questions) in turn, with the first node of each tree counting the next tree, so readiness nests 10 levels deep. Median of 5 runs against the Testcontainers database:
+
+  | Page | Before | After batching |
+  |---|---|---|
+  | `GET /nodes` | 419 ms, 1,445 queries | 59 ms, 29 queries |
+  | `GET /trees` | 454 ms, 1,738 queries | 40 ms, 33 queries |
+  | `GET /trees/{top}` | 444 ms, 1,748 queries | 38 ms, 42 queries |
+  | `GET /trees/{top}/nodes` | 449 ms, 1,747 queries | 43 ms, 41 queries |
+  | `GET /trees/{top}/prerequisites` | 1 ms, 3 queries | 1 ms, 3 queries |
+
+  Every resource was read on its own, about 5 queries each, and the count grew with the library, so it was batched. Each learning module's public calculator now reads many targets at once (`deckSummaries`, `materials`, `lessons`, `questionSets`), each `ReadinessCalculator` has a batch `statuses`, and `ReadinessContext.prefetch`/`prefetchTrees` walk the nodes and the trees beneath them to ask each type once. The node list, tree list and a tree's nodes prefetch; a tree prefetches its own nodes when first averaged. Hibernate's `default_batch_fetch_size` (100) loads nodes' resources and tags in batches. The test fails above 100 queries per page, and checks that the batched node list matches every node read on its own. Caching readiness isn't needed.
+- **Extra tests:** `ReadinessFromResourcesIntegrationTest` adds one node counting all five types at once, next to a reference-only deck and a link (checked on the node, through a tree and in the batched node list); removing resources step by step back to the hand-entered value, with each target deletable once no node lists it; and a diamond of linked trees, where a change at the bottom reaches the top along both paths and a loop back through either side is still refused. `UserIsolationIntegrationTest` hands a full library in every module to a second user, then checks that none of it is listed, readable, recorded against, changed, deleted or usable as a node resource (each with the app's own "… not found", so a mistyped route can't pass), and that another user's answers, lesson activity and solved questions on your own content never count toward your readiness.
+- **Write-up:** "Splitting modules into services", below. The answer is "not yet".
+
+---
+
+## Splitting modules into services
+
+*Written in 7.7, after all six modules were in use.*
+
+**The question:** should any module (Flashcards, Materials, Lessons, Coding practice, or Progression with Readiness) run as its own service, with its own deployment and database?
+
+**The answer: not yet, and no module is close.** Everything stays in one backend.
+
+**Why not:**
+- **Nothing needs it.** It's a single-user app on one small database. The speed check shows the busiest pages at about 40–60 ms with 300 nodes, so no part needs scaling on its own. No module has different uptime, security or release needs from the rest.
+- **It would make readiness slower and more fragile.** Every node, tree and list page combines all the modules' readiness in one request. In one process that's a handful of queries. As services it would be one network call per module per page at best, and the page would fail or go stale whenever one service was down.
+- **Deletion checks rely on one transaction.** Deleting a deck, material, lesson or question set asks Progression (through the `…DeletionCheck` interfaces) whether a node lists it, in the same transaction as the delete. Across services that would need a synchronous call or an eventually consistent reference count, and a node could briefly point at something deleted.
+- **One deployment is simpler to run.** There's one image per side, one database to back up, and one CI pipeline, with no service discovery, tracing across services or versioned internal APIs.
+
+**What already makes a later split possible:**
+- Spring Modulith (`ModularityTest`) keeps each module behind its public package, with no cycles, so a module's callers are exactly its public API.
+- Learning modules refer to each other's rows by plain id with no foreign keys, so each module's tables could move to their own database. The one exception is the shared `users` table, which would become a user id checked by the auth that Phase 8 adds.
+- Readiness goes through one narrow interface per module (`…ReadinessCalculator`), and 7.7 made each a batch read by ids, which maps straight onto one remote call per page.
+- Deletion is guarded by small interfaces owned by the module being deleted from, so the direction of dependencies (Progression → learning modules) wouldn't change.
+
+**What would change the answer:**
+- **Running submitted code on the server** (Future ideas: back-end languages for coding practice). Untrusted code must run in isolation, so that part (not the whole Coding module) would be the first service: a sandboxed runner behind a queue, returning results.
+- **A module needing to scale or deploy separately**, for example many users reviewing flashcards while trees change rarely. Phase 8's multi-user work would show whether that happens.
+- **Sharing with other apps**, such as a flashcards API used elsewhere.
+
+**If one is extracted:** start with the module's public package as the service's API, give it its own database and its own copy of the user id, replace the calculator with an HTTP client that makes the same batch call, and have the deletion check call Progression (or keep a count of references). Everything else stays as it is.
+
 ---
 
 ## Phase order
@@ -349,4 +394,4 @@ Not scheduled; kept so they aren't lost.
 - **Extracting a module into its own service** (Architecture): most likely a service for running submitted code in isolation, and only if back-end languages are added.
 - **Anki import**, to bring existing decks into the app.
 - **Revision history**: git-style saved versions of a tree, with a history list and restoring or comparing versions. 5.3's restore point and undo/redo cover the everyday need for now.
-- **Readiness caching**, if 7.7 finds reading it live is too slow.
+- **Readiness caching**, if reading it live becomes too slow. 7.7's speed check found batched reads fast enough (about 40–60 ms for 300 nodes), so it isn't needed yet.

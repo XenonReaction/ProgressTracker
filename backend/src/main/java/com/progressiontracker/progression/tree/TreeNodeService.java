@@ -49,11 +49,10 @@ public class TreeNodeService {
 	public List<TreeNodeResponse> list(Long treeId) {
 		Tree tree = treeService.findOwned(treeId);
 		List<Prerequisite> edges = prerequisites.findByTree(tree);
+		List<TreeNode> placed = treeNodes.findByTreeOrderByIdAsc(tree);
 		ReadinessContext context = readiness.context();
-		return treeNodes.findByTreeOrderByIdAsc(tree)
-			.stream()
-			.map(treeNode -> TreeNodeResponse.from(treeNode, edges, context))
-			.toList();
+		context.prefetch(placed.stream().map(TreeNode::getNode).toList());
+		return placed.stream().map(treeNode -> TreeNodeResponse.from(treeNode, edges, context)).toList();
 	}
 
 	@Transactional(readOnly = true)

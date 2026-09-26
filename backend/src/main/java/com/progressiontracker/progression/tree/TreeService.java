@@ -52,11 +52,10 @@ public class TreeService {
 		Map<Long, Instant> editing = editSessions.findByOwner(owner)
 			.stream()
 			.collect(Collectors.toMap(session -> session.getTree().getId(), TreeEditSession::getStartedAt));
+		List<Tree> owned = trees.findByOwnerOrderByTitleAsc(owner);
 		ReadinessContext context = readiness.context();
-		return trees.findByOwnerOrderByTitleAsc(owner)
-			.stream()
-			.map(tree -> TreeResponse.from(tree, context, editing.get(tree.getId())))
-			.toList();
+		context.prefetchTrees(owned);
+		return owned.stream().map(tree -> TreeResponse.from(tree, context, editing.get(tree.getId()))).toList();
 	}
 
 	@Transactional(readOnly = true)

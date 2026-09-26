@@ -1,10 +1,15 @@
 package com.progressiontracker.progression.readiness;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.progressiontracker.lessons.LessonReadinessCalculator;
+import com.progressiontracker.lessons.LessonSummary;
 import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.node.NodeResourceType;
 
@@ -30,13 +35,24 @@ class LessonResourceReadinessCalculator implements ReadinessCalculator {
 
 	@Override
 	public ResourceStatus status(NodeResource resource, ReadinessContext context) {
-		return lessons.lesson(resource.getLessonId())
-			.map(lesson -> new ResourceStatus(lesson.title(), lesson.progress(), lesson.lastReviewedAt()))
-			.orElseGet(() -> {
-				// Deleting a lesson that nodes list is refused, so this only guards against bad data
-				log.warn("Lesson {} not found; counting it as 0% readiness", resource.getLessonId());
-				return new ResourceStatus(null, 0, null);
-			});
+		return statusOf(resource.getLessonId(), lessons.lesson(resource.getLessonId()).orElse(null));
+	}
+
+	@Override
+	public Map<String, ResourceStatus> statuses(Collection<NodeResource> resources, ReadinessContext context) {
+		Map<Long, LessonSummary> found = lessons
+			.lessons(resources.stream().map(NodeResource::getLessonId).collect(Collectors.toSet()));
+		return ReadinessCalculator.byTargetKey(resources,
+				resource -> statusOf(resource.getLessonId(), found.get(resource.getLessonId())));
+	}
+
+	private static ResourceStatus statusOf(Long lessonId, LessonSummary lesson) {
+		if (lesson == null) {
+			// Deleting a lesson that nodes list is refused, so this only guards against bad data
+			log.warn("Lesson {} not found; counting it as 0% readiness", lessonId);
+			return new ResourceStatus(null, 0, null);
+		}
+		return new ResourceStatus(lesson.title(), lesson.progress(), lesson.lastReviewedAt());
 	}
 
 }

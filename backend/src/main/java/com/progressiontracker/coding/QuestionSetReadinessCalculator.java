@@ -51,6 +51,24 @@ public class QuestionSetReadinessCalculator {
 			.map(set -> new QuestionSetSummary(set.getId(), set.getTitle(), set(set)));
 	}
 
+	/**
+	 * The batch form of {@link #questionSet(Long)}: the current user's question sets among
+	 * these ids, by id, in a fixed number of queries. Ids that aren't the user's sets are left
+	 * out.
+	 */
+	public Map<Long, QuestionSetSummary> questionSets(Collection<Long> setIds) {
+		if (setIds.isEmpty()) {
+			return Map.of();
+		}
+		List<QuestionSet> found = sets.findByIdInAndOwner(setIds, currentUser.getCurrentUser());
+		Map<Long, SetProgress> progress = sets(found);
+		Map<Long, QuestionSetSummary> summaries = new HashMap<>();
+		for (QuestionSet set : found) {
+			summaries.put(set.getId(), new QuestionSetSummary(set.getId(), set.getTitle(), progress.get(set.getId())));
+		}
+		return summaries;
+	}
+
 	public SetProgress set(QuestionSet set) {
 		return sets(List.of(set)).get(set.getId());
 	}

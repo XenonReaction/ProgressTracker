@@ -2,6 +2,9 @@ package com.progressiontracker.lessons.internal;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -44,6 +47,24 @@ public class LessonActivity {
 		return opens.findFirstByLessonAndUserOrderByOpenedAtDescIdDesc(lesson, user())
 			.map(LessonOpen::getOpenedAt)
 			.orElse(null);
+	}
+
+	/** The batch form of {@link #progress(Lesson)}, by lesson id, leaving out lessons with no entry (0). */
+	public Map<Long, Integer> progress(Collection<Lesson> lessons, User user) {
+		Map<Long, Integer> latest = new HashMap<>();
+		for (LessonProgressUpdate update : updates.findByLessonInAndUserOrderByRecordedAtDescIdDesc(lessons, user)) {
+			latest.putIfAbsent(update.getLesson().getId(), update.getProgress()); // newest first
+		}
+		return latest;
+	}
+
+	/** The batch form of {@link #lastOpened(Lesson)}, by lesson id, leaving out lessons never opened. */
+	public Map<Long, Instant> lastOpened(Collection<Lesson> lessons, User user) {
+		Map<Long, Instant> latest = new HashMap<>();
+		for (LessonOpenRepository.LastOpened open : opens.findLastOpened(lessons, user)) {
+			latest.put(open.getLessonId(), open.getOpenedAt());
+		}
+		return latest;
 	}
 
 	void recordOpen(Lesson lesson) {

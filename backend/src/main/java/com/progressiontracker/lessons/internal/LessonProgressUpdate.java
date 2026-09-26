@@ -55,6 +55,10 @@ public class LessonProgressUpdate {
 		this.progress = progress;
 	}
 
+	public Lesson getLesson() {
+		return lesson;
+	}
+
 	public Instant getRecordedAt() {
 		return recordedAt;
 	}

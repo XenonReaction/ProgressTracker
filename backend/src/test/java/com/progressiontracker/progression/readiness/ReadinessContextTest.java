@@ -3,14 +3,18 @@ package com.progressiontracker.progression.readiness;
 import static com.progressiontracker.TestEntities.withId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -142,6 +146,31 @@ class ReadinessContextTest {
 		// Each deck is read once per context
 		withDecks.of(studied);
 		verify(flashcards, times(1)).deck(40L);
+	}
+
+	@Test
+	void prefetchReadsEveryDeckBeneathTheNodesInOneBatch() {
+		ReadinessContext batched = TestReadiness.service(treeNodes, flashcards).context();
+		when(flashcards.deckSummaries(Set.of(40L, 41L, 42L))).thenReturn(Map.of(
+				40L, new DeckSummary(40L, "Listed", new DeckProgress(1, 1, 100, true, null, 1)),
+				41L, new DeckSummary(41L, "Beneath", new DeckProgress(2, 1, 50, false, null, 0)),
+				42L, new DeckSummary(42L, "For reference", new DeckProgress(1, 0, 0, false, null, 0))));
+		Node inner = manual("Inner", 0);
+		inner.getResources().add(NodeResource.deck(41L, null, true));
+		Tree tree = tree("Tree", inner);
+		Node listed = manual("Listed", 0);
+		listed.getResources().add(NodeResource.deck(40L, null, true));
+		listed.getResources().add(NodeResource.deck(42L, null, false));
+		listed.getResources().add(NodeResource.tree(tree, null, true));
+
+		batched.prefetch(List.of(listed));
+
+		// (100 + 50) / 2, with the deck that doesn't count still shown
+		assertThat(batched.of(listed)).isEqualTo(75);
+		assertThat(batched.reviewDue(listed)).isTrue();
+		assertThat(batched.of(listed.getResources().get(1)).title()).isEqualTo("For reference");
+		verify(flashcards, times(1)).deckSummaries(Set.of(40L, 41L, 42L));
+		verify(flashcards, never()).deck(any(Long.class));
 	}
 
 	@Test
