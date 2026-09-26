@@ -1,6 +1,6 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Fully decided. 7.0 to 7.5 are complete; no code has been written for 7.6 onward.
+**Status:** Fully decided. 7.0 to 7.6 are complete; 7.7 is to be scoped once 7.3 has been in use for a while.
 
 **Steps, in build order:**
 
@@ -13,7 +13,7 @@
 | 7.3 | Readiness from several resources | **Complete.** |
 | 7.4 | External materials with manual progress | **Complete.** |
 | 7.5 | Lessons | **Complete.** |
-| 7.6 | Coding questions | **Fully decided.** |
+| 7.6 | Coding questions | **Complete.** |
 | 7.7 | Refine based on use | Not scoped yet. Starts with spaced repetition and staleness. |
 
 ---
@@ -278,6 +278,13 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - Your attempts recorded (marked solved, and whether the solution was revealed first), owned by the module, and a calculator for the readiness contract.
 
 **Done when:** attempts update the question's, node's and tree's readiness.
+
+**Done:**
+- **Coding practice module** (`coding`): built like the other learning modules. `QuestionSetReadinessCalculator`, the `QuestionProgress`/`SetProgress` records (which hold the rules) and `QuestionSetDeletionCheck` are its public API. `V11__coding_questions.sql` adds `question_sets`, `coding_questions` and `question_attempts`, and widens `node_resources` to a `question_set` type. Languages are HTML and CSS; JavaScript is a migration widening `coding_questions_language_check` away.
+- **Questions:** title, language, a problem and worked examples in Markdown, and a solution. The solution is left out of responses until revealed; revealing it is a recorded attempt, and the page confirms first. The edit form reads it without recording. Nothing runs on the server.
+- **Attempts:** "revealed" and "solved", kept per user. A question counts once marked solved, and a set's readiness is the share solved. Whether the solution was seen before solving is shown ("Solved (after seeing the solution)") and kept for a later version, but doesn't change readiness.
+- **As a node resource:** "+ Add question set" in the node form; a set that a node lists can't be deleted.
+- **Lazy routes:** with four learning modules and `marked`, the initial bundle passed its 500 kB budget, so the learning modules' pages now load on first visit (418 kB initial).
 
 ---
 

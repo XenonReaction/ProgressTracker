@@ -48,3 +48,16 @@ td {
   background: #f3f3f3;
   border-radius: 3px;
 }
+
+/* A coding question's solution */
+.solution {
+  max-width: 45rem;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  background: #f6f6f6;
+  border-radius: 4px;
+}
+
+textarea.code {
+  font-family: ui-monospace, monospace;
+}

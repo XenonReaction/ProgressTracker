@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
+import com.progressiontracker.coding.QuestionSetReadinessCalculator;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.flashcards.FlashcardReadinessCalculator;
 import com.progressiontracker.lessons.LessonReadinessCalculator;
@@ -47,9 +48,12 @@ public class NodeService {
 
 	private final LessonReadinessCalculator lessons;
 
+	private final QuestionSetReadinessCalculator questionSets;
+
 	public NodeService(NodeRepository nodes, TreeRepository trees, TreeLinks treeLinks, ReadinessService readiness,
 			CurrentUserService currentUser, FlashcardReadinessCalculator flashcards,
-			MaterialReadinessCalculator materials, LessonReadinessCalculator lessons) {
+			MaterialReadinessCalculator materials, LessonReadinessCalculator lessons,
+			QuestionSetReadinessCalculator questionSets) {
 		this.nodes = nodes;
 		this.trees = trees;
 		this.treeLinks = treeLinks;
@@ -58,6 +62,7 @@ public class NodeService {
 		this.flashcards = flashcards;
 		this.materials = materials;
 		this.lessons = lessons;
+		this.questionSets = questionSets;
 	}
 
 	@Transactional(readOnly = true)
@@ -156,7 +161,8 @@ public class NodeService {
 		String type = resource.type().trim().toLowerCase();
 		if (type.equals(NodeResourceType.URL.getDbValue())) {
 			if (resource.url() == null || resource.url().isBlank() || resource.treeId() != null
-					|| resource.deckId() != null || resource.materialId() != null || resource.lessonId() != null) {
+					|| resource.deckId() != null || resource.materialId() != null || resource.lessonId() != null
+					|| resource.questionSetId() != null) {
 				throw new BadRequestException("A url resource needs a url and nothing else to point to");
 			}
 			if (resource.countsOrFalse()) {
@@ -164,9 +170,20 @@ public class NodeService {
 			}
 			return NodeResource.url(resource.url(), blankToNull(resource.label()));
 		}
+		if (type.equals(NodeResourceType.QUESTION_SET.getDbValue())) {
+			if (resource.questionSetId() == null || resource.url() != null || resource.treeId() != null
+					|| resource.deckId() != null || resource.materialId() != null || resource.lessonId() != null) {
+				throw new BadRequestException("A question_set resource needs a questionSetId and nothing else to point to");
+			}
+			// The Coding practice module confirms it's one of the user's sets
+			questionSets.questionSet(resource.questionSetId())
+				.orElseThrow(() -> new NotFoundException("Question set", resource.questionSetId()));
+			return NodeResource.questionSet(resource.questionSetId(), blankToNull(resource.label()),
+					resource.countsOrFalse());
+		}
 		if (type.equals(NodeResourceType.LESSON.getDbValue())) {
 			if (resource.lessonId() == null || resource.url() != null || resource.treeId() != null
-					|| resource.deckId() != null || resource.materialId() != null) {
+					|| resource.deckId() != null || resource.materialId() != null || resource.questionSetId() != null) {
 				throw new BadRequestException("A lesson resource needs a lessonId and nothing else to point to");
 			}
 			// The Lessons module confirms it's one of the user's lessons
@@ -175,7 +192,8 @@ public class NodeService {
 		}
 		if (type.equals(NodeResourceType.MATERIAL.getDbValue())) {
 			if (resource.materialId() == null || resource.url() != null || resource.treeId() != null
-					|| resource.deckId() != null || resource.lessonId() != null) {
+					|| resource.deckId() != null || resource.lessonId() != null
+					|| resource.questionSetId() != null) {
 				throw new BadRequestException("A material resource needs a materialId and nothing else to point to");
 			}
 			// The Materials module confirms it's one of the user's materials
@@ -185,7 +203,8 @@ public class NodeService {
 		}
 		if (type.equals(NodeResourceType.DECK.getDbValue())) {
 			if (resource.deckId() == null || resource.url() != null || resource.treeId() != null
-					|| resource.materialId() != null || resource.lessonId() != null) {
+					|| resource.materialId() != null || resource.lessonId() != null
+					|| resource.questionSetId() != null) {
 				throw new BadRequestException("A deck resource needs a deckId and nothing else to point to");
 			}
 			// The Flashcards module confirms it's one of the user's decks
@@ -194,7 +213,8 @@ public class NodeService {
 		}
 		if (type.equals(NodeResourceType.TREE.getDbValue())) {
 			if (resource.treeId() == null || resource.url() != null || resource.deckId() != null
-					|| resource.materialId() != null || resource.lessonId() != null) {
+					|| resource.materialId() != null || resource.lessonId() != null
+					|| resource.questionSetId() != null) {
 				throw new BadRequestException("A tree resource needs a treeId and nothing else to point to");
 			}
 			Tree tree = trees.findByIdAndOwner(resource.treeId(), currentUser.getCurrentUser())
@@ -202,7 +222,8 @@ public class NodeService {
 			return NodeResource.tree(tree, blankToNull(resource.label()), resource.countsOrFalse());
 		}
 		throw new BadRequestException(
-				"Unknown resource type \"" + resource.type() + "\"; expected url, tree, deck, material or lesson");
+				"Unknown resource type \"" + resource.type()
+						+ "\"; expected url, tree, deck, material, lesson or question_set");
 	}
 
 	/** A tree, deck or material listed twice would count twice, so it's refused. URLs may repeat. */

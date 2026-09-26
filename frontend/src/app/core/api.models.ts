@@ -24,13 +24,20 @@ export interface LessonRef {
   title: string;
 }
 
+/** A set of coding questions named in a node's resources. */
+export interface QuestionSetRef {
+  id: number;
+  title: string;
+}
+
 /** What a node resource points to. All but a URL can count toward readiness. */
-export type NodeResourceType = 'url' | 'tree' | 'deck' | 'material' | 'lesson';
+export type NodeResourceType = 'url' | 'tree' | 'deck' | 'material' | 'lesson' | 'question_set';
 
 /**
  * Something a node points to, in the node's order: a tree (`tree`), a flashcard deck
  * (`deck`), an external material with reported progress (`material`), a lesson written in
- * the app (`lesson`) or a plain external page (`url`). `label` is as entered, or null to show
+ * the app (`lesson`), a set of coding questions (`question_set`) or a plain external page
+ * (`url`). `label` is as entered, or null to show
  * the target's title. `counts` is whether it counts toward the node's readiness; a URL never does.
  * `readiness` and `lastReviewedAt` are the resource's own (null for a URL), whether it
  * counts or not.
@@ -42,6 +49,7 @@ export interface NodeResource {
   deck: DeckRef | null;
   material: MaterialRef | null;
   lesson: LessonRef | null;
+  questionSet: QuestionSetRef | null;
   label: string | null;
   counts: boolean;
   readiness: number | null;
@@ -55,6 +63,7 @@ export interface NodeResourceRequest {
   deckId?: number | null;
   materialId?: number | null;
   lessonId?: number | null;
+  questionSetId?: number | null;
   label?: string | null;
   counts?: boolean;
 }
@@ -280,6 +289,57 @@ export interface LessonRequest {
   sections: LessonSection[];
 }
 
+/** A set of coding questions. `readiness` is the share of its questions solved. */
+export interface QuestionSet {
+  id: number;
+  title: string;
+  description: string | null;
+  questionCount: number;
+  solvedCount: number;
+  readiness: number;
+  lastReviewedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QuestionSetRequest {
+  title: string;
+  description: string | null;
+}
+
+/** HTML and CSS for now; JavaScript comes later. */
+export type CodingLanguage = 'html' | 'css';
+
+/**
+ * A written coding problem, solved on the user's own machine. `problem` and `examples` are
+ * Markdown. `solution` is null until revealed (or when the edit form asks for it).
+ */
+export interface CodingQuestion {
+  id: number;
+  setId: number;
+  setTitle: string;
+  title: string;
+  language: CodingLanguage;
+  problem: string;
+  examples: string | null;
+  solution: string | null;
+  solved: boolean;
+  solutionRevealed: boolean;
+  /** Recorded for later; today a solved question counts the same either way. */
+  revealedBeforeSolved: boolean;
+  lastAttemptAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CodingQuestionRequest {
+  title: string;
+  language: CodingLanguage;
+  problem: string;
+  examples: string | null;
+  solution: string;
+}
+
 /** RFC 9457 problem response body, plus the extra properties the backend adds. */
 export interface Problem {
   status: number;
@@ -288,6 +348,6 @@ export interface Problem {
   errors?: { field: string; message: string }[];
   /** Trees still using a node that couldn't be deleted. */
   trees?: TreeRef[];
-  /** Nodes listing a tree, deck, material or lesson that couldn't be deleted. */
+  /** Nodes listing a resource (tree, deck, material, lesson, question set) that couldn't be deleted. */
   nodes?: { id: number; title: string }[];
 }

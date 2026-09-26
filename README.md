@@ -8,10 +8,11 @@ single-user proof of concept: there's no login, and every request acts as one de
 What it does today:
 
 - **Node library.** Skills (nodes) with a description, tags, a readiness value from 0 to
-  100, and resources: links to read, other trees, flashcard decks, external materials and
-  lessons. All but links can count toward the node's readiness, which is then the average of
-  what counts (a tree is the average of its nodes, a deck the share of its cards passed, a
-  material or lesson the progress you last entered), shown part by part;
+  100, and resources: links to read, other trees, flashcard decks, external materials,
+  lessons and coding question sets. All but links can count toward the node's readiness,
+  which is then the average of what counts (a tree is the average of its nodes, a deck the
+  share of its cards passed, a material or lesson the progress you last entered, a question
+  set the share of its questions solved), shown part by part;
   otherwise readiness is entered by hand. Trees nest to any depth but never in a loop.
   Nodes and trees show when anything beneath them was last reviewed, and every tree shows
   its own readiness.
@@ -32,6 +33,10 @@ What it does today:
   self-reported.
 - **Lessons (Phase 7.5).** Lessons written in the app as sections of Markdown. Opening a
   lesson to read it is when it was last reviewed; you enter your progress on it by hand.
+- **Coding questions (Phase 7.6).** Written HTML and CSS problems, grouped into sets, that you
+  solve on your own machine (nothing runs on the server). Each has a problem, worked
+  examples and a solution kept hidden until you ask to see it. A question counts once you
+  mark it solved; seeing the solution first is recorded.
 
 The plan, phase by phase, is in `plans/` (`Progession_Tracker_plan.md`, then one file per
 phase; `Phase_7_plan.md` is the current one).
@@ -49,7 +54,8 @@ The backend is a modular monolith: one application and one database, with each t
 package under `com.progressiontracker` a separate module. `progression` holds nodes, trees
 and readiness; `flashcards` holds decks, cards and answers; `materials` holds external
 materials and the progress reported on them; `lessons` holds lessons and your activity on
-them; `user`, `common` and `config` are shared. A module may only use another module's public top-level package, and
+them; `coding` holds coding questions and your attempts; `user`, `common` and `config` are
+shared. A module may only use another module's public top-level package, and
 `ModularityTest` ([Spring Modulith](https://spring.io/projects/spring-modulith)) fails the
 build if one reaches into another's internals.
 
@@ -120,22 +126,23 @@ an empty database, so restarting doesn't duplicate it:
 - **Materials:** "A Complete Guide to Flexbox", reported at 40% two weeks ago and 60% a
   week ago.
 - **Lessons:** "Flexbox in Ten Minutes", three sections, at 30% and never opened.
+- **Coding:** "CSS Flexbox exercises", two questions, one solved (50%).
 
 Each module seeds itself, so a database that already has trees but no decks still gets the
-sample deck, and likewise for materials and lessons.
+sample deck, and likewise for the other modules.
 
 ### Database migrations
 
 The schema is created and changed by [Flyway](https://documentation.red-gate.com/fd)
 migrations: numbered SQL files in `backend/src/main/resources/db/migration/` (currently
-`V1` to `V10`). When the backend starts (locally, in Docker or in tests), Flyway runs any
+`V1` to `V11`). When the backend starts (locally, in Docker or in tests), Flyway runs any
 the database hasn't had yet, in order, and records them in its `flyway_schema_history`
 table. Hibernate then checks that the entity classes match the schema, and the backend
 refuses to start if they don't.
 
 To change the schema:
 
-1. Add the next file, for example `V11__add_coding_questions.sql`: two underscores after the
+1. Add the next file, for example `V12__add_javascript_questions.sql`: two underscores after the
    version, then what it does.
 2. Update the entity classes to match.
 3. Restart the backend. `./mvnw test` also runs every migration on a fresh database.
@@ -206,18 +213,19 @@ request acts as a single default user (`demo`). Errors are returned as
 **Resources and readiness.** A node's `resources` are sent and returned in order. Each is
 `{"type": "url", "url": "https://…"}` (for reading, never counts), `{"type": "tree",
 "treeId": 3, "counts": true}`, `{"type": "deck", "deckId": 5, "counts": true}` or
-`{"type": "material", "materialId": 6, "counts": true}` or `{"type": "lesson", "lessonId": 7,
-"counts": true}`, with an optional `label`; without one, the target's title is shown.
-Responses add `tree`, `deck`, `material` or `lesson` (`{id, title}`) and the resource's own `readiness` and `lastReviewedAt`, whether it counts or
+`{"type": "material", "materialId": 6, "counts": true}`, `{"type": "lesson", "lessonId": 7,
+"counts": true}` or `{"type": "question_set", "questionSetId": 8, "counts": true}`, with an
+optional `label`; without one, the target's title is shown. Responses add `tree`, `deck`,
+`material`, `lesson` or `questionSet` (`{id, title}`) and the resource's own `readiness` and `lastReviewedAt`, whether it counts or
 not. A node's `readiness` in every response is its effective value: the average of the
 resources that count, rounded to a whole percent, where a tree is the average of its nodes'
 readiness (0 for an empty tree, and nodes inside it counting their own derived value) and a
-deck is the share of its cards passed and a material or lesson the latest progress entered on
-it.
+deck is the share of its cards passed, a material or lesson the latest progress entered on
+it, and a question set the share of its questions solved.
 When nothing counts, it's the hand-entered value,
 which is always sent as `readiness` in requests and returned as `manualReadiness`. A node's
 `lastReviewedAt` is the latest review beneath its resources that count. A URL that counts,
-a tree, deck, material or lesson listed twice or an unknown type is refused with 400. Counting a tree that
+a target listed twice or an unknown type is refused with 400. Counting a tree that
 would make a tree's readiness depend on itself is refused with 409, whether it comes from
 saving a node or placing it in a tree.
 
@@ -253,6 +261,15 @@ it until it's right 3 times in a row again.
 | `GET/POST /lessons`, `GET/PUT/DELETE /lessons/{id}` | Lessons (`title`, `summary`, and `sections` in order, each `{title, body}` with a Markdown body), returned with `progress` (the latest entered, 0 if none) and `lastReviewedAt` (when last opened). Reading a lesson here isn't a review. Deleting a lesson deletes its sections and your activity; a lesson that a node lists can't be deleted (409, listing those nodes). |
 | `POST /lessons/{id}/opens` | Records that you opened the lesson to read it (the lesson page does this) and returns the lesson. |
 | `POST /lessons/{id}/progress` | Enters your progress, `{"progress": 70}`, and returns the lesson. |
+
+### Coding questions
+
+| Method & path | Purpose |
+|---|---|
+| `GET/POST /question-sets`, `GET/PUT/DELETE /question-sets/{id}` | Question sets (`title`, `description`), each returned with `questionCount`, `solvedCount`, `readiness` (the share solved) and `lastReviewedAt` (the latest attempt). Deleting a set deletes its questions and your attempts; a set that a node lists can't be deleted (409, listing those nodes). |
+| `GET/POST /question-sets/{setId}/questions`, `GET/PUT/DELETE .../questions/{id}` | Questions: `title`, `language` (`html` or `css`), `problem` and `examples` (Markdown) and `solution`, returned with `solved`, `solutionRevealed`, `revealedBeforeSolved` and `lastAttemptAt`. The `solution` is null until revealed; `?includeSolution=true` (for editing) returns it without recording a reveal. |
+| `POST .../questions/{id}/reveal` | Shows the solution, recording that you saw it, and returns the question. |
+| `POST .../questions/{id}/solved` | Marks the question solved and returns it. |
 
 ## Tests
 

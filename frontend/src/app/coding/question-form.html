@@ -1,0 +1,57 @@
+<h1>{{ questionId() ? 'Edit question' : 'New question' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <p>
+    <label>
+      Title<br />
+      <input formControlName="title" size="50" />
+    </label>
+    @if (form.controls.title.touched && form.controls.title.invalid) {
+      <br /><span class="error">Title is required (max 200 characters).</span>
+    }
+  </p>
+  <p>
+    <label>
+      Language<br />
+      <select formControlName="language">
+        @for (language of languages; track language[0]) {
+          <option [ngValue]="language[0]">{{ language[1] }}</option>
+        }
+      </select>
+    </label>
+  </p>
+  <p>
+    <label>
+      Problem (Markdown)<br />
+      <textarea formControlName="problem" rows="5" cols="60"></textarea>
+    </label>
+    @if (form.controls.problem.touched && form.controls.problem.invalid) {
+      <br /><span class="error">Describe the problem.</span>
+    }
+  </p>
+  <p>
+    <label>
+      Worked examples (Markdown, optional)<br />
+      <textarea formControlName="examples" rows="5" cols="60"></textarea>
+    </label>
+  </p>
+  <p>
+    <label>
+      Solution (hidden until asked for)<br />
+      <textarea formControlName="solution" rows="6" cols="60" class="code"></textarea>
+    </label>
+    @if (form.controls.solution.touched && form.controls.solution.invalid) {
+      <br /><span class="error">Write the solution.</span>
+    }
+  </p>
+
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  <p>
+    <button type="submit" [disabled]="saving()">Save</button>
+    &nbsp;
+    <a [routerLink]="['/question-sets', id()]">Cancel</a>
+  </p>
+</form>

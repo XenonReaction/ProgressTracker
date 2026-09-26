@@ -1,0 +1,44 @@
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+
+@if (question(); as question) {
+  <p>
+    <a [routerLink]="['/question-sets', question.setId]">← {{ question.setTitle }}</a>
+  </p>
+  <h1>{{ question.title }}</h1>
+  <p class="muted">
+    {{ languageNames[question.language] }} · {{ questionStatus(question) }}
+    @if (question.lastAttemptAt) {
+      · last attempt {{ question.lastAttemptAt | date: 'medium' }}
+    }
+  </p>
+
+  <h2>Problem</h2>
+  <div class="markdown" [innerHTML]="renderMarkdown(question.problem)"></div>
+
+  @if (question.examples) {
+    <h2>Worked examples</h2>
+    <div class="markdown" [innerHTML]="renderMarkdown(question.examples)"></div>
+  }
+
+  <p class="muted">Solve it on your own machine, then mark it solved here.</p>
+  <p>
+    @if (question.solved) {
+      <strong>Solved</strong>
+    } @else {
+      <button type="button" (click)="markSolved(question)" [disabled]="busy()">Mark solved</button>
+    }
+  </p>
+
+  <h2>Solution</h2>
+  @if (question.solution !== null) {
+    <pre class="solution"><code>{{ question.solution }}</code></pre>
+  } @else {
+    <p>
+      <button type="button" (click)="reveal(question)" [disabled]="busy()">Show solution</button>
+    </p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

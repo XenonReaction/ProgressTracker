@@ -114,6 +114,22 @@
             <span class="muted">Loading lessons…</span>
           }
           <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
+        } @else if (resource.controls.type.value === 'question_set') {
+          <strong>Question set</strong>
+          @if (questionSets(); as sets) {
+            <select
+              formControlName="questionSetId"
+              [attr.aria-label]="'Resource ' + (i + 1) + ' question set'"
+            >
+              <option [ngValue]="null">Choose a question set…</option>
+              @for (set of sets; track set.id) {
+                <option [ngValue]="set.id">{{ set.title }}</option>
+              }
+            </select>
+          } @else {
+            <span class="muted">Loading question sets…</span>
+          }
+          <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
         } @else {
           <strong>Link</strong>
           <input
@@ -152,17 +168,10 @@
         @if (resource.touched && resource.hasError('url')) {
           <span class="error">Enter an http(s) URL.</span>
         }
-        @if (resource.touched && resource.hasError('lessonRequired')) {
-          <span class="error">Choose a lesson.</span>
-        }
-        @if (resource.touched && resource.hasError('materialRequired')) {
-          <span class="error">Choose a material.</span>
-        }
-        @if (resource.touched && resource.hasError('deckRequired')) {
-          <span class="error">Choose a deck.</span>
-        }
-        @if (resource.touched && resource.hasError('treeRequired')) {
-          <span class="error">Choose a tree.</span>
+        @if (resource.touched && resource.hasError('targetRequired')) {
+          <span class="error"
+            >Choose a {{ typeNames[resource.controls.type.value].toLowerCase() }}.</span
+          >
         }
       </div>
     }
@@ -175,6 +184,8 @@
     <button type="button" (click)="addResource('material')">+ Add material</button>
     &nbsp;
     <button type="button" (click)="addResource('lesson')">+ Add lesson</button>
+    &nbsp;
+    <button type="button" (click)="addResource('question_set')">+ Add question set</button>
   </fieldset>
 
   @if (error(); as message) {

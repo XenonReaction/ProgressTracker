@@ -6,6 +6,7 @@ export const RESOURCE_GROUPS: { type: NodeResourceType; heading: string }[] = [
   { type: 'deck', heading: 'Decks' },
   { type: 'material', heading: 'Materials' },
   { type: 'lesson', heading: 'Lessons' },
+  { type: 'question_set', heading: 'Coding questions' },
   { type: 'url', heading: 'Links' },
 ];
 
@@ -15,6 +16,7 @@ export const RESOURCE_TYPE_NAMES: Record<NodeResourceType, string> = {
   deck: 'Deck',
   material: 'Material',
   lesson: 'Lesson',
+  question_set: 'Question set',
   url: 'Link',
 };
 
@@ -31,12 +33,13 @@ export function resourceTitle(resource: NodeResource): string {
     resource.deck?.title ||
     resource.material?.title ||
     resource.lesson?.title ||
+    resource.questionSet?.title ||
     resource.url ||
     ''
   );
 }
 
-/** The in-app page for a tree, deck, material or lesson resource; null for a URL. */
+/** The in-app page for any resource but a URL (which is null). */
 export function resourceLink(resource: NodeResource): (string | number)[] | null {
   if (resource.tree) {
     return ['/trees', resource.tree.id];
@@ -47,7 +50,10 @@ export function resourceLink(resource: NodeResource): (string | number)[] | null
   if (resource.material) {
     return ['/materials', resource.material.id];
   }
-  return resource.lesson ? ['/lessons', resource.lesson.id] : null;
+  if (resource.lesson) {
+    return ['/lessons', resource.lesson.id];
+  }
+  return resource.questionSet ? ['/question-sets', resource.questionSet.id] : null;
 }
 
 /** The resources a node's readiness comes from. */
@@ -91,6 +97,7 @@ export function toRequest(resource: NodeResource): NodeResourceRequest {
     deckId: resource.deck?.id ?? null,
     materialId: resource.material?.id ?? null,
     lessonId: resource.lesson?.id ?? null,
+    questionSetId: resource.questionSet?.id ?? null,
     label: resource.label,
     counts: resource.counts,
   };

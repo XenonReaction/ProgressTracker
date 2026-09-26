@@ -37,7 +37,11 @@
                   @if (resource.label) {
                     <span class="muted">
                       ({{
-                        resource.tree?.title ?? resource.deck?.title ?? resource.material?.title ?? resource.lesson?.title
+                        resource.tree?.title ??
+                        resource.deck?.title ??
+                        resource.material?.title ??
+                        resource.lesson?.title ??
+                        resource.questionSet?.title
                       }})</span
                     >
                   }

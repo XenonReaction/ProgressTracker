@@ -18,15 +18,18 @@ import {
   NodeRequest,
   NodeResource,
   NodeResourceType,
+  QuestionSetRef,
   TreeRef,
 } from '../core/api.models';
 import { FlashcardApi } from '../core/flashcard-api';
+import { CodingApi } from '../core/coding-api';
 import { LessonApi } from '../core/lesson-api';
 import { MaterialApi } from '../core/material-api';
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { TreeApi } from '../core/tree-api';
 import { MAX_TAG_LENGTH, parseTags, tagsValidator } from '../trees/tags';
+import { RESOURCE_TYPE_NAMES } from './resources';
 
 type ResourceGroup = FormGroup<{
   type: FormControl<NodeResourceType>;
@@ -35,37 +38,30 @@ type ResourceGroup = FormGroup<{
   deckId: FormControl<number | null>;
   materialId: FormControl<number | null>;
   lessonId: FormControl<number | null>;
+  questionSetId: FormControl<number | null>;
   label: FormControl<string>;
   counts: FormControl<boolean>;
 }>;
 
 const HTTP_URL = /^https?:\/\/\S+$/i;
 
-/** A link needs an http(s) URL; a tree, deck, material or lesson needs one chosen. */
+/** A link needs an http(s) URL; any other resource needs its target chosen. */
 function resourceTarget(group: AbstractControl): ValidationErrors | null {
-  const { type, url, treeId, deckId, materialId, lessonId } = group.value;
+  const { type, url } = group.value;
   if (type === 'url') {
     return HTTP_URL.test((url ?? '').trim()) ? null : { url: true };
   }
-  if (type === 'deck') {
-    return deckId == null ? { deckRequired: true } : null;
-  }
-  if (type === 'material') {
-    return materialId == null ? { materialRequired: true } : null;
-  }
-  if (type === 'lesson') {
-    return lessonId == null ? { lessonRequired: true } : null;
-  }
-  return treeId == null ? { treeRequired: true } : null;
+  return targetOf(group.value) == null ? { targetRequired: true } : null;
 }
 
-/** The id a tree, deck, material or lesson row points to. */
+/** The id a tree, deck, material, lesson or question set row points to. */
 function targetOf(row: {
   type?: NodeResourceType;
   treeId?: number | null;
   deckId?: number | null;
   materialId?: number | null;
   lessonId?: number | null;
+  questionSetId?: number | null;
 }): number | null | undefined {
   switch (row.type) {
     case 'tree':
@@ -74,15 +70,17 @@ function targetOf(row: {
       return row.deckId;
     case 'material':
       return row.materialId;
-    default:
+    case 'lesson':
       return row.lessonId;
+    default:
+      return row.questionSetId;
   }
 }
 
 /**
  * Create (`/nodes/new`) or edit (`/nodes/:id/edit`) a library node: its title, description,
- * tags and resources. Resources are links, trees, flashcard decks, materials and lessons, in
- * the order the user sets; any but a link can count toward readiness, and then the node's
+ * tags and resources. Resources are links, trees, flashcard decks, materials, lessons and
+ * coding question sets, in the order the user sets; any but a link can count toward readiness, and then the node's
  * readiness is the average of the resources that count. The hand-entered value itself is set
  * on the node's view page, so this form only carries it through unchanged.
  */
@@ -97,6 +95,7 @@ export class NodeForm implements OnInit {
   private readonly flashcardApi = inject(FlashcardApi);
   private readonly materialApi = inject(MaterialApi);
   private readonly lessonApi = inject(LessonApi);
+  private readonly codingApi = inject(CodingApi);
   private readonly router = inject(Router);
 
   /** Route param; absent when creating. */
@@ -105,6 +104,7 @@ export class NodeForm implements OnInit {
   readonly returnTo = input<string>();
 
   protected readonly maxTagLength = MAX_TAG_LENGTH;
+  protected readonly typeNames = RESOURCE_TYPE_NAMES;
 
   protected readonly form = new FormGroup({
     title: new FormControl('', {
@@ -135,13 +135,16 @@ export class NodeForm implements OnInit {
   /** Lessons to choose from; loaded the first time a lesson resource is shown. */
   protected readonly lessons = signal<LessonRef[] | null>(null);
   private lessonsRequested = false;
+  /** Question sets to choose from; loaded the first time a question set resource is shown. */
+  protected readonly questionSets = signal<QuestionSetRef[] | null>(null);
+  private questionSetsRequested = false;
   /** The node's readiness as last saved, and which resources counted then. */
   private readonly saved = signal<{ countingKey: string; readiness: number } | null>(null);
 
   private readonly formValue = toSignal(this.form.valueChanges, {
     initialValue: this.form.getRawValue(),
   });
-  /** The trees, decks, materials and lessons that count, as the form stands. */
+  /** The resources that count, as the form stands. */
   private readonly countingKey = computed(() =>
     (this.formValue().resources ?? [])
       .filter((r) => r.type !== 'url' && r.counts && targetOf(r) != null)
@@ -188,6 +191,7 @@ export class NodeForm implements OnInit {
           deckId: new FormControl<number | null>(resource?.deck?.id ?? null),
           materialId: new FormControl<number | null>(resource?.material?.id ?? null),
           lessonId: new FormControl<number | null>(resource?.lesson?.id ?? null),
+          questionSetId: new FormControl<number | null>(resource?.questionSet?.id ?? null),
           label: new FormControl(resource?.label ?? '', {
             nonNullable: true,
             validators: [Validators.maxLength(200)],
@@ -211,6 +215,9 @@ export class NodeForm implements OnInit {
     }
     if (type === 'lesson') {
       this.loadLessons();
+    }
+    if (type === 'question_set') {
+      this.loadQuestionSets();
     }
   }
 
@@ -250,6 +257,13 @@ export class NodeForm implements OnInit {
             return { type: 'material', materialId: r.materialId, label, counts: r.counts };
           case 'lesson':
             return { type: 'lesson', lessonId: r.lessonId, label, counts: r.counts };
+          case 'question_set':
+            return {
+              type: 'question_set',
+              questionSetId: r.questionSetId,
+              label,
+              counts: r.counts,
+            };
           default:
             return { type: 'tree', treeId: r.treeId, label, counts: r.counts };
         }
@@ -277,6 +291,18 @@ export class NodeForm implements OnInit {
     this.treesRequested = true;
     this.treeApi.list().subscribe({
       next: (trees) => this.trees.set(trees.map(({ id, title }) => ({ id, title }))),
+      error: (error) => this.error.set(errorMessage(error)),
+    });
+  }
+
+  /** Loads the question sets to choose from, once. */
+  private loadQuestionSets(): void {
+    if (this.questionSetsRequested) {
+      return;
+    }
+    this.questionSetsRequested = true;
+    this.codingApi.sets().subscribe({
+      next: (sets) => this.questionSets.set(sets.map(({ id, title }) => ({ id, title }))),
       error: (error) => this.error.set(errorMessage(error)),
     });
   }

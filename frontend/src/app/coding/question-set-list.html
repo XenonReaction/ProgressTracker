@@ -1,0 +1,58 @@
+<h1>Coding questions</h1>
+<p class="muted">
+  Written problems to solve on your own machine, grouped into sets. A set's readiness is the share
+  of its questions you've solved.
+</p>
+<p><a routerLink="/question-sets/new">+ New question set</a></p>
+
+@if (error(); as message) {
+  <div class="error" role="alert">
+    <p>{{ message }}</p>
+    @if (blockingNodes().length) {
+      <ul>
+        @for (node of blockingNodes(); track node.id) {
+          <li>
+            <a [routerLink]="['/nodes', node.id]">{{ node.title }}</a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}
+
+@if (sets(); as sets) {
+  @if (sets.length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Question set</th>
+          <th>Solved</th>
+          <th>Readiness</th>
+          <th>Last attempt</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (set of sets; track set.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/question-sets', set.id]">{{ set.title }}</a>
+            </td>
+            <td>{{ set.solvedCount }} of {{ set.questionCount }}</td>
+            <td><progress max="100" [value]="set.readiness"></progress> {{ set.readiness }}%</td>
+            <td>{{ set.lastReviewedAt ? (set.lastReviewedAt | date: 'medium') : 'Never' }}</td>
+            <td>
+              <a [routerLink]="['/question-sets', set.id, 'edit']">Edit</a>
+              &nbsp;
+              <button type="button" (click)="delete(set)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No question sets yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

@@ -1,4 +1,15 @@
-import { Card, Deck, Lesson, Material, Node, NodeResource, Tree, TreeNode } from './api.models';
+import {
+  Card,
+  CodingQuestion,
+  Deck,
+  Lesson,
+  Material,
+  Node,
+  NodeResource,
+  QuestionSet,
+  Tree,
+  TreeNode,
+} from './api.models';
 
 /** Builders for specs; override only the fields a test cares about. */
 export function aNode(overrides: Partial<Node> = {}): Node {
@@ -99,6 +110,7 @@ export function aTreeResource(
     deck: null,
     material: null,
     lesson: null,
+    questionSet: null,
     label,
     counts,
     readiness,
@@ -120,6 +132,7 @@ export function aDeckResource(
     deck: { id, title },
     material: null,
     lesson: null,
+    questionSet: null,
     label: null,
     counts,
     readiness,
@@ -135,6 +148,7 @@ export function aUrlResource(url: string, label: string | null = null): NodeReso
     deck: null,
     material: null,
     lesson: null,
+    questionSet: null,
     label,
     counts: false,
     readiness: null,
@@ -156,6 +170,7 @@ export function aMaterialResource(
     deck: null,
     material: { id, title },
     lesson: null,
+    questionSet: null,
     label: null,
     counts,
     readiness,
@@ -192,6 +207,7 @@ export function aLessonResource(
     deck: null,
     material: null,
     lesson: { id, title },
+    questionSet: null,
     label: null,
     counts,
     readiness,
@@ -207,6 +223,63 @@ export function aLesson(overrides: Partial<Lesson> = {}): Lesson {
     sections: [],
     progress: 0,
     lastReviewedAt: null,
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
+export function aQuestionSetResource(
+  id: number,
+  title: string,
+  counts = true,
+  readiness: number | null = 50,
+  lastReviewedAt: string | null = null,
+): NodeResource {
+  return {
+    type: 'question_set',
+    url: null,
+    tree: null,
+    deck: null,
+    material: null,
+    lesson: null,
+    questionSet: { id, title },
+    label: null,
+    counts,
+    readiness,
+    lastReviewedAt,
+  };
+}
+
+export function aQuestionSet(overrides: Partial<QuestionSet> = {}): QuestionSet {
+  return {
+    id: 1,
+    title: 'CSS Flexbox exercises',
+    description: null,
+    questionCount: 0,
+    solvedCount: 0,
+    readiness: 0,
+    lastReviewedAt: null,
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
+export function aCodingQuestion(overrides: Partial<CodingQuestion> = {}): CodingQuestion {
+  return {
+    id: 1,
+    setId: 1,
+    setTitle: 'CSS Flexbox exercises',
+    title: 'Centre a box',
+    language: 'css',
+    problem: 'Centre `.box` inside `.frame`.',
+    examples: null,
+    solution: null,
+    solved: false,
+    solutionRevealed: false,
+    revealedBeforeSolved: false,
+    lastAttemptAt: null,
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,

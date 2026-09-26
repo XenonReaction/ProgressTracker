@@ -8,6 +8,7 @@ import {
   aLesson,
   aMaterial,
   aNode,
+  aQuestionSet,
   aTree,
   aTreeResource,
   aUrlResource,
@@ -201,6 +202,33 @@ describe('NodeForm', () => {
       const request = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
       expect(request.request.body.resources).toEqual([
         { type: 'lesson', lessonId: 7, label: null, counts: true },
+      ]);
+      request.flush(aNode());
+    });
+
+    it('adds a coding question set, which counts unless unticked', async () => {
+      type(input('title'), 'CSS Flexbox');
+      button('+ Add question set').click();
+      await fixture.whenStable();
+      http
+        .expectOne({ method: 'GET', url: '/api/v1/question-sets' })
+        .flush([aQuestionSet({ id: 8, title: 'Flexbox exercises' })]);
+      await fixture.whenStable();
+      expect(counts(0).checked).toBe(true);
+      submit();
+      await fixture.whenStable();
+      http.expectNone({ method: 'POST', url: '/api/v1/nodes' });
+      expect(page.textContent).toContain('Choose a question set.');
+
+      const select = rows()[0].querySelector('select') as HTMLSelectElement;
+      select.selectedIndex = 1;
+      select.dispatchEvent(new Event('change'));
+      await fixture.whenStable();
+      submit();
+
+      const request = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
+      expect(request.request.body.resources).toEqual([
+        { type: 'question_set', questionSetId: 8, label: null, counts: true },
       ]);
       request.flush(aNode());
     });

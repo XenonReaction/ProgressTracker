@@ -6,7 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Lesson } from '../core/api.models';
 import { LessonApi } from '../core/lesson-api';
 import { errorMessage, problemOf } from '../core/problem';
-import { renderMarkdown } from './markdown';
+import { renderMarkdown } from '../core/markdown';
 
 /**
  * A lesson's page (`/lessons/:id`), for reading it. Opening it records a review ("last

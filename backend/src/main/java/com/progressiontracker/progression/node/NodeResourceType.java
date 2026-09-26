@@ -19,7 +19,10 @@ public enum NodeResourceType {
 	MATERIAL("material", true),
 
 	/** A lesson written in the app, by id: its readiness is the latest progress the user entered. */
-	LESSON("lesson", true);
+	LESSON("lesson", true),
+
+	/** A set of coding questions, by id: its readiness is the share of its questions solved. */
+	QUESTION_SET("question_set", true);
 
 	private final String dbValue;
 

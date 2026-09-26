@@ -19,8 +19,8 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
 /**
- * Phases 7.3 to 7.5: readiness from several resources across modules (trees, decks, materials
- * and lessons), through the whole HTTP stack against real Postgres. Holds the Phase 7.0
+ * Phases 7.3 to 7.6: readiness from several resources across modules (trees, decks, materials,
+ * lessons and coding question sets), through the whole HTTP stack against real Postgres. Holds the Phase 7.0
  * examples.
  */
 @SpringBootTest
@@ -36,7 +36,8 @@ class ReadinessFromResourcesIntegrationTest {
 
 	@AfterEach
 	void emptyTables() {
-		jdbc.execute("truncate table lesson_progress_updates, lesson_opens, lesson_sections, lessons, material_progress_updates, "
+		jdbc.execute("truncate table question_attempts, coding_questions, question_sets, lesson_progress_updates, lesson_opens, "
+				+ "lesson_sections, lessons, material_progress_updates, "
 				+ "materials, card_reviews, cards, decks, tree_edit_sessions, "
 				+ "prerequisites, tree_nodes, tree_tags, trees, node_tags, node_resources, nodes, users cascade");
 	}
@@ -163,6 +164,30 @@ class ReadinessFromResourcesIntegrationTest {
 		MvcTestResult refused = mvc.delete().uri("/api/v1/materials/{id}", guide).exchange();
 		assertThat(refused).hasStatus(HttpStatus.CONFLICT);
 		assertThat(refused).bodyJson().extractingPath("$.nodes[0].title").isEqualTo("CSS Flexbox");
+	}
+
+	@Test
+	void markingACodingQuestionSolvedChangesTheNodeAndItsTree() {
+		long set = id(post("/api/v1/question-sets", "{\"title\": \"Flexbox exercises\"}"));
+		long question = 0;
+		for (String title : new String[] { "Centre a box", "Spread a nav bar" }) {
+			question = id(post("/api/v1/question-sets/" + set + "/questions", """
+					{"title": "%s", "language": "css", "problem": "P", "solution": "S"}""".formatted(title)));
+		}
+		long flexbox = createNode("CSS Flexbox", 0);
+		setResources(flexbox, "CSS Flexbox",
+				"{\"type\": \"question_set\", \"questionSetId\": %d, \"counts\": true}".formatted(set));
+		long css = id(post("/api/v1/trees", "{\"title\": \"CSS\"}"));
+		placeNode(css, flexbox);
+		placeNode(css, createNode("Selectors", 100));
+		assertThat(treeField(css, "readiness")).isEqualTo(50); // (0 + 100) / 2
+
+		assertThat(post("/api/v1/question-sets/" + set + "/questions/" + question + "/solved", "")).hasStatusOk();
+
+		// 1 of 2 questions solved: 50%, and CSS is (50 + 100) / 2 = 75%
+		assertThat(readinessOfNode(flexbox)).isEqualTo(50);
+		assertThat(treeField(css, "readiness")).isEqualTo(75);
+		assertThat(mvc.delete().uri("/api/v1/question-sets/{id}", set)).hasStatus(HttpStatus.CONFLICT);
 	}
 
 	@Test

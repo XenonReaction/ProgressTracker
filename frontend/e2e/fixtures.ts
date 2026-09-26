@@ -2,12 +2,14 @@ import { APIRequestContext, Locator, Page, test as base, expect } from '@playwri
 
 import type {
   Card,
+  CodingQuestion,
   Deck,
   Lesson,
   Material,
   Node,
   NodeResourceRequest,
   Prerequisite,
+  QuestionSet,
   Tree,
   TreeNode,
 } from '../src/app/core/api.models';
@@ -132,6 +134,27 @@ export class Api {
 
   async enterLessonProgress(lessonId: number, progress: number): Promise<Lesson> {
     return this.post(`/api/v1/lessons/${lessonId}/progress`, { progress });
+  }
+
+  async createQuestionSet(title: string): Promise<QuestionSet> {
+    return this.post('/api/v1/question-sets', { title, description: null });
+  }
+
+  async createQuestion(setId: number, title: string): Promise<CodingQuestion> {
+    return this.post(`/api/v1/question-sets/${setId}/questions`, {
+      title,
+      language: 'css',
+      problem: 'Centre `.box` inside `.frame`.',
+      examples: null,
+      solution: '.frame { display: flex; }',
+    });
+  }
+
+  async markSolved(question: CodingQuestion): Promise<CodingQuestion> {
+    return this.post(
+      `/api/v1/question-sets/${question.setId}/questions/${question.id}/solved`,
+      null,
+    );
   }
 
   async deck(deckId: number): Promise<Deck> {

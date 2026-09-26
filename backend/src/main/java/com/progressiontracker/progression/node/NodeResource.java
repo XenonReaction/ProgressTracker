@@ -10,11 +10,11 @@ import jakarta.persistence.ManyToOne;
 import com.progressiontracker.progression.tree.Tree;
 
 /**
- * Something a node points to: another tree, a flashcard deck, an external material, a lesson,
- * or a plain URL. It has an optional label (the target's title is shown when it's null) and says
- * whether it counts toward the node's readiness. A URL never counts. Decks, materials and
- * lessons are in other modules, so they're referred to by plain id ({@code target_id}), with no foreign
- * key.
+ * Something a node points to: another tree, a flashcard deck, an external material, a
+ * lesson, a set of coding questions, or a plain URL. It has an optional label (the target's
+ * title is shown when it's null) and says whether it counts toward the node's readiness. A
+ * URL never counts. Decks, materials, lessons and question sets are in other modules, so
+ * they're referred to by plain id ({@code target_id}), with no foreign key.
  */
 @Embeddable
 public class NodeResource {
@@ -26,7 +26,7 @@ public class NodeResource {
 	@JoinColumn(name = "tree_id", foreignKey = @ForeignKey(name = "node_resources_tree_id_fk"))
 	private Tree tree;
 
-	/** The id of a deck, material or lesson in another module; otherwise null. */
+	/** The id of a deck, material, lesson or question set in another module; otherwise null. */
 	@Column(name = "target_id")
 	private Long targetId;
 
@@ -71,6 +71,10 @@ public class NodeResource {
 		return new NodeResource(NodeResourceType.LESSON, null, lessonId, null, label, counts);
 	}
 
+	public static NodeResource questionSet(Long setId, String label, boolean counts) {
+		return new NodeResource(NodeResourceType.QUESTION_SET, null, setId, null, label, counts);
+	}
+
 	public NodeResourceType getType() {
 		return type;
 	}
@@ -93,6 +97,11 @@ public class NodeResource {
 	/** The lesson's id, for a {@link NodeResourceType#LESSON} resource; otherwise null. */
 	public Long getLessonId() {
 		return type == NodeResourceType.LESSON ? targetId : null;
+	}
+
+	/** The question set's id, for a {@link NodeResourceType#QUESTION_SET} resource; otherwise null. */
+	public Long getQuestionSetId() {
+		return type == NodeResourceType.QUESTION_SET ? targetId : null;
 	}
 
 	/** Identifies the target within its type: a tree's id, another module's id, or the URL. */

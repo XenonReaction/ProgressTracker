@@ -27,7 +27,8 @@ public record NodeRequest(
 	/**
 	 * One resource: {@code type} {@code "url"} with {@code url}, {@code "tree"} with
 	 * {@code treeId}, {@code "deck"} with {@code deckId}, {@code "material"} with
-	 * {@code materialId}, or {@code "lesson"} with {@code lessonId}. {@code label} is optional (the
+	 * {@code materialId}, {@code "lesson"} with {@code lessonId}, or {@code "question_set"} with
+	 * {@code questionSetId}. {@code label} is optional (the
 	 * target's title is shown instead). {@code counts} is whether it counts toward readiness;
 	 * a URL never does.
 	 */
@@ -38,6 +39,7 @@ public record NodeRequest(
 			Long deckId,
 			Long materialId,
 			Long lessonId,
+			Long questionSetId,
 			@Size(max = 200) String label,
 			Boolean counts) {
 

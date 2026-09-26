@@ -1,0 +1,75 @@
+@if (error(); as message) {
+  <div class="error" role="alert">
+    <p>{{ message }}</p>
+    @if (blockingNodes().length) {
+      <ul>
+        @for (node of blockingNodes(); track node.id) {
+          <li>
+            <a [routerLink]="['/nodes', node.id]">{{ node.title }}</a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}
+
+@if (set(); as set) {
+  <p><a routerLink="/question-sets">← Coding questions</a></p>
+  <h1>{{ set.title }}</h1>
+  <p>
+    <a [routerLink]="['/question-sets', set.id, 'edit']">Edit</a>
+    &nbsp;
+    <button type="button" (click)="deleteSet(set)">Delete question set</button>
+  </p>
+  @if (set.description) {
+    <p>{{ set.description }}</p>
+  }
+
+  <h2>Readiness</h2>
+  <p>
+    <progress max="100" [value]="set.readiness"></progress> <strong>{{ set.readiness }}%</strong>:
+    {{ set.solvedCount }} of {{ set.questionCount }} questions solved.
+  </p>
+  <p class="muted">
+    Last attempt: {{ set.lastReviewedAt ? (set.lastReviewedAt | date: 'medium') : 'never' }}
+  </p>
+
+  <h2>Questions</h2>
+  <p><a [routerLink]="['/question-sets', set.id, 'questions', 'new']">+ New question</a></p>
+  @if (questions().length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Language</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (question of questions(); track question.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/question-sets', set.id, 'questions', question.id]">{{
+                question.title
+              }}</a>
+            </td>
+            <td>{{ languageNames[question.language] }}</td>
+            <td>{{ questionStatus(question) }}</td>
+            <td>
+              <a [routerLink]="['/question-sets', set.id, 'questions', question.id, 'edit']"
+                >Edit</a
+              >
+              &nbsp;
+              <button type="button" (click)="deleteQuestion(question)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No questions yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

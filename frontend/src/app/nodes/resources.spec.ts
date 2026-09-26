@@ -2,6 +2,7 @@ import {
   aDeckResource,
   aLessonResource,
   aMaterialResource,
+  aQuestionSetResource,
   aTreeResource,
   aUrlResource,
 } from '../core/test-data';
@@ -35,6 +36,9 @@ describe('resources', () => {
     expect(resourceLink(aLessonResource(7, 'Lesson'))).toEqual(['/lessons', 7]);
     expect(resourceTitle(aLessonResource(7, 'Lesson'))).toBe('Lesson');
     expect(isSelfReported(aLessonResource(7, 'Lesson'))).toBe(true);
+    expect(resourceLink(aQuestionSetResource(8, 'Exercises'))).toEqual(['/question-sets', 8]);
+    expect(resourceTitle(aQuestionSetResource(8, 'Exercises'))).toBe('Exercises');
+    expect(isSelfReported(aQuestionSetResource(8, 'Exercises'))).toBe(false);
     expect(resourceLink(aUrlResource('https://example.com'))).toBeNull();
   });
 
@@ -74,11 +78,13 @@ describe('resources', () => {
       deckId: null,
       materialId: null,
       lessonId: null,
+      questionSetId: null,
       label: 'Styling',
       counts: false,
     });
     expect(toRequest(aDeckResource(4, 'Cards')).deckId).toBe(4);
     expect(toRequest(aMaterialResource(6, 'Guide')).materialId).toBe(6);
     expect(toRequest(aLessonResource(7, 'Lesson')).lessonId).toBe(7);
+    expect(toRequest(aQuestionSetResource(8, 'Exercises')).questionSetId).toBe(8);
   });
 });
