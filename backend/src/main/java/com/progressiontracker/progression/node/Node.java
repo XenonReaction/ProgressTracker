@@ -58,9 +58,9 @@ public class Node {
 
 	/**
 	 * In the order the user chose. {@code @CollectionTable} can't declare check constraints, so
-	 * they're only in the V7 migration: node_resources_resource_type_check (the allowed
-	 * types), node_resources_target_matches_type (a url has a url, a tree has a tree) and
-	 * node_resources_url_never_counts.
+	 * they're only in the migrations (V7, widened in V8): node_resources_resource_type_check
+	 * (the allowed types), node_resources_target_matches_type (each type has exactly its own
+	 * target column set) and node_resources_url_never_counts.
 	 */
 	@ElementCollection
 	@CollectionTable(name = "node_resources", joinColumns = @JoinColumn(name = "node_id"),

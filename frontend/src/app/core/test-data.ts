@@ -8,6 +8,7 @@ export function aNode(overrides: Partial<Node> = {}): Node {
     description: null,
     readiness: 50,
     manualReadiness: 50,
+    lastReviewedAt: null,
     resources: [],
     tags: [],
     createdAt: '2026-01-01T00:00:00Z',
@@ -23,6 +24,8 @@ export function aTree(overrides: Partial<Tree> = {}): Tree {
     description: null,
     category: null,
     tags: [],
+    readiness: 0,
+    lastReviewedAt: null,
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     editSessionStartedAt: null,
@@ -39,6 +42,7 @@ export function aTreeNode(overrides: Partial<TreeNode> = {}): TreeNode {
     description: null,
     resources: [],
     readiness: 50,
+    lastReviewedAt: null,
     positionX: 0,
     positionY: 0,
     aggregateThreshold: 80,
@@ -86,10 +90,48 @@ export function aTreeResource(
   title: string,
   counts = true,
   label: string | null = null,
+  readiness: number | null = 50,
 ): NodeResource {
-  return { type: 'tree', url: null, tree: { id, title }, label, counts };
+  return {
+    type: 'tree',
+    url: null,
+    tree: { id, title },
+    deck: null,
+    label,
+    counts,
+    readiness,
+    lastReviewedAt: null,
+  };
+}
+
+export function aDeckResource(
+  id: number,
+  title: string,
+  counts = true,
+  readiness: number | null = 50,
+  lastReviewedAt: string | null = null,
+): NodeResource {
+  return {
+    type: 'deck',
+    url: null,
+    tree: null,
+    deck: { id, title },
+    label: null,
+    counts,
+    readiness,
+    lastReviewedAt,
+  };
 }
 
 export function aUrlResource(url: string, label: string | null = null): NodeResource {
-  return { type: 'url', url, tree: null, label, counts: false };
+  return {
+    type: 'url',
+    url,
+    tree: null,
+    deck: null,
+    label,
+    counts: false,
+    readiness: null,
+    lastReviewedAt: null,
+  };
 }

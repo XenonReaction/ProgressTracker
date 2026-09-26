@@ -4,6 +4,10 @@
 
 @if (tree(); as tree) {
   <h1>{{ tree.title }}</h1>
+  <p class="tree-readiness">
+    Readiness: <strong>{{ tree.readiness }}%</strong> <span class="muted">(the average of its nodes)</span> · Last
+    reviewed: {{ tree.lastReviewedAt ? (tree.lastReviewedAt | date: 'medium') : 'never' }}
+  </p>
   @if (tree.description) {
     <p>{{ tree.description }}</p>
   }
@@ -144,8 +148,8 @@
           <rect [attr.width]="nodeWidth" [attr.height]="nodeHeight" rx="6" />
           <text [attr.x]="nodeWidth / 2" y="23" text-anchor="middle" class="title">{{ shortTitle(treeNode.title) }}</text>
           <text [attr.x]="nodeWidth / 2" y="43" text-anchor="middle" class="readiness">{{ treeNode.readiness }}% · {{ levelOf(treeNode) }}</text>
-          @if (countingTrees(treeNode.resources).length) {
-            <!-- Marks a node whose readiness comes from other trees -->
+          @if (hasCountingResource(treeNode.resources)) {
+            <!-- Marks a node whose readiness comes from its resources (trees, decks) -->
             <text [attr.x]="nodeWidth - 6" y="12" text-anchor="end" class="linked-marker">linked</text>
           }
         </g>
@@ -171,26 +175,18 @@
         @if (mode() === 'view' && node.description) {
           <p>{{ node.description }}</p>
         }
-        @if (countingTrees(node.resources); as linked) {
-          @if (linked.length) {
-            <p>
-              Readiness: <strong>{{ node.readiness }}%</strong>,
-              @if (linked.length === 1) {
-                from the linked tree <strong>{{ linked[0].title }}</strong> (the average of its nodes).
-              } @else {
-                the average of the linked trees <strong>{{ titleList(linked) }}</strong>.
-              }
-              @if (mode() === 'view') {
-                @for (tree of linked; track tree.id) {
-                  <br /><a [routerLink]="['/trees', tree.id]">Open {{ linked.length === 1 ? 'linked tree' : tree.title }}</a>
-                }
-              }
-            </p>
-          } @else if (mode() === 'view') {
-            <app-readiness-editor [nodeId]="node.nodeId" [readiness]="node.readiness" (saved)="readinessSaved()" />
-          } @else {
-            <p>Readiness: <strong>{{ node.readiness }}%</strong></p>
-          }
+        @if (hasCountingResource(node.resources)) {
+          <p>Readiness: <strong>{{ node.readiness }}%</strong>, the average of the resources that count:</p>
+          <app-readiness-breakdown
+            [resources]="node.resources"
+            [readiness]="node.readiness"
+            [lastReviewedAt]="node.lastReviewedAt"
+            [links]="mode() === 'view'"
+          />
+        } @else if (mode() === 'view') {
+          <app-readiness-editor [nodeId]="node.nodeId" [readiness]="node.readiness" (saved)="readinessSaved()" />
+        } @else {
+          <p>Readiness: <strong>{{ node.readiness }}%</strong></p>
         }
         <p>Ready to start: <strong>{{ levelOf(node) }}</strong></p>
 
@@ -211,11 +207,9 @@
           <ul>
             @for (resource of node.resources; track $index) {
               <li>
-                @if (resource.tree; as tree) {
-                  Tree: <a [routerLink]="['/trees', tree.id]">{{ resourceTitle(resource) }}</a>
-                  @if (!resource.counts) {
-                    <span class="muted"> (for reference)</span>
-                  }
+                @if (resourceLink(resource); as target) {
+                  {{ resourceTypeNames[resource.type] }}: <a [routerLink]="target">{{ resourceTitle(resource) }}</a>
+                  <span class="muted"> {{ resource.readiness }}%{{ resource.counts ? '' : ', for reference' }}</span>
                 } @else {
                   <a [href]="resource.url" target="_blank" rel="noopener noreferrer">{{ resourceTitle(resource) }}</a>
                 }

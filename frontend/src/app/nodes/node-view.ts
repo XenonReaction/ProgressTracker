@@ -6,22 +6,18 @@ import { Node, NodeResource, NodeResourceType, TreeRef } from '../core/api.model
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { ReadinessEditor } from './readiness-editor';
-import {
-  RESOURCE_GROUPS,
-  countingTrees,
-  hasCountingResource,
-  resourceTitle,
-  titleList,
-} from './resources';
+import { ReadinessBreakdown } from './readiness-breakdown';
+import { RESOURCE_GROUPS, hasCountingResource, resourceLink, resourceTitle } from './resources';
 
 /**
  * A library node's page (`/nodes/:id`), in view mode: its fields read-only, its resources
- * grouped by type, the trees using it and where its readiness comes from. Hand-entered readiness can be updated
- * here; everything else is changed through "Edit".
+ * grouped by type, the trees using it and where its readiness comes from. Hand-entered
+ * readiness can be updated here while nothing counts; everything else is changed through
+ * "Edit".
  */
 @Component({
   selector: 'app-node-view',
-  imports: [RouterLink, ReadinessEditor],
+  imports: [RouterLink, ReadinessEditor, ReadinessBreakdown],
   templateUrl: './node-view.html',
 })
 export class NodeView {
@@ -35,10 +31,9 @@ export class NodeView {
   protected readonly error = signal<string | null>(null);
 
   protected readonly resourceGroups = RESOURCE_GROUPS;
-  protected readonly countingTrees = countingTrees;
   protected readonly hasCountingResource = hasCountingResource;
   protected readonly resourceTitle = resourceTitle;
-  protected readonly titleList = titleList;
+  protected readonly resourceLink = resourceLink;
 
   constructor() {
     // Links between node pages reuse this component, so load on every id change

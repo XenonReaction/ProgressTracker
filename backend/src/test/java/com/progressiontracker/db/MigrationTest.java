@@ -48,8 +48,8 @@ class MigrationTest {
 	void emptyDatabaseRunsEveryMigration() throws Exception {
 		MigrateResult result = flyway("fresh").migrate();
 
-		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3", "4", "5", "6", "7");
-		assertThat(result.targetSchemaVersion).isEqualTo("7");
+		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3", "4", "5", "6", "7", "8");
+		assertThat(result.targetSchemaVersion).isEqualTo("8");
 		assertThat(foreignKeyAndUniqueNames("fresh")).containsExactlyElementsOf(READABLE_NAMES);
 	}
 

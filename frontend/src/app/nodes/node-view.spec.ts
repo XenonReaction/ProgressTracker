@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { aNode, aTreeResource, aUrlResource } from '../core/test-data';
+import { aDeckResource, aNode, aTreeResource, aUrlResource } from '../core/test-data';
 import { NodeView } from './node-view';
 
 describe('NodeView', () => {
@@ -66,40 +66,58 @@ describe('NodeView', () => {
     expect(page.textContent).toContain('65%');
   });
 
-  it('lists resources by type, trees first, saying which count', async () => {
+  it('lists resources by type, trees then decks then links, with their readiness and whether they count', async () => {
     await load(
       aNode({
         id: 5,
         resources: [
           aUrlResource('https://example.com', 'Docs'),
-          aTreeResource(9, 'Collections in Depth', true, 'Deep dive'),
-          aTreeResource(4, 'Reading', false),
+          aTreeResource(9, 'Collections in Depth', true, 'Deep dive', 57),
+          aDeckResource(4, 'Flexbox cards', false, 75),
+          aTreeResource(3, 'Reading', false, null, 10),
         ],
       }),
     );
 
     const headings = Array.from(page.querySelectorAll('h3')).map((h) => h.textContent);
-    expect(headings).toEqual(['Trees', 'Links']);
-    const trees = Array.from(page.querySelectorAll('h3 + ul')[0].querySelectorAll('li')).map((li) =>
-      li.textContent?.replace(/\s+/g, ' ').trim(),
-    );
-    expect(trees).toEqual(['Deep dive (Collections in Depth) · counts toward readiness', 'Reading · for reference']);
+    expect(headings).toEqual(['Trees', 'Decks', 'Links']);
+    const items = (index: number) =>
+      Array.from(page.querySelectorAll('h3 + ul')[index].querySelectorAll('li')).map((li) =>
+        li.textContent?.replace(/\s+/g, ' ').trim(),
+      );
+    expect(items(0)).toEqual([
+      'Deep dive (Collections in Depth) · 57% · counts toward readiness',
+      'Reading · 10% · for reference',
+    ]);
+    expect(items(1)).toEqual(['Flexbox cards · 75% · for reference']);
+    expect(link('Flexbox cards').getAttribute('href')).toBe('/decks/4');
     expect(link('Docs').getAttribute('href')).toBe('https://example.com');
   });
 
-  it('averages several linked trees', async () => {
-    await load(aNode({ id: 5, readiness: 77, resources: [aTreeResource(3, 'CSS'), aTreeResource(4, 'HTML')] }), []);
+  it('breaks a derived readiness down into what each counting resource contributes', async () => {
+    await load(
+      aNode({
+        id: 5,
+        readiness: 68,
+        lastReviewedAt: '2026-09-01T10:00:00Z',
+        resources: [aDeckResource(4, 'Flexbox cards', true, 75), aTreeResource(3, 'Article', true, null, 60)],
+      }),
+      [],
+    );
 
-    expect(page.textContent).toContain('77%, the average of the linked trees CSS and HTML.');
+    const breakdown = page.querySelector('.breakdown')?.textContent?.replace(/\s+/g, ' ').replace(/ :/g, ':');
+    expect(breakdown).toContain('Deck Flexbox cards: 75%, Tree Article: 60% → 68%');
+    expect(page.textContent).toContain('Last reviewed: Sep 1, 2026');
     expect(page.querySelector('app-readiness-editor')).toBeNull();
   });
 
   it('shows where a linked node gets its readiness, with no way to type one', async () => {
-    await load(aNode({ id: 5, readiness: 57, resources: [aTreeResource(9, 'Collections in Depth')] }), []);
+    await load(aNode({ id: 5, readiness: 57, resources: [aTreeResource(9, 'Collections in Depth', true, null, 57)] }), []);
 
-    expect(page.textContent).toContain('57%, the average of the nodes in the linked tree Collections in Depth');
+    expect(page.textContent).toContain('The average of the resources that count toward it');
     expect(link('Collections in Depth').getAttribute('href')).toBe('/trees/9');
     expect(page.querySelector('app-readiness-editor')).toBeNull();
+    expect(page.textContent).toContain('Last reviewed: never');
     expect(page.textContent).toContain('Not placed in any tree yet');
   });
 

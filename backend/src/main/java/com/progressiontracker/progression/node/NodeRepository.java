@@ -19,6 +19,12 @@ public interface NodeRepository extends JpaRepository<Node, Long> {
 
 	boolean existsByOwner(User owner);
 
+	/** The nodes that list a resource of this type with this target id (a deck), counting or not. */
+	@Query("""
+			select distinct n from Node n join n.resources r
+			where r.type = :type and r.targetId = :targetId order by n.title""")
+	List<Node> findListing(NodeResourceType type, Long targetId);
+
 	/** The nodes that list this tree as a resource, whether it counts or not. */
 	@Query("select distinct n from Node n join n.resources r where r.tree = :tree order by n.title")
 	List<Node> findLinkingTo(Tree tree);

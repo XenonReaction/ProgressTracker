@@ -18,20 +18,18 @@ describe('DeckList', () => {
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(DeckList);
     page = fixture.nativeElement;
-    http
-      .expectOne('/api/v1/decks')
-      .flush([
-        aDeck({
-          id: 3,
-          title: 'CSS Flexbox',
-          cardCount: 5,
-          passedCount: 4,
-          readiness: 80,
-          complete: true,
-          lastReviewedAt: '2026-09-01T10:00:00Z',
-        }),
-        aDeck({ id: 5, title: 'HTML Forms', cardCount: 2 }),
-      ]);
+    http.expectOne('/api/v1/decks').flush([
+      aDeck({
+        id: 3,
+        title: 'CSS Flexbox',
+        cardCount: 5,
+        passedCount: 4,
+        readiness: 80,
+        complete: true,
+        lastReviewedAt: '2026-09-01T10:00:00Z',
+      }),
+      aDeck({ id: 5, title: 'HTML Forms', cardCount: 2 }),
+    ]);
     await fixture.whenStable();
   });
 
@@ -52,6 +50,29 @@ describe('DeckList', () => {
       '/decks/3/study',
       '/decks/3/edit',
     ]);
+  });
+
+  it('explains a refused delete and links to the nodes that list the deck', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    (page.querySelector('tbody button') as HTMLButtonElement).click();
+    http
+      .expectOne({ method: 'DELETE', url: '/api/v1/decks/3' })
+      .flush(
+        {
+          status: 409,
+          title: 'Conflict',
+          detail: 'Deck 3 is a resource of 1 node(s)',
+          nodes: [{ id: 8, title: 'CSS Flexbox' }],
+        },
+        { status: 409, statusText: 'Conflict' },
+      );
+    await fixture.whenStable();
+
+    expect(page.querySelector('[role=alert]')?.textContent).toContain(
+      'Deck 3 is a resource of 1 node(s)',
+    );
+    expect(page.querySelector('[role=alert] a')?.getAttribute('href')).toBe('/nodes/8');
   });
 
   it('deletes a deck after a confirmation that says its cards go too, then reloads', async () => {

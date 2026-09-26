@@ -18,6 +18,8 @@ async function edit(page: Page, treeId: number): Promise<void> {
 }
 
 async function drag(page: Page, target: Locator, dx: number, dy: number): Promise<void> {
+  // Raw mouse events only reach what's on screen, so bring the target into view first
+  await target.scrollIntoViewIfNeeded();
   const start = await centreOf(target);
   await page.mouse.move(start.x, start.y);
   await page.mouse.down();

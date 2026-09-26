@@ -10,7 +10,10 @@ public enum NodeResourceType {
 	URL("url", false),
 
 	/** Another tree in the app: its readiness is the average of its nodes. */
-	TREE("tree", true);
+	TREE("tree", true),
+
+	/** A flashcard deck, by id: its readiness is the share of its cards passed. */
+	DECK("deck", true);
 
 	private final String dbValue;
 

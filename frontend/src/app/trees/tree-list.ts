@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -8,7 +9,7 @@ import { confirmTreeDelete } from './confirm-delete';
 
 @Component({
   selector: 'app-tree-list',
-  imports: [RouterLink],
+  imports: [RouterLink, DatePipe],
   templateUrl: './tree-list.html',
 })
 export class TreeList {

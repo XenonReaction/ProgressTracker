@@ -1,6 +1,6 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Fully decided. 7.0 to 7.2 are complete; no code has been written for 7.3 onward.
+**Status:** Fully decided. 7.0 to 7.3 are complete; no code has been written for 7.4 onward.
 
 **Steps, in build order:**
 
@@ -10,7 +10,7 @@
 | 7.0 | Rules and examples | **Complete.** Rules and examples final; main plan updated. |
 | 7.1 | Flashcards and review records | **Complete.** |
 | 7.2 | Typed node resources | **Complete.** |
-| 7.3 | Readiness from several resources | **Fully decided.** |
+| 7.3 | Readiness from several resources | **Complete.** |
 | 7.4 | External materials with manual progress | **Fully decided.** |
 | 7.5 | Lessons | **Fully decided.** |
 | 7.6 | Coding questions | **Fully decided.** |
@@ -206,6 +206,14 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - Readiness stays computed when it's read; caching only if 7.7 finds it's needed.
 
 **Done when:** reviewing a card changes the deck's, the node's, the tree's and any linking tree's readiness correctly, and the examples in 7.0 pass as tests.
+
+**Done:**
+- **Decks as resources:** `V8__deck_resources.sql` adds the `deck` type, stored by plain id (`target_id`, no foreign key). The Flashcards module's public API reads a deck by id for the current user; `NodeService` uses it to confirm a deck exists, and `DeckResourceReadinessCalculator` to read its readiness. The node form has "+ Add deck", and the node page links to the deck.
+- **A deck in use can't be deleted** (409, listing the nodes), as for trees. Flashcards can't depend on Progression without a circle, so it declares `DeckDeletionCheck` in its API and Progression implements it.
+- **Contributions:** the node page and the tree editor's details show "Deck Flexbox cards: 75%, Tree Article: 60% → 68%", each part linking to its page. Canvas boxes keep one number. Every resource also shows its own readiness, counting or not.
+- **Last reviewed:** each calculator returns a resource's readiness and latest review together. A node's is the latest beneath its resources that count (so a deck kept only for reference doesn't move it); a tree's is the latest of its nodes'. Shown on the node page, the tree editor, the tree page and the tree list.
+- **Trees show their own readiness** in the tree list and under the tree's title.
+- **Tests:** `ReadinessFromResourcesIntegrationTest` holds the 7.0 examples and the full chain from one card review up to a tree above. The article (7.4) and lesson (7.5) don't exist yet, so a tree at 60% and a fully passed deck stand in for them; the arithmetic is the same, and 7.4 and 7.5 can swap in the real types.
 
 ---
 

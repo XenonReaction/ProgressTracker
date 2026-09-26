@@ -34,7 +34,7 @@
     <legend>Resources</legend>
     <p class="muted readiness-source">
       @if (anyCounts()) {
-        Readiness will be the average of the trees that count.
+        Readiness will be the average of the trees and decks that count.
         @if (currentReadiness() !== null) {
           It's {{ currentReadiness() }}% now.
         }
@@ -69,6 +69,19 @@
             <span class="muted">Loading trees…</span>
           }
           <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
+        } @else if (resource.controls.type.value === 'deck') {
+          <strong>Deck</strong>
+          @if (decks(); as decks) {
+            <select formControlName="deckId" [attr.aria-label]="'Resource ' + (i + 1) + ' deck'">
+              <option [ngValue]="null">Choose a deck…</option>
+              @for (deck of decks; track deck.id) {
+                <option [ngValue]="deck.id">{{ deck.title }}</option>
+              }
+            </select>
+          } @else {
+            <span class="muted">Loading decks…</span>
+          }
+          <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
         } @else {
           <strong>Link</strong>
           <input
@@ -81,9 +94,9 @@
         <input
           formControlName="label"
           [placeholder]="
-            resource.controls.type.value === 'tree'
-              ? 'Label (optional; the tree\'s title)'
-              : 'Label (optional)'
+            resource.controls.type.value === 'url'
+              ? 'Label (optional)'
+              : 'Label (optional; its title)'
           "
           [attr.aria-label]="'Resource ' + (i + 1) + ' label'"
         />
@@ -107,6 +120,9 @@
         @if (resource.touched && resource.hasError('url')) {
           <span class="error">Enter an http(s) URL.</span>
         }
+        @if (resource.touched && resource.hasError('deckRequired')) {
+          <span class="error">Choose a deck.</span>
+        }
         @if (resource.touched && resource.hasError('treeRequired')) {
           <span class="error">Choose a tree.</span>
         }
@@ -115,6 +131,8 @@
     <button type="button" (click)="addResource('url')">+ Add link</button>
     &nbsp;
     <button type="button" (click)="addResource('tree')">+ Add tree</button>
+    &nbsp;
+    <button type="button" (click)="addResource('deck')">+ Add deck</button>
   </fieldset>
 
   @if (error(); as message) {

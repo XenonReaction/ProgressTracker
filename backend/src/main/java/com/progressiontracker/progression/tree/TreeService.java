@@ -15,6 +15,8 @@ import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.progression.node.Node;
 import com.progressiontracker.progression.node.NodeRef;
 import com.progressiontracker.progression.node.NodeRepository;
+import com.progressiontracker.progression.readiness.ReadinessContext;
+import com.progressiontracker.progression.readiness.ReadinessService;
 import com.progressiontracker.user.CurrentUserService;
 import com.progressiontracker.user.User;
 
@@ -33,12 +35,15 @@ public class TreeService {
 
 	private final CurrentUserService currentUser;
 
+	private final ReadinessService readiness;
+
 	public TreeService(TreeRepository trees, NodeRepository nodes, TreeEditSessionRepository editSessions,
-			CurrentUserService currentUser) {
+			CurrentUserService currentUser, ReadinessService readiness) {
 		this.trees = trees;
 		this.nodes = nodes;
 		this.editSessions = editSessions;
 		this.currentUser = currentUser;
+		this.readiness = readiness;
 	}
 
 	@Transactional(readOnly = true)
@@ -47,9 +52,10 @@ public class TreeService {
 		Map<Long, Instant> editing = editSessions.findByOwner(owner)
 			.stream()
 			.collect(Collectors.toMap(session -> session.getTree().getId(), TreeEditSession::getStartedAt));
+		ReadinessContext context = readiness.context();
 		return trees.findByOwnerOrderByTitleAsc(owner)
 			.stream()
-			.map(tree -> TreeResponse.from(tree, editing.get(tree.getId())))
+			.map(tree -> TreeResponse.from(tree, context, editing.get(tree.getId())))
 			.toList();
 	}
 
@@ -61,7 +67,7 @@ public class TreeService {
 	public TreeResponse create(TreeRequest request) {
 		Tree tree = new Tree(currentUser.getCurrentUser(), request.title());
 		apply(request, tree);
-		return TreeResponse.from(trees.save(tree), null);
+		return TreeResponse.from(trees.save(tree), readiness.context(), null);
 	}
 
 	public TreeResponse update(Long id, TreeRequest request) {
@@ -97,7 +103,8 @@ public class TreeService {
 	}
 
 	private TreeResponse toResponse(Tree tree) {
-		return TreeResponse.from(tree, editSessions.findByTree(tree).map(TreeEditSession::getStartedAt).orElse(null));
+		return TreeResponse.from(tree, readiness.context(),
+				editSessions.findByTree(tree).map(TreeEditSession::getStartedAt).orElse(null));
 	}
 
 	private static void apply(TreeRequest request, Tree tree) {

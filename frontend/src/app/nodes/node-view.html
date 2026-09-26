@@ -15,21 +15,11 @@
   }
 
   <h2>Readiness</h2>
-  @if (countingTrees(node.resources); as trees) {
-    @if (trees.length === 1) {
-      <p>
-        <progress max="100" [value]="node.readiness"></progress> <strong>{{ node.readiness }}%</strong>, the average of
-        the nodes in the linked tree <a [routerLink]="['/trees', trees[0].id]">{{ trees[0].title }}</a>.
-      </p>
-    } @else if (trees.length) {
-      <p>
-        <progress max="100" [value]="node.readiness"></progress> <strong>{{ node.readiness }}%</strong>, the average of
-        the linked trees {{ titleList(trees) }}.
-      </p>
-    }
-  }
-  @if (!hasCountingResource(node.resources)) {
-    <p><progress max="100" [value]="node.readiness"></progress> <strong>{{ node.readiness }}%</strong></p>
+  <p><progress max="100" [value]="node.readiness"></progress> <strong>{{ node.readiness }}%</strong></p>
+  @if (hasCountingResource(node.resources)) {
+    <p class="muted">The average of the resources that count toward it:</p>
+    <app-readiness-breakdown [resources]="node.resources" [readiness]="node.readiness" [lastReviewedAt]="node.lastReviewedAt" />
+  } @else {
     <app-readiness-editor [nodeId]="node.id" [readiness]="node.readiness" (saved)="readinessSaved($event)" />
   }
 
@@ -42,12 +32,14 @@
           <ul>
             @for (resource of resources; track $index) {
               <li>
-                @if (resource.tree; as tree) {
-                  <a [routerLink]="['/trees', tree.id]">{{ resourceTitle(resource) }}</a>
+                @if (resourceLink(resource); as target) {
+                  <a [routerLink]="target">{{ resourceTitle(resource) }}</a>
                   @if (resource.label) {
-                    <span class="muted"> ({{ tree.title }})</span>
+                    <span class="muted"> ({{ resource.tree?.title ?? resource.deck?.title }})</span>
                   }
-                  <span class="muted"> · {{ resource.counts ? 'counts toward readiness' : 'for reference' }}</span>
+                  <span class="muted">
+                    · {{ resource.readiness }}% · {{ resource.counts ? 'counts toward readiness' : 'for reference' }}</span
+                  >
                 } @else {
                   <a [href]="resource.url" target="_blank" rel="noopener noreferrer">{{ resourceTitle(resource) }}</a>
                 }

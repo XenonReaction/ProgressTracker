@@ -6,26 +6,38 @@ export interface TreeRef {
   title: string;
 }
 
-/** What a node resource points to. Only a tree can count toward readiness so far. */
-export type NodeResourceType = 'url' | 'tree';
+/** A flashcard deck named in a node's resources. */
+export interface DeckRef {
+  id: number;
+  title: string;
+}
+
+/** What a node resource points to. Trees and decks can count toward readiness; a URL can't. */
+export type NodeResourceType = 'url' | 'tree' | 'deck';
 
 /**
- * Something a node points to, in the node's order: a tree (`tree`) or an external page
- * (`url`). `label` is as entered, or null to show the target's title. `counts` is whether
- * it counts toward the node's readiness; a URL never does.
+ * Something a node points to, in the node's order: a tree (`tree`), a flashcard deck
+ * (`deck`) or an external page (`url`). `label` is as entered, or null to show the target's
+ * title. `counts` is whether it counts toward the node's readiness; a URL never does.
+ * `readiness` and `lastReviewedAt` are the resource's own (null for a URL), whether it
+ * counts or not.
  */
 export interface NodeResource {
   type: NodeResourceType;
   url: string | null;
   tree: TreeRef | null;
+  deck: DeckRef | null;
   label: string | null;
   counts: boolean;
+  readiness: number | null;
+  lastReviewedAt: string | null;
 }
 
 export interface NodeResourceRequest {
   type: NodeResourceType;
   url?: string | null;
   treeId?: number | null;
+  deckId?: number | null;
   label?: string | null;
   counts?: boolean;
 }
@@ -40,6 +52,8 @@ export interface Node {
   description: string | null;
   readiness: number;
   manualReadiness: number;
+  /** The latest review beneath the resources that count; null if none. */
+  lastReviewedAt: string | null;
   resources: NodeResource[];
   tags: string[];
   createdAt: string;
@@ -61,6 +75,10 @@ export interface Tree {
   description: string | null;
   category: string | null;
   tags: string[];
+  /** The average readiness of its nodes (0 when empty). */
+  readiness: number;
+  /** The latest review beneath any of its nodes; null if none. */
+  lastReviewedAt: string | null;
   createdAt: string;
   updatedAt: string;
   /** Set while the tree is in edit mode (it has a restore point). */
@@ -91,6 +109,7 @@ export interface TreeNode {
   resources: NodeResource[];
   /** Effective readiness: derived when any of `resources` counts. */
   readiness: number;
+  lastReviewedAt: string | null;
   positionX: number;
   positionY: number;
   aggregateThreshold: number;
@@ -190,6 +209,6 @@ export interface Problem {
   errors?: { field: string; message: string }[];
   /** Trees still using a node that couldn't be deleted. */
   trees?: TreeRef[];
-  /** Nodes listing a tree that couldn't be deleted. */
+  /** Nodes listing a tree or deck that couldn't be deleted. */
   nodes?: { id: number; title: string }[];
 }

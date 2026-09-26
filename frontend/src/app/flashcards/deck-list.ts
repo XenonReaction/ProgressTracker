@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 
 import { Deck } from '../core/api.models';
 import { FlashcardApi } from '../core/flashcard-api';
-import { errorMessage } from '../core/problem';
+import { errorMessage, problemOf } from '../core/problem';
 
 /** The user's flashcard decks (`/decks`), each with how many of its cards have passed. */
 @Component({
@@ -18,6 +18,8 @@ export class DeckList {
   /** null until the first load finishes. */
   protected readonly decks = signal<Deck[] | null>(null);
   protected readonly error = signal<string | null>(null);
+  /** Nodes that blocked the last delete, so the user can go and remove the deck from them. */
+  protected readonly blockingNodes = signal<{ id: number; title: string }[]>([]);
 
   constructor() {
     this.load();
@@ -32,9 +34,13 @@ export class DeckList {
       return;
     }
     this.error.set(null);
+    this.blockingNodes.set([]);
     this.flashcardApi.deleteDeck(deck.id).subscribe({
       next: () => this.load(),
-      error: (error) => this.error.set(errorMessage(error)),
+      error: (error) => {
+        this.error.set(errorMessage(error));
+        this.blockingNodes.set(problemOf(error)?.nodes ?? []);
+      },
     });
   }
 

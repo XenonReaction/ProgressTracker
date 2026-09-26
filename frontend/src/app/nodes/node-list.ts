@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Node } from '../core/api.models';
 import { NodeApi } from '../core/node-api';
 import { errorMessage, problemOf } from '../core/problem';
-import { countingTrees } from './resources';
+import { countingResources, resourceLink, resourceTitle } from './resources';
 
 @Component({
   selector: 'app-node-list',
@@ -14,7 +14,9 @@ import { countingTrees } from './resources';
 export class NodeList {
   private readonly nodeApi = inject(NodeApi);
 
-  protected readonly countingTrees = countingTrees;
+  protected readonly countingResources = countingResources;
+  protected readonly resourceLink = resourceLink;
+  protected readonly resourceTitle = resourceTitle;
 
   /** null until the first load finishes. */
   protected readonly nodes = signal<Node[] | null>(null);

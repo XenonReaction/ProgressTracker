@@ -27,9 +27,9 @@ test.describe('Linked trees', () => {
     await page.getByRole('button', { name: 'Save' }).click();
 
     // (80 + 60 + 31) / 3 = 57
-    await expect(
-      page.getByText(`57%, the average of the nodes in the linked tree ${detail.title}`),
-    ).toBeVisible();
+    await expect(page.locator('.breakdown')).toHaveText(
+      new RegExp(`Tree\\s+${detail.title}\\s*: 57%\\s*→ 57%`),
+    );
     await page.goto('/nodes');
     const row = page.getByRole('row', { name: summary.title });
     await expect(row).toContainText(`57% from ${detail.title}`);
@@ -39,11 +39,11 @@ test.describe('Linked trees', () => {
     await expect(box).toContainText('linked');
     await expect(box).toHaveAttribute(
       'aria-label',
-      new RegExp(`57% ready, from linked tree ${detail.title}`),
+      new RegExp(`57% ready, from tree ${detail.title}`),
     );
 
     await box.click();
-    await page.getByRole('link', { name: 'Open linked tree' }).click();
+    await page.locator('aside .breakdown').getByRole('link', { name: detail.title }).click();
     await expect(page.getByRole('heading', { level: 1, name: detail.title })).toBeVisible();
     await expect(page.locator('svg g.node')).toHaveCount(3);
 
@@ -94,9 +94,9 @@ test.describe('Linked trees', () => {
     await page.getByRole('button', { name: 'Save' }).click();
 
     // (54 + 100) / 2 = 77: the reading list doesn't count
-    await expect(
-      page.getByText(`77%, the average of the linked trees ${css.title} and ${html.title}.`),
-    ).toBeVisible();
+    await expect(page.locator('.breakdown')).toHaveText(
+      new RegExp(`Tree\\s+${css.title}\\s*: 54%,\\s*Tree\\s+${html.title}\\s*: 100%\\s*→ 77%`),
+    );
     await expect(page.getByRole('heading', { level: 3 })).toHaveText(['Trees', 'Links']);
     await expect(page.getByRole('listitem').filter({ hasText: reading.title })).toContainText(
       'for reference',

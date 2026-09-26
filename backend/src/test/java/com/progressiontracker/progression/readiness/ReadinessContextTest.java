@@ -3,11 +3,14 @@ package com.progressiontracker.progression.readiness;
 import static com.progressiontracker.TestEntities.withId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.progressiontracker.flashcards.DeckProgress;
+import com.progressiontracker.flashcards.DeckSummary;
+import com.progressiontracker.flashcards.FlashcardReadinessCalculator;
 import com.progressiontracker.progression.node.Node;
 import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.tree.Tree;
@@ -26,6 +32,9 @@ class ReadinessContextTest {
 
 	@Mock
 	private TreeNodeRepository treeNodes;
+
+	@Mock
+	private FlashcardReadinessCalculator flashcards;
 
 	private ReadinessContext context;
 
@@ -104,6 +113,35 @@ class ReadinessContextTest {
 		node.getResources().add(NodeResource.tree(withId(new Tree(user, "Reading"), nextId++), null, false));
 
 		assertThat(context.of(node)).isEqualTo(95);
+	}
+
+	@Test
+	void lastReviewedIsTheLatestReviewBeneathTheResourcesThatCount() {
+		Instant earlier = Instant.parse("2026-09-01T10:00:00Z");
+		Instant later = Instant.parse("2026-09-15T10:00:00Z");
+		ReadinessContext withDecks = TestReadiness.service(treeNodes, flashcards).context();
+		when(flashcards.deck(40L))
+			.thenReturn(Optional.of(new DeckSummary(40L, "Early", new DeckProgress(1, 1, 100, true, earlier))));
+		// Never asked for: it doesn't count
+		lenient().when(flashcards.deck(41L))
+			.thenReturn(Optional.of(new DeckSummary(41L, "Late", new DeckProgress(2, 0, 0, false, later))));
+		Node studied = manual("Studied", 0);
+		studied.getResources().add(NodeResource.deck(40L, null, true));
+		studied.getResources().add(NodeResource.deck(41L, null, false));
+		Tree tree = tree("Tree", studied, manual("Untouched", 20));
+		Node above = manual("Above", 0);
+		above.getResources().add(NodeResource.tree(tree, null, true));
+
+		// The deck that doesn't count isn't beneath the node's readiness, so its later review is ignored
+		assertThat(withDecks.lastReviewed(studied)).isEqualTo(earlier);
+		assertThat(withDecks.of(studied)).isEqualTo(100);
+		assertThat(withDecks.lastReviewedOfTree(tree)).isEqualTo(earlier);
+		assertThat(withDecks.ofTree(tree)).isEqualTo(60);
+		assertThat(withDecks.lastReviewed(above)).isEqualTo(earlier);
+		assertThat(withDecks.lastReviewed(manual("Hand-entered", 50))).isNull();
+		// Each deck is read once per context
+		withDecks.of(studied);
+		verify(flashcards, times(1)).deck(40L);
 	}
 
 	@Test

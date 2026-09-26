@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 
-import { aNode, aTree, aTreeResource, aUrlResource } from '../core/test-data';
+import { aDeck, aNode, aTree, aTreeResource, aUrlResource } from '../core/test-data';
 import { NodeForm } from './node-form';
 
 describe('NodeForm', () => {
@@ -94,7 +94,9 @@ describe('NodeForm', () => {
       await fixture.whenStable();
       chooseTree(0, 1);
       await fixture.whenStable();
-      expect(page.textContent).toContain('Readiness will be the average of the trees that count.');
+      expect(page.textContent).toContain(
+        'Readiness will be the average of the trees and decks that count.',
+      );
 
       await addTree();
       chooseTree(1, 2);
@@ -107,6 +109,36 @@ describe('NodeForm', () => {
       expect(request.request.body.resources).toEqual([
         { type: 'tree', treeId: 3, label: null, counts: true },
         { type: 'tree', treeId: 4, label: 'Further reading', counts: false },
+      ]);
+      request.flush(aNode());
+    });
+
+    it('adds a flashcard deck, which counts unless unticked, and requires one to be chosen', async () => {
+      type(input('title'), 'CSS Flexbox');
+      button('+ Add deck').click();
+      await fixture.whenStable();
+      http
+        .expectOne({ method: 'GET', url: '/api/v1/decks' })
+        .flush([aDeck({ id: 4, title: 'Flexbox cards' })]);
+      await fixture.whenStable();
+      expect(counts(0).checked).toBe(true);
+      submit();
+      await fixture.whenStable();
+      http.expectNone({ method: 'POST', url: '/api/v1/nodes' });
+      expect(page.textContent).toContain('Choose a deck.');
+
+      const select = rows()[0].querySelector('select') as HTMLSelectElement;
+      select.selectedIndex = 1;
+      select.dispatchEvent(new Event('change'));
+      await fixture.whenStable();
+      expect(page.textContent).toContain(
+        'Readiness will be the average of the trees and decks that count.',
+      );
+      submit();
+
+      const request = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
+      expect(request.request.body.resources).toEqual([
+        { type: 'deck', deckId: 4, label: null, counts: true },
       ]);
       request.flush(aNode());
     });

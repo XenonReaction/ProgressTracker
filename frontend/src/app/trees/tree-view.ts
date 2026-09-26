@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -7,7 +8,14 @@ import { EdgeRoute, Node, Prerequisite, Tree, TreeNode } from '../core/api.model
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { ReadinessEditor } from '../nodes/readiness-editor';
-import { countingTrees, resourceTitle, titleList } from '../nodes/resources';
+import { ReadinessBreakdown } from '../nodes/readiness-breakdown';
+import {
+  RESOURCE_TYPE_NAMES,
+  hasCountingResource,
+  readinessSources,
+  resourceLink,
+  resourceTitle,
+} from '../nodes/resources';
 import { TreeApi } from '../core/tree-api';
 import { AddNodePanel } from './add-node-panel';
 import { autoLayout } from './auto-layout';
@@ -55,7 +63,7 @@ interface SegmentDrag {
  */
 @Component({
   selector: 'app-tree-view',
-  imports: [RouterLink, ReactiveFormsModule, AddNodePanel, ReadinessEditor],
+  imports: [RouterLink, DatePipe, ReactiveFormsModule, AddNodePanel, ReadinessEditor, ReadinessBreakdown],
   templateUrl: './tree-view.html',
   styleUrl: './tree-view.css',
   host: {
@@ -75,9 +83,10 @@ export class TreeView {
   readonly resumeEdit = input<string>();
 
   protected readonly readinessLevels = READINESS_LEVELS;
-  protected readonly countingTrees = countingTrees;
+  protected readonly hasCountingResource = hasCountingResource;
   protected readonly resourceTitle = resourceTitle;
-  protected readonly titleList = titleList;
+  protected readonly resourceLink = resourceLink;
+  protected readonly resourceTypeNames = RESOURCE_TYPE_NAMES;
   protected readonly nodeWidth = NODE_WIDTH;
   protected readonly nodeHeight = NODE_HEIGHT;
   protected readonly tools: { id: Tool; label: string }[] = [
@@ -661,10 +670,8 @@ export class TreeView {
   }
 
   protected ariaLabel(treeNode: TreeNode): string {
-    const trees = countingTrees(treeNode.resources);
-    const linked = trees.length
-      ? `, from linked ${trees.length === 1 ? 'tree' : 'trees'} ${titleList(trees)}`
-      : '';
+    const sources = readinessSources(treeNode.resources);
+    const linked = sources ? `, from ${sources}` : '';
     return `${treeNode.title}, ${treeNode.readiness}% ready${linked}, ${this.levelOf(treeNode)}`;
   }
 

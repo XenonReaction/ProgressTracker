@@ -9,11 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.progressiontracker.common.NotFoundException;
+import com.progressiontracker.flashcards.DeckDeletionCheck;
 import com.progressiontracker.flashcards.DeckProgress;
 import com.progressiontracker.flashcards.FlashcardReadinessCalculator;
 import com.progressiontracker.user.CurrentUserService;
 
-/** CRUD for the current user's decks. Deleting a deck deletes its cards and their answers. */
+/**
+ * CRUD for the current user's decks. Deleting a deck deletes its cards and their answers, and
+ * is refused while a node lists the deck.
+ */
 @Service
 @Transactional
 public class DeckService {
@@ -26,10 +30,14 @@ public class DeckService {
 
 	private final CurrentUserService currentUser;
 
-	public DeckService(DeckRepository decks, FlashcardReadinessCalculator readiness, CurrentUserService currentUser) {
+	private final List<DeckDeletionCheck> deletionChecks;
+
+	public DeckService(DeckRepository decks, FlashcardReadinessCalculator readiness, CurrentUserService currentUser,
+			List<DeckDeletionCheck> deletionChecks) {
 		this.decks = decks;
 		this.readiness = readiness;
 		this.currentUser = currentUser;
+		this.deletionChecks = deletionChecks;
 	}
 
 	@Transactional(readOnly = true)
@@ -58,8 +66,11 @@ public class DeckService {
 		return toResponse(deck);
 	}
 
+	/** Refused (by a {@link DeckDeletionCheck}) while another module still refers to the deck. */
 	public void delete(Long id) {
-		decks.delete(findOwned(id));
+		Deck deck = findOwned(id);
+		deletionChecks.forEach(check -> check.checkCanDelete(id));
+		decks.delete(deck);
 		log.info("Deleted deck {}", id);
 	}
 

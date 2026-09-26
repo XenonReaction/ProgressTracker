@@ -17,7 +17,14 @@ describe('TreeList', () => {
     fixture = TestBed.createComponent(TreeList);
     page = fixture.nativeElement;
     http.expectOne('/api/v1/trees').flush([
-      aTree({ id: 3, title: 'Java Fundamentals', category: 'Technology', tags: ['java', 'backend'] }),
+      aTree({
+        id: 3,
+        title: 'Java Fundamentals',
+        category: 'Technology',
+        tags: ['java', 'backend'],
+        readiness: 64,
+        lastReviewedAt: '2026-09-01T10:00:00Z',
+      }),
       aTree({ id: 5, title: 'Spring Basics' }),
     ]);
     await fixture.whenStable();
@@ -34,6 +41,13 @@ describe('TreeList', () => {
     expect(view.getAttribute('href')).toBe('/trees/3');
     expect(edit.getAttribute('href')).toBe('/trees/3/edit');
     expect(page.querySelector('tbody tr')?.textContent).toContain('java, backend');
+  });
+
+  it('shows each tree\'s own readiness and when anything in it was last reviewed', () => {
+    const [java, spring] = Array.from(page.querySelectorAll('tbody tr'));
+    expect(java.textContent).toContain('64%');
+    expect(java.textContent).toContain('Sep 1, 2026');
+    expect(spring.textContent).toContain('Never');
   });
 
   it('deletes after a confirmation that explains what is removed, then reloads', async () => {

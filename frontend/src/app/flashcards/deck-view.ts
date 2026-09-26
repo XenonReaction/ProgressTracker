@@ -5,7 +5,7 @@ import { forkJoin } from 'rxjs';
 
 import { Card, Deck } from '../core/api.models';
 import { FlashcardApi } from '../core/flashcard-api';
-import { errorMessage } from '../core/problem';
+import { errorMessage, problemOf } from '../core/problem';
 import { CardForm } from './card-form';
 import { COMPLETE_PERCENT, cardStatus } from './card-status';
 
@@ -27,6 +27,8 @@ export class DeckView {
   /** The card being edited in place, if any. */
   protected readonly editingId = signal<number | null>(null);
   protected readonly error = signal<string | null>(null);
+  /** Nodes that blocked the last delete of this deck. */
+  protected readonly blockingNodes = signal<{ id: number; title: string }[]>([]);
 
   protected readonly completePercent = COMPLETE_PERCENT;
   protected readonly cardStatus = cardStatus;
@@ -63,9 +65,13 @@ export class DeckView {
     ) {
       return;
     }
+    this.blockingNodes.set([]);
     this.flashcardApi.deleteDeck(deck.id).subscribe({
       next: () => this.router.navigateByUrl('/decks'),
-      error: (error) => this.error.set(errorMessage(error)),
+      error: (error) => {
+        this.error.set(errorMessage(error));
+        this.blockingNodes.set(problemOf(error)?.nodes ?? []);
+      },
     });
   }
 

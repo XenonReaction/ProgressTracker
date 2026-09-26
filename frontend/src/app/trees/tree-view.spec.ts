@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 
 import { Prerequisite } from '../core/api.models';
-import { aNode, aTree, aTreeNode, aTreeResource, aUrlResource } from '../core/test-data';
+import { aDeckResource, aNode, aTree, aTreeNode, aTreeResource, aUrlResource } from '../core/test-data';
 import { TreeView } from './tree-view';
 
 describe('TreeView', () => {
@@ -506,14 +506,18 @@ describe('TreeView', () => {
 
     it('marks a linked node on the canvas', () => {
       expect(nodeEl(7).querySelector('.linked-marker')?.textContent).toBe('linked');
-      expect(nodeEl(7).getAttribute('aria-label')).toBe('Collections, 57% ready, from linked tree Collections in Depth, ready');
+      expect(nodeEl(7).getAttribute('aria-label')).toBe('Collections, 57% ready, from tree Collections in Depth, ready');
     });
 
-    it('names the linked tree in the details, with a link to open it and no readiness editor', async () => {
+    it('breaks the readiness down in the details, linking to each part, with no readiness editor', async () => {
       await pressAndRelease(7);
 
-      expect(page.querySelector('aside')?.textContent).toContain('from the linked tree Collections in Depth');
-      expect(link('Open linked tree').getAttribute('href')).toBe('/trees/9');
+      const details = page.querySelector('aside')!;
+      expect(details.textContent).toContain('Readiness: 57%, the average of the resources that count');
+      expect(details.querySelector('.breakdown')?.textContent?.replace(/\s+/g, ' ').replace(/ :/g, ':')).toContain(
+        'Tree Collections in Depth: 50% → 57%',
+      );
+      expect(details.querySelector('.breakdown a')?.getAttribute('href')).toBe('/trees/9');
       expect(page.querySelector('app-readiness-editor')).toBeNull();
     });
 
@@ -521,31 +525,34 @@ describe('TreeView', () => {
       await pressAndRelease(7);
 
       const resources = Array.from(page.querySelectorAll('aside h3 + ul')[0].querySelectorAll('li')).map((li) =>
-        li.textContent?.trim(),
+        li.textContent?.replace(/\s+/g, ' ').trim(),
       );
-      expect(resources).toEqual(['Tree: Collections in Depth', 'dev.java']);
+      expect(resources).toEqual(['Tree: Collections in Depth 50%', 'dev.java']);
     });
 
-    it('averages several linked trees and offers to open each', async () => {
+    it('marks a node that counts a deck, and names every part in its label', async () => {
       fixture.componentRef.setInput('id', '6');
       await fixture.whenStable();
-      http.expectOne('/api/v1/trees/6').flush(aTree({ id: 6, title: 'Front end' }));
+      http.expectOne('/api/v1/trees/6').flush(aTree({ id: 6, title: 'Front end', readiness: 77 }));
       http.expectOne('/api/v1/trees/6/nodes').flush([
         aTreeNode({
           id: 8,
           title: 'Front-end Basics',
           readiness: 77,
-          resources: [aTreeResource(3, 'CSS'), aTreeResource(4, 'Reading', false), aTreeResource(5, 'HTML')],
+          resources: [aTreeResource(3, 'CSS'), aTreeResource(4, 'Reading', false), aDeckResource(5, 'Lesson cards')],
         }),
       ]);
       http.expectOne('/api/v1/trees/6/prerequisites').flush([]);
       await fixture.whenStable();
 
-      expect(nodeEl(8).getAttribute('aria-label')).toBe('Front-end Basics, 77% ready, from linked trees CSS and HTML, ready');
+      expect(nodeEl(8).querySelector('.linked-marker')).not.toBeNull();
+      expect(nodeEl(8).getAttribute('aria-label')).toBe(
+        'Front-end Basics, 77% ready, from tree CSS and deck Lesson cards, ready',
+      );
+      expect(page.querySelector('.tree-readiness')?.textContent).toContain('Readiness: 77%');
+      expect(page.querySelector('.tree-readiness')?.textContent).toContain('Last reviewed: never');
       await pressAndRelease(8);
-      expect(page.querySelector('aside')?.textContent).toContain('the average of the linked trees CSS and HTML');
-      expect(link('Open CSS').getAttribute('href')).toBe('/trees/3');
-      expect(link('Open HTML').getAttribute('href')).toBe('/trees/5');
+      expect(link('Lesson cards').getAttribute('href')).toBe('/decks/5');
     });
   });
 

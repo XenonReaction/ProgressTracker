@@ -4,9 +4,10 @@ import com.progressiontracker.progression.node.NodeResource;
 import com.progressiontracker.progression.node.NodeResourceType;
 
 /**
- * Works out the readiness (0–100) of one kind of node resource. Every
- * {@link NodeResourceType} that can count has exactly one calculator, and
- * {@link ReadinessService} refuses to start if one is missing.
+ * Works out where one kind of node resource stands: its title, readiness (0–100) and when
+ * it was last reviewed. Every {@link NodeResourceType} that can count has exactly one
+ * calculator, and {@link ReadinessService} refuses to start if one is missing. A calculator
+ * for another module's resource asks that module through its public API.
  */
 public interface ReadinessCalculator {
 
@@ -16,6 +17,6 @@ public interface ReadinessCalculator {
 	 * @param context gives the readiness of other nodes and trees, for resources that are
 	 * derived from them
 	 */
-	int readiness(NodeResource resource, ReadinessContext context);
+	ResourceStatus status(NodeResource resource, ReadinessContext context);
 
 }

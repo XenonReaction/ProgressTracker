@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import com.progressiontracker.flashcards.internal.CardRepository;
 import com.progressiontracker.flashcards.internal.CardReview;
 import com.progressiontracker.flashcards.internal.CardReviewRepository;
 import com.progressiontracker.flashcards.internal.Deck;
+import com.progressiontracker.flashcards.internal.DeckRepository;
 import com.progressiontracker.user.CurrentUserService;
 import com.progressiontracker.user.User;
 
@@ -25,14 +27,17 @@ import com.progressiontracker.user.User;
 @Component
 public class FlashcardReadinessCalculator {
 
+	private final DeckRepository decks;
+
 	private final CardRepository cards;
 
 	private final CardReviewRepository reviews;
 
 	private final CurrentUserService currentUser;
 
-	public FlashcardReadinessCalculator(CardRepository cards, CardReviewRepository reviews,
+	public FlashcardReadinessCalculator(DeckRepository decks, CardRepository cards, CardReviewRepository reviews,
 			CurrentUserService currentUser) {
+		this.decks = decks;
 		this.cards = cards;
 		this.reviews = reviews;
 		this.currentUser = currentUser;
@@ -79,6 +84,15 @@ public class FlashcardReadinessCalculator {
 
 	public DeckProgress deck(Deck deck) {
 		return decks(List.of(deck)).get(deck.getId());
+	}
+
+	/**
+	 * One of the current user's decks by id, with its progress: how other modules read a
+	 * deck. Empty if there's no such deck or it's someone else's.
+	 */
+	public Optional<DeckSummary> deck(Long deckId) {
+		return decks.findByIdAndOwner(deckId, currentUser.getCurrentUser())
+			.map(deck -> new DeckSummary(deck.getId(), deck.getTitle(), deck(deck)));
 	}
 
 }

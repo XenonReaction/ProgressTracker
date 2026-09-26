@@ -8,10 +8,12 @@ single-user proof of concept: there's no login, and every request acts as one de
 What it does today:
 
 - **Node library.** Skills (nodes) with a description, tags, a readiness value from 0 to
-  100, and resources: links to read, and other trees. A tree can count toward the node's
-  readiness, which is then the average of the trees that count (each the average of its
-  nodes); otherwise readiness is entered by hand. Trees nest to any depth but never in a
-  loop.
+  100, and resources: links to read, other trees and flashcard decks. Trees and decks can
+  count toward the node's readiness, which is then the average of what counts (a tree is
+  the average of its nodes, a deck the share of its cards passed), shown part by part;
+  otherwise readiness is entered by hand. Trees nest to any depth but never in a loop.
+  Nodes and trees show when anything beneath them was last reviewed, and every tree shows
+  its own readiness.
 - **Skill trees.** Arrangements of library nodes on a canvas, joined by prerequisite
   edges. The same node can sit in several trees. Each node shows how close it is to being
   worth starting (not started, early, close or ready), judged by its prerequisites'
@@ -22,7 +24,7 @@ What it does today:
 - **Flashcards (Phase 7.1).** Decks of cards that you study and grade yourself as right or
   wrong. A card passes after 3 correct answers in a row, a deck's readiness is the share
   of its cards passed, and a deck is complete at 80%. A review page gathers every card not
-  yet passed, from all decks. Decks don't feed node readiness yet; that's Phase 7.3.
+  yet passed, from all decks. A node that lists a deck takes readiness from it (Phase 7.3).
 
 The plan, phase by phase, is in `plans/` (`Progession_Tracker_plan.md`, then one file per
 phase; `Phase_7_plan.md` is the current one).
@@ -115,14 +117,14 @@ sample deck.
 
 The schema is created and changed by [Flyway](https://documentation.red-gate.com/fd)
 migrations: numbered SQL files in `backend/src/main/resources/db/migration/` (currently
-`V1` to `V6`). When the backend starts (locally, in Docker or in tests), Flyway runs any
+`V1` to `V8`). When the backend starts (locally, in Docker or in tests), Flyway runs any
 the database hasn't had yet, in order, and records them in its `flyway_schema_history`
 table. Hibernate then checks that the entity classes match the schema, and the backend
 refuses to start if they don't.
 
 To change the schema:
 
-1. Add the next file, for example `V7__add_node_resources.sql`: two underscores after the
+1. Add the next file, for example `V9__add_materials.sql`: two underscores after the
    version, then what it does.
 2. Update the entity classes to match.
 3. Restart the backend. `./mvnw test` also runs every migration on a fresh database.
@@ -183,7 +185,7 @@ request acts as a single default user (`demo`). Errors are returned as
 | `GET/POST /nodes`, `GET/PUT/DELETE /nodes/{id}` | Node library, each node with its `resources` in order (see below). Deleting a node that a tree still uses returns 409 and lists those trees. |
 | `PUT /nodes/{id}/readiness` | Sets only the hand-entered readiness (the view pages use it). Refused with 409 while any of the node's resources counts. |
 | `GET /nodes/{id}/trees` | The trees a node is placed in. |
-| `GET/POST /trees`, `GET/PUT/DELETE /trees/{id}` | Tree metadata. Deleting a tree also removes its placements and edges, but not library nodes. A tree that any node lists as a resource can't be deleted (409, listing those nodes). |
+| `GET/POST /trees`, `GET/PUT/DELETE /trees/{id}` | Tree metadata, with the tree's `readiness` (the average of its nodes') and `lastReviewedAt`. Deleting a tree also removes its placements and edges, but not library nodes. A tree that any node lists as a resource can't be deleted (409, listing those nodes). |
 | `GET/POST /trees/{treeId}/nodes`, `GET/PUT/DELETE /trees/{treeId}/nodes/{treeNodeId}` | Library nodes placed in a tree, with position and readiness thresholds. |
 | `PUT /trees/{treeId}/nodes/positions` | Moves many tree nodes in one transaction (used by auto-layout). An unknown id changes nothing. |
 | `POST/DELETE /trees/{treeId}/edit-session`, `POST /trees/{treeId}/edit-session/discard` | Edit mode: `POST` saves a restore point (409 if the tree is already being edited), `DELETE` is "Done" and keeps the changes, and `discard` puts the tree back as it was. A tree's `editSessionStartedAt` is set while a session is open. |
@@ -191,14 +193,17 @@ request acts as a single default user (`demo`). Errors are returned as
 | `PUT /trees/{treeId}/prerequisites/{id}/route`, `DELETE /trees/{treeId}/prerequisites/routes` | An edge's hand-adjusted right-angle route (`{"segments": 3, "offsets": [40]}`, or null for the default), and resetting every route in a tree. |
 
 **Resources and readiness.** A node's `resources` are sent and returned in order. Each is
-`{"type": "url", "url": "https://…"}` (for reading, never counts) or `{"type": "tree",
-"treeId": 3, "counts": true}` (returned with `tree: {id, title}`), with an optional
-`label`; without one, the target's title is shown. A node's `readiness` in every response is
-its effective value: the average of the trees that count, each the average of its nodes'
-readiness, rounded to a whole percent (0 for an empty tree), with nodes inside those trees
-counting their own derived value. When nothing counts, it's the hand-entered value, which
-is always sent as `readiness` in requests and returned as `manualReadiness`. A URL that
-counts, a tree listed twice or an unknown type is refused with 400. Counting a tree that
+`{"type": "url", "url": "https://…"}` (for reading, never counts), `{"type": "tree",
+"treeId": 3, "counts": true}` or `{"type": "deck", "deckId": 5, "counts": true}`, with an
+optional `label`; without one, the target's title is shown. Responses add `tree` or `deck`
+(`{id, title}`) and the resource's own `readiness` and `lastReviewedAt`, whether it counts or
+not. A node's `readiness` in every response is its effective value: the average of the
+resources that count, rounded to a whole percent, where a tree is the average of its nodes'
+readiness (0 for an empty tree, and nodes inside it counting their own derived value) and a
+deck is the share of its cards passed. When nothing counts, it's the hand-entered value,
+which is always sent as `readiness` in requests and returned as `manualReadiness`. A node's
+`lastReviewedAt` is the latest review beneath its resources that count. A URL that counts,
+a tree or deck listed twice or an unknown type is refused with 400. Counting a tree that
 would make a tree's readiness depend on itself is refused with 409, whether it comes from
 saving a node or placing it in a tree.
 
@@ -210,7 +215,7 @@ library `nodeId`.
 
 | Method & path | Purpose |
 |---|---|
-| `GET/POST /decks`, `GET/PUT/DELETE /decks/{id}` | Decks (title and description), each returned with `cardCount`, `passedCount`, `readiness`, `complete` and `lastReviewedAt`. Deleting a deck deletes its cards and their answers. |
+| `GET/POST /decks`, `GET/PUT/DELETE /decks/{id}` | Decks (title and description), each returned with `cardCount`, `passedCount`, `readiness`, `complete` and `lastReviewedAt`. Deleting a deck deletes its cards and their answers; a deck that a node lists can't be deleted (409, listing those nodes). |
 | `GET/POST /decks/{deckId}/cards`, `PUT/DELETE /decks/{deckId}/cards/{cardId}` | A deck's cards (`front` and `back`), each returned with `correctInARow`, `passed` and `lastReviewedAt`. Editing a card keeps its answers. |
 | `POST /decks/{deckId}/cards/{cardId}/reviews` | Records one answer, `{"correct": true}` or `false`, and returns the card with its new standing. Every answer is kept. |
 | `GET /review-queue`, `GET /review-queue?deckId={id}` | Every card not yet passed, from all decks or one: never-answered cards first, then the least recently answered. |

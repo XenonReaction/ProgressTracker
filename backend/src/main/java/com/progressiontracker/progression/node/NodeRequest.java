@@ -25,14 +25,16 @@ public record NodeRequest(
 		List<@NotBlank @Size(max = 50) String> tags) {
 
 	/**
-	 * One resource: {@code type} {@code "url"} with {@code url}, or {@code "tree"} with
-	 * {@code treeId}. {@code label} is optional (the target's title is shown instead).
-	 * {@code counts} is whether it counts toward readiness; a URL never does.
+	 * One resource: {@code type} {@code "url"} with {@code url}, {@code "tree"} with
+	 * {@code treeId}, or {@code "deck"} with {@code deckId}. {@code label} is optional (the
+	 * target's title is shown instead). {@code counts} is whether it counts toward readiness;
+	 * a URL never does.
 	 */
 	public record Resource(
 			@NotBlank String type,
 			@URL @Pattern(regexp = "(?i)https?://.*", message = "must be an http(s) URL") @Size(max = 2048) String url,
 			Long treeId,
+			Long deckId,
 			@Size(max = 200) String label,
 			Boolean counts) {
 

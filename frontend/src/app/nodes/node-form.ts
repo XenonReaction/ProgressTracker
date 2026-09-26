@@ -11,7 +11,8 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { NodeRequest, NodeResource, NodeResourceType, TreeRef } from '../core/api.models';
+import { DeckRef, NodeRequest, NodeResource, NodeResourceType, TreeRef } from '../core/api.models';
+import { FlashcardApi } from '../core/flashcard-api';
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { TreeApi } from '../core/tree-api';
@@ -21,26 +22,30 @@ type ResourceGroup = FormGroup<{
   type: FormControl<NodeResourceType>;
   url: FormControl<string>;
   treeId: FormControl<number | null>;
+  deckId: FormControl<number | null>;
   label: FormControl<string>;
   counts: FormControl<boolean>;
 }>;
 
 const HTTP_URL = /^https?:\/\/\S+$/i;
 
-/** A link needs an http(s) URL, and a tree needs a tree chosen. */
+/** A link needs an http(s) URL, a tree needs a tree chosen, and a deck a deck. */
 function resourceTarget(group: AbstractControl): ValidationErrors | null {
-  const { type, url, treeId } = group.value;
+  const { type, url, treeId, deckId } = group.value;
   if (type === 'url') {
     return HTTP_URL.test((url ?? '').trim()) ? null : { url: true };
+  }
+  if (type === 'deck') {
+    return deckId == null ? { deckRequired: true } : null;
   }
   return treeId == null ? { treeRequired: true } : null;
 }
 
 /**
  * Create (`/nodes/new`) or edit (`/nodes/:id/edit`) a library node: its title, description,
- * tags and resources. Resources are links and trees, in the order the user sets; a tree can
- * count toward readiness, and then the node's readiness is the average of the trees that
- * count. The hand-entered value itself is set on the node's view page, so this form only
+ * tags and resources. Resources are links, trees and flashcard decks, in the order the user
+ * sets; a tree or deck can count toward readiness, and then the node's readiness is the
+ * average of the resources that count. The hand-entered value itself is set on the node's view page, so this form only
  * carries it through unchanged.
  */
 @Component({
@@ -51,6 +56,7 @@ function resourceTarget(group: AbstractControl): ValidationErrors | null {
 export class NodeForm implements OnInit {
   private readonly nodeApi = inject(NodeApi);
   private readonly treeApi = inject(TreeApi);
+  private readonly flashcardApi = inject(FlashcardApi);
   private readonly router = inject(Router);
 
   /** Route param; absent when creating. */
@@ -80,21 +86,26 @@ export class NodeForm implements OnInit {
   /** Trees to choose from; loaded the first time a tree resource is shown. */
   protected readonly trees = signal<TreeRef[] | null>(null);
   private treesRequested = false;
-  /** The node's readiness as last saved, and which trees counted then. */
+  /** Decks to choose from; loaded the first time a deck resource is shown. */
+  protected readonly decks = signal<DeckRef[] | null>(null);
+  private decksRequested = false;
+  /** The node's readiness as last saved, and which resources counted then. */
   private readonly saved = signal<{ countingKey: string; readiness: number } | null>(null);
 
   private readonly formValue = toSignal(this.form.valueChanges, {
     initialValue: this.form.getRawValue(),
   });
-  /** Ids of the trees that count, as the form stands. */
+  /** The trees and decks that count, as the form stands. */
   private readonly countingKey = computed(() =>
     (this.formValue().resources ?? [])
-      .filter((r) => r.type === 'tree' && r.counts && r.treeId != null)
-      .map((r) => r.treeId)
+      .filter(
+        (r) => r.type !== 'url' && r.counts && (r.type === 'tree' ? r.treeId : r.deckId) != null,
+      )
+      .map((r) => `${r.type}:${r.type === 'tree' ? r.treeId : r.deckId}`)
       .join(','),
   );
   protected readonly anyCounts = computed(() => this.countingKey() !== '');
-  /** The saved readiness, while the trees that count are the ones it was worked out from. */
+  /** The saved readiness, while the resources that count are the ones it was worked out from. */
   protected readonly currentReadiness = computed(() => {
     const saved = this.saved();
     return saved && saved.countingKey === this.countingKey() ? saved.readiness : null;
@@ -130,12 +141,13 @@ export class NodeForm implements OnInit {
           type: new FormControl(type, { nonNullable: true }),
           url: new FormControl(resource?.url ?? '', { nonNullable: true }),
           treeId: new FormControl<number | null>(resource?.tree?.id ?? null),
+          deckId: new FormControl<number | null>(resource?.deck?.id ?? null),
           label: new FormControl(resource?.label ?? '', {
             nonNullable: true,
             validators: [Validators.maxLength(200)],
           }),
-          // A new tree counts unless the user says otherwise; a link never does
-          counts: new FormControl(resource ? resource.counts : type === 'tree', {
+          // A new tree or deck counts unless the user says otherwise; a link never does
+          counts: new FormControl(resource ? resource.counts : type !== 'url', {
             nonNullable: true,
           }),
         },
@@ -144,6 +156,9 @@ export class NodeForm implements OnInit {
     );
     if (type === 'tree') {
       this.loadTrees();
+    }
+    if (type === 'deck') {
+      this.loadDecks();
     }
   }
 
@@ -172,11 +187,17 @@ export class NodeForm implements OnInit {
       title: value.title.trim(),
       description: value.description.trim() || null,
       readiness: value.readiness,
-      resources: value.resources.map((r) =>
-        r.type === 'url'
-          ? { type: 'url', url: r.url.trim(), label: r.label.trim() || null, counts: false }
-          : { type: 'tree', treeId: r.treeId, label: r.label.trim() || null, counts: r.counts },
-      ),
+      resources: value.resources.map((r) => {
+        const label = r.label.trim() || null;
+        switch (r.type) {
+          case 'url':
+            return { type: 'url', url: r.url.trim(), label, counts: false };
+          case 'deck':
+            return { type: 'deck', deckId: r.deckId, label, counts: r.counts };
+          default:
+            return { type: 'tree', treeId: r.treeId, label, counts: r.counts };
+        }
+      }),
       tags: parseTags(value.tags),
     };
     const id = this.id();
@@ -200,6 +221,18 @@ export class NodeForm implements OnInit {
     this.treesRequested = true;
     this.treeApi.list().subscribe({
       next: (trees) => this.trees.set(trees.map(({ id, title }) => ({ id, title }))),
+      error: (error) => this.error.set(errorMessage(error)),
+    });
+  }
+
+  /** Loads the decks to choose from, once. */
+  private loadDecks(): void {
+    if (this.decksRequested) {
+      return;
+    }
+    this.decksRequested = true;
+    this.flashcardApi.decks().subscribe({
+      next: (decks) => this.decks.set(decks.map(({ id, title }) => ({ id, title }))),
       error: (error) => this.error.set(errorMessage(error)),
     });
   }

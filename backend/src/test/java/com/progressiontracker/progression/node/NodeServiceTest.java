@@ -10,6 +10,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
+import com.progressiontracker.flashcards.DeckProgress;
+import com.progressiontracker.flashcards.DeckSummary;
+import com.progressiontracker.flashcards.FlashcardReadinessCalculator;
 import com.progressiontracker.progression.readiness.TestReadiness;
 import com.progressiontracker.progression.tree.Tree;
 import com.progressiontracker.progression.tree.TreeLinks;
@@ -49,6 +53,9 @@ class NodeServiceTest {
 	@Mock
 	private CurrentUserService currentUser;
 
+	@Mock
+	private FlashcardReadinessCalculator flashcards;
+
 	private NodeService service;
 
 	private final User user = withId(new User("demo"), 1L);
@@ -56,7 +63,8 @@ class NodeServiceTest {
 	@BeforeEach
 	void setUp() {
 		lenient().when(currentUser.getCurrentUser()).thenReturn(user);
-		service = new NodeService(nodes, trees, treeLinks, TestReadiness.service(treeNodes), currentUser);
+		service = new NodeService(nodes, trees, treeLinks, TestReadiness.service(treeNodes, flashcards), currentUser,
+				flashcards);
 	}
 
 	@Test
@@ -71,7 +79,8 @@ class NodeServiceTest {
 		assertThat(response.description()).isEqualTo("Type parameters");
 		assertThat(response.readiness()).isEqualTo(40);
 		assertThat(response.resources())
-			.containsExactly(new NodeResponse.Resource("url", "https://example.com", null, "Docs", false));
+			.containsExactly(
+					new NodeResponse.Resource("url", "https://example.com", null, null, "Docs", false, null, null));
 		assertThat(response.tags()).containsExactly("java", "types");
 	}
 
@@ -127,7 +136,8 @@ class NodeServiceTest {
 
 		verify(treeLinks).checkNoLoop(node, List.of(containing), linked);
 		assertThat(response.resources()).containsExactly(
-				new NodeResponse.Resource("tree", null, new TreeRef(3L, "Collections in depth"), null, true));
+				new NodeResponse.Resource("tree", null, new TreeRef(3L, "Collections in depth"), null, null, true, 57,
+						null));
 		assertThat(response.readiness()).isEqualTo(57); // (80 + 60 + 31) / 3 = 57.0
 		assertThat(response.manualReadiness()).isEqualTo(25);
 	}
@@ -151,7 +161,8 @@ class NodeServiceTest {
 						tree(5L, null, false)),
 				null));
 
-		// (54 + 100) / 2 = 77; the reference-only tree isn't read or loop-checked
+		// (54 + 100) / 2 = 77; the reference-only tree isn't counted or loop-checked, though its
+		// own readiness is shown
 		assertThat(response.readiness()).isEqualTo(77);
 		assertThat(response.resources()).extracting(NodeResponse.Resource::type)
 			.containsExactly("tree", "url", "tree", "tree");
@@ -159,7 +170,8 @@ class NodeServiceTest {
 		verify(treeLinks).checkNoLoop(node, List.of(), css);
 		verify(treeLinks).checkNoLoop(node, List.of(), html);
 		verify(treeLinks, never()).checkNoLoop(node, List.of(), reading);
-		verify(treeNodes, never()).findNodesInTree(reading);
+		assertThat(response.resources().get(3).readiness()).isZero();
+		assertThat(response.resources().get(3).counts()).isFalse();
 	}
 
 	@Test
@@ -191,14 +203,16 @@ class NodeServiceTest {
 		Tree css = withId(new Tree(user, "CSS"), 3L);
 		lenient().when(trees.findByIdAndOwner(3L, user)).thenReturn(Optional.of(css));
 
-		assertThatThrownBy(() -> create(new NodeRequest.Resource("url", "https://example.com", null, null, true)))
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("url", "https://example.com", null, null, null, true)))
 			.isInstanceOf(BadRequestException.class)
 			.hasMessageContaining("can't count toward readiness");
-		assertThatThrownBy(() -> create(new NodeRequest.Resource("url", null, null, null, false)))
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("url", null, null, null, null, false)))
 			.isInstanceOf(BadRequestException.class);
-		assertThatThrownBy(() -> create(new NodeRequest.Resource("tree", "https://example.com", 3L, null, true)))
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("tree", "https://example.com", 3L, null, null, true)))
 			.isInstanceOf(BadRequestException.class);
-		assertThatThrownBy(() -> create(new NodeRequest.Resource("deck", null, 3L, null, true)))
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("deck", null, 3L, null, null, true)))
+			.isInstanceOf(BadRequestException.class);
+		assertThatThrownBy(() -> create(new NodeRequest.Resource("lesson", null, null, 3L, null, true)))
 			.isInstanceOf(BadRequestException.class)
 			.hasMessageContaining("Unknown resource type");
 		assertThatThrownBy(() -> service.create(new NodeRequest("Twice", null, 0,
@@ -220,6 +234,45 @@ class NodeServiceTest {
 		assertThatThrownBy(() -> service.update(7L,
 				new NodeRequest("Collections", null, 0, List.of(tree(3L, null, true)), null)))
 			.isInstanceOf(ConflictException.class);
+	}
+
+	@Test
+	void aDeckCountsWithItsShareOfCardsPassedAndATreeAlongsideIsAveragedIn() {
+		Node node = withId(new Node(user, "CSS Flexbox"), 7L);
+		Tree article = withId(new Tree(user, "Article"), 3L);
+		Instant reviewed = Instant.parse("2026-09-01T10:00:00Z");
+		when(nodes.findByIdAndOwner(7L, user)).thenReturn(Optional.of(node));
+		when(trees.findByIdAndOwner(3L, user)).thenReturn(Optional.of(article));
+		when(trees.findTreesContaining(node)).thenReturn(List.of());
+		when(treeNodes.findNodesInTree(article)).thenReturn(List.of(manual(11L, "Reading", 60)));
+		when(flashcards.deck(40L)).thenReturn(Optional.of(new DeckSummary(40L, "Flexbox cards",
+				new DeckProgress(20, 15, 75, false, reviewed))));
+
+		NodeResponse response = service.update(7L,
+				new NodeRequest("CSS Flexbox", null, 0, List.of(deck(40L, true), tree(3L, null, true)), null));
+
+		// (75 + 60) / 2 = 67.5, rounded to 68: the 7.0 example with a tree in place of the article
+		assertThat(response.readiness()).isEqualTo(68);
+		assertThat(response.lastReviewedAt()).isEqualTo(reviewed);
+		assertThat(response.resources().get(0)).isEqualTo(new NodeResponse.Resource("deck", null, null,
+				new DeckRef(40L, "Flexbox cards"), null, true, 75, reviewed));
+		assertThat(response.resources().get(1).readiness()).isEqualTo(60);
+		// Only the tree can make a loop
+		verify(treeLinks).checkNoLoop(node, List.of(), article);
+	}
+
+	@Test
+	void aDeckThatIsNotTheUsersIsNotFoundAndADeckTwiceIsRefused() {
+		when(flashcards.deck(40L)).thenReturn(Optional.empty());
+		when(flashcards.deck(41L))
+			.thenReturn(Optional.of(new DeckSummary(41L, "Mine", new DeckProgress(0, 0, 0, false, null))));
+
+		assertThatThrownBy(() -> create(deck(40L, true))).isInstanceOf(NotFoundException.class)
+			.hasMessage("Deck 40 not found");
+		assertThatThrownBy(() -> service.create(
+				new NodeRequest("Twice", null, 0, List.of(deck(41L, true), deck(41L, false)), null)))
+			.isInstanceOf(BadRequestException.class)
+			.hasMessage("Deck 41 is listed more than once");
 	}
 
 	@Test
@@ -261,11 +314,15 @@ class NodeServiceTest {
 	}
 
 	private static NodeRequest.Resource url(String url, String label) {
-		return new NodeRequest.Resource("url", url, null, label, false);
+		return new NodeRequest.Resource("url", url, null, null, label, false);
 	}
 
 	private static NodeRequest.Resource tree(Long treeId, String label, boolean counts) {
-		return new NodeRequest.Resource("tree", null, treeId, label, counts);
+		return new NodeRequest.Resource("tree", null, treeId, null, label, counts);
+	}
+
+	private static NodeRequest.Resource deck(Long deckId, boolean counts) {
+		return new NodeRequest.Resource("deck", null, null, deckId, null, counts);
 	}
 
 	private Node manual(Long id, String title, int readiness) {

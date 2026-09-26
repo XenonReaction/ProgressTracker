@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
+import com.progressiontracker.flashcards.FlashcardReadinessCalculator;
 import com.progressiontracker.progression.readiness.ReadinessContext;
 import com.progressiontracker.progression.readiness.ReadinessService;
 import com.progressiontracker.progression.tree.Tree;
@@ -38,13 +39,16 @@ public class NodeService {
 
 	private final CurrentUserService currentUser;
 
+	private final FlashcardReadinessCalculator flashcards;
+
 	public NodeService(NodeRepository nodes, TreeRepository trees, TreeLinks treeLinks, ReadinessService readiness,
-			CurrentUserService currentUser) {
+			CurrentUserService currentUser, FlashcardReadinessCalculator flashcards) {
 		this.nodes = nodes;
 		this.trees = trees;
 		this.treeLinks = treeLinks;
 		this.readiness = readiness;
 		this.currentUser = currentUser;
+		this.flashcards = flashcards;
 	}
 
 	@Transactional(readOnly = true)
@@ -52,7 +56,7 @@ public class NodeService {
 		ReadinessContext context = readiness.context();
 		return nodes.findByOwnerOrderByTitleAsc(currentUser.getCurrentUser())
 			.stream()
-			.map(node -> NodeResponse.from(node, context.of(node)))
+			.map(node -> NodeResponse.from(node, context))
 			.toList();
 	}
 
@@ -119,7 +123,7 @@ public class NodeService {
 	}
 
 	private NodeResponse toResponse(Node node) {
-		return NodeResponse.from(node, readiness.context().of(node));
+		return NodeResponse.from(node, readiness.context());
 	}
 
 	private void apply(NodeRequest request, Node node) {
@@ -129,7 +133,7 @@ public class NodeService {
 		node.getTags().clear();
 		node.getTags().addAll(request.tagsOrEmpty());
 		List<NodeResource> resources = request.resourcesOrEmpty().stream().map(this::toResource).toList();
-		checkNoTreeTwice(resources);
+		checkNoTargetTwice(resources);
 		node.getResources().clear();
 		node.getResources().addAll(resources);
 		List<Tree> containing = node.getId() == null ? List.of() : trees.findTreesContaining(node);
@@ -142,31 +146,44 @@ public class NodeService {
 	private NodeResource toResource(NodeRequest.Resource resource) {
 		String type = resource.type().trim().toLowerCase();
 		if (type.equals(NodeResourceType.URL.getDbValue())) {
-			if (resource.url() == null || resource.url().isBlank() || resource.treeId() != null) {
-				throw new BadRequestException("A url resource needs a url and no treeId");
+			if (resource.url() == null || resource.url().isBlank() || resource.treeId() != null
+					|| resource.deckId() != null) {
+				throw new BadRequestException("A url resource needs a url and nothing else to point to");
 			}
 			if (resource.countsOrFalse()) {
 				throw new BadRequestException("A url resource is for reading only and can't count toward readiness");
 			}
 			return NodeResource.url(resource.url(), blankToNull(resource.label()));
 		}
+		if (type.equals(NodeResourceType.DECK.getDbValue())) {
+			if (resource.deckId() == null || resource.url() != null || resource.treeId() != null) {
+				throw new BadRequestException("A deck resource needs a deckId and nothing else to point to");
+			}
+			// The Flashcards module confirms it's one of the user's decks
+			flashcards.deck(resource.deckId()).orElseThrow(() -> new NotFoundException("Deck", resource.deckId()));
+			return NodeResource.deck(resource.deckId(), blankToNull(resource.label()), resource.countsOrFalse());
+		}
 		if (type.equals(NodeResourceType.TREE.getDbValue())) {
-			if (resource.treeId() == null || resource.url() != null) {
-				throw new BadRequestException("A tree resource needs a treeId and no url");
+			if (resource.treeId() == null || resource.url() != null || resource.deckId() != null) {
+				throw new BadRequestException("A tree resource needs a treeId and nothing else to point to");
 			}
 			Tree tree = trees.findByIdAndOwner(resource.treeId(), currentUser.getCurrentUser())
 				.orElseThrow(() -> new NotFoundException("Tree", resource.treeId()));
 			return NodeResource.tree(tree, blankToNull(resource.label()), resource.countsOrFalse());
 		}
-		throw new BadRequestException("Unknown resource type \"" + resource.type() + "\"; expected url or tree");
+		throw new BadRequestException("Unknown resource type \"" + resource.type() + "\"; expected url, tree or deck");
 	}
 
-	/** A tree listed twice would count twice, so it's refused. */
-	private static void checkNoTreeTwice(List<NodeResource> resources) {
-		Set<Long> seen = new HashSet<>();
+	/** A tree or deck listed twice would count twice, so it's refused. */
+	private static void checkNoTargetTwice(List<NodeResource> resources) {
+		Set<Long> trees = new HashSet<>();
+		Set<Long> decks = new HashSet<>();
 		for (NodeResource resource : resources) {
-			if (resource.getTree() != null && !seen.add(resource.getTree().getId())) {
+			if (resource.getTree() != null && !trees.add(resource.getTree().getId())) {
 				throw new BadRequestException("Tree " + resource.getTree().getId() + " is listed more than once");
+			}
+			if (resource.getDeckId() != null && !decks.add(resource.getDeckId())) {
+				throw new BadRequestException("Deck " + resource.getDeckId() + " is listed more than once");
 			}
 		}
 	}
