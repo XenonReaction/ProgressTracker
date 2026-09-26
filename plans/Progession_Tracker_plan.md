@@ -25,6 +25,7 @@ A new system for creating and editing skill trees, in the same spirit as the exi
 - **Aggregation formula (decided):** for v1, the aggregate is a **plain average** of the linked tree's node readiness values. The mechanism is built as a pluggable **"readiness function"** concept rather than a hardcoded average, so that:
   - Each *linkable source type* (linked tree today; flashcards/coding-practice later) can register how it computes a readiness value.
   - Swapping the linked-tree aggregate from "plain average" to something smarter later (weighted, threshold-based, etc.) doesn't require redesigning how nodes consume external readiness — only the function registered for that source type changes.
+  - **Superseded in Phase 7.0:** a node can have several readiness sources (typed resources: linked trees, flashcard decks, external materials, lessons, coding questions). Its readiness is the plain average of the resources that count, and the hand-entered value is used only when none count; see `plans/Phase_7_plan.md`.
 - **Readiness source hook:** `nodes` gets a `readiness_source_type` column (default/only value for Milestone 1: `'manual'`), even though nothing reads it yet — a cheap forward-compatibility hook, not a Milestone-2 feature pulled forward. No service logic, no UI, no readiness-function registry yet; that's still Milestone 2+ work.
 - Readiness styling (how a node visually signals whether it's worth starting):
   - **Gradient step count:** **two states only for v1** (locked-looking vs. ready-looking). **Superseded in Phase 5.5:** four levels (not started, early, close, ready); see `plans/Phase_5_plan.md`.
@@ -75,10 +76,13 @@ A new system for creating and editing skill trees, in the same spirit as the exi
 ## Decided: Future Integrations (Design For, Don't Build Yet)
 
 - Data model leaves room for practice-activity tracking per node (e.g. a `practice_events`/`skill_activity`-shaped table), but this is **not required for v1**.
+  - **Superseded in Phase 7.0:** there's no shared activity table. Each learning module owns its own records (card reviews, material progress updates, lesson opens, coding attempts); see `plans/Phase_7_plan.md`.
 - Target integrations, both still needing research before committing to an approach, and both intended to eventually register as **readiness function** source types (see above):
   - **Flashcards** — a locally-running Anki instance, likely via AnkiConnect, tracking per-deck progress.
   - **Coding practice** — a CodingBat-style tool.
+  - **Superseded in Phase 7.0:** flashcard decks are built and studied in the app (Anki import is a future idea), and coding questions are written problems solved on your own machine, HTML and CSS first (in-browser coding is a future idea); see `plans/Phase_7_plan.md`.
 - **Monolith confirmed**: one Spring Boot app, with the flashcard/coding-practice integration logic kept behind a clean internal module boundary so it could be extracted into a real separate service later if it outgrows the monolith. No microservices split now.
+  - **Refined in Phase 7:** a modular monolith, with each learning feature its own module and Spring Modulith enforcing the boundaries; see `plans/Phase_7_plan.md`.
 
 ## Decided: Tech Stack
 
@@ -171,6 +175,12 @@ Scoped in detail in `plans/Phase_5_plan.md`, which now decides the sub-phases, t
 - Node-links-to-tree readiness aggregation, built as the pluggable "readiness function" mechanism (this is what `readiness_source_type` is reserved for).
 - Multi-step readiness gradient, if you decide to revisit the two-state default.
 - Revisit schema management (introduce a real migration tool) before any deployment past your own machine — see the note under Persistence above.
+
+### Phase 6 — CI and logging
+Scoped in `plans/Phase_6_plan.md`.
+
+### Phase 7 — Milestone 3: learning activities
+Scoped in `plans/Phase_7_plan.md`: flashcards, typed node resources, readiness from several resources, external materials, lessons and coding questions, built as modules of one backend.
 
 ---
 
