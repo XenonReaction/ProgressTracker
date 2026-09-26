@@ -26,7 +26,8 @@ public record NodeRequest(
 
 	/**
 	 * One resource: {@code type} {@code "url"} with {@code url}, {@code "tree"} with
-	 * {@code treeId}, or {@code "deck"} with {@code deckId}. {@code label} is optional (the
+	 * {@code treeId}, {@code "deck"} with {@code deckId}, or {@code "material"} with
+	 * {@code materialId}. {@code label} is optional (the
 	 * target's title is shown instead). {@code counts} is whether it counts toward readiness;
 	 * a URL never does.
 	 */
@@ -35,6 +36,7 @@ public record NodeRequest(
 			@URL @Pattern(regexp = "(?i)https?://.*", message = "must be an http(s) URL") @Size(max = 2048) String url,
 			Long treeId,
 			Long deckId,
+			Long materialId,
 			@Size(max = 200) String label,
 			Boolean counts) {
 

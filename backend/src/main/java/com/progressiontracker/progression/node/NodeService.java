@@ -14,6 +14,7 @@ import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.flashcards.FlashcardReadinessCalculator;
+import com.progressiontracker.materials.MaterialReadinessCalculator;
 import com.progressiontracker.progression.readiness.ReadinessContext;
 import com.progressiontracker.progression.readiness.ReadinessService;
 import com.progressiontracker.progression.tree.Tree;
@@ -41,14 +42,18 @@ public class NodeService {
 
 	private final FlashcardReadinessCalculator flashcards;
 
+	private final MaterialReadinessCalculator materials;
+
 	public NodeService(NodeRepository nodes, TreeRepository trees, TreeLinks treeLinks, ReadinessService readiness,
-			CurrentUserService currentUser, FlashcardReadinessCalculator flashcards) {
+			CurrentUserService currentUser, FlashcardReadinessCalculator flashcards,
+			MaterialReadinessCalculator materials) {
 		this.nodes = nodes;
 		this.trees = trees;
 		this.treeLinks = treeLinks;
 		this.readiness = readiness;
 		this.currentUser = currentUser;
 		this.flashcards = flashcards;
+		this.materials = materials;
 	}
 
 	@Transactional(readOnly = true)
@@ -147,7 +152,7 @@ public class NodeService {
 		String type = resource.type().trim().toLowerCase();
 		if (type.equals(NodeResourceType.URL.getDbValue())) {
 			if (resource.url() == null || resource.url().isBlank() || resource.treeId() != null
-					|| resource.deckId() != null) {
+					|| resource.deckId() != null || resource.materialId() != null) {
 				throw new BadRequestException("A url resource needs a url and nothing else to point to");
 			}
 			if (resource.countsOrFalse()) {
@@ -155,8 +160,19 @@ public class NodeService {
 			}
 			return NodeResource.url(resource.url(), blankToNull(resource.label()));
 		}
+		if (type.equals(NodeResourceType.MATERIAL.getDbValue())) {
+			if (resource.materialId() == null || resource.url() != null || resource.treeId() != null
+					|| resource.deckId() != null) {
+				throw new BadRequestException("A material resource needs a materialId and nothing else to point to");
+			}
+			// The Materials module confirms it's one of the user's materials
+			materials.material(resource.materialId())
+				.orElseThrow(() -> new NotFoundException("Material", resource.materialId()));
+			return NodeResource.material(resource.materialId(), blankToNull(resource.label()), resource.countsOrFalse());
+		}
 		if (type.equals(NodeResourceType.DECK.getDbValue())) {
-			if (resource.deckId() == null || resource.url() != null || resource.treeId() != null) {
+			if (resource.deckId() == null || resource.url() != null || resource.treeId() != null
+					|| resource.materialId() != null) {
 				throw new BadRequestException("A deck resource needs a deckId and nothing else to point to");
 			}
 			// The Flashcards module confirms it's one of the user's decks
@@ -164,26 +180,27 @@ public class NodeService {
 			return NodeResource.deck(resource.deckId(), blankToNull(resource.label()), resource.countsOrFalse());
 		}
 		if (type.equals(NodeResourceType.TREE.getDbValue())) {
-			if (resource.treeId() == null || resource.url() != null || resource.deckId() != null) {
+			if (resource.treeId() == null || resource.url() != null || resource.deckId() != null
+					|| resource.materialId() != null) {
 				throw new BadRequestException("A tree resource needs a treeId and nothing else to point to");
 			}
 			Tree tree = trees.findByIdAndOwner(resource.treeId(), currentUser.getCurrentUser())
 				.orElseThrow(() -> new NotFoundException("Tree", resource.treeId()));
 			return NodeResource.tree(tree, blankToNull(resource.label()), resource.countsOrFalse());
 		}
-		throw new BadRequestException("Unknown resource type \"" + resource.type() + "\"; expected url, tree or deck");
+		throw new BadRequestException(
+				"Unknown resource type \"" + resource.type() + "\"; expected url, tree, deck or material");
 	}
 
-	/** A tree or deck listed twice would count twice, so it's refused. */
+	/** A tree, deck or material listed twice would count twice, so it's refused. URLs may repeat. */
 	private static void checkNoTargetTwice(List<NodeResource> resources) {
-		Set<Long> trees = new HashSet<>();
-		Set<Long> decks = new HashSet<>();
+		Set<String> seen = new HashSet<>();
 		for (NodeResource resource : resources) {
-			if (resource.getTree() != null && !trees.add(resource.getTree().getId())) {
-				throw new BadRequestException("Tree " + resource.getTree().getId() + " is listed more than once");
-			}
-			if (resource.getDeckId() != null && !decks.add(resource.getDeckId())) {
-				throw new BadRequestException("Deck " + resource.getDeckId() + " is listed more than once");
+			if (resource.getType() != NodeResourceType.URL
+					&& !seen.add(resource.getType() + ":" + resource.targetKey())) {
+				String type = resource.getType().getDbValue();
+				throw new BadRequestException(Character.toUpperCase(type.charAt(0)) + type.substring(1) + " "
+						+ resource.targetKey() + " is listed more than once");
 			}
 		}
 	}

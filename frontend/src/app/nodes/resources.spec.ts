@@ -1,8 +1,9 @@
-import { aDeckResource, aTreeResource, aUrlResource } from '../core/test-data';
+import { aDeckResource, aMaterialResource, aTreeResource, aUrlResource } from '../core/test-data';
 import {
   countingResources,
   countingTrees,
   hasCountingResource,
+  isSelfReported,
   readinessSources,
   resourceLink,
   resourceTitle,
@@ -21,6 +22,10 @@ describe('resources', () => {
   it('links trees and decks to their pages', () => {
     expect(resourceLink(aTreeResource(3, 'CSS'))).toEqual(['/trees', 3]);
     expect(resourceLink(aDeckResource(4, 'Flexbox cards'))).toEqual(['/decks', 4]);
+    expect(resourceLink(aMaterialResource(6, 'Guide'))).toEqual(['/materials', 6]);
+    expect(resourceTitle(aMaterialResource(6, 'Guide'))).toBe('Guide');
+    expect(isSelfReported(aMaterialResource(6, 'Guide'))).toBe(true);
+    expect(isSelfReported(aDeckResource(4, 'Flexbox cards'))).toBe(false);
     expect(resourceLink(aUrlResource('https://example.com'))).toBeNull();
   });
 
@@ -58,9 +63,11 @@ describe('resources', () => {
       url: null,
       treeId: 3,
       deckId: null,
+      materialId: null,
       label: 'Styling',
       counts: false,
     });
     expect(toRequest(aDeckResource(4, 'Cards')).deckId).toBe(4);
+    expect(toRequest(aMaterialResource(6, 'Guide')).materialId).toBe(6);
   });
 });

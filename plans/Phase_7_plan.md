@@ -1,6 +1,6 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Fully decided. 7.0 to 7.3 are complete; no code has been written for 7.4 onward.
+**Status:** Fully decided. 7.0 to 7.4 are complete; no code has been written for 7.5 onward.
 
 **Steps, in build order:**
 
@@ -11,7 +11,7 @@
 | 7.1 | Flashcards and review records | **Complete.** |
 | 7.2 | Typed node resources | **Complete.** |
 | 7.3 | Readiness from several resources | **Complete.** |
-| 7.4 | External materials with manual progress | **Fully decided.** |
+| 7.4 | External materials with manual progress | **Complete.** |
 | 7.5 | Lessons | **Fully decided.** |
 | 7.6 | Coding questions | **Fully decided.** |
 | 7.7 | Refine based on use | Not scoped yet. Starts with spaced repetition and staleness. |
@@ -230,6 +230,12 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - Shown as self-reported, and included in the node's readiness only if the resource counts.
 
 **Done when:** updating your progress on a material changes your node and tree readiness.
+
+**Done:**
+- **Materials module:** built like Flashcards. `MaterialReadinessCalculator` and `MaterialDeletionCheck` are its public API, and everything else is in `materials.internal`. `V9__materials.sql` adds `materials` and `material_progress_updates`, and widens `node_resources` to a `material` type (plain id in `target_id`).
+- **Progress:** reported from the material's page (0–100, with an optional note on what was covered), starting from the last value. Every report is kept and shown as the history; the latest is the material's progress, and its time is "last reviewed". Editing the title, URL or notes isn't a review. A dev seed material has two reports.
+- **As a node resource:** "+ Add material" in the node form. Its readiness is marked "(self-reported)" in the breakdown and on the node page, and counts only if the resource counts. A material that a node lists can't be deleted (409, listing the nodes).
+- **The 7.0 examples** now use a real article (a material at 60%) in place of 7.3's stand-in tree; the lesson still uses a fully passed deck until 7.5.
 
 ---
 

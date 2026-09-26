@@ -13,7 +13,10 @@ public enum NodeResourceType {
 	TREE("tree", true),
 
 	/** A flashcard deck, by id: its readiness is the share of its cards passed. */
-	DECK("deck", true);
+	DECK("deck", true),
+
+	/** An external material, by id: its readiness is the latest progress the user reported. */
+	MATERIAL("material", true);
 
 	private final String dbValue;
 

@@ -34,7 +34,7 @@
     <legend>Resources</legend>
     <p class="muted readiness-source">
       @if (anyCounts()) {
-        Readiness will be the average of the trees and decks that count.
+        Readiness will be the average of the trees, decks and materials that count.
         @if (currentReadiness() !== null) {
           It's {{ currentReadiness() }}% now.
         }
@@ -82,6 +82,22 @@
             <span class="muted">Loading decks…</span>
           }
           <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
+        } @else if (resource.controls.type.value === 'material') {
+          <strong>Material</strong>
+          @if (materials(); as materials) {
+            <select
+              formControlName="materialId"
+              [attr.aria-label]="'Resource ' + (i + 1) + ' material'"
+            >
+              <option [ngValue]="null">Choose a material…</option>
+              @for (material of materials; track material.id) {
+                <option [ngValue]="material.id">{{ material.title }}</option>
+              }
+            </select>
+          } @else {
+            <span class="muted">Loading materials…</span>
+          }
+          <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
         } @else {
           <strong>Link</strong>
           <input
@@ -120,6 +136,9 @@
         @if (resource.touched && resource.hasError('url')) {
           <span class="error">Enter an http(s) URL.</span>
         }
+        @if (resource.touched && resource.hasError('materialRequired')) {
+          <span class="error">Choose a material.</span>
+        }
         @if (resource.touched && resource.hasError('deckRequired')) {
           <span class="error">Choose a deck.</span>
         }
@@ -133,6 +152,8 @@
     <button type="button" (click)="addResource('tree')">+ Add tree</button>
     &nbsp;
     <button type="button" (click)="addResource('deck')">+ Add deck</button>
+    &nbsp;
+    <button type="button" (click)="addResource('material')">+ Add material</button>
   </fieldset>
 
   @if (error(); as message) {

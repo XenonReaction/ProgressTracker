@@ -1,0 +1,61 @@
+<h1>Materials</h1>
+<p class="muted">
+  Articles, videos, courses and other things to work through. You report your own progress on each.
+</p>
+<p><a routerLink="/materials/new">+ New material</a></p>
+
+@if (error(); as message) {
+  <div class="error" role="alert">
+    <p>{{ message }}</p>
+    @if (blockingNodes().length) {
+      <ul>
+        @for (node of blockingNodes(); track node.id) {
+          <li>
+            <a [routerLink]="['/nodes', node.id]">{{ node.title }}</a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}
+
+@if (materials(); as materials) {
+  @if (materials.length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Material</th>
+          <th>Progress</th>
+          <th>Last updated</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (material of materials; track material.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/materials', material.id]">{{ material.title }}</a>
+            </td>
+            <td>
+              <progress max="100" [value]="material.progress"></progress> {{ material.progress }}%
+            </td>
+            <td>
+              {{ material.lastReviewedAt ? (material.lastReviewedAt | date: 'medium') : 'Never' }}
+            </td>
+            <td>
+              <a [href]="material.url" target="_blank" rel="noopener noreferrer">Open</a>
+              &nbsp;
+              <a [routerLink]="['/materials', material.id, 'edit']">Edit</a>
+              &nbsp;
+              <button type="button" (click)="delete(material)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No materials yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

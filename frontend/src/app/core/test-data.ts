@@ -1,4 +1,4 @@
-import { Card, Deck, Node, NodeResource, Tree, TreeNode } from './api.models';
+import { Card, Deck, Material, Node, NodeResource, Tree, TreeNode } from './api.models';
 
 /** Builders for specs; override only the fields a test cares about. */
 export function aNode(overrides: Partial<Node> = {}): Node {
@@ -97,6 +97,7 @@ export function aTreeResource(
     url: null,
     tree: { id, title },
     deck: null,
+    material: null,
     label,
     counts,
     readiness,
@@ -116,6 +117,7 @@ export function aDeckResource(
     url: null,
     tree: null,
     deck: { id, title },
+    material: null,
     label: null,
     counts,
     readiness,
@@ -129,9 +131,45 @@ export function aUrlResource(url: string, label: string | null = null): NodeReso
     url,
     tree: null,
     deck: null,
+    material: null,
     label,
     counts: false,
     readiness: null,
     lastReviewedAt: null,
+  };
+}
+
+export function aMaterialResource(
+  id: number,
+  title: string,
+  counts = true,
+  readiness: number | null = 50,
+  lastReviewedAt: string | null = null,
+): NodeResource {
+  return {
+    type: 'material',
+    url: null,
+    tree: null,
+    deck: null,
+    material: { id, title },
+    label: null,
+    counts,
+    readiness,
+    lastReviewedAt,
+  };
+}
+
+export function aMaterial(overrides: Partial<Material> = {}): Material {
+  return {
+    id: 1,
+    title: 'A Complete Guide to Flexbox',
+    url: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/',
+    notes: null,
+    progress: 0,
+    lastReviewedAt: null,
+    updateCount: 0,
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
   };
 }

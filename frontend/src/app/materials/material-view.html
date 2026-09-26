@@ -1,0 +1,86 @@
+@if (error(); as message) {
+  <div class="error" role="alert">
+    <p>{{ message }}</p>
+    @if (blockingNodes().length) {
+      <ul>
+        @for (node of blockingNodes(); track node.id) {
+          <li>
+            <a [routerLink]="['/nodes', node.id]">{{ node.title }}</a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}
+
+@if (material(); as material) {
+  <p><a routerLink="/materials">← Materials</a></p>
+  <h1>{{ material.title }}</h1>
+  <p>
+    <a [href]="material.url" target="_blank" rel="noopener noreferrer">{{ material.url }}</a>
+  </p>
+  <p>
+    <a [routerLink]="['/materials', material.id, 'edit']">Edit</a>
+    &nbsp;
+    <button type="button" (click)="delete(material)">Delete material</button>
+  </p>
+  @if (material.notes) {
+    <p>{{ material.notes }}</p>
+  }
+
+  <h2>Progress</h2>
+  <p>
+    <progress max="100" [value]="material.progress"></progress>
+    <strong>{{ material.progress }}%</strong>
+    <span class="muted"> (self-reported)</span>
+  </p>
+  <p class="muted">
+    Last updated:
+    {{ material.lastReviewedAt ? (material.lastReviewedAt | date: 'medium') : 'never' }}
+  </p>
+
+  <form [formGroup]="progressForm" (ngSubmit)="recordProgress(material)">
+    <p>
+      <label>
+        How far through are you now?
+        <input type="number" min="0" max="100" formControlName="progress" />%
+      </label>
+    </p>
+    <p>
+      <label>
+        What you covered (optional)<br />
+        <textarea formControlName="note" rows="2" cols="50"></textarea>
+      </label>
+    </p>
+    @if (progressForm.invalid && progressForm.touched) {
+      <p class="error">Progress must be a whole number from 0 to 100.</p>
+    }
+    <p><button type="submit" [disabled]="saving()">Save progress</button></p>
+  </form>
+
+  <h2>History</h2>
+  @if (history().length) {
+    <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Progress</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (update of history(); track update.id) {
+          <tr>
+            <td>{{ update.recordedAt | date: 'medium' }}</td>
+            <td>{{ update.progress }}%</td>
+            <td>{{ update.note }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No progress reported yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

@@ -1,0 +1,40 @@
+<h1>{{ id() ? 'Edit material' : 'New material' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <p>
+    <label>
+      Title<br />
+      <input formControlName="title" size="50" />
+    </label>
+    @if (form.controls.title.touched && form.controls.title.invalid) {
+      <br /><span class="error">Title is required (max 200 characters).</span>
+    }
+  </p>
+
+  <p>
+    <label>
+      URL<br />
+      <input formControlName="url" size="50" placeholder="https://…" />
+    </label>
+    @if (form.controls.url.touched && form.controls.url.invalid) {
+      <br /><span class="error">Enter an http(s) URL.</span>
+    }
+  </p>
+
+  <p>
+    <label>
+      Notes<br />
+      <textarea formControlName="notes" rows="3" cols="50"></textarea>
+    </label>
+  </p>
+
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  <p>
+    <button type="submit" [disabled]="saving()">Save</button>
+    &nbsp;
+    <a [routerLink]="cancelUrl()">Cancel</a>
+  </p>
+</form>

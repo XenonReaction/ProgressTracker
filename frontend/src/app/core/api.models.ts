@@ -12,12 +12,19 @@ export interface DeckRef {
   title: string;
 }
 
-/** What a node resource points to. Trees and decks can count toward readiness; a URL can't. */
-export type NodeResourceType = 'url' | 'tree' | 'deck';
+/** An external material named in a node's resources. */
+export interface MaterialRef {
+  id: number;
+  title: string;
+}
+
+/** What a node resource points to. Trees, decks and materials can count toward readiness; a URL can't. */
+export type NodeResourceType = 'url' | 'tree' | 'deck' | 'material';
 
 /**
  * Something a node points to, in the node's order: a tree (`tree`), a flashcard deck
- * (`deck`) or an external page (`url`). `label` is as entered, or null to show the target's
+ * (`deck`), an external material with reported progress (`material`) or a plain external
+ * page (`url`). `label` is as entered, or null to show the target's
  * title. `counts` is whether it counts toward the node's readiness; a URL never does.
  * `readiness` and `lastReviewedAt` are the resource's own (null for a URL), whether it
  * counts or not.
@@ -27,6 +34,7 @@ export interface NodeResource {
   url: string | null;
   tree: TreeRef | null;
   deck: DeckRef | null;
+  material: MaterialRef | null;
   label: string | null;
   counts: boolean;
   readiness: number | null;
@@ -38,6 +46,7 @@ export interface NodeResourceRequest {
   url?: string | null;
   treeId?: number | null;
   deckId?: number | null;
+  materialId?: number | null;
   label?: string | null;
   counts?: boolean;
 }
@@ -201,6 +210,41 @@ export interface CardRequest {
   back: string;
 }
 
+/**
+ * An external material (article, video, course). `progress` is the latest the user reported
+ * (0 if none yet) and `lastReviewedAt` when; `updateCount` is how many reports there are.
+ */
+export interface Material {
+  id: number;
+  title: string;
+  url: string;
+  notes: string | null;
+  progress: number;
+  lastReviewedAt: string | null;
+  updateCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MaterialRequest {
+  title: string;
+  url: string;
+  notes: string | null;
+}
+
+/** One entry in a material's progress history. */
+export interface ProgressUpdate {
+  id: number;
+  progress: number;
+  note: string | null;
+  recordedAt: string;
+}
+
+export interface ProgressUpdateRequest {
+  progress: number;
+  note: string | null;
+}
+
 /** RFC 9457 problem response body, plus the extra properties the backend adds. */
 export interface Problem {
   status: number;
@@ -209,6 +253,6 @@ export interface Problem {
   errors?: { field: string; message: string }[];
   /** Trees still using a node that couldn't be deleted. */
   trees?: TreeRef[];
-  /** Nodes listing a tree or deck that couldn't be deleted. */
+  /** Nodes listing a tree, deck or material that couldn't be deleted. */
   nodes?: { id: number; title: string }[];
 }

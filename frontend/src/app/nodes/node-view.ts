@@ -7,7 +7,13 @@ import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
 import { ReadinessEditor } from './readiness-editor';
 import { ReadinessBreakdown } from './readiness-breakdown';
-import { RESOURCE_GROUPS, hasCountingResource, resourceLink, resourceTitle } from './resources';
+import {
+  RESOURCE_GROUPS,
+  hasCountingResource,
+  isSelfReported,
+  resourceLink,
+  resourceTitle,
+} from './resources';
 
 /**
  * A library node's page (`/nodes/:id`), in view mode: its fields read-only, its resources
@@ -34,6 +40,7 @@ export class NodeView {
   protected readonly hasCountingResource = hasCountingResource;
   protected readonly resourceTitle = resourceTitle;
   protected readonly resourceLink = resourceLink;
+  protected readonly isSelfReported = isSelfReported;
 
   constructor() {
     // Links between node pages reuse this component, so load on every id change

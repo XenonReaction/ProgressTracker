@@ -3,6 +3,7 @@ import { APIRequestContext, Locator, Page, test as base, expect } from '@playwri
 import type {
   Card,
   Deck,
+  Material,
   Node,
   NodeResourceRequest,
   Prerequisite,
@@ -105,6 +106,23 @@ export class Api {
         correct: verdict,
       });
     }
+  }
+
+  async createMaterial(title: string, url = 'https://example.com/material'): Promise<Material> {
+    return this.post('/api/v1/materials', { title, url, notes: null });
+  }
+
+  /** Reports progress on a material, as the material's page does. */
+  async reportProgress(
+    materialId: number,
+    progress: number,
+    note: string | null = null,
+  ): Promise<Material> {
+    const response = await this.request.post(`/api/v1/materials/${materialId}/progress`, {
+      data: { progress, note },
+    });
+    expect(response.ok(), `report progress on material ${materialId}`).toBeTruthy();
+    return response.json();
   }
 
   async deck(deckId: number): Promise<Deck> {

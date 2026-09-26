@@ -35,10 +35,13 @@
                 @if (resourceLink(resource); as target) {
                   <a [routerLink]="target">{{ resourceTitle(resource) }}</a>
                   @if (resource.label) {
-                    <span class="muted"> ({{ resource.tree?.title ?? resource.deck?.title }})</span>
+                    <span class="muted">
+                      ({{ resource.tree?.title ?? resource.deck?.title ?? resource.material?.title }})</span
+                    >
                   }
                   <span class="muted">
-                    · {{ resource.readiness }}% · {{ resource.counts ? 'counts toward readiness' : 'for reference' }}</span
+                    · {{ resource.readiness }}%{{ isSelfReported(resource) ? ' (self-reported)' : '' }} ·
+                    {{ resource.counts ? 'counts toward readiness' : 'for reference' }}</span
                   >
                 } @else {
                   <a [href]="resource.url" target="_blank" rel="noopener noreferrer">{{ resourceTitle(resource) }}</a>

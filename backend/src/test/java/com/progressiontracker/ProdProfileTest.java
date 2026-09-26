@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.progressiontracker.flashcards.internal.FlashcardsDevDataSeeder;
+import com.progressiontracker.materials.internal.MaterialsDevDataSeeder;
 import com.progressiontracker.progression.seed.DevDataSeeder;
 
 /** The prod profile (application-prod.properties): nothing runs with it yet, so it's checked here. */
@@ -49,6 +50,7 @@ class ProdProfileTest {
 		void neverLoadsTheDevSampleDataEvenWithTheDevProfile() {
 			assertThat(context.getBeanNamesForType(DevDataSeeder.class)).isEmpty();
 			assertThat(context.getBeanNamesForType(FlashcardsDevDataSeeder.class)).isEmpty();
+			assertThat(context.getBeanNamesForType(MaterialsDevDataSeeder.class)).isEmpty();
 		}
 
 		@Test

@@ -10,10 +10,11 @@ import jakarta.persistence.ManyToOne;
 import com.progressiontracker.progression.tree.Tree;
 
 /**
- * Something a node points to: another tree, a flashcard deck, or an external URL. It has an
- * optional label (the target's title is shown when it's null) and says whether it counts
- * toward the node's readiness. A URL never counts. A deck is in another module, so it's
- * referred to by plain id ({@code target_id}), with no foreign key.
+ * Something a node points to: another tree, a flashcard deck, an external material, or a
+ * plain URL. It has an optional label (the target's title is shown when it's null) and says
+ * whether it counts toward the node's readiness. A URL never counts. Decks and materials are
+ * in other modules, so they're referred to by plain id ({@code target_id}), with no foreign
+ * key.
  */
 @Embeddable
 public class NodeResource {
@@ -25,7 +26,7 @@ public class NodeResource {
 	@JoinColumn(name = "tree_id", foreignKey = @ForeignKey(name = "node_resources_tree_id_fk"))
 	private Tree tree;
 
-	/** The deck's id, for a {@link NodeResourceType#DECK} resource; otherwise null. */
+	/** The id of a deck or material in another module; otherwise null. */
 	@Column(name = "target_id")
 	private Long targetId;
 
@@ -62,6 +63,10 @@ public class NodeResource {
 		return new NodeResource(NodeResourceType.DECK, null, deckId, null, label, counts);
 	}
 
+	public static NodeResource material(Long materialId, String label, boolean counts) {
+		return new NodeResource(NodeResourceType.MATERIAL, null, materialId, null, label, counts);
+	}
+
 	public NodeResourceType getType() {
 		return type;
 	}
@@ -74,6 +79,16 @@ public class NodeResource {
 	/** The deck's id, for a {@link NodeResourceType#DECK} resource; otherwise null. */
 	public Long getDeckId() {
 		return type == NodeResourceType.DECK ? targetId : null;
+	}
+
+	/** The material's id, for a {@link NodeResourceType#MATERIAL} resource; otherwise null. */
+	public Long getMaterialId() {
+		return type == NodeResourceType.MATERIAL ? targetId : null;
+	}
+
+	/** Identifies the target within its type: a tree's id, another module's id, or the URL. */
+	public String targetKey() {
+		return tree != null ? tree.getId().toString() : targetId != null ? targetId.toString() : url;
 	}
 
 	/** The address, for a {@link NodeResourceType#URL} resource; otherwise null. */

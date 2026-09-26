@@ -40,8 +40,8 @@ class ApiIntegrationTest {
 
 	@AfterEach
 	void emptyTables() {
-		jdbc.execute("truncate table card_reviews, cards, decks, tree_edit_sessions, prerequisites, tree_nodes, "
-				+ "tree_tags, trees, node_tags, node_resources, nodes, users cascade");
+		jdbc.execute("truncate table material_progress_updates, materials, card_reviews, cards, decks, tree_edit_sessions, "
+				+ "prerequisites, tree_nodes, tree_tags, trees, node_tags, node_resources, nodes, users cascade");
 	}
 
 	@Test

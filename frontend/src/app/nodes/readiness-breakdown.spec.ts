@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { aDeckResource, aTreeResource, aUrlResource } from '../core/test-data';
+import { aDeckResource, aMaterialResource, aTreeResource, aUrlResource } from '../core/test-data';
 import { ReadinessBreakdown } from './readiness-breakdown';
 
 describe('ReadinessBreakdown', () => {
@@ -27,6 +27,19 @@ describe('ReadinessBreakdown', () => {
     const links = Array.from(page.querySelectorAll('a')).map((a) => a.getAttribute('href'));
     expect(links).toEqual(['/decks/4', '/trees/3']);
     expect(page.textContent).toContain('Last reviewed: never');
+  });
+
+  it("marks a material's progress as self-reported", async () => {
+    fixture.componentRef.setInput('resources', [
+      aDeckResource(4, 'Flexbox cards', true, 75),
+      aMaterialResource(6, 'Flexbox guide', true, 60),
+    ]);
+    await fixture.whenStable();
+
+    expect(text()).toBe(
+      'Deck Flexbox cards: 75%, Material Flexbox guide: 60% (self-reported) → 68%',
+    );
+    expect(page.querySelectorAll('a')[1].getAttribute('href')).toBe('/materials/6');
   });
 
   it('shows when anything beneath was last reviewed, and can leave out the links', async () => {

@@ -81,8 +81,7 @@ public class ReadinessContext {
 		if (calculator == null) {
 			return null;
 		}
-		String key = resource.getType() + ":"
-				+ (resource.getTree() != null ? resource.getTree().getId() : resource.getDeckId());
+		String key = resource.getType() + ":" + resource.targetKey();
 		ResourceStatus known = resources.get(key);
 		if (known == null) {
 			known = calculator.status(resource, this);

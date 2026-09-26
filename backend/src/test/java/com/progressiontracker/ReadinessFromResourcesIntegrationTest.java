@@ -19,10 +19,10 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
 /**
- * Phase 7.3: readiness from several resources across modules, through the whole HTTP stack
- * against real Postgres. Holds the Phase 7.0 examples. External materials (7.4) and lessons
- * (7.5) don't exist yet, so a tree whose one node is at 60% stands in for the article, and a
- * deck with every card passed for the lesson at 100%; the arithmetic is the same.
+ * Phases 7.3 and 7.4: readiness from several resources across modules, through the whole HTTP
+ * stack against real Postgres. Holds the Phase 7.0 examples. Lessons (7.5) don't exist yet,
+ * so a deck with every card passed stands in for the lesson at 100%; the arithmetic is the
+ * same.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -37,8 +37,8 @@ class ReadinessFromResourcesIntegrationTest {
 
 	@AfterEach
 	void emptyTables() {
-		jdbc.execute("truncate table card_reviews, cards, decks, tree_edit_sessions, prerequisites, tree_nodes, "
-				+ "tree_tags, trees, node_tags, node_resources, nodes, users cascade");
+		jdbc.execute("truncate table material_progress_updates, materials, card_reviews, cards, decks, tree_edit_sessions, "
+				+ "prerequisites, tree_nodes, tree_tags, trees, node_tags, node_resources, nodes, users cascade");
 	}
 
 	@Test
@@ -51,23 +51,24 @@ class ReadinessFromResourcesIntegrationTest {
 	@Test
 	void examples2And3ADeckAndAnArticleAreAveragedUntilTheArticleIsOnlyAReference() {
 		long deck = deckWithCards("Flexbox cards", 20, 15);
-		long article = treeAt("Flexbox article", 60);
+		long article = materialAt("Flexbox article", 60);
 		long flexbox = createNode("CSS Flexbox", 0);
 
 		// Example 2: (75 + 60) / 2 = 67.5, rounded to 68
 		MvcTestResult both = setResources(flexbox, "CSS Flexbox", """
 				{"type": "deck", "deckId": %d, "counts": true},
-				{"type": "tree", "treeId": %d, "counts": true}""".formatted(deck, article));
+				{"type": "material", "materialId": %d, "counts": true}""".formatted(deck, article));
 		assertThat(both).hasStatusOk();
 		assertThat(both).bodyJson().extractingPath("$.readiness").isEqualTo(68);
 		assertThat(both).bodyJson().extractingPath("$.resources[0].deck.title").isEqualTo("Flexbox cards");
 		assertThat(both).bodyJson().extractingPath("$.resources[0].readiness").isEqualTo(75);
 		assertThat(both).bodyJson().extractingPath("$.resources[1].readiness").isEqualTo(60);
+		assertThat(both).bodyJson().extractingPath("$.resources[1].material.title").isEqualTo("Flexbox article");
 
 		// Example 3: the article marked as reference only leaves the deck
 		MvcTestResult deckOnly = setResources(flexbox, "CSS Flexbox", """
 				{"type": "deck", "deckId": %d, "counts": true},
-				{"type": "tree", "treeId": %d, "counts": false}""".formatted(deck, article));
+				{"type": "material", "materialId": %d, "counts": false}""".formatted(deck, article));
 		assertThat(deckOnly).bodyJson().extractingPath("$.readiness").isEqualTo(75);
 		assertThat(deckOnly).bodyJson().extractingPath("$.resources[1].readiness").isEqualTo(60);
 	}
@@ -130,6 +131,30 @@ class ReadinessFromResourcesIntegrationTest {
 	}
 
 	@Test
+	void updatingProgressOnAMaterialChangesTheNodeAndItsTree() {
+		long guide = materialAt("Flexbox guide", 40);
+		long flexbox = createNode("CSS Flexbox", 0);
+		setResources(flexbox, "CSS Flexbox",
+				"{\"type\": \"material\", \"materialId\": %d, \"counts\": true}".formatted(guide));
+		long css = id(post("/api/v1/trees", "{\"title\": \"CSS\"}"));
+		placeNode(css, flexbox);
+		placeNode(css, createNode("Selectors", 80));
+		assertThat(treeField(css, "readiness")).isEqualTo(60); // (40 + 80) / 2
+
+		assertThat(post("/api/v1/materials/" + guide + "/progress", "{\"progress\": 100, \"note\": \"Finished\"}"))
+			.hasStatusOk();
+
+		assertThat(readinessOfNode(flexbox)).isEqualTo(100);
+		assertThat(treeField(css, "readiness")).isEqualTo(90); // (100 + 80) / 2
+		assertThat(treeField(css, "lastReviewedAt")).isNotNull();
+
+		// A material that a node lists can't be deleted
+		MvcTestResult refused = mvc.delete().uri("/api/v1/materials/{id}", guide).exchange();
+		assertThat(refused).hasStatus(HttpStatus.CONFLICT);
+		assertThat(refused).bodyJson().extractingPath("$.nodes[0].title").isEqualTo("CSS Flexbox");
+	}
+
+	@Test
 	void aDeckThatNodesListCannotBeDeletedAndOnlyTheUsersDecksCanBeListed() {
 		long deck = deckWithCards("Flexbox cards", 1, 0);
 		long flexbox = createNode("CSS Flexbox", 0);
@@ -158,11 +183,14 @@ class ReadinessFromResourcesIntegrationTest {
 		return deck;
 	}
 
-	/** A tree whose one node is at {@code readiness}. */
-	private long treeAt(String title, int readiness) {
-		long tree = id(post("/api/v1/trees", "{\"title\": \"%s\"}".formatted(title)));
-		placeNode(tree, createNode(title + " node", readiness));
-		return tree;
+	/** A material whose latest reported progress is {@code progress}, after an earlier, lower one. */
+	private long materialAt(String title, int progress) {
+		long material = id(post("/api/v1/materials", """
+				{"title": "%s", "url": "https://example.com/article"}""".formatted(title)));
+		assertThat(post("/api/v1/materials/" + material + "/progress", "{\"progress\": 10}")).hasStatusOk();
+		assertThat(post("/api/v1/materials/" + material + "/progress", "{\"progress\": %d}".formatted(progress)))
+			.hasStatusOk();
+		return material;
 	}
 
 	private long firstCard(long deck) {

@@ -26,21 +26,23 @@ public record NodeResponse(
 		Instant updatedAt) {
 
 	/**
-	 * A resource in the node's order. Exactly one of {@code url}, {@code tree} and
-	 * {@code deck} is set, matching {@code type}. {@code label} is as the user entered it, or
+	 * A resource in the node's order. Exactly one of {@code url}, {@code tree}, {@code deck}
+	 * and {@code material} is set, matching {@code type}. {@code label} is as the user entered it, or
 	 * null to show the target's title. {@code readiness} and {@code lastReviewedAt} are the
 	 * resource's own (null for a URL), whether it counts or not, so a page can show what
 	 * each contributes.
 	 */
-	public record Resource(String type, String url, TreeRef tree, DeckRef deck, String label, boolean counts,
-			Integer readiness, Instant lastReviewedAt) {
+	public record Resource(String type, String url, TreeRef tree, DeckRef deck, MaterialRef material, String label,
+			boolean counts, Integer readiness, Instant lastReviewedAt) {
 
 		static Resource of(NodeResource resource, ReadinessContext context) {
 			ResourceStatus status = context.of(resource);
-			DeckRef deck = resource.getDeckId() == null ? null
-					: new DeckRef(resource.getDeckId(), status == null ? null : status.title());
+			String title = status == null ? null : status.title();
+			DeckRef deck = resource.getDeckId() == null ? null : new DeckRef(resource.getDeckId(), title);
+			MaterialRef material = resource.getMaterialId() == null ? null
+					: new MaterialRef(resource.getMaterialId(), title);
 			return new Resource(resource.getType().getDbValue(), resource.getUrl(), TreeRef.of(resource.getTree()), deck,
-					resource.getLabel(), resource.counts(), status == null ? null : status.readiness(),
+					material, resource.getLabel(), resource.counts(), status == null ? null : status.readiness(),
 					status == null ? null : status.lastReviewedAt());
 		}
 

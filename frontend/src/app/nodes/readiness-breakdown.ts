@@ -3,11 +3,17 @@ import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { NodeResource } from '../core/api.models';
-import { RESOURCE_TYPE_NAMES, countingResources, resourceLink, resourceTitle } from './resources';
+import {
+  RESOURCE_TYPE_NAMES,
+  countingResources,
+  isSelfReported,
+  resourceLink,
+  resourceTitle,
+} from './resources';
 
 /**
- * What a derived readiness is made of, e.g. "Deck Flexbox cards: 75%, Tree Article: 60% →
- * 68%", with each part linking to its page, and when anything beneath was last reviewed.
+ * What a derived readiness is made of, e.g. "Deck Flexbox cards: 75%, Material Guide: 60%
+ * (self-reported) → 68%", with each part linking to its page, and when anything beneath was last reviewed.
  * Only for a node whose resources count.
  */
 @Component({
@@ -22,7 +28,8 @@ import { RESOURCE_TYPE_NAMES, countingResources, resourceLink, resourceTitle } f
         } @else {
           {{ title(part) }}
         }
-        : {{ part.readiness }}%{{ last ? '' : ',' }}
+        : {{ part.readiness }}%{{ selfReported(part) ? ' (self-reported)' : ''
+        }}{{ last ? '' : ',' }}
       }
       → <strong>{{ readiness() }}%</strong>
     </p>
@@ -42,4 +49,5 @@ export class ReadinessBreakdown {
   protected readonly typeNames = RESOURCE_TYPE_NAMES;
   protected readonly title = resourceTitle;
   protected readonly link = resourceLink;
+  protected readonly selfReported = isSelfReported;
 }

@@ -4,6 +4,7 @@ import { NodeResource, NodeResourceRequest, NodeResourceType, TreeRef } from '..
 export const RESOURCE_GROUPS: { type: NodeResourceType; heading: string }[] = [
   { type: 'tree', heading: 'Trees' },
   { type: 'deck', heading: 'Decks' },
+  { type: 'material', heading: 'Materials' },
   { type: 'url', heading: 'Links' },
 ];
 
@@ -11,20 +12,36 @@ export const RESOURCE_GROUPS: { type: NodeResourceType; heading: string }[] = [
 export const RESOURCE_TYPE_NAMES: Record<NodeResourceType, string> = {
   tree: 'Tree',
   deck: 'Deck',
+  material: 'Material',
   url: 'Link',
 };
 
-/** What to call a resource: its label, or else its target's title. */
-export function resourceTitle(resource: NodeResource): string {
-  return resource.label || resource.tree?.title || resource.deck?.title || resource.url || '';
+/** Whether the resource's readiness is what the user reported, rather than worked out. */
+export function isSelfReported(resource: NodeResource): boolean {
+  return resource.type === 'material';
 }
 
-/** The in-app page for a tree or deck resource; null for a URL. */
+/** What to call a resource: its label, or else its target's title. */
+export function resourceTitle(resource: NodeResource): string {
+  return (
+    resource.label ||
+    resource.tree?.title ||
+    resource.deck?.title ||
+    resource.material?.title ||
+    resource.url ||
+    ''
+  );
+}
+
+/** The in-app page for a tree, deck or material resource; null for a URL. */
 export function resourceLink(resource: NodeResource): (string | number)[] | null {
   if (resource.tree) {
     return ['/trees', resource.tree.id];
   }
-  return resource.deck ? ['/decks', resource.deck.id] : null;
+  if (resource.deck) {
+    return ['/decks', resource.deck.id];
+  }
+  return resource.material ? ['/materials', resource.material.id] : null;
 }
 
 /** The resources a node's readiness comes from. */
@@ -66,6 +83,7 @@ export function toRequest(resource: NodeResource): NodeResourceRequest {
     url: resource.url,
     treeId: resource.tree?.id ?? null,
     deckId: resource.deck?.id ?? null,
+    materialId: resource.material?.id ?? null,
     label: resource.label,
     counts: resource.counts,
   };
