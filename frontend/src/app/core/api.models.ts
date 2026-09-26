@@ -18,14 +18,20 @@ export interface MaterialRef {
   title: string;
 }
 
-/** What a node resource points to. Trees, decks and materials can count toward readiness; a URL can't. */
-export type NodeResourceType = 'url' | 'tree' | 'deck' | 'material';
+/** A lesson named in a node's resources. */
+export interface LessonRef {
+  id: number;
+  title: string;
+}
+
+/** What a node resource points to. All but a URL can count toward readiness. */
+export type NodeResourceType = 'url' | 'tree' | 'deck' | 'material' | 'lesson';
 
 /**
  * Something a node points to, in the node's order: a tree (`tree`), a flashcard deck
- * (`deck`), an external material with reported progress (`material`) or a plain external
- * page (`url`). `label` is as entered, or null to show the target's
- * title. `counts` is whether it counts toward the node's readiness; a URL never does.
+ * (`deck`), an external material with reported progress (`material`), a lesson written in
+ * the app (`lesson`) or a plain external page (`url`). `label` is as entered, or null to show
+ * the target's title. `counts` is whether it counts toward the node's readiness; a URL never does.
  * `readiness` and `lastReviewedAt` are the resource's own (null for a URL), whether it
  * counts or not.
  */
@@ -35,6 +41,7 @@ export interface NodeResource {
   tree: TreeRef | null;
   deck: DeckRef | null;
   material: MaterialRef | null;
+  lesson: LessonRef | null;
   label: string | null;
   counts: boolean;
   readiness: number | null;
@@ -47,6 +54,7 @@ export interface NodeResourceRequest {
   treeId?: number | null;
   deckId?: number | null;
   materialId?: number | null;
+  lessonId?: number | null;
   label?: string | null;
   counts?: boolean;
 }
@@ -245,6 +253,33 @@ export interface ProgressUpdateRequest {
   note: string | null;
 }
 
+/** One section of a lesson: a heading and a Markdown body. */
+export interface LessonSection {
+  title: string;
+  body: string;
+}
+
+/**
+ * A lesson written in the app. `progress` is the latest the user entered (0 if none), and
+ * `lastReviewedAt` when they last opened it (reading it through the API doesn't count).
+ */
+export interface Lesson {
+  id: number;
+  title: string;
+  summary: string | null;
+  sections: LessonSection[];
+  progress: number;
+  lastReviewedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LessonRequest {
+  title: string;
+  summary: string | null;
+  sections: LessonSection[];
+}
+
 /** RFC 9457 problem response body, plus the extra properties the backend adds. */
 export interface Problem {
   status: number;
@@ -253,6 +288,6 @@ export interface Problem {
   errors?: { field: string; message: string }[];
   /** Trees still using a node that couldn't be deleted. */
   trees?: TreeRef[];
-  /** Nodes listing a tree, deck or material that couldn't be deleted. */
+  /** Nodes listing a tree, deck, material or lesson that couldn't be deleted. */
   nodes?: { id: number; title: string }[];
 }

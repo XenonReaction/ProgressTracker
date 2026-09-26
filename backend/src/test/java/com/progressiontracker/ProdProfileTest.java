@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.progressiontracker.flashcards.internal.FlashcardsDevDataSeeder;
+import com.progressiontracker.lessons.internal.LessonsDevDataSeeder;
 import com.progressiontracker.materials.internal.MaterialsDevDataSeeder;
 import com.progressiontracker.progression.seed.DevDataSeeder;
 
@@ -51,6 +52,7 @@ class ProdProfileTest {
 			assertThat(context.getBeanNamesForType(DevDataSeeder.class)).isEmpty();
 			assertThat(context.getBeanNamesForType(FlashcardsDevDataSeeder.class)).isEmpty();
 			assertThat(context.getBeanNamesForType(MaterialsDevDataSeeder.class)).isEmpty();
+			assertThat(context.getBeanNamesForType(LessonsDevDataSeeder.class)).isEmpty();
 		}
 
 		@Test

@@ -1,0 +1,58 @@
+<h1>Lessons</h1>
+<p><a routerLink="/lessons/new">+ New lesson</a></p>
+
+@if (error(); as message) {
+  <div class="error" role="alert">
+    <p>{{ message }}</p>
+    @if (blockingNodes().length) {
+      <ul>
+        @for (node of blockingNodes(); track node.id) {
+          <li>
+            <a [routerLink]="['/nodes', node.id]">{{ node.title }}</a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}
+
+@if (lessons(); as lessons) {
+  @if (lessons.length) {
+    <table>
+      <thead>
+        <tr>
+          <th>Lesson</th>
+          <th>Sections</th>
+          <th>Progress</th>
+          <th>Last opened</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (lesson of lessons; track lesson.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/lessons', lesson.id]">{{ lesson.title }}</a>
+            </td>
+            <td>{{ lesson.sections.length }}</td>
+            <td>
+              <progress max="100" [value]="lesson.progress"></progress> {{ lesson.progress }}%
+            </td>
+            <td>
+              {{ lesson.lastReviewedAt ? (lesson.lastReviewedAt | date: 'medium') : 'Never' }}
+            </td>
+            <td>
+              <a [routerLink]="['/lessons', lesson.id, 'edit']">Edit</a>
+              &nbsp;
+              <button type="button" (click)="delete(lesson)">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="muted">No lessons yet.</p>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

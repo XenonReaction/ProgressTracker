@@ -3,7 +3,15 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 
-import { aDeck, aMaterial, aNode, aTree, aTreeResource, aUrlResource } from '../core/test-data';
+import {
+  aDeck,
+  aLesson,
+  aMaterial,
+  aNode,
+  aTree,
+  aTreeResource,
+  aUrlResource,
+} from '../core/test-data';
 import { NodeForm } from './node-form';
 
 describe('NodeForm', () => {
@@ -95,7 +103,7 @@ describe('NodeForm', () => {
       chooseTree(0, 1);
       await fixture.whenStable();
       expect(page.textContent).toContain(
-        'Readiness will be the average of the trees, decks and materials that count.',
+        'Readiness will be the average of the resources that count.',
       );
 
       await addTree();
@@ -132,7 +140,7 @@ describe('NodeForm', () => {
       select.dispatchEvent(new Event('change'));
       await fixture.whenStable();
       expect(page.textContent).toContain(
-        'Readiness will be the average of the trees, decks and materials that count.',
+        'Readiness will be the average of the resources that count.',
       );
       submit();
 
@@ -166,6 +174,33 @@ describe('NodeForm', () => {
       const request = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
       expect(request.request.body.resources).toEqual([
         { type: 'material', materialId: 6, label: null, counts: true },
+      ]);
+      request.flush(aNode());
+    });
+
+    it('adds a lesson, which counts unless unticked', async () => {
+      type(input('title'), 'CSS Flexbox');
+      button('+ Add lesson').click();
+      await fixture.whenStable();
+      http
+        .expectOne({ method: 'GET', url: '/api/v1/lessons' })
+        .flush([aLesson({ id: 7, title: 'Flexbox lesson' })]);
+      await fixture.whenStable();
+      expect(counts(0).checked).toBe(true);
+      submit();
+      await fixture.whenStable();
+      http.expectNone({ method: 'POST', url: '/api/v1/nodes' });
+      expect(page.textContent).toContain('Choose a lesson.');
+
+      const select = rows()[0].querySelector('select') as HTMLSelectElement;
+      select.selectedIndex = 1;
+      select.dispatchEvent(new Event('change'));
+      await fixture.whenStable();
+      submit();
+
+      const request = http.expectOne({ method: 'POST', url: '/api/v1/nodes' });
+      expect(request.request.body.resources).toEqual([
+        { type: 'lesson', lessonId: 7, label: null, counts: true },
       ]);
       request.flush(aNode());
     });

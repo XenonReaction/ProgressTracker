@@ -5,6 +5,7 @@ export const RESOURCE_GROUPS: { type: NodeResourceType; heading: string }[] = [
   { type: 'tree', heading: 'Trees' },
   { type: 'deck', heading: 'Decks' },
   { type: 'material', heading: 'Materials' },
+  { type: 'lesson', heading: 'Lessons' },
   { type: 'url', heading: 'Links' },
 ];
 
@@ -13,12 +14,13 @@ export const RESOURCE_TYPE_NAMES: Record<NodeResourceType, string> = {
   tree: 'Tree',
   deck: 'Deck',
   material: 'Material',
+  lesson: 'Lesson',
   url: 'Link',
 };
 
 /** Whether the resource's readiness is what the user reported, rather than worked out. */
 export function isSelfReported(resource: NodeResource): boolean {
-  return resource.type === 'material';
+  return resource.type === 'material' || resource.type === 'lesson';
 }
 
 /** What to call a resource: its label, or else its target's title. */
@@ -28,12 +30,13 @@ export function resourceTitle(resource: NodeResource): string {
     resource.tree?.title ||
     resource.deck?.title ||
     resource.material?.title ||
+    resource.lesson?.title ||
     resource.url ||
     ''
   );
 }
 
-/** The in-app page for a tree, deck or material resource; null for a URL. */
+/** The in-app page for a tree, deck, material or lesson resource; null for a URL. */
 export function resourceLink(resource: NodeResource): (string | number)[] | null {
   if (resource.tree) {
     return ['/trees', resource.tree.id];
@@ -41,7 +44,10 @@ export function resourceLink(resource: NodeResource): (string | number)[] | null
   if (resource.deck) {
     return ['/decks', resource.deck.id];
   }
-  return resource.material ? ['/materials', resource.material.id] : null;
+  if (resource.material) {
+    return ['/materials', resource.material.id];
+  }
+  return resource.lesson ? ['/lessons', resource.lesson.id] : null;
 }
 
 /** The resources a node's readiness comes from. */
@@ -84,6 +90,7 @@ export function toRequest(resource: NodeResource): NodeResourceRequest {
     treeId: resource.tree?.id ?? null,
     deckId: resource.deck?.id ?? null,
     materialId: resource.material?.id ?? null,
+    lessonId: resource.lesson?.id ?? null,
     label: resource.label,
     counts: resource.counts,
   };

@@ -14,6 +14,7 @@ import com.progressiontracker.common.BadRequestException;
 import com.progressiontracker.common.ConflictException;
 import com.progressiontracker.common.NotFoundException;
 import com.progressiontracker.flashcards.FlashcardReadinessCalculator;
+import com.progressiontracker.lessons.LessonReadinessCalculator;
 import com.progressiontracker.materials.MaterialReadinessCalculator;
 import com.progressiontracker.progression.readiness.ReadinessContext;
 import com.progressiontracker.progression.readiness.ReadinessService;
@@ -44,9 +45,11 @@ public class NodeService {
 
 	private final MaterialReadinessCalculator materials;
 
+	private final LessonReadinessCalculator lessons;
+
 	public NodeService(NodeRepository nodes, TreeRepository trees, TreeLinks treeLinks, ReadinessService readiness,
 			CurrentUserService currentUser, FlashcardReadinessCalculator flashcards,
-			MaterialReadinessCalculator materials) {
+			MaterialReadinessCalculator materials, LessonReadinessCalculator lessons) {
 		this.nodes = nodes;
 		this.trees = trees;
 		this.treeLinks = treeLinks;
@@ -54,6 +57,7 @@ public class NodeService {
 		this.currentUser = currentUser;
 		this.flashcards = flashcards;
 		this.materials = materials;
+		this.lessons = lessons;
 	}
 
 	@Transactional(readOnly = true)
@@ -152,7 +156,7 @@ public class NodeService {
 		String type = resource.type().trim().toLowerCase();
 		if (type.equals(NodeResourceType.URL.getDbValue())) {
 			if (resource.url() == null || resource.url().isBlank() || resource.treeId() != null
-					|| resource.deckId() != null || resource.materialId() != null) {
+					|| resource.deckId() != null || resource.materialId() != null || resource.lessonId() != null) {
 				throw new BadRequestException("A url resource needs a url and nothing else to point to");
 			}
 			if (resource.countsOrFalse()) {
@@ -160,9 +164,18 @@ public class NodeService {
 			}
 			return NodeResource.url(resource.url(), blankToNull(resource.label()));
 		}
+		if (type.equals(NodeResourceType.LESSON.getDbValue())) {
+			if (resource.lessonId() == null || resource.url() != null || resource.treeId() != null
+					|| resource.deckId() != null || resource.materialId() != null) {
+				throw new BadRequestException("A lesson resource needs a lessonId and nothing else to point to");
+			}
+			// The Lessons module confirms it's one of the user's lessons
+			lessons.lesson(resource.lessonId()).orElseThrow(() -> new NotFoundException("Lesson", resource.lessonId()));
+			return NodeResource.lesson(resource.lessonId(), blankToNull(resource.label()), resource.countsOrFalse());
+		}
 		if (type.equals(NodeResourceType.MATERIAL.getDbValue())) {
 			if (resource.materialId() == null || resource.url() != null || resource.treeId() != null
-					|| resource.deckId() != null) {
+					|| resource.deckId() != null || resource.lessonId() != null) {
 				throw new BadRequestException("A material resource needs a materialId and nothing else to point to");
 			}
 			// The Materials module confirms it's one of the user's materials
@@ -172,7 +185,7 @@ public class NodeService {
 		}
 		if (type.equals(NodeResourceType.DECK.getDbValue())) {
 			if (resource.deckId() == null || resource.url() != null || resource.treeId() != null
-					|| resource.materialId() != null) {
+					|| resource.materialId() != null || resource.lessonId() != null) {
 				throw new BadRequestException("A deck resource needs a deckId and nothing else to point to");
 			}
 			// The Flashcards module confirms it's one of the user's decks
@@ -181,7 +194,7 @@ public class NodeService {
 		}
 		if (type.equals(NodeResourceType.TREE.getDbValue())) {
 			if (resource.treeId() == null || resource.url() != null || resource.deckId() != null
-					|| resource.materialId() != null) {
+					|| resource.materialId() != null || resource.lessonId() != null) {
 				throw new BadRequestException("A tree resource needs a treeId and nothing else to point to");
 			}
 			Tree tree = trees.findByIdAndOwner(resource.treeId(), currentUser.getCurrentUser())
@@ -189,7 +202,7 @@ public class NodeService {
 			return NodeResource.tree(tree, blankToNull(resource.label()), resource.countsOrFalse());
 		}
 		throw new BadRequestException(
-				"Unknown resource type \"" + resource.type() + "\"; expected url, tree, deck or material");
+				"Unknown resource type \"" + resource.type() + "\"; expected url, tree, deck, material or lesson");
 	}
 
 	/** A tree, deck or material listed twice would count twice, so it's refused. URLs may repeat. */

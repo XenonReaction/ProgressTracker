@@ -13,6 +13,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import {
   DeckRef,
+  LessonRef,
   MaterialRef,
   NodeRequest,
   NodeResource,
@@ -20,6 +21,7 @@ import {
   TreeRef,
 } from '../core/api.models';
 import { FlashcardApi } from '../core/flashcard-api';
+import { LessonApi } from '../core/lesson-api';
 import { MaterialApi } from '../core/material-api';
 import { NodeApi } from '../core/node-api';
 import { errorMessage } from '../core/problem';
@@ -32,15 +34,16 @@ type ResourceGroup = FormGroup<{
   treeId: FormControl<number | null>;
   deckId: FormControl<number | null>;
   materialId: FormControl<number | null>;
+  lessonId: FormControl<number | null>;
   label: FormControl<string>;
   counts: FormControl<boolean>;
 }>;
 
 const HTTP_URL = /^https?:\/\/\S+$/i;
 
-/** A link needs an http(s) URL; a tree, deck or material needs one chosen. */
+/** A link needs an http(s) URL; a tree, deck, material or lesson needs one chosen. */
 function resourceTarget(group: AbstractControl): ValidationErrors | null {
-  const { type, url, treeId, deckId, materialId } = group.value;
+  const { type, url, treeId, deckId, materialId, lessonId } = group.value;
   if (type === 'url') {
     return HTTP_URL.test((url ?? '').trim()) ? null : { url: true };
   }
@@ -50,25 +53,38 @@ function resourceTarget(group: AbstractControl): ValidationErrors | null {
   if (type === 'material') {
     return materialId == null ? { materialRequired: true } : null;
   }
+  if (type === 'lesson') {
+    return lessonId == null ? { lessonRequired: true } : null;
+  }
   return treeId == null ? { treeRequired: true } : null;
 }
 
-/** The id a tree, deck or material row points to. */
+/** The id a tree, deck, material or lesson row points to. */
 function targetOf(row: {
   type?: NodeResourceType;
   treeId?: number | null;
   deckId?: number | null;
   materialId?: number | null;
+  lessonId?: number | null;
 }): number | null | undefined {
-  return row.type === 'tree' ? row.treeId : row.type === 'deck' ? row.deckId : row.materialId;
+  switch (row.type) {
+    case 'tree':
+      return row.treeId;
+    case 'deck':
+      return row.deckId;
+    case 'material':
+      return row.materialId;
+    default:
+      return row.lessonId;
+  }
 }
 
 /**
  * Create (`/nodes/new`) or edit (`/nodes/:id/edit`) a library node: its title, description,
- * tags and resources. Resources are links, trees, flashcard decks and materials, in the order
- * the user sets; any but a link can count toward readiness, and then the node's readiness is the
- * average of the resources that count. The hand-entered value itself is set on the node's view page, so this form only
- * carries it through unchanged.
+ * tags and resources. Resources are links, trees, flashcard decks, materials and lessons, in
+ * the order the user sets; any but a link can count toward readiness, and then the node's
+ * readiness is the average of the resources that count. The hand-entered value itself is set
+ * on the node's view page, so this form only carries it through unchanged.
  */
 @Component({
   selector: 'app-node-form',
@@ -80,6 +96,7 @@ export class NodeForm implements OnInit {
   private readonly treeApi = inject(TreeApi);
   private readonly flashcardApi = inject(FlashcardApi);
   private readonly materialApi = inject(MaterialApi);
+  private readonly lessonApi = inject(LessonApi);
   private readonly router = inject(Router);
 
   /** Route param; absent when creating. */
@@ -115,13 +132,16 @@ export class NodeForm implements OnInit {
   /** Materials to choose from; loaded the first time a material resource is shown. */
   protected readonly materials = signal<MaterialRef[] | null>(null);
   private materialsRequested = false;
+  /** Lessons to choose from; loaded the first time a lesson resource is shown. */
+  protected readonly lessons = signal<LessonRef[] | null>(null);
+  private lessonsRequested = false;
   /** The node's readiness as last saved, and which resources counted then. */
   private readonly saved = signal<{ countingKey: string; readiness: number } | null>(null);
 
   private readonly formValue = toSignal(this.form.valueChanges, {
     initialValue: this.form.getRawValue(),
   });
-  /** The trees, decks and materials that count, as the form stands. */
+  /** The trees, decks, materials and lessons that count, as the form stands. */
   private readonly countingKey = computed(() =>
     (this.formValue().resources ?? [])
       .filter((r) => r.type !== 'url' && r.counts && targetOf(r) != null)
@@ -167,6 +187,7 @@ export class NodeForm implements OnInit {
           treeId: new FormControl<number | null>(resource?.tree?.id ?? null),
           deckId: new FormControl<number | null>(resource?.deck?.id ?? null),
           materialId: new FormControl<number | null>(resource?.material?.id ?? null),
+          lessonId: new FormControl<number | null>(resource?.lesson?.id ?? null),
           label: new FormControl(resource?.label ?? '', {
             nonNullable: true,
             validators: [Validators.maxLength(200)],
@@ -187,6 +208,9 @@ export class NodeForm implements OnInit {
     }
     if (type === 'material') {
       this.loadMaterials();
+    }
+    if (type === 'lesson') {
+      this.loadLessons();
     }
   }
 
@@ -224,6 +248,8 @@ export class NodeForm implements OnInit {
             return { type: 'deck', deckId: r.deckId, label, counts: r.counts };
           case 'material':
             return { type: 'material', materialId: r.materialId, label, counts: r.counts };
+          case 'lesson':
+            return { type: 'lesson', lessonId: r.lessonId, label, counts: r.counts };
           default:
             return { type: 'tree', treeId: r.treeId, label, counts: r.counts };
         }
@@ -251,6 +277,18 @@ export class NodeForm implements OnInit {
     this.treesRequested = true;
     this.treeApi.list().subscribe({
       next: (trees) => this.trees.set(trees.map(({ id, title }) => ({ id, title }))),
+      error: (error) => this.error.set(errorMessage(error)),
+    });
+  }
+
+  /** Loads the lessons to choose from, once. */
+  private loadLessons(): void {
+    if (this.lessonsRequested) {
+      return;
+    }
+    this.lessonsRequested = true;
+    this.lessonApi.list().subscribe({
+      next: (lessons) => this.lessons.set(lessons.map(({ id, title }) => ({ id, title }))),
       error: (error) => this.error.set(errorMessage(error)),
     });
   }

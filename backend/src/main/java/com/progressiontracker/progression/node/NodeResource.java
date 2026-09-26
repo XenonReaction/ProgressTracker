@@ -10,10 +10,10 @@ import jakarta.persistence.ManyToOne;
 import com.progressiontracker.progression.tree.Tree;
 
 /**
- * Something a node points to: another tree, a flashcard deck, an external material, or a
- * plain URL. It has an optional label (the target's title is shown when it's null) and says
- * whether it counts toward the node's readiness. A URL never counts. Decks and materials are
- * in other modules, so they're referred to by plain id ({@code target_id}), with no foreign
+ * Something a node points to: another tree, a flashcard deck, an external material, a lesson,
+ * or a plain URL. It has an optional label (the target's title is shown when it's null) and says
+ * whether it counts toward the node's readiness. A URL never counts. Decks, materials and
+ * lessons are in other modules, so they're referred to by plain id ({@code target_id}), with no foreign
  * key.
  */
 @Embeddable
@@ -26,7 +26,7 @@ public class NodeResource {
 	@JoinColumn(name = "tree_id", foreignKey = @ForeignKey(name = "node_resources_tree_id_fk"))
 	private Tree tree;
 
-	/** The id of a deck or material in another module; otherwise null. */
+	/** The id of a deck, material or lesson in another module; otherwise null. */
 	@Column(name = "target_id")
 	private Long targetId;
 
@@ -67,6 +67,10 @@ public class NodeResource {
 		return new NodeResource(NodeResourceType.MATERIAL, null, materialId, null, label, counts);
 	}
 
+	public static NodeResource lesson(Long lessonId, String label, boolean counts) {
+		return new NodeResource(NodeResourceType.LESSON, null, lessonId, null, label, counts);
+	}
+
 	public NodeResourceType getType() {
 		return type;
 	}
@@ -84,6 +88,11 @@ public class NodeResource {
 	/** The material's id, for a {@link NodeResourceType#MATERIAL} resource; otherwise null. */
 	public Long getMaterialId() {
 		return type == NodeResourceType.MATERIAL ? targetId : null;
+	}
+
+	/** The lesson's id, for a {@link NodeResourceType#LESSON} resource; otherwise null. */
+	public Long getLessonId() {
+		return type == NodeResourceType.LESSON ? targetId : null;
 	}
 
 	/** Identifies the target within its type: a tree's id, another module's id, or the URL. */

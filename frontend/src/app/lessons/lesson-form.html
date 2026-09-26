@@ -1,0 +1,80 @@
+<h1>{{ id() ? 'Edit lesson' : 'New lesson' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <p>
+    <label>
+      Title<br />
+      <input formControlName="title" size="50" />
+    </label>
+    @if (form.controls.title.touched && form.controls.title.invalid) {
+      <br /><span class="error">Title is required (max 200 characters).</span>
+    }
+  </p>
+
+  <p>
+    <label>
+      Summary<br />
+      <textarea formControlName="summary" rows="2" cols="60"></textarea>
+    </label>
+  </p>
+
+  <!-- Each row binds its own FormGroup, so a moved section keeps its content (see NodeForm) -->
+  <fieldset>
+    <legend>Sections</legend>
+    <p class="muted">Each section has a heading and a body written in Markdown.</p>
+    @for (section of sections.controls; track section; let i = $index) {
+      <div
+        [formGroup]="section"
+        class="lesson-section"
+        role="group"
+        [attr.aria-label]="'Section ' + (i + 1)"
+      >
+        <p>
+          <label>
+            Section {{ i + 1 }} heading<br />
+            <input formControlName="title" size="50" />
+          </label>
+        </p>
+        <p>
+          <label>
+            Section {{ i + 1 }} body (Markdown)<br />
+            <textarea formControlName="body" rows="6" cols="60"></textarea>
+          </label>
+        </p>
+        <p>
+          <button
+            type="button"
+            (click)="move(i, -1)"
+            [disabled]="i === 0"
+            [attr.aria-label]="'Move section ' + (i + 1) + ' up'"
+          >
+            ↑
+          </button>
+          <button
+            type="button"
+            (click)="move(i, 1)"
+            [disabled]="i === sections.length - 1"
+            [attr.aria-label]="'Move section ' + (i + 1) + ' down'"
+          >
+            ↓
+          </button>
+          <button type="button" (click)="removeSection(i)">Remove section</button>
+        </p>
+        @if (section.touched && section.invalid) {
+          <p class="error">A section needs a heading (max 200 characters) and a body.</p>
+        }
+      </div>
+    }
+    <button type="button" (click)="addSection()">+ Add section</button>
+  </fieldset>
+
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+
+  <p>
+    <button type="submit" [disabled]="saving()">Save</button>
+    &nbsp;
+    <a [routerLink]="cancelUrl()">Cancel</a>
+  </p>
+</form>

@@ -1,0 +1,61 @@
+@if (error(); as message) {
+  <div class="error" role="alert">
+    <p>{{ message }}</p>
+    @if (blockingNodes().length) {
+      <ul>
+        @for (node of blockingNodes(); track node.id) {
+          <li>
+            <a [routerLink]="['/nodes', node.id]">{{ node.title }}</a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+}
+
+@if (lesson(); as lesson) {
+  <p><a routerLink="/lessons">← Lessons</a></p>
+  <h1>{{ lesson.title }}</h1>
+  <p>
+    <a [routerLink]="['/lessons', lesson.id, 'edit']">Edit</a>
+    &nbsp;
+    <button type="button" (click)="delete(lesson)">Delete lesson</button>
+  </p>
+  @if (lesson.summary) {
+    <p class="lesson-summary">{{ lesson.summary }}</p>
+  }
+
+  @for (section of lesson.sections; track $index) {
+    <section class="lesson-section">
+      <h2>{{ section.title }}</h2>
+      <div class="markdown" [innerHTML]="renderMarkdown(section.body)"></div>
+    </section>
+  } @empty {
+    <p class="muted">This lesson has no sections yet.</p>
+  }
+
+  <h2>Progress</h2>
+  <p>
+    <progress max="100" [value]="lesson.progress"></progress>
+    <strong>{{ lesson.progress }}%</strong>
+    <span class="muted"> (self-reported)</span>
+  </p>
+  <p class="muted">
+    Last opened: {{ lesson.lastReviewedAt ? (lesson.lastReviewedAt | date: 'medium') : 'never' }}
+  </p>
+  <form [formGroup]="progressForm" (ngSubmit)="recordProgress(lesson)">
+    <p>
+      <label>
+        How far through are you?
+        <input type="number" min="0" max="100" formControlName="progress" />%
+      </label>
+      &nbsp;
+      <button type="submit" [disabled]="saving()">Save progress</button>
+    </p>
+    @if (progressForm.invalid && progressForm.touched) {
+      <p class="error">Progress must be a whole number from 0 to 100.</p>
+    }
+  </form>
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

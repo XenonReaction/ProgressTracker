@@ -38,7 +38,9 @@ class MigrationTest {
 
 	/** Every named foreign key and unique constraint after the latest migration. */
 	private static final List<String> READABLE_NAMES = List.of("card_reviews_card_id_fk",
-			"card_reviews_user_id_fk", "cards_deck_id_fk", "decks_user_id_fk", "material_progress_updates_material_id_fk",
+			"card_reviews_user_id_fk", "cards_deck_id_fk", "decks_user_id_fk", "lesson_opens_lesson_id_fk", "lesson_opens_user_id_fk",
+			"lesson_progress_updates_lesson_id_fk", "lesson_progress_updates_user_id_fk", "lesson_sections_lesson_id_fk",
+			"lessons_user_id_fk", "material_progress_updates_material_id_fk",
 			"material_progress_updates_user_id_fk", "materials_user_id_fk", "node_resources_node_id_fk",
 			"node_resources_tree_id_fk", "node_tags_node_id_fk", "nodes_user_id_fk", "prerequisites_dependent_tree_node_id_fk",
 			"prerequisites_edge_unique", "prerequisites_prerequisite_tree_node_id_fk", "tree_edit_sessions_tree_id_fk",
@@ -49,8 +51,9 @@ class MigrationTest {
 	void emptyDatabaseRunsEveryMigration() throws Exception {
 		MigrateResult result = flyway("fresh").migrate();
 
-		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
-		assertThat(result.targetSchemaVersion).isEqualTo("9");
+		assertThat(result.migrations).extracting(m -> m.version).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9",
+				"10");
+		assertThat(result.targetSchemaVersion).isEqualTo("10");
 		assertThat(foreignKeyAndUniqueNames("fresh")).containsExactlyElementsOf(READABLE_NAMES);
 	}
 

@@ -1,4 +1,4 @@
-import { Card, Deck, Material, Node, NodeResource, Tree, TreeNode } from './api.models';
+import { Card, Deck, Lesson, Material, Node, NodeResource, Tree, TreeNode } from './api.models';
 
 /** Builders for specs; override only the fields a test cares about. */
 export function aNode(overrides: Partial<Node> = {}): Node {
@@ -98,6 +98,7 @@ export function aTreeResource(
     tree: { id, title },
     deck: null,
     material: null,
+    lesson: null,
     label,
     counts,
     readiness,
@@ -118,6 +119,7 @@ export function aDeckResource(
     tree: null,
     deck: { id, title },
     material: null,
+    lesson: null,
     label: null,
     counts,
     readiness,
@@ -132,6 +134,7 @@ export function aUrlResource(url: string, label: string | null = null): NodeReso
     tree: null,
     deck: null,
     material: null,
+    lesson: null,
     label,
     counts: false,
     readiness: null,
@@ -152,6 +155,7 @@ export function aMaterialResource(
     tree: null,
     deck: null,
     material: { id, title },
+    lesson: null,
     label: null,
     counts,
     readiness,
@@ -168,6 +172,41 @@ export function aMaterial(overrides: Partial<Material> = {}): Material {
     progress: 0,
     lastReviewedAt: null,
     updateCount: 0,
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
+export function aLessonResource(
+  id: number,
+  title: string,
+  counts = true,
+  readiness: number | null = 50,
+  lastReviewedAt: string | null = null,
+): NodeResource {
+  return {
+    type: 'lesson',
+    url: null,
+    tree: null,
+    deck: null,
+    material: null,
+    lesson: { id, title },
+    label: null,
+    counts,
+    readiness,
+    lastReviewedAt,
+  };
+}
+
+export function aLesson(overrides: Partial<Lesson> = {}): Lesson {
+  return {
+    id: 1,
+    title: 'Flexbox in Ten Minutes',
+    summary: null,
+    sections: [],
+    progress: 0,
+    lastReviewedAt: null,
     createdAt: '2026-01-01T00:00:00Z',
     updatedAt: '2026-01-01T00:00:00Z',
     ...overrides,

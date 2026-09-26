@@ -36,7 +36,9 @@
                   <a [routerLink]="target">{{ resourceTitle(resource) }}</a>
                   @if (resource.label) {
                     <span class="muted">
-                      ({{ resource.tree?.title ?? resource.deck?.title ?? resource.material?.title }})</span
+                      ({{
+                        resource.tree?.title ?? resource.deck?.title ?? resource.material?.title ?? resource.lesson?.title
+                      }})</span
                     >
                   }
                   <span class="muted">

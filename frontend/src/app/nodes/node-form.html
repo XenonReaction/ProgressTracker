@@ -34,7 +34,7 @@
     <legend>Resources</legend>
     <p class="muted readiness-source">
       @if (anyCounts()) {
-        Readiness will be the average of the trees, decks and materials that count.
+        Readiness will be the average of the resources that count.
         @if (currentReadiness() !== null) {
           It's {{ currentReadiness() }}% now.
         }
@@ -98,6 +98,22 @@
             <span class="muted">Loading materials…</span>
           }
           <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
+        } @else if (resource.controls.type.value === 'lesson') {
+          <strong>Lesson</strong>
+          @if (lessons(); as lessons) {
+            <select
+              formControlName="lessonId"
+              [attr.aria-label]="'Resource ' + (i + 1) + ' lesson'"
+            >
+              <option [ngValue]="null">Choose a lesson…</option>
+              @for (lesson of lessons; track lesson.id) {
+                <option [ngValue]="lesson.id">{{ lesson.title }}</option>
+              }
+            </select>
+          } @else {
+            <span class="muted">Loading lessons…</span>
+          }
+          <label><input type="checkbox" formControlName="counts" /> Counts toward readiness</label>
         } @else {
           <strong>Link</strong>
           <input
@@ -136,6 +152,9 @@
         @if (resource.touched && resource.hasError('url')) {
           <span class="error">Enter an http(s) URL.</span>
         }
+        @if (resource.touched && resource.hasError('lessonRequired')) {
+          <span class="error">Choose a lesson.</span>
+        }
         @if (resource.touched && resource.hasError('materialRequired')) {
           <span class="error">Choose a material.</span>
         }
@@ -154,6 +173,8 @@
     <button type="button" (click)="addResource('deck')">+ Add deck</button>
     &nbsp;
     <button type="button" (click)="addResource('material')">+ Add material</button>
+    &nbsp;
+    <button type="button" (click)="addResource('lesson')">+ Add lesson</button>
   </fieldset>
 
   @if (error(); as message) {

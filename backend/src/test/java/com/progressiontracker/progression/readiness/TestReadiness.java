@@ -5,12 +5,13 @@ import java.util.List;
 import org.mockito.Mockito;
 
 import com.progressiontracker.flashcards.FlashcardReadinessCalculator;
+import com.progressiontracker.lessons.LessonReadinessCalculator;
 import com.progressiontracker.materials.MaterialReadinessCalculator;
 import com.progressiontracker.progression.tree.TreeNodeRepository;
 
 /**
  * A real {@link ReadinessService} for unit tests, reading trees from a mock repository and
- * decks and materials from mock module APIs.
+ * decks, materials and lessons from mock module APIs.
  */
 public final class TestReadiness {
 
@@ -22,16 +23,17 @@ public final class TestReadiness {
 		return service(treeNodes, Mockito.mock(FlashcardReadinessCalculator.class));
 	}
 
-	/** For tests without materials. */
+	/** For tests without materials or lessons. */
 	public static ReadinessService service(TreeNodeRepository treeNodes, FlashcardReadinessCalculator flashcards) {
-		return service(treeNodes, flashcards, Mockito.mock(MaterialReadinessCalculator.class));
+		return service(treeNodes, flashcards, Mockito.mock(MaterialReadinessCalculator.class),
+				Mockito.mock(LessonReadinessCalculator.class));
 	}
 
 	public static ReadinessService service(TreeNodeRepository treeNodes, FlashcardReadinessCalculator flashcards,
-			MaterialReadinessCalculator materials) {
+			MaterialReadinessCalculator materials, LessonReadinessCalculator lessons) {
 		return new ReadinessService(List.of(new TreeResourceReadinessCalculator(),
-				new DeckResourceReadinessCalculator(flashcards), new MaterialResourceReadinessCalculator(materials)),
-				treeNodes);
+				new DeckResourceReadinessCalculator(flashcards), new MaterialResourceReadinessCalculator(materials),
+				new LessonResourceReadinessCalculator(lessons)), treeNodes);
 	}
 
 }

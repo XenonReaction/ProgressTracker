@@ -1,4 +1,10 @@
-import { aDeckResource, aMaterialResource, aTreeResource, aUrlResource } from '../core/test-data';
+import {
+  aDeckResource,
+  aLessonResource,
+  aMaterialResource,
+  aTreeResource,
+  aUrlResource,
+} from '../core/test-data';
 import {
   countingResources,
   countingTrees,
@@ -26,6 +32,9 @@ describe('resources', () => {
     expect(resourceTitle(aMaterialResource(6, 'Guide'))).toBe('Guide');
     expect(isSelfReported(aMaterialResource(6, 'Guide'))).toBe(true);
     expect(isSelfReported(aDeckResource(4, 'Flexbox cards'))).toBe(false);
+    expect(resourceLink(aLessonResource(7, 'Lesson'))).toEqual(['/lessons', 7]);
+    expect(resourceTitle(aLessonResource(7, 'Lesson'))).toBe('Lesson');
+    expect(isSelfReported(aLessonResource(7, 'Lesson'))).toBe(true);
     expect(resourceLink(aUrlResource('https://example.com'))).toBeNull();
   });
 
@@ -64,10 +73,12 @@ describe('resources', () => {
       treeId: 3,
       deckId: null,
       materialId: null,
+      lessonId: null,
       label: 'Styling',
       counts: false,
     });
     expect(toRequest(aDeckResource(4, 'Cards')).deckId).toBe(4);
     expect(toRequest(aMaterialResource(6, 'Guide')).materialId).toBe(6);
+    expect(toRequest(aLessonResource(7, 'Lesson')).lessonId).toBe(7);
   });
 });

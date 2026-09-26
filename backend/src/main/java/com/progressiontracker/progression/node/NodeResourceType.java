@@ -16,7 +16,10 @@ public enum NodeResourceType {
 	DECK("deck", true),
 
 	/** An external material, by id: its readiness is the latest progress the user reported. */
-	MATERIAL("material", true);
+	MATERIAL("material", true),
+
+	/** A lesson written in the app, by id: its readiness is the latest progress the user entered. */
+	LESSON("lesson", true);
 
 	private final String dbValue;
 

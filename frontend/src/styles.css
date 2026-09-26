@@ -37,3 +37,14 @@ td {
   border-top: 1px dashed #ccc;
   font-size: 1.1rem;
 }
+
+/* A lesson's sections: rendered Markdown */
+.lesson-section {
+  max-width: 45rem;
+}
+
+.markdown code {
+  padding: 0 0.2rem;
+  background: #f3f3f3;
+  border-radius: 3px;
+}

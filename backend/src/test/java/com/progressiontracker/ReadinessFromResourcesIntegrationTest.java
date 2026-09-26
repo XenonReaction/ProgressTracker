@@ -19,10 +19,9 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
 /**
- * Phases 7.3 and 7.4: readiness from several resources across modules, through the whole HTTP
- * stack against real Postgres. Holds the Phase 7.0 examples. Lessons (7.5) don't exist yet,
- * so a deck with every card passed stands in for the lesson at 100%; the arithmetic is the
- * same.
+ * Phases 7.3 to 7.5: readiness from several resources across modules (trees, decks, materials
+ * and lessons), through the whole HTTP stack against real Postgres. Holds the Phase 7.0
+ * examples.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -37,7 +36,8 @@ class ReadinessFromResourcesIntegrationTest {
 
 	@AfterEach
 	void emptyTables() {
-		jdbc.execute("truncate table material_progress_updates, materials, card_reviews, cards, decks, tree_edit_sessions, "
+		jdbc.execute("truncate table lesson_progress_updates, lesson_opens, lesson_sections, lessons, material_progress_updates, "
+				+ "materials, card_reviews, cards, decks, tree_edit_sessions, "
 				+ "prerequisites, tree_nodes, tree_tags, trees, node_tags, node_resources, nodes, users cascade");
 	}
 
@@ -78,14 +78,25 @@ class ReadinessFromResourcesIntegrationTest {
 		long css = id(post("/api/v1/trees", "{\"title\": \"CSS\"}"));
 		placeNode(css, createNode("Selectors", 50));
 		placeNode(css, createNode("Flexbox", 58));
-		long lesson = deckWithCards("Front-end lesson", 1, 1);
+		long lesson = lessonAt("Front-end lesson", 100);
 		long basics = createNode("Front-end Basics", 0);
 
 		// (54 + 100) / 2 = 77
 		MvcTestResult saved = setResources(basics, "Front-end Basics", """
 				{"type": "tree", "treeId": %d, "counts": true},
-				{"type": "deck", "deckId": %d, "counts": true}""".formatted(css, lesson));
+				{"type": "lesson", "lessonId": %d, "counts": true}""".formatted(css, lesson));
 		assertThat(saved).bodyJson().extractingPath("$.readiness").isEqualTo(77);
+		assertThat(saved).bodyJson().extractingPath("$.resources[1].lesson.title").isEqualTo("Front-end lesson");
+
+		// Opening the lesson is when it was last reviewed
+		assertThat(saved).bodyJson().extractingPath("$.lastReviewedAt").isNull();
+		assertThat(post("/api/v1/lessons/" + lesson + "/opens", "")).hasStatusOk();
+		assertThat(mvc.get().uri("/api/v1/nodes/{id}", basics)).bodyJson()
+			.extractingPath("$.lastReviewedAt")
+			.isNotNull();
+
+		// A lesson that a node lists can't be deleted
+		assertThat(mvc.delete().uri("/api/v1/lessons/{id}", lesson)).hasStatus(HttpStatus.CONFLICT);
 	}
 
 	@Test
@@ -181,6 +192,15 @@ class ReadinessFromResourcesIntegrationTest {
 			}
 		}
 		return deck;
+	}
+
+	/** A lesson with one section and {@code progress} entered, never opened. */
+	private long lessonAt(String title, int progress) {
+		long lesson = id(post("/api/v1/lessons", """
+				{"title": "%s", "sections": [{"title": "Intro", "body": "Some *Markdown*."}]}""".formatted(title)));
+		assertThat(post("/api/v1/lessons/" + lesson + "/progress", "{\"progress\": %d}".formatted(progress)))
+			.hasStatusOk();
+		return lesson;
 	}
 
 	/** A material whose latest reported progress is {@code progress}, after an earlier, lower one. */

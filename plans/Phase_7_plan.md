@@ -1,6 +1,6 @@
 # Phase 7 Plan — Learning activities (Milestone 3)
 
-**Status:** Fully decided. 7.0 to 7.4 are complete; no code has been written for 7.5 onward.
+**Status:** Fully decided. 7.0 to 7.5 are complete; no code has been written for 7.6 onward.
 
 **Steps, in build order:**
 
@@ -12,7 +12,7 @@
 | 7.2 | Typed node resources | **Complete.** |
 | 7.3 | Readiness from several resources | **Complete.** |
 | 7.4 | External materials with manual progress | **Complete.** |
-| 7.5 | Lessons | **Fully decided.** |
+| 7.5 | Lessons | **Complete.** |
 | 7.6 | Coding questions | **Fully decided.** |
 | 7.7 | Refine based on use | Not scoped yet. Starts with spaced repetition and staleness. |
 
@@ -252,6 +252,13 @@ The ChatGPT map had a single "Progress / Learning history" module. Here that's t
 - A lesson calculator for the readiness contract.
 
 **Done when:** lessons feed node and tree readiness without the tree code knowing lesson rules.
+
+**Done:**
+- **Lessons module:** built like Flashcards and Materials: `LessonReadinessCalculator` and `LessonDeletionCheck` are its public API, and everything else is in `lessons.internal`. `V10__lessons.sql` adds `lessons`, `lesson_sections`, `lesson_opens` and `lesson_progress_updates`, and widens `node_resources` to a `lesson` type. The tree code only sees a `ResourceStatus` from `LessonResourceReadinessCalculator`.
+- **Writing and reading:** a lesson has a title, optional summary and sections in order (heading and Markdown body; add, move, remove). The lesson page renders the Markdown with the `marked` package, through Angular's sanitizer.
+- **Last reviewed and progress:** opening the lesson page records an open (`POST .../opens`); reading a lesson through `GET` or its edit form doesn't. Progress is entered on the lesson page and marked "self-reported". Both are kept per user as records owned by the module, ready for Phase 8.
+- **As a node resource:** "+ Add lesson" in the node form; a lesson that a node lists can't be deleted.
+- **The 7.0 examples** now use a real lesson at 100% in example 4, so all four use real resource types.
 
 ---
 

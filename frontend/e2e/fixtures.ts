@@ -3,6 +3,7 @@ import { APIRequestContext, Locator, Page, test as base, expect } from '@playwri
 import type {
   Card,
   Deck,
+  Lesson,
   Material,
   Node,
   NodeResourceRequest,
@@ -123,6 +124,14 @@ export class Api {
     });
     expect(response.ok(), `report progress on material ${materialId}`).toBeTruthy();
     return response.json();
+  }
+
+  async createLesson(title: string, sections: { title: string; body: string }[]): Promise<Lesson> {
+    return this.post('/api/v1/lessons', { title, summary: null, sections });
+  }
+
+  async enterLessonProgress(lessonId: number, progress: number): Promise<Lesson> {
+    return this.post(`/api/v1/lessons/${lessonId}/progress`, { progress });
   }
 
   async deck(deckId: number): Promise<Deck> {

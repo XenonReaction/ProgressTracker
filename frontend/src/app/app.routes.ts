@@ -5,6 +5,9 @@ import { DeckList } from './flashcards/deck-list';
 import { DeckStudy } from './flashcards/deck-study';
 import { DeckView } from './flashcards/deck-view';
 import { ReviewPage } from './flashcards/review-page';
+import { LessonForm } from './lessons/lesson-form';
+import { LessonList } from './lessons/lesson-list';
+import { LessonView } from './lessons/lesson-view';
 import { MaterialForm } from './materials/material-form';
 import { MaterialList } from './materials/material-list';
 import { MaterialView } from './materials/material-view';
@@ -43,5 +46,9 @@ export const routes: Routes = [
   { path: 'materials/new', component: MaterialForm, title: 'New material' },
   { path: 'materials/:id', component: MaterialView, title: 'Material' },
   { path: 'materials/:id/edit', component: MaterialForm, title: 'Edit material' },
+  { path: 'lessons', component: LessonList, title: 'Lessons' },
+  { path: 'lessons/new', component: LessonForm, title: 'New lesson' },
+  { path: 'lessons/:id', component: LessonView, title: 'Lesson' },
+  { path: 'lessons/:id/edit', component: LessonForm, title: 'Edit lesson' },
   { path: '**', redirectTo: 'nodes' },
 ];
